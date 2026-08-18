@@ -1,0 +1,29 @@
+                    OPERACIÓN
+                       │
+          ┌────────────┼─────────────┐
+          │            │             │
+       Viajes      Kilometraje    GPS
+          │
+     ┌────┴─────┐
+     │          │
+ Combustible  Mantenciones
+     │          │
+     └────┬─────┘
+          │
+       GASTOS
+          │
+          ├── Adelantos a conductores
+          ├── Combustible
+          ├── Mantenciones
+          └── Otros gastos
+
+                       │
+                    FINANZAS
+                       │
+          ┌────────────┼────────────┐
+          │            │            │
+       Ingresos      Facturas     Pagos
+          │            │            │
+          └────────────┼────────────┘
+                       │
+                    REPORTES

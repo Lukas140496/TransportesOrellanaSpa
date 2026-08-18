@@ -1,0 +1,21 @@
+                   TRANSPORTES ORELLANA SpA
+                            │
+        ┌───────────────────┼────────────────────┐
+        │                   │                    │
+      FLOTA              PERSONAS             CLIENTES
+        │                   │                    │
+   ┌────┴────┐         ┌────┴────┐              │
+   │         │         │         │              │
+Camiones  Remolques  Conductores Usuarios       │
+   │         │         │                        │
+   └────┬────┘         │                        │
+        │              │                        │
+        └──────────────┼────────────────────────┘
+                       │
+                     VIAJES
+                       │
+          ┌────────────┼────────────┐
+          │            │            │
+       Camión       Conductor    Remolque
+          │
+       Cliente

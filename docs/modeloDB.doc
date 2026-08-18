@@ -1,0 +1,66 @@
+                    ┌──────────────┐
+                    │   CLIENTES   │
+                    └──────┬───────┘
+                           │
+                           ▼
+                    ┌──────────────┐
+                    │    VIAJES    │
+                    └──────┬───────┘
+                           │
+            ┌──────────────┼──────────────┐
+            ▼              ▼              ▼
+       ┌─────────┐   ┌────────────┐  ┌─────────┐
+       │ CAMIÓN  │   │ CONDUCTOR  │  │ RAMPLA  │
+       └────┬────┘   └────────────┘  └─────────┘
+            │
+     ┌──────┼────────┬──────────┐
+     ▼      ▼        ▼          ▼
+   GPS   COMBUST. MANTENCIÓN  NEUMÁTICOS
+     │      │        │          │
+     └──────┴────────┴──────────┘
+                    │
+                    ▼
+                 GASTOS
+                    │
+                    ▼
+                FINANZAS
+                    │
+          ┌─────────┼─────────┐
+          ▼         ▼         ▼
+      INGRESOS   FACTURAS   PAGOS
+                    │
+                    ▼
+                    OC
+
+---------------------------------------------------------
+
+TRANSPORTES ORELLANA SpA
+│
+├── FLOTA
+│   ├── Camiones
+│   │   ├── Conductor habitual
+│   │   └── Viajes realizados
+│   │
+│   └── Remolques
+│       ├── Camión habitual
+│       └── Viajes realizados
+│
+├── PERSONAS
+│   └── Conductores
+│       ├── Camiones habituales
+│       └── Viajes realizados
+│
+├── OPERACIÓN
+│   ├── Clientes
+│   └── Viajes
+│       ├── Cliente
+│       ├── Camión
+│       ├── Conductor real
+│       ├── Remolque
+│       ├── Origen / destino
+│       ├── Tipo de carga
+│       ├── Kilómetros
+│       └── Tarifa
+│
+└── FINANZAS
+    └── Lo construiremos sobre esta base
