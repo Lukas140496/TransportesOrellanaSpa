@@ -37,7 +37,7 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<Remolque>()
             .HasOne(r => r.CamionHabitual)
-            .WithMany()
+            .WithMany(c => c.Remolques)
             .HasForeignKey(r => r.CamionHabitualId)
             .OnDelete(DeleteBehavior.SetNull);
 
@@ -86,6 +86,23 @@ public class AppDbContext : DbContext
             .OnDelete(DeleteBehavior.SetNull);
 
 
+        // =========================
+        // CAMIÓN - FECHAS
+        // =========================
+
+        modelBuilder.Entity<Camion>()
+            .Property(c => c.FechaRevisionTecnica)
+            .HasColumnType("date");
+
+        modelBuilder.Entity<Camion>()
+            .Property(c => c.FechaPermisoCirculacion)
+            .HasColumnType("date");
+
+        modelBuilder.Entity<Camion>()
+            .Property(c => c.FechaSeguroObligatorio)
+            .HasColumnType("date");
+
+            
         // =========================
         // ÍNDICES
         // =========================

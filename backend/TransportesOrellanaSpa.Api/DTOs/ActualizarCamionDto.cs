@@ -1,10 +1,7 @@
-namespace TransportesOrellanaSpa.Api.Models;
+namespace TransportesOrellanaSpa.Api.DTOs;
 
-public class Camion
+public class ActualizarCamionDto
 {
-    public int Id { get; set; }
-
-    public string Patente { get; set; } = string.Empty;
     public string Marca { get; set; } = string.Empty;
     public string Modelo { get; set; } = string.Empty;
     public int Ano { get; set; }
@@ -23,15 +20,4 @@ public class Camion
     public bool RevisionAlDia { get; set; }
     public bool PermisoAlDia { get; set; }
     public bool SeguroAlDia { get; set; }
-
-    // Conductor habitual del camión.
-    // Puede ser null si actualmente no tiene uno asignado.
-    public int? ConductorHabitualId { get; set; }
-    public Conductor? ConductorHabitual { get; set; }
-
-    // Remolques que tienen este camión como tractocamión habitual.
-    public ICollection<Remolque> Remolques { get; set; } = new List<Remolque>();
-
-    // Viajes realizados por este camión.
-    public ICollection<Viaje> Viajes { get; set; } = new List<Viaje>();
 }

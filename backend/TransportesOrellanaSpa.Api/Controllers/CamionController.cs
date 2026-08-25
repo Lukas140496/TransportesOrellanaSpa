@@ -1,4 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using TransportesOrellanaSpa.Api.Data;
+using TransportesOrellanaSpa.Api.DTOs;
 using TransportesOrellanaSpa.Api.Models;
 
 namespace TransportesOrellanaSpa.Api.Controllers;
@@ -7,202 +10,288 @@ namespace TransportesOrellanaSpa.Api.Controllers;
 [Route("api/[controller]")]
 public class CamionController : ControllerBase
 {
-    [HttpGet]
-    public ActionResult<IEnumerable<Camion>> GetAll()
+    private readonly AppDbContext _context;
+
+    public CamionController(AppDbContext context)
     {
-        var Camiones = new List<Camion>
+        _context = context;
+    }
+
+    // GET: api/camion
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<CamionDto>>> GetAll()
+    {
+        var camiones = await _context.Camiones
+            .AsNoTracking()
+            .Select(c => new CamionDto
+            {
+                Id = c.Id,
+                Patente = c.Patente,
+                Marca = c.Marca,
+                Modelo = c.Modelo,
+                Ano = c.Ano,
+                Tipo = c.Tipo,
+                Color = c.Color,
+                Capacidad = c.Capacidad,
+                Motor = c.Motor,
+                Caballos = c.Caballos,
+                Cilindrada = c.Cilindrada,
+                Transmision = c.Transmision,
+                FechaRevisionTecnica = c.FechaRevisionTecnica,
+                FechaPermisoCirculacion = c.FechaPermisoCirculacion,
+                FechaSeguroObligatorio = c.FechaSeguroObligatorio,
+                RevisionAlDia = c.RevisionAlDia,
+                PermisoAlDia = c.PermisoAlDia,
+
+                SeguroAlDia = c.SeguroAlDia,
+
+                ConductorHabitual = c.ConductorHabitual == null
+                    ? null
+                    : new ConductorResumenDto
+                    {
+                        Rut = c.ConductorHabitual.Rut,
+                        Nombres = c.ConductorHabitual.Nombres,
+                        ApellidoPaterno = c.ConductorHabitual.ApellidoPaterno,
+                        ApellidoMaterno = c.ConductorHabitual.ApellidoMaterno
+                    }
+            })
+            .ToListAsync();
+
+        return Ok(camiones);
+    }
+
+    // GET: api/camion/VJ8427
+    [HttpGet("{patente}")]
+    public async Task<ActionResult<CamionDto>> GetByPatente(string patente)
+    {
+        patente = patente.Trim().ToUpperInvariant();
+
+        var camion = await _context.Camiones
+            .AsNoTracking()
+            .Where(c => c.Patente == patente)
+            .Select(c => new CamionDto
+            {
+                Id = c.Id,
+                Patente = c.Patente,
+                Marca = c.Marca,
+                Modelo = c.Modelo,
+                Ano = c.Ano,
+                Tipo = c.Tipo,
+                Color = c.Color,
+                Capacidad = c.Capacidad,
+                Motor = c.Motor,
+                Caballos = c.Caballos,
+                Cilindrada = c.Cilindrada,
+                Transmision = c.Transmision,
+                FechaRevisionTecnica = c.FechaRevisionTecnica,
+                FechaPermisoCirculacion = c.FechaPermisoCirculacion,
+                FechaSeguroObligatorio = c.FechaSeguroObligatorio,
+                RevisionAlDia = c.RevisionAlDia,
+                PermisoAlDia = c.PermisoAlDia,
+
+                SeguroAlDia = c.SeguroAlDia,
+
+                ConductorHabitual = c.ConductorHabitual == null
+                    ? null
+                    : new ConductorResumenDto
+                    {
+                        Rut = c.ConductorHabitual.Rut,
+                        Nombres = c.ConductorHabitual.Nombres,
+                        ApellidoPaterno = c.ConductorHabitual.ApellidoPaterno,
+                        ApellidoMaterno = c.ConductorHabitual.ApellidoMaterno
+                    },
+                Remolques = c.Remolques
+                .Select(r => new RemolqueResumenDto
+                {
+                    Id = r.Id,
+                    Patente = r.Patente,
+                    Marca = r.Marca,
+                    Modelo = r.Modelo,
+                    Tipo = r.Tipo,
+                    CapacidadToneladas = r.CapacidadToneladas,
+                    Activa = r.Activa
+                })
+                .ToList()
+            })
+            .FirstOrDefaultAsync();
+
+        if (camion == null)
         {
-            new Camion
-            {
-                Id = 1,
-                Patente = "VJ8427",
-                Marca = "Freightliner",
-                Modelo = "FLD 120",
-                Ano = 2003,
-                Tipo = "Tracto",
-                Color = "Azul",
-                Capacidad = "30 Ton",
-                Motor = "Detroit Diesel Series 60",
-                Caballos = "430 HP",
-                Cilindrada = "12.7 L",
-                Transmision = "Eaton Fuller 18 velocidades",
-                FechaRevisionTecnica = new DateTime(2026, 1, 1),
-                FechaPermisoCirculacion = new DateTime(2026, 3, 31),
-                FechaSeguroObligatorio = new DateTime(2026, 3, 31),
-                RevisionAlDia = true,
-                PermisoAlDia = true,
-                SeguroAlDia = true,
-            },
-            new Camion
-            {
-                Id = 2,
-                Patente = "BRDL72",
-                Marca = "Freightliner",
-                Modelo = "Argosy",
-                Ano = 2009,
-                Tipo = "Tracto",
-                Color = "Blanco",
-                Capacidad = "30 Ton",
-                Motor = "Detroit Diesel Series 60",
-                Caballos = "430 HP",
-                Cilindrada = "12.7 L",
-                Transmision = "Eaton Fuller 18 velocidades",
-                FechaRevisionTecnica = new DateTime(2026, 1, 1),
-                FechaPermisoCirculacion = new DateTime(2026, 3, 31),
-                FechaSeguroObligatorio = new DateTime(2026, 3, 31),
-                RevisionAlDia = true,
-                PermisoAlDia = true,
-                SeguroAlDia = true,
-            },
-            new Camion
-            {
-                Id = 3,
-                Patente = "TG5551",
-                Marca = "Volskwagen",
-                Modelo = "Worker 15-180",
-                Ano = 2001,
-                Tipo = "Doble Puente",
-                Color = "Blanco",
-                Capacidad = "15 Ton",
-                Motor = "Diésel MWM 6.10 TCA",
-                Caballos = "180 HP",
-                Cilindrada = "6.1 L",
-                Transmision = "Eaton Fuller 5 velocidades",
-                FechaRevisionTecnica = new DateTime(2026, 1, 1),
-                FechaPermisoCirculacion = new DateTime(2026, 3, 31),
-                FechaSeguroObligatorio = new DateTime(2026, 3, 31),
-                RevisionAlDia = true,
-                PermisoAlDia = true,
-                SeguroAlDia = true,
-            },
-            new Camion
-            {
-                Id = 4,
-                Patente = "XY9353",
-                Marca = "International",
-                Modelo = "9800i",
-                Ano = 2004,
-                Tipo = "Tracto",
-                Color = "Blanco",
-                Capacidad = "30 Ton",
-                Motor = "Cummins ISM",
-                Caballos = "400 HP",
-                Cilindrada = "10.8 L",
-                Transmision = "Eaton Fuller 18 velocidades",
-                FechaRevisionTecnica = new DateTime(2026, 1, 1),
-                FechaPermisoCirculacion = new DateTime(2026, 3, 31),
-                FechaSeguroObligatorio = new DateTime(2026, 3, 31),
-                RevisionAlDia = false,
-                PermisoAlDia = true,
-                SeguroAlDia = true,
-            },
-            new Camion
-            {
-                Id = 5,
-                Patente = "WR8495",
-                Marca = "International",
-                Modelo = "9800i",
-                Ano = 2006,
-                Tipo = "Tracto",
-                Color = "Blanco",
-                Capacidad = "30 Ton",
-                Motor = "Cummins ISM",
-                Caballos = "400 HP",
-                Cilindrada = "10.8 L",
-                Transmision = "Eaton Fuller 18 velocidades",
-                FechaRevisionTecnica = new DateTime(2026, 1, 1),
-                FechaPermisoCirculacion = new DateTime(2026, 3, 31),
-                FechaSeguroObligatorio = new DateTime(2026, 3, 31),
-                RevisionAlDia = false,
-                PermisoAlDia = true,
-                SeguroAlDia = true,
-            },
-            new Camion
-            {
-                Id = 6,
-                Patente = "YS6755",
-                Marca = "International",
-                Modelo = "9800i",
-                Ano = 2004,
-                Tipo = "Tracto",
-                Color = "Blanco",
-                Capacidad = "30 Ton",
-                Motor = "Cummins ISM",
-                Caballos = "380 HP",
-                Cilindrada = "10.8 L",
-                Transmision = "Eaton Fuller 13 velocidades",
-                FechaRevisionTecnica = new DateTime(2026, 1, 1),
-                FechaPermisoCirculacion = new DateTime(2026, 3, 31),
-                FechaSeguroObligatorio = new DateTime(2026, 3, 31),
-                RevisionAlDia = false,
-                PermisoAlDia = true,
-                SeguroAlDia = true,
-            },
-            new Camion
-            {
-                Id = 7,
-                Patente = "VZ9625",
-                Marca = "Volswagen",
-                Modelo = "Worker 17-220",
-                Ano = 2003,
-                Tipo = "Doble Puente",
-                Color = "Blanco",
-                Capacidad = "15 Ton",
-                Motor = "Cummins C8.3",
-                Caballos = "220 HP",
-                Cilindrada = "8.3 L",
-                Transmision = "Eaton Fuller 6 velocidades",
-                FechaRevisionTecnica = new DateTime(2026, 1, 1),
-                FechaPermisoCirculacion = new DateTime(2026, 3, 31),
-                FechaSeguroObligatorio = new DateTime(2026, 3, 31),
-                RevisionAlDia = false,
-                PermisoAlDia = true,
-                SeguroAlDia = true,
-            },
-            new Camion
-            {
-                Id = 8,
-                Patente = "WT7109",
-                Marca = "Volswagen",
-                Modelo = "Worker 17-210",
-                Ano = 2003,
-                Tipo = "Doble Puente",
-                Color = "Blanco",
-                Capacidad = "15 Ton",
-                Motor = "Cummins C8.3",
-                Caballos = "210 HP",
-                Cilindrada = "8.3 L",
-                Transmision = "Eaton Fuller 6 velocidades",
-                FechaRevisionTecnica = new DateTime(2026, 1, 1),
-                FechaPermisoCirculacion = new DateTime(2026, 3, 31),
-                FechaSeguroObligatorio = new DateTime(2026, 3, 31),
-                RevisionAlDia = false,
-                PermisoAlDia = true,
-                SeguroAlDia = true,
-            },
-            new Camion
-            {
-                Id = 9,
-                Patente = "CHBW69",
-                Marca = "Volswagen",
-                Modelo = "9-150",
-                Ano = 2010,
-                Tipo = "Camion",
-                Color = "Blanco",
-                Capacidad = "6 Ton",
-                Motor = "Cummins Interact 4.0 electrónico",
-                Caballos = "150 HP",
-                Cilindrada = "4.0 L",
-                Transmision = "Eaton Fuller 5 velocidades",
-                FechaRevisionTecnica = new DateTime(2026, 1, 1),
-                FechaPermisoCirculacion = new DateTime(2026, 3, 31),
-                FechaSeguroObligatorio = new DateTime(2026, 3, 31),
-                RevisionAlDia = false,
-                PermisoAlDia = true,
-                SeguroAlDia = true,
-            }
+            return NotFound();
+        }
+
+        return Ok(camion);
+    }
+
+    // POST: api/camion
+    [HttpPost]
+    public async Task<ActionResult<CamionDto>> Create(CrearCamionDto dto)
+    {
+        var patente = dto.Patente.Trim().ToUpperInvariant();
+
+        var existe = await _context.Camiones
+            .AnyAsync(c => c.Patente == patente);
+
+        if (existe)
+        {
+            return Conflict($"Ya existe un camión con la patente {patente}.");
+        }
+
+        var camion = new Camion
+        {
+            Patente = patente,
+            Marca = dto.Marca,
+            Modelo = dto.Modelo,
+            Ano = dto.Ano,
+            Tipo = dto.Tipo,
+            Color = dto.Color,
+            Capacidad = dto.Capacidad,
+            Motor = dto.Motor,
+            Caballos = dto.Caballos,
+            Cilindrada = dto.Cilindrada,
+            Transmision = dto.Transmision,
+            FechaRevisionTecnica = dto.FechaRevisionTecnica,
+            FechaPermisoCirculacion = dto.FechaPermisoCirculacion,
+            FechaSeguroObligatorio = dto.FechaSeguroObligatorio,
+            RevisionAlDia = dto.RevisionAlDia,
+            PermisoAlDia = dto.PermisoAlDia,
+            SeguroAlDia = dto.SeguroAlDia
         };
 
-        return Ok(Camiones);
+        _context.Camiones.Add(camion);
+        await _context.SaveChangesAsync();
+
+        var resultado = await _context.Camiones
+            .AsNoTracking()
+            .Where(c => c.Id == camion.Id)
+            .Select(c => new CamionDto
+            {
+                Id = c.Id,
+                Patente = c.Patente,
+                Marca = c.Marca,
+                Modelo = c.Modelo,
+                Ano = c.Ano,
+                Tipo = c.Tipo,
+                Color = c.Color,
+                Capacidad = c.Capacidad,
+                Motor = c.Motor,
+                Caballos = c.Caballos,
+                Cilindrada = c.Cilindrada,
+                Transmision = c.Transmision,
+                FechaRevisionTecnica = c.FechaRevisionTecnica,
+                FechaPermisoCirculacion = c.FechaPermisoCirculacion,
+                FechaSeguroObligatorio = c.FechaSeguroObligatorio,
+                RevisionAlDia = c.RevisionAlDia,
+                PermisoAlDia = c.PermisoAlDia,
+
+                SeguroAlDia = c.SeguroAlDia,
+
+                ConductorHabitual = c.ConductorHabitual == null
+                    ? null
+                    : new ConductorResumenDto
+                    {
+                        Rut = c.ConductorHabitual.Rut,
+                        Nombres = c.ConductorHabitual.Nombres,
+                        ApellidoPaterno = c.ConductorHabitual.ApellidoPaterno,
+                        ApellidoMaterno = c.ConductorHabitual.ApellidoMaterno
+                    }
+            })
+            .FirstAsync();
+
+        return CreatedAtAction(
+            nameof(GetByPatente),
+            new { patente = camion.Patente },
+            resultado
+        );
+    }
+
+    // PUT: api/camion/VJ8427
+    [HttpPut("{patente}")]
+    public async Task<IActionResult> Update(
+        string patente,
+        ActualizarCamionDto dto)
+    {
+        patente = patente.Trim().ToUpperInvariant();
+
+        var camion = await _context.Camiones
+            .FirstOrDefaultAsync(c => c.Patente == patente);
+
+        if (camion == null)
+        {
+            return NotFound();
+        }
+
+        camion.Marca = dto.Marca;
+        camion.Modelo = dto.Modelo;
+        camion.Ano = dto.Ano;
+        camion.Tipo = dto.Tipo;
+        camion.Color = dto.Color;
+        camion.Capacidad = dto.Capacidad;
+        camion.Motor = dto.Motor;
+        camion.Caballos = dto.Caballos;
+        camion.Cilindrada = dto.Cilindrada;
+        camion.Transmision = dto.Transmision;
+        camion.FechaRevisionTecnica = dto.FechaRevisionTecnica;
+        camion.FechaPermisoCirculacion = dto.FechaPermisoCirculacion;
+        camion.FechaSeguroObligatorio = dto.FechaSeguroObligatorio;
+        camion.RevisionAlDia = dto.RevisionAlDia;
+        camion.PermisoAlDia = dto.PermisoAlDia;
+        camion.SeguroAlDia = dto.SeguroAlDia;
+
+        await _context.SaveChangesAsync();
+
+        return NoContent();
+    }
+
+    // PUT: api/camion/VJ8427/conductor-habitual
+    [HttpPut("{patente}/conductor-habitual")]
+    public async Task<IActionResult> AsignarConductorHabitual(
+        string patente,
+        AsignarConductorHabitualDto dto)
+    {
+        patente = patente.Trim().ToUpperInvariant();
+        var rut = dto.Rut.Trim();
+
+        var camion = await _context.Camiones
+            .FirstOrDefaultAsync(c => c.Patente == patente);
+
+        if (camion == null)
+        {
+            return NotFound($"No existe un camión con la patente {patente}.");
+        }
+
+        var conductor = await _context.Conductores
+            .FirstOrDefaultAsync(c => c.Rut == rut);
+
+        if (conductor == null)
+        {
+            return NotFound($"No existe un conductor con el RUT {rut}.");
+        }
+
+        camion.ConductorHabitualId = conductor.Id;
+
+        await _context.SaveChangesAsync();
+
+        return NoContent();
+    }
+
+    // DELETE: api/camion/VJ8427
+    [HttpDelete("{patente}")]
+    public async Task<IActionResult> Delete(string patente)
+    {
+        patente = patente.Trim().ToUpperInvariant();
+
+        var camion = await _context.Camiones
+            .FirstOrDefaultAsync(c => c.Patente == patente);
+
+        if (camion == null)
+        {
+            return NotFound();
+        }
+
+        _context.Camiones.Remove(camion);
+        await _context.SaveChangesAsync();
+
+        return NoContent();
     }
 }
