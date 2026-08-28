@@ -76,14 +76,14 @@ public class AppDbContext : DbContext
 
 
         // =========================
-        // VIAJE - Remolque
+        // VIAJE - REMOLQUE
         // =========================
 
         modelBuilder.Entity<Viaje>()
             .HasOne(v => v.Remolque)
             .WithMany(r => r.Viajes)
             .HasForeignKey(v => v.RemolqueId)
-            .OnDelete(DeleteBehavior.SetNull);
+            .OnDelete(DeleteBehavior.Restrict);
 
 
         // =========================
@@ -104,6 +104,19 @@ public class AppDbContext : DbContext
 
             
         // =========================
+        // VIAJE - ESTADOS
+        // =========================
+
+        modelBuilder.Entity<Viaje>()
+            .Property(v => v.Estado)
+            .HasConversion<string>();
+
+        modelBuilder.Entity<Viaje>()
+            .Property(v => v.EstadoPago)
+            .HasConversion<string>();
+
+            
+        // =========================
         // ÍNDICES
         // =========================
 
@@ -117,6 +130,10 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<Remolque>()
             .HasIndex(r => r.Patente)
+            .IsUnique();
+
+        modelBuilder.Entity<Cliente>()
+            .HasIndex(c => c.Rut)
             .IsUnique();
     }
 }
