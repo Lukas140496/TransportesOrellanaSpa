@@ -24,10 +24,8 @@ public class Camion
     public bool PermisoAlDia { get; set; }
     public bool SeguroAlDia { get; set; }
 
-    // Conductor habitual del camión.
-    // Puede ser null si actualmente no tiene uno asignado.
-    public int? ConductorHabitualId { get; set; }
-    public Conductor? ConductorHabitual { get; set; }
+    // NUEVO: Colección de conductores habituales (Muchos a Muchos)
+    public virtual ICollection<Conductor> ConductoresHabituales { get; set; } = new List<Conductor>();
 
     // Remolques que tienen este camión como tractocamión habitual.
     public ICollection<Remolque> Remolques { get; set; } = new List<Remolque>();

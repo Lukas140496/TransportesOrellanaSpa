@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TransportesOrellanaSpa.Api.Data;
@@ -11,9 +12,11 @@ using TransportesOrellanaSpa.Api.Data;
 namespace TransportesOrellanaSpa.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260828150504_AgregarCamionHabitualAConductor")]
+    partial class AgregarCamionHabitualAConductor
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,21 +24,6 @@ namespace TransportesOrellanaSpa.Api.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
-
-            modelBuilder.Entity("CamionConductor", b =>
-                {
-                    b.Property<int>("CamionId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("ConductorId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("CamionId", "ConductorId");
-
-                    b.HasIndex("ConductorId");
-
-                    b.ToTable("CamionConductor");
-                });
 
             modelBuilder.Entity("TransportesOrellanaSpa.Api.Models.Camion", b =>
                 {
@@ -63,6 +51,9 @@ namespace TransportesOrellanaSpa.Api.Migrations
                     b.Property<string>("Color")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<int?>("ConductorHabitualId")
+                        .HasColumnType("integer");
 
                     b.Property<DateTime>("FechaPermisoCirculacion")
                         .HasColumnType("date");
@@ -107,6 +98,8 @@ namespace TransportesOrellanaSpa.Api.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ConductorHabitualId");
 
                     b.HasIndex("Patente")
                         .IsUnique();
@@ -172,6 +165,9 @@ namespace TransportesOrellanaSpa.Api.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int?>("CamionHabitualId")
+                        .HasColumnType("integer");
+
                     b.Property<int>("Edad")
                         .HasColumnType("integer");
 
@@ -204,6 +200,8 @@ namespace TransportesOrellanaSpa.Api.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CamionHabitualId");
 
                     b.HasIndex("Rut")
                         .IsUnique();
@@ -334,19 +332,23 @@ namespace TransportesOrellanaSpa.Api.Migrations
                     b.ToTable("Viajes");
                 });
 
-            modelBuilder.Entity("CamionConductor", b =>
+            modelBuilder.Entity("TransportesOrellanaSpa.Api.Models.Camion", b =>
                 {
-                    b.HasOne("TransportesOrellanaSpa.Api.Models.Camion", null)
-                        .WithMany()
-                        .HasForeignKey("CamionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("TransportesOrellanaSpa.Api.Models.Conductor", "ConductorHabitual")
+                        .WithMany("CamionesHabituales")
+                        .HasForeignKey("ConductorHabitualId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
-                    b.HasOne("TransportesOrellanaSpa.Api.Models.Conductor", null)
+                    b.Navigation("ConductorHabitual");
+                });
+
+            modelBuilder.Entity("TransportesOrellanaSpa.Api.Models.Conductor", b =>
+                {
+                    b.HasOne("TransportesOrellanaSpa.Api.Models.Camion", "CamionHabitual")
                         .WithMany()
-                        .HasForeignKey("ConductorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CamionHabitualId");
+
+                    b.Navigation("CamionHabitual");
                 });
 
             modelBuilder.Entity("TransportesOrellanaSpa.Api.Models.Remolque", b =>
@@ -408,6 +410,8 @@ namespace TransportesOrellanaSpa.Api.Migrations
 
             modelBuilder.Entity("TransportesOrellanaSpa.Api.Models.Conductor", b =>
                 {
+                    b.Navigation("CamionesHabituales");
+
                     b.Navigation("Viajes");
                 });
 

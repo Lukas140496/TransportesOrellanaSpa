@@ -45,15 +45,28 @@ public class CamionController : ControllerBase
 
                 SeguroAlDia = c.SeguroAlDia,
 
-                ConductorHabitual = c.ConductorHabitual == null
-                    ? null
-                    : new ConductorResumenDto
+                ConductoresHabituales = c.ConductoresHabituales
+                    .Select(cond => new ConductorResumenDto
                     {
-                        Rut = c.ConductorHabitual.Rut,
-                        Nombres = c.ConductorHabitual.Nombres,
-                        ApellidoPaterno = c.ConductorHabitual.ApellidoPaterno,
-                        ApellidoMaterno = c.ConductorHabitual.ApellidoMaterno
-                    }
+                        Rut = cond.Rut,
+                        Nombres = cond.Nombres,
+                        ApellidoPaterno = cond.ApellidoPaterno,
+                        ApellidoMaterno = cond.ApellidoMaterno
+                    })
+                    .ToList(),
+
+                Remolques = c.Remolques
+                .Select(r => new RemolqueResumenDto
+                {
+                    Id = r.Id,
+                    Patente = r.Patente,
+                    Marca = r.Marca,
+                    Modelo = r.Modelo,
+                    Tipo = r.Tipo,
+                    CapacidadToneladas = r.CapacidadToneladas,
+                    Activa = r.Activa
+                })
+                .ToList()
             })
             .ToListAsync();
 
@@ -91,15 +104,16 @@ public class CamionController : ControllerBase
 
                 SeguroAlDia = c.SeguroAlDia,
 
-                ConductorHabitual = c.ConductorHabitual == null
-                    ? null
-                    : new ConductorResumenDto
+                ConductoresHabituales = c.ConductoresHabituales
+                    .Select(cond => new ConductorResumenDto
                     {
-                        Rut = c.ConductorHabitual.Rut,
-                        Nombres = c.ConductorHabitual.Nombres,
-                        ApellidoPaterno = c.ConductorHabitual.ApellidoPaterno,
-                        ApellidoMaterno = c.ConductorHabitual.ApellidoMaterno
-                    },
+                        Rut = cond.Rut,
+                        Nombres = cond.Nombres,
+                        ApellidoPaterno = cond.ApellidoPaterno,
+                        ApellidoMaterno = cond.ApellidoMaterno
+                    })
+                    .ToList(),
+
                 Remolques = c.Remolques
                 .Select(r => new RemolqueResumenDto
                 {
@@ -186,15 +200,15 @@ public class CamionController : ControllerBase
 
                 SeguroAlDia = c.SeguroAlDia,
 
-                ConductorHabitual = c.ConductorHabitual == null
-                    ? null
-                    : new ConductorResumenDto
+                ConductoresHabituales = c.ConductoresHabituales
+                    .Select(cond => new ConductorResumenDto
                     {
-                        Rut = c.ConductorHabitual.Rut,
-                        Nombres = c.ConductorHabitual.Nombres,
-                        ApellidoPaterno = c.ConductorHabitual.ApellidoPaterno,
-                        ApellidoMaterno = c.ConductorHabitual.ApellidoMaterno
-                    }
+                        Rut = cond.Rut,
+                        Nombres = cond.Nombres,
+                        ApellidoPaterno = cond.ApellidoPaterno,
+                        ApellidoMaterno = cond.ApellidoMaterno
+                    })
+                    .ToList(),
             })
             .FirstAsync();
 
@@ -252,7 +266,10 @@ public class CamionController : ControllerBase
         patente = patente.Trim().ToUpperInvariant();
         var rut = dto.Rut.Trim();
 
+        // 1. Buscamos el camión incluyendo sus remolques para la respuesta final
         var camion = await _context.Camiones
+            .Include(c => c.ConductoresHabituales)
+            .Include(c => c.Remolques)
             .FirstOrDefaultAsync(c => c.Patente == patente);
 
         if (camion == null)
@@ -260,6 +277,7 @@ public class CamionController : ControllerBase
             return NotFound($"No existe un camión con la patente {patente}.");
         }
 
+        // 2. OPTIMIZACIÓN: Buscamos solo el ID y los datos básicos del conductor para validar existencia
         var conductor = await _context.Conductores
             .FirstOrDefaultAsync(c => c.Rut == rut);
 
@@ -268,12 +286,68 @@ public class CamionController : ControllerBase
             return NotFound($"No existe un conductor con el RUT {rut}.");
         }
 
-        camion.ConductorHabitualId = conductor.Id;
+        // 3. Realizamos la asignación física
+        if (!camion.ConductoresHabituales.Any(cond => cond.Id == conductor.Id))
+        {
+            camion.ConductoresHabituales.Add(conductor);
+            await _context.SaveChangesAsync();
+        }
 
-        await _context.SaveChangesAsync();
+        // 4. Construimos el DTO de salida del Camión con el Conductor recién asignado
+        var camionDto = new CamionDto
+        {
+            Id = camion.Id,
+            Patente = camion.Patente,
+            Marca = camion.Marca,
+            Modelo = camion.Modelo,
+            Ano = camion.Ano,
+            Tipo = camion.Tipo,
+            Color = camion.Color,
+            Capacidad = camion.Capacidad,
+            Motor = camion.Motor,
+            Caballos = camion.Caballos,
+            Cilindrada = camion.Cilindrada,
+            Transmision = camion.Transmision,
+            FechaRevisionTecnica = camion.FechaRevisionTecnica,
+            FechaPermisoCirculacion = camion.FechaPermisoCirculacion,
+            FechaSeguroObligatorio = camion.FechaSeguroObligatorio,
+            RevisionAlDia = camion.RevisionAlDia,
+            PermisoAlDia = camion.PermisoAlDia,
+            SeguroAlDia = camion.SeguroAlDia,
 
-        return NoContent();
+            // Asignamos el resumen del conductor que acabamos de vincular
+            ConductoresHabituales = camion.ConductoresHabituales
+                .Select(cond => new ConductorResumenDto
+                {
+                    Rut = cond.Rut,
+                    Nombres = cond.Nombres,
+                    ApellidoPaterno = cond.ApellidoPaterno,
+                    ApellidoMaterno = cond.ApellidoMaterno
+                })
+                .ToList(),
+
+            Remolques = camion.Remolques
+                .Select(r => new RemolqueResumenDto
+                {
+                    Id = r.Id,
+                    Patente = r.Patente,
+                    Marca = r.Marca,
+                    Modelo = r.Modelo,
+                    Tipo = r.Tipo,
+                    CapacidadToneladas = r.CapacidadToneladas,
+                    Activa = r.Activa
+                })
+                .ToList()
+        };
+
+        // 5. Retornamos la respuesta consistente
+        return Ok(new
+        {
+            Mensaje = "Conductor habitual asignado correctamente al camión",
+            Camion = camionDto
+        });
     }
+
 
     // DELETE: api/camion/VJ8427
     [HttpDelete("{patente}")]
