@@ -20,76 +20,66 @@ public class AppDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
-        // =========================
-        // CAMIÓN - CONDUCTOR HABITUAL
-        // =========================
-
+        // ===================================
+        // CAMIÓN - CONDUCTOR (MUCHOS A MUCHOS)
+        // ===================================
         modelBuilder.Entity<Camion>()
-            .HasOne(c => c.ConductorHabitual)
+            .HasMany(c => c.ConductoresHabituales)
             .WithMany(c => c.CamionesHabituales)
-            .HasForeignKey(c => c.ConductorHabitualId)
-            .OnDelete(DeleteBehavior.SetNull);
-
+            .UsingEntity<Dictionary<string, object>>(
+                "CamionConductor", // Nombre de la tabla intermedia en Postgres
+                j => j.HasOne<Conductor>().WithMany().HasForeignKey("ConductorId").OnDelete(DeleteBehavior.Cascade),
+                j => j.HasOne<Camion>().WithMany().HasForeignKey("CamionId").OnDelete(DeleteBehavior.Cascade)
+            );
 
         // =========================
         // Remolque - CAMIÓN HABITUAL
         // =========================
-
         modelBuilder.Entity<Remolque>()
             .HasOne(r => r.CamionHabitual)
             .WithMany(c => c.Remolques)
             .HasForeignKey(r => r.CamionHabitualId)
             .OnDelete(DeleteBehavior.SetNull);
 
-
         // =========================
         // VIAJE - CLIENTE
         // =========================
-
         modelBuilder.Entity<Viaje>()
             .HasOne(v => v.Cliente)
             .WithMany(c => c.Viajes)
             .HasForeignKey(v => v.ClienteId)
             .OnDelete(DeleteBehavior.Restrict);
 
-
         // =========================
         // VIAJE - CAMIÓN
         // =========================
-
         modelBuilder.Entity<Viaje>()
             .HasOne(v => v.Camion)
             .WithMany(c => c.Viajes)
             .HasForeignKey(v => v.CamionId)
             .OnDelete(DeleteBehavior.Restrict);
 
-
         // =========================
         // VIAJE - CONDUCTOR
         // =========================
-
         modelBuilder.Entity<Viaje>()
             .HasOne(v => v.Conductor)
             .WithMany(c => c.Viajes)
             .HasForeignKey(v => v.ConductorId)
             .OnDelete(DeleteBehavior.Restrict);
 
-
         // =========================
         // VIAJE - REMOLQUE
         // =========================
-
         modelBuilder.Entity<Viaje>()
             .HasOne(v => v.Remolque)
             .WithMany(r => r.Viajes)
             .HasForeignKey(v => v.RemolqueId)
             .OnDelete(DeleteBehavior.Restrict);
 
-
         // =========================
         // CAMIÓN - FECHAS
         // =========================
-
         modelBuilder.Entity<Camion>()
             .Property(c => c.FechaRevisionTecnica)
             .HasColumnType("date");
@@ -101,12 +91,10 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Camion>()
             .Property(c => c.FechaSeguroObligatorio)
             .HasColumnType("date");
-
             
         // =========================
         // VIAJE - ESTADOS
         // =========================
-
         modelBuilder.Entity<Viaje>()
             .Property(v => v.Estado)
             .HasConversion<string>();
@@ -114,12 +102,10 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Viaje>()
             .Property(v => v.EstadoPago)
             .HasConversion<string>();
-
             
         // =========================
         // ÍNDICES
         // =========================
-
         modelBuilder.Entity<Camion>()
             .HasIndex(c => c.Patente)
             .IsUnique();

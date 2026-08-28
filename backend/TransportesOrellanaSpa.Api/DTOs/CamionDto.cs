@@ -24,6 +24,7 @@ public class CamionDto
     public bool PermisoAlDia { get; set; }
     public bool SeguroAlDia { get; set; }
 
-    public ConductorResumenDto? ConductorHabitual { get; set; }
+    // CAMBIADO: Lista completa de conductores habituales asignados
+    public List<ConductorResumenDto> ConductoresHabituales { get; set; } = new List<ConductorResumenDto>();
     public ICollection<RemolqueResumenDto> Remolques { get; set; } = new List<RemolqueResumenDto>();
 }
