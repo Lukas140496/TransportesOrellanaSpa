@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TransportesOrellanaSpa.Api.Data;
@@ -11,9 +12,11 @@ using TransportesOrellanaSpa.Api.Data;
 namespace TransportesOrellanaSpa.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260828012815_MakeRemolqueRequired")]
+    partial class MakeRemolqueRequired
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -119,29 +122,7 @@ namespace TransportesOrellanaSpa.Api.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Observaciones")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Rut")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<decimal>("Tarifa")
-                        .HasColumnType("numeric");
-
-                    b.Property<string>("TipoCarga")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Ubicacion")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("Rut")
-                        .IsUnique();
 
                     b.ToTable("Clientes");
                 });
@@ -276,18 +257,7 @@ namespace TransportesOrellanaSpa.Api.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Estado")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("EstadoPago")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<DateTime>("Fecha")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<DateTime?>("FechaPago")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<double?>("Kilometros")

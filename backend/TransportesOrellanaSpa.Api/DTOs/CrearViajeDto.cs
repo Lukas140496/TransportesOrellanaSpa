@@ -1,40 +1,20 @@
-using TransportesOrellanaSpa.Api.Enums;
+namespace TransportesOrellanaSpa.Api.DTOs;
 
-namespace TransportesOrellanaSpa.Api.Models;
-
-public class Viaje
+public class CrearViajeDto
 {
-    public int Id { get; set; }
-
     public DateTime Fecha { get; set; }
 
     // =========================
-    // CLIENTE
+    // RELACIONES
     // =========================
 
     public int ClienteId { get; set; }
-    public Cliente Cliente { get; set; } = null!;
-
-    // =========================
-    // CAMIÓN
-    // =========================
 
     public int CamionId { get; set; }
-    public Camion Camion { get; set; } = null!;
-
-    // =========================
-    // CONDUCTOR
-    // =========================
 
     public int ConductorId { get; set; }
-    public Conductor Conductor { get; set; } = null!;
-
-    // =========================
-    // REMOLQUE
-    // =========================
 
     public int RemolqueId { get; set; }
-    public Remolque Remolque { get; set; } = null!;
 
     // =========================
     // DATOS DEL VIAJE
@@ -55,10 +35,4 @@ public class Viaje
     public decimal Tarifa { get; set; }
 
     public string Observaciones { get; set; } = string.Empty;
-
-    public DateTime? FechaPago { get; set; }
-
-    public EstadoViaje Estado { get; set; } = EstadoViaje.Pendiente;
-
-    public EstadoPago EstadoPago { get; set; } = EstadoPago.Pendiente;
 }

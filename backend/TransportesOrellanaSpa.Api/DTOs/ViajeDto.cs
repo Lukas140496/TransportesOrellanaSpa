@@ -1,40 +1,36 @@
 using TransportesOrellanaSpa.Api.Enums;
 
-namespace TransportesOrellanaSpa.Api.Models;
+namespace TransportesOrellanaSpa.Api.DTOs;
 
-public class Viaje
+public class ViajeDto
 {
     public int Id { get; set; }
 
     public DateTime Fecha { get; set; }
 
     // =========================
-    // CLIENTE
+    // RESUMEN CLIENTE
     // =========================
 
-    public int ClienteId { get; set; }
-    public Cliente Cliente { get; set; } = null!;
+    public ClienteResumenDto Cliente { get; set; } = null!;
 
     // =========================
-    // CAMIÓN
+    // RESUMEN CAMIÓN
     // =========================
 
-    public int CamionId { get; set; }
-    public Camion Camion { get; set; } = null!;
+    public CamionResumenDto Camion { get; set; } = null!;
 
     // =========================
-    // CONDUCTOR
+    // RESUMEN CONDUCTOR
     // =========================
 
-    public int ConductorId { get; set; }
-    public Conductor Conductor { get; set; } = null!;
+    public ConductorResumenDto Conductor { get; set; } = null!;
 
     // =========================
-    // REMOLQUE
+    // RESUMEN REMOLQUE
     // =========================
 
-    public int RemolqueId { get; set; }
-    public Remolque Remolque { get; set; } = null!;
+    public RemolqueResumenDto Remolque { get; set; } = null!;
 
     // =========================
     // DATOS DEL VIAJE
@@ -56,9 +52,13 @@ public class Viaje
 
     public string Observaciones { get; set; } = string.Empty;
 
+    // =========================
+    // ESTADOS
+    // =========================
+
+    public EstadoViaje Estado { get; set; }
+
+    public EstadoPago EstadoPago { get; set; }
+
     public DateTime? FechaPago { get; set; }
-
-    public EstadoViaje Estado { get; set; } = EstadoViaje.Pendiente;
-
-    public EstadoPago EstadoPago { get; set; } = EstadoPago.Pendiente;
 }
