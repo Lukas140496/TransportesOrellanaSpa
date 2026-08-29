@@ -1,0 +1,30 @@
+┌──────────────────────────────────────────────┐
+│           DASHBOARD TRANSPORTES              │
+├──────────────┬──────────────┬────────────────┤
+│ VIAJES       │ COMPLETADOS  │ PENDIENTES     │
+│ 150          │ 120          │ 15             │
+├──────────────┴──────────────┴────────────────┤
+│                                              │
+│       Estado de pagos                        │
+│                                              │
+│       ████████████████  Pagados              │
+│       █████             Pendientes           │
+│                                              │
+├──────────────────────────────────────────────┤
+│ 💰 Pagado:       $14.200.000                 │
+│ ⏳ Por cobrar:    $ 3.850.000                │
+└──────────────────────────────────────────────┘
+
+
+Total viajes:             150
+Completados:              120
+Pendientes:                15
+En curso:                   5
+Cancelados:                10
+
+----------------------------
+
+Viajes pagados:            95
+Viajes pendientes pago:    25
+Monto pendiente:       $3.850.000
+Monto pagado:         $14.200.000
