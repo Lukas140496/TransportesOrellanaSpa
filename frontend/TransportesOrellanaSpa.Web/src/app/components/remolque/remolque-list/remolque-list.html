@@ -1,0 +1,130 @@
+<section class="remolque-list">
+
+  <div class="header">
+    <div>
+      <h1>Remolques</h1>
+      <p>Listado de remolques registrados en el sistema.</p>
+    </div>
+  </div>
+
+  @if (cargando) {
+
+    <p>Cargando remolques...</p>
+
+  }
+
+  @if (error) {
+
+    <p class="error">
+      {{ error }}
+    </p>
+
+  }
+
+  @if (!cargando && !error) {
+
+    <div class="tabla-container">
+
+      <table>
+
+        <thead>
+
+          <tr>
+            <th>Patente</th>
+            <th>Marca</th>
+            <th>Modelo</th>
+            <th>Año</th>
+            <th>Tipo</th>
+            <th>Capacidad</th>
+            <th>Camión habitual</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          @for (remolque of remolques; track remolque.id) {
+
+            <tr>
+
+              <td>
+                {{ remolque.patente }}
+              </td>
+
+              <td>
+                {{ remolque.marca }}
+              </td>
+
+              <td>
+                {{ remolque.modelo }}
+              </td>
+
+              <td>
+                {{ remolque.ano }}
+              </td>
+
+              <td>
+                {{ remolque.tipo }}
+              </td>
+
+              <td>
+                {{ remolque.capacidadToneladas }} Ton
+              </td>
+
+              <td>
+
+                @if (remolque.camionHabitual) {
+
+                  {{ remolque.camionHabitual.patente }}
+
+                } @else {
+
+                  Sin asignar
+
+                }
+
+              </td>
+
+              <td>
+
+                @if (remolque.activa) {
+
+                  <span class="badge ok">
+                    Activo
+                  </span>
+
+                } @else {
+
+                  <span class="badge warning">
+                    Inactivo
+                  </span>
+
+                }
+
+              </td>
+
+              <td>
+
+                <button
+                  type="button"
+                  (click)="verDetalle(remolque.patente)">
+                  Ver detalle
+                </button>
+
+              </td>
+
+            </tr>
+
+          }
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  }
+
+</section>

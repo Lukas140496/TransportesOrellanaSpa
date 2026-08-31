@@ -1,0 +1,275 @@
+<section class="conductor-detail">
+
+  @if (cargando) {
+
+    <div class="estado">
+      <div class="spinner"></div>
+      <p>Cargando información del conductor...</p>
+    </div>
+
+  } @else if (error) {
+
+    <div class="estado error">
+      <h2>No fue posible cargar el conductor</h2>
+      <p>{{ error }}</p>
+
+      <button type="button" class="btn-volver" (click)="volver()">
+        ← Volver a conductores
+      </button>
+    </div>
+
+  } @else if (conductor) {
+
+    <!-- CABECERA -->
+
+    <header class="cabecera">
+
+      <div class="cabecera-info">
+
+        <div class="avatar">
+          {{ conductor.nombres.charAt(0) }}
+        </div>
+
+        <div>
+          <span class="etiqueta">CONDUCTOR</span>
+
+          <h1>
+            {{ conductor.nombres }}
+            {{ conductor.apellidoPaterno }}
+            {{ conductor.apellidoMaterno }}
+          </h1>
+
+          <p class="rut">
+            RUT: {{ conductor.rut }}
+          </p>
+        </div>
+
+      </div>
+
+      <div class="cabecera-acciones">
+
+        @if (conductor.licenciaAlDia) {
+          <span class="estado-badge activo">
+            ● Licencia al día
+          </span>
+        } @else {
+          <span class="estado-badge vencido">
+            ● Licencia vencida
+          </span>
+        }
+
+        <button
+          type="button"
+          class="btn-volver"
+          (click)="volver()">
+          ← Volver
+        </button>
+
+      </div>
+
+    </header>
+
+
+    <!-- INFORMACIÓN PERSONAL -->
+
+    <section class="bloque">
+
+      <div class="bloque-titulo">
+        <span class="icono">👤</span>
+
+        <div>
+          <h2>Información personal</h2>
+          <p>Datos personales y de contacto del conductor.</p>
+        </div>
+      </div>
+
+      <div class="datos-grid">
+
+        <div class="dato">
+          <span class="dato-label">Nombres</span>
+          <strong>{{ conductor.nombres }}</strong>
+        </div>
+
+        <div class="dato">
+          <span class="dato-label">Apellidos</span>
+          <strong>
+            {{ conductor.apellidoPaterno }}
+            {{ conductor.apellidoMaterno }}
+          </strong>
+        </div>
+
+        <div class="dato">
+          <span class="dato-label">RUT</span>
+          <strong>{{ conductor.rut }}</strong>
+        </div>
+
+        <div class="dato">
+          <span class="dato-label">Fecha de nacimiento</span>
+          <strong>
+            {{ conductor.fechaNacimiento | date:'dd/MM/yyyy' }}
+          </strong>
+        </div>
+
+        <div class="dato">
+          <span class="dato-label">Edad</span>
+          <strong>{{ conductor.edad }} años</strong>
+        </div>
+
+        <div class="dato">
+          <span class="dato-label">Teléfono</span>
+          <strong>{{ conductor.telefono }}</strong>
+        </div>
+
+        <div class="dato">
+          <span class="dato-label">Fecha de ingreso</span>
+          <strong>
+            {{ conductor.fechaIngreso | date:'dd/MM/yyyy' }}
+          </strong>
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- LICENCIA -->
+
+    <section class="bloque">
+
+      <div class="bloque-titulo">
+        <span class="icono">📄</span>
+
+        <div>
+          <h2>Licencia de conducir</h2>
+          <p>Información y estado de la licencia profesional.</p>
+        </div>
+      </div>
+
+      <div class="licencia-card">
+
+        <div class="licencia-principal">
+
+          <span class="dato-label">Tipo de licencia</span>
+
+          <strong class="licencia-tipo">
+            {{ conductor.tipoLicencia }}
+          </strong>
+
+        </div>
+
+        <div class="licencia-info">
+
+          <span class="dato-label">
+            Fecha de control
+          </span>
+
+          <strong>
+            {{ conductor.fechaControlLicencia | date:'dd/MM/yyyy' }}
+          </strong>
+
+        </div>
+
+        <div class="licencia-estado">
+
+          <span class="dato-label">
+            Estado
+          </span>
+
+          @if (conductor.licenciaAlDia) {
+
+            <strong class="texto-activo">
+              ✓ Vigente
+            </strong>
+
+          } @else {
+
+            <strong class="texto-vencido">
+              ✕ Vencida
+            </strong>
+
+          }
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- CAMIONES HABITUALES -->
+
+    <section class="bloque">
+
+      <div class="bloque-titulo">
+        <span class="icono">🚛</span>
+
+        <div>
+          <h2>Camiones habituales</h2>
+
+          <p>
+            Camiones asociados actualmente a este conductor.
+          </p>
+        </div>
+
+      </div>
+
+
+      @if (conductor.camionesHabituales.length > 0) {
+
+        <div class="camiones-grid">
+
+          @for (
+            camion of conductor.camionesHabituales;
+            track camion.id
+          ) {
+
+            <article class="camion-card">
+
+              <div class="camion-icono">
+                🚛
+              </div>
+
+              <div class="camion-info">
+
+                <span class="camion-patente">
+                  {{ camion.patente }}
+                </span>
+
+                <h3>
+                  {{ camion.marca }}
+                </h3>
+
+                <p>
+                  {{ camion.modelo }}
+                </p>
+
+              </div>
+
+            </article>
+
+          }
+
+        </div>
+
+      } @else {
+
+        <div class="sin-camiones">
+
+          <span>🚛</span>
+
+          <div>
+            <strong>Sin camiones asignados</strong>
+            <p>
+              Este conductor no tiene camiones habituales registrados.
+            </p>
+          </div>
+
+        </div>
+
+      }
+
+    </section>
+
+  }
+
+</section>

@@ -1,0 +1,135 @@
+<section class="viaje-list">
+
+  <div class="header">
+    <div>
+      <h1>Viajes</h1>
+      <p>Listado de viajes registrados en el sistema.</p>
+    </div>
+  </div>
+
+  @if (cargando) {
+
+    <p>Cargando viajes...</p>
+
+  }
+
+  @if (error) {
+
+    <p class="error">
+      {{ error }}
+    </p>
+
+  }
+
+  @if (!cargando && !error) {
+
+    <div class="tabla-container">
+
+      <table>
+
+        <thead>
+
+          <tr>
+            <th>Fecha</th>
+            <th>Cliente</th>
+            <th>Origen</th>
+            <th>Destino</th>
+            <th>Camión</th>
+            <th>Conductor</th>
+            <th>Remolque</th>
+            <th>Carga</th>
+            <th>Kilómetros</th>
+            <th>Tarifa</th>
+            <th>Estado</th>
+            <th>Pago</th>
+            <th>Acciones</th>
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          @for (viaje of viajes; track viaje.id) {
+
+            <tr>
+
+              <td>
+                {{ viaje.fecha | date:'dd/MM/yyyy' }}
+              </td>
+
+              <td>
+                {{ viaje.cliente.nombre }}
+              </td>
+
+              <td>
+                {{ viaje.comunaOrigen }}
+              </td>
+
+              <td>
+                {{ viaje.comunaDestino }}
+              </td>
+
+              <td>
+                {{ viaje.camion.patente }}
+              </td>
+
+              <td>
+                {{ viaje.conductor.nombres }}
+                {{ viaje.conductor.apellidoPaterno }}
+              </td>
+
+              <td>
+                {{ viaje.remolque.patente }}
+              </td>
+
+              <td>
+                {{ viaje.tipoCarga }}
+              </td>
+
+              <td>
+                @if (viaje.kilometros !== null) {
+                  {{ viaje.kilometros }} km
+                } @else {
+                  —
+                }
+              </td>
+
+              <td>
+                ${{ viaje.tarifa | number:'1.0-0' }}
+              </td>
+
+              <td>
+                <span class="badge">
+                  {{ viaje.estado }}
+                </span>
+              </td>
+
+              <td>
+                <span class="badge">
+                  {{ viaje.estadoPago }}
+                </span>
+              </td>
+
+              <td>
+
+                <button
+                  type="button"
+                  (click)="verDetalle(viaje.id)">
+                  Ver detalle
+                </button>
+
+              </td>
+
+            </tr>
+
+          }
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  }
+
+</section>

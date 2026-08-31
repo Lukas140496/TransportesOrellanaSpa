@@ -1,0 +1,109 @@
+<section class="conductor-list">
+
+  <div class="header">
+    <div>
+      <h1>Conductores</h1>
+      <p>Listado de conductores registrados en el sistema.</p>
+    </div>
+  </div>
+
+  @if (cargando) {
+
+    <p>Cargando conductores...</p>
+
+  }
+
+  @if (error) {
+
+    <p class="error">
+      {{ error }}
+    </p>
+
+  }
+
+  @if (!cargando && !error) {
+
+    <div class="tabla-container">
+
+      <table>
+
+        <thead>
+
+          <tr>
+            <th>RUT</th>
+            <th>Nombre</th>
+            <th>Teléfono</th>
+            <th>Licencia</th>
+            <th>Control licencia</th>
+            <th>Licencia</th>
+            <th>Camiones</th>
+            <th>Acciones</th>
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          @for (conductor of conductores; track conductor.id) {
+
+            <tr>
+
+              <td>
+                {{ conductor.rut }}
+              </td>
+
+              <td>
+                {{ conductor.nombres }}
+                {{ conductor.apellidoPaterno }}
+                {{ conductor.apellidoMaterno }}
+              </td>
+
+              <td>
+                {{ conductor.telefono }}
+              </td>
+
+              <td>
+                {{ conductor.tipoLicencia }}
+              </td>
+
+              <td>
+                {{ conductor.fechaControlLicencia | date:'dd/MM/yyyy' }}
+              </td>
+
+              <td>
+
+                @if (conductor.licenciaAlDia) {
+                  <span class="badge ok">Al día</span>
+                } @else {
+                  <span class="badge warning">Vencida</span>
+                }
+
+              </td>
+
+              <td>
+                {{ conductor.camionesHabituales.length }}
+              </td>
+
+              <td>
+
+                <button
+                  type="button"
+                  (click)="verDetalle(conductor.rut)">
+                  Ver detalle
+                </button>
+
+              </td>
+
+            </tr>
+
+          }
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  }
+
+</section>

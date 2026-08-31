@@ -1,0 +1,184 @@
+<section class="remolque-detail">
+
+  @if (cargando) {
+
+    <div class="estado">
+      <p>Cargando información del remolque...</p>
+    </div>
+
+  }
+
+  @if (error) {
+
+    <div class="estado error">
+      <p>{{ error }}</p>
+
+      <button
+        type="button"
+        (click)="volver()">
+        Volver a remolques
+      </button>
+    </div>
+
+  }
+
+  @if (!cargando && !error && remolque) {
+
+    <div class="header">
+
+      <div>
+        <span class="eyebrow">Detalle de remolque</span>
+
+        <h1>{{ remolque.patente }}</h1>
+
+        <p>
+          {{ remolque.marca }} {{ remolque.modelo }}
+        </p>
+      </div>
+
+      <button
+        type="button"
+        class="btn-volver"
+        (click)="volver()">
+        ← Volver
+      </button>
+
+    </div>
+
+
+    <div class="grid">
+
+
+      <!-- Información general -->
+
+      <article class="card">
+
+        <div class="card-header">
+          <h2>Información general</h2>
+        </div>
+
+        <div class="datos">
+
+          <div class="dato">
+            <span>Patente</span>
+            <strong>{{ remolque.patente }}</strong>
+          </div>
+
+          <div class="dato">
+            <span>Marca</span>
+            <strong>{{ remolque.marca }}</strong>
+          </div>
+
+          <div class="dato">
+            <span>Modelo</span>
+            <strong>{{ remolque.modelo }}</strong>
+          </div>
+
+          <div class="dato">
+            <span>Año</span>
+            <strong>{{ remolque.ano }}</strong>
+          </div>
+
+          <div class="dato">
+            <span>Tipo</span>
+            <strong>{{ remolque.tipo }}</strong>
+          </div>
+
+          <div class="dato">
+            <span>Capacidad</span>
+            <strong>{{ remolque.capacidadToneladas }} toneladas</strong>
+          </div>
+
+        </div>
+
+      </article>
+
+
+      <!-- Estado -->
+
+      <article class="card">
+
+        <div class="card-header">
+          <h2>Estado</h2>
+        </div>
+
+        <div class="estado-remolque">
+
+          @if (remolque.activa) {
+
+            <span class="badge activa">
+              Activo
+            </span>
+
+            <p>
+              El remolque se encuentra actualmente activo
+              en el sistema.
+            </p>
+
+          } @else {
+
+            <span class="badge inactiva">
+              Inactivo
+            </span>
+
+            <p>
+              El remolque se encuentra actualmente inactivo.
+            </p>
+
+          }
+
+        </div>
+
+      </article>
+
+
+      <!-- Camión habitual -->
+
+      <article class="card camion-card">
+
+        <div class="card-header">
+          <h2>Camión habitual</h2>
+        </div>
+
+        @if (remolque.camionHabitual) {
+
+          <div class="camion-info">
+
+            <div class="camion-patente">
+              {{ remolque.camionHabitual.patente }}
+            </div>
+
+            <div>
+              <strong>
+                {{ remolque.camionHabitual.marca }}
+                {{ remolque.camionHabitual.modelo }}
+              </strong>
+
+              <p>
+                Camión asignado habitualmente a este remolque.
+              </p>
+            </div>
+
+          </div>
+
+        } @else {
+
+          <div class="sin-camion">
+
+            <span>Sin asignación</span>
+
+            <p>
+              Este remolque no tiene un camión habitual asignado.
+            </p>
+
+          </div>
+
+        }
+
+      </article>
+
+    </div>
+
+  }
+
+</section>

@@ -1,0 +1,90 @@
+<section class="camion-list">
+
+  <div class="header">
+    <div>
+      <h1>Camiones</h1>
+      <p>Listado de camiones registrados en el sistema.</p>
+    </div>
+  </div>
+
+  @if (cargando) {
+    <p>Cargando camiones...</p>
+  }
+
+  @if (error) {
+    <p class="error">
+      {{ error }}
+    </p>
+  }
+
+  @if (!cargando && !error) {
+
+    <div class="tabla-container">
+
+      <table>
+
+        <thead>
+          <tr>
+            <th>Patente</th>
+            <th>Marca</th>
+            <th>Modelo</th>
+            <th>Año</th>
+            <th>Tipo</th>
+            <th>Conductores</th>
+            <th>Remolques</th>
+            <th>Revisión</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          @for (camion of camiones; track camion.id) {
+
+            <tr>
+              <td>{{ camion.patente }}</td>
+
+              <td>{{ camion.marca }}</td>
+
+              <td>{{ camion.modelo }}</td>
+
+              <td>{{ camion.ano }}</td>
+
+              <td>{{ camion.tipo }}</td>
+
+              <td>
+                {{ camion.conductoresHabituales.length }}
+              </td>
+
+              <td>
+                {{ camion.remolques.length }}
+              </td>
+
+              <td>
+                @if (camion.revisionAlDia) {
+                  Al día
+                } @else {
+                  Vencida
+                }
+              </td>
+
+              <td>
+                <button
+                  type="button"
+                  (click)="verDetalle(camion.patente)">
+                  Ver detalle
+                </button>
+              </td>
+            </tr>
+
+          }
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  }
+
+</section>

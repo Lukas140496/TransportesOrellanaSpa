@@ -1,0 +1,286 @@
+<section class="viaje-detail">
+
+  @if (cargando) {
+
+    <p>Cargando información del viaje...</p>
+
+  }
+
+  @if (error) {
+
+    <p class="error">
+      {{ error }}
+    </p>
+
+  }
+
+  @if (!cargando && !error && viaje) {
+
+    <div class="header">
+
+      <div>
+        <h1>Detalle del viaje #{{ viaje.id }}</h1>
+        <p>
+          Información completa del viaje registrado.
+        </p>
+      </div>
+
+      <button
+        type="button"
+        (click)="volver()">
+        Volver
+      </button>
+
+    </div>
+
+
+    <!-- ========================= -->
+    <!-- INFORMACIÓN GENERAL -->
+    <!-- ========================= -->
+
+    <div class="card">
+
+      <h2>Información general</h2>
+
+      <div class="grid">
+
+        <div>
+          <span class="label">Fecha</span>
+          <strong>
+            {{ viaje.fecha | date:'dd/MM/yyyy' }}
+          </strong>
+        </div>
+
+        <div>
+          <span class="label">Estado del viaje</span>
+          <strong>
+            {{ viaje.estado }}
+          </strong>
+        </div>
+
+        <div>
+          <span class="label">Estado del pago</span>
+          <strong>
+            {{ viaje.estadoPago }}
+          </strong>
+        </div>
+
+        <div>
+          <span class="label">Fecha de pago</span>
+
+          @if (viaje.fechaPago) {
+
+            <strong>
+              {{ viaje.fechaPago | date:'dd/MM/yyyy' }}
+            </strong>
+
+          } @else {
+
+            <strong>Sin pago registrado</strong>
+
+          }
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- ========================= -->
+    <!-- CLIENTE -->
+    <!-- ========================= -->
+
+    <div class="card">
+
+      <h2>Cliente</h2>
+
+      <div class="grid">
+
+        <div>
+          <span class="label">Nombre</span>
+          <strong>
+            {{ viaje.cliente.nombre }}
+          </strong>
+        </div>
+
+        <div>
+          <span class="label">RUT</span>
+          <strong>
+            {{ viaje.cliente.rut }}
+          </strong>
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- ========================= -->
+    <!-- RUTA -->
+    <!-- ========================= -->
+
+    <div class="card">
+
+      <h2>Ruta</h2>
+
+      <div class="grid">
+
+        <div>
+          <span class="label">Origen</span>
+          <strong>
+            {{ viaje.origen }}
+          </strong>
+        </div>
+
+        <div>
+          <span class="label">Comuna origen</span>
+          <strong>
+            {{ viaje.comunaOrigen }}
+          </strong>
+        </div>
+
+        <div>
+          <span class="label">Destino</span>
+          <strong>
+            {{ viaje.destino }}
+          </strong>
+        </div>
+
+        <div>
+          <span class="label">Comuna destino</span>
+          <strong>
+            {{ viaje.comunaDestino }}
+          </strong>
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- ========================= -->
+    <!-- VEHÍCULOS Y CONDUCTOR -->
+    <!-- ========================= -->
+
+    <div class="card">
+
+      <h2>Equipo asignado</h2>
+
+      <div class="grid">
+
+        <div>
+          <span class="label">Camión</span>
+          <strong>
+            {{ viaje.camion.patente }}
+          </strong>
+
+          <span>
+            {{ viaje.camion.marca }}
+            {{ viaje.camion.modelo }}
+          </span>
+        </div>
+
+        <div>
+          <span class="label">Conductor</span>
+          <strong>
+            {{ viaje.conductor.nombres }}
+            {{ viaje.conductor.apellidoPaterno }}
+            {{ viaje.conductor.apellidoMaterno }}
+          </strong>
+
+          <span>
+            RUT: {{ viaje.conductor.rut }}
+          </span>
+        </div>
+
+        <div>
+          <span class="label">Remolque</span>
+          <strong>
+            {{ viaje.remolque.patente }}
+          </strong>
+
+          <span>
+            {{ viaje.remolque.marca }}
+            {{ viaje.remolque.modelo }}
+          </span>
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- ========================= -->
+    <!-- CARGA Y VALORES -->
+    <!-- ========================= -->
+
+    <div class="card">
+
+      <h2>Carga y valores</h2>
+
+      <div class="grid">
+
+        <div>
+          <span class="label">Tipo de carga</span>
+          <strong>
+            {{ viaje.tipoCarga }}
+          </strong>
+        </div>
+
+        <div>
+          <span class="label">Kilómetros</span>
+
+          @if (viaje.kilometros !== null) {
+
+            <strong>
+              {{ viaje.kilometros | number:'1.0-2' }} km
+            </strong>
+
+          } @else {
+
+            <strong>Sin información</strong>
+
+          }
+
+        </div>
+
+        <div>
+          <span class="label">Tarifa</span>
+          <strong>
+            ${{ viaje.tarifa | number:'1.0-0' }}
+          </strong>
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- ========================= -->
+    <!-- OBSERVACIONES -->
+    <!-- ========================= -->
+
+    <div class="card">
+
+      <h2>Observaciones</h2>
+
+      @if (viaje.observaciones) {
+
+        <p>
+          {{ viaje.observaciones }}
+        </p>
+
+      } @else {
+
+        <p class="sin-datos">
+          Sin observaciones registradas.
+        </p>
+
+      }
+
+    </div>
+
+  }
+
+</section>

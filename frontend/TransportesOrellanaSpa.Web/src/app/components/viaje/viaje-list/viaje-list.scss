@@ -1,0 +1,55 @@
+.viaje-list {
+  padding: 24px;
+}
+
+.header {
+  margin-bottom: 24px;
+
+  h1 {
+    margin: 0;
+  }
+
+  p {
+    margin-top: 6px;
+    color: #666;
+  }
+}
+
+.tabla-container {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+}
+
+th,
+td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+  white-space: nowrap;
+}
+
+th {
+  font-weight: 600;
+}
+
+button {
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 13px;
+  background: #eee;
+}
+
+.error {
+  color: #c62828;
+}

@@ -1,0 +1,110 @@
+<section class="cliente-list">
+
+  <div class="header">
+    <div>
+      <h1>Clientes</h1>
+      <p>Listado de clientes registrados en el sistema.</p>
+    </div>
+  </div>
+
+  @if (cargando) {
+
+    <p>Cargando clientes...</p>
+
+  }
+
+  @if (error) {
+
+    <p class="error">
+      {{ error }}
+    </p>
+
+  }
+
+  @if (!cargando && !error) {
+
+    <div class="tabla-container">
+
+      <table>
+
+        <thead>
+
+          <tr>
+            <th>Nombre</th>
+            <th>RUT</th>
+            <th>Ubicación</th>
+            <th>Tarifa</th>
+            <th>Tipo de carga</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          @for (cliente of clientes; track cliente.id) {
+
+            <tr>
+
+              <td>
+                {{ cliente.nombre }}
+              </td>
+
+              <td>
+                {{ cliente.rut }}
+              </td>
+
+              <td>
+                {{ cliente.ubicacion }}
+              </td>
+
+              <td>
+                ${{ cliente.tarifa }}
+              </td>
+
+              <td>
+                {{ cliente.tipoCarga }}
+              </td>
+
+              <td>
+
+                @if (cliente.activo) {
+
+                  <span class="badge ok">
+                    Activo
+                  </span>
+
+                } @else {
+
+                  <span class="badge warning">
+                    Inactivo
+                  </span>
+
+                }
+
+              </td>
+
+              <td>
+
+                <button
+                  type="button"
+                  (click)="verDetalle(cliente.id)">
+                  Ver detalle
+                </button>
+
+              </td>
+
+            </tr>
+
+          }
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  }
+
+</section>

@@ -1,0 +1,366 @@
+<section class="camion-detail">
+
+  @if (cargando) {
+
+    <div class="estado">
+      <p>Cargando información del camión...</p>
+    </div>
+
+  }
+
+  @if (error) {
+
+    <div class="estado error">
+      <p>{{ error }}</p>
+
+      <button
+        type="button"
+        (click)="volver()">
+        Volver a camiones
+      </button>
+    </div>
+
+  }
+
+  @if (!cargando && !error && camion) {
+
+    <!-- ENCABEZADO -->
+
+    <header class="detail-header">
+
+      <div>
+
+        <button
+          type="button"
+          class="btn-volver"
+          (click)="volver()">
+          ← Volver a camiones
+        </button>
+
+        <h1>{{ camion.patente }}</h1>
+
+        <p>
+          {{ camion.marca }} {{ camion.modelo }}
+        </p>
+
+      </div>
+
+      <div class="estado-camion">
+
+        @if (camion.revisionAlDia && camion.permisoAlDia && camion.seguroAlDia) {
+
+          <span class="estado-ok">
+            Documentación al día
+          </span>
+
+        } @else {
+
+          <span class="estado-warning">
+            Documentación pendiente
+          </span>
+
+        }
+
+      </div>
+
+    </header>
+
+
+    <!-- INFORMACIÓN GENERAL -->
+
+    <section class="card">
+
+      <h2>Información general</h2>
+
+      <div class="grid">
+
+        <div class="dato">
+          <span class="label">Patente</span>
+          <span class="value">{{ camion.patente }}</span>
+        </div>
+
+        <div class="dato">
+          <span class="label">Marca</span>
+          <span class="value">{{ camion.marca }}</span>
+        </div>
+
+        <div class="dato">
+          <span class="label">Modelo</span>
+          <span class="value">{{ camion.modelo }}</span>
+        </div>
+
+        <div class="dato">
+          <span class="label">Año</span>
+          <span class="value">{{ camion.ano }}</span>
+        </div>
+
+        <div class="dato">
+          <span class="label">Tipo</span>
+          <span class="value">{{ camion.tipo }}</span>
+        </div>
+
+        <div class="dato">
+          <span class="label">Color</span>
+          <span class="value">{{ camion.color }}</span>
+        </div>
+
+        <div class="dato">
+          <span class="label">Capacidad</span>
+          <span class="value">{{ camion.capacidad }}</span>
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- CARACTERÍSTICAS MECÁNICAS -->
+
+    <section class="card">
+
+      <h2>Características mecánicas</h2>
+
+      <div class="grid">
+
+        <div class="dato">
+          <span class="label">Motor</span>
+          <span class="value">{{ camion.motor }}</span>
+        </div>
+
+        <div class="dato">
+          <span class="label">Caballos</span>
+          <span class="value">{{ camion.caballos }}</span>
+        </div>
+
+        <div class="dato">
+          <span class="label">Cilindrada</span>
+          <span class="value">{{ camion.cilindrada }}</span>
+        </div>
+
+        <div class="dato">
+          <span class="label">Transmisión</span>
+          <span class="value">{{ camion.transmision }}</span>
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- DOCUMENTACIÓN -->
+
+    <section class="card">
+
+      <h2>Documentación</h2>
+
+      <div class="documentos">
+
+        <div class="documento">
+
+          <span class="label">
+            Revisión técnica
+          </span>
+
+          @if (camion.revisionAlDia) {
+            <span class="badge ok">Al día</span>
+          } @else {
+            <span class="badge warning">Vencida</span>
+          }
+
+          <span class="fecha">
+            {{ camion.fechaRevisionTecnica | date:'dd/MM/yyyy' }}
+          </span>
+
+        </div>
+
+
+        <div class="documento">
+
+          <span class="label">
+            Permiso de circulación
+          </span>
+
+          @if (camion.permisoAlDia) {
+            <span class="badge ok">Al día</span>
+          } @else {
+            <span class="badge warning">Vencido</span>
+          }
+
+          <span class="fecha">
+            {{ camion.fechaPermisoCirculacion | date:'dd/MM/yyyy' }}
+          </span>
+
+        </div>
+
+
+        <div class="documento">
+
+          <span class="label">
+            Seguro obligatorio
+          </span>
+
+          @if (camion.seguroAlDia) {
+            <span class="badge ok">Al día</span>
+          } @else {
+            <span class="badge warning">Vencido</span>
+          }
+
+          <span class="fecha">
+            {{ camion.fechaSeguroObligatorio | date:'dd/MM/yyyy' }}
+          </span>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- CONDUCTORES -->
+
+    <section class="card">
+
+      <div class="section-header">
+
+        <div>
+
+          <h2>Conductores habituales</h2>
+
+          <p>
+            {{ camion.conductoresHabituales.length }}
+            conductor(es) asignado(s)
+          </p>
+
+        </div>
+
+      </div>
+
+
+      @if (camion.conductoresHabituales.length > 0) {
+
+        <div class="personas">
+
+          @for (
+            conductor of camion.conductoresHabituales;
+            track conductor.rut
+          ) {
+
+            <div class="persona">
+
+              <div class="avatar">
+                {{ conductor.nombres.charAt(0) }}
+              </div>
+
+              <div>
+
+                <strong>
+                  {{ conductor.nombres }}
+                  {{ conductor.apellidoPaterno }}
+                  {{ conductor.apellidoMaterno }}
+                </strong>
+
+                <span>
+                  RUT: {{ conductor.rut }}
+                </span>
+
+              </div>
+
+            </div>
+
+          }
+
+        </div>
+
+      } @else {
+
+        <p class="vacio">
+          No hay conductores habituales asignados.
+        </p>
+
+      }
+
+    </section>
+
+
+    <!-- REMOLQUES -->
+
+    <section class="card">
+
+      <div class="section-header">
+
+        <div>
+
+          <h2>Remolques asociados</h2>
+
+          <p>
+            {{ camion.remolques.length }}
+            remolque(s) asociado(s)
+          </p>
+
+        </div>
+
+      </div>
+
+
+      @if (camion.remolques.length > 0) {
+
+        <div class="remolques">
+
+          @for (
+            remolque of camion.remolques;
+            track remolque.id
+          ) {
+
+            <div class="remolque">
+
+              <div class="remolque-icon">
+                🛞
+              </div>
+
+              <div class="remolque-info">
+
+                <strong>
+                  {{ remolque.patente }}
+                </strong>
+
+                <span>
+                  {{ remolque.marca }}
+                  {{ remolque.modelo }}
+                </span>
+
+                <span>
+                  {{ remolque.tipo }}
+                  · {{ remolque.capacidadToneladas }} Ton
+                </span>
+
+              </div>
+
+              @if (remolque.activa) {
+                <span class="badge ok">
+                  Activo
+                </span>
+              } @else {
+                <span class="badge warning">
+                  Inactivo
+                </span>
+              }
+
+            </div>
+
+          }
+
+        </div>
+
+      } @else {
+
+        <p class="vacio">
+          No hay remolques asociados.
+        </p>
+
+      }
+
+    </section>
+
+  }
+
+</section>

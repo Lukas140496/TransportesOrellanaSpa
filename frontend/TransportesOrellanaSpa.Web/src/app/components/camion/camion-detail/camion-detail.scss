@@ -1,0 +1,238 @@
+.camion-detail {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.detail-header h1 {
+  margin: 0.75rem 0 0.25rem;
+  font-size: 2rem;
+}
+
+.detail-header p {
+  margin: 0;
+  font-size: 1.1rem;
+  opacity: 0.7;
+}
+
+.btn-volver {
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+.estado-camion {
+  padding-top: 0.5rem;
+}
+
+.estado-ok,
+.estado-warning,
+.badge {
+  display: inline-block;
+  padding: 0.4rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.estado-ok,
+.badge.ok {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.estado-warning,
+.badge.warning {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.card h2 {
+  margin-top: 0;
+  margin-bottom: 1.25rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.dato {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.label {
+  font-size: 0.85rem;
+  opacity: 0.6;
+}
+
+.value {
+  font-weight: 600;
+}
+
+.documentos {
+  display: grid;
+  gap: 1rem;
+}
+
+.documento {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+}
+
+.fecha {
+  font-size: 0.9rem;
+  opacity: 0.65;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.section-header h2 {
+  margin-bottom: 0.25rem;
+}
+
+.section-header p {
+  margin-top: 0;
+  opacity: 0.6;
+}
+
+.personas {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.persona {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+}
+
+.avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  background: #e5e7eb;
+}
+
+.persona strong,
+.persona span {
+  display: block;
+}
+
+.persona span {
+  margin-top: 0.25rem;
+  font-size: 0.85rem;
+  opacity: 0.65;
+}
+
+.remolques {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.remolque {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+}
+
+.remolque-icon {
+  font-size: 1.5rem;
+}
+
+.remolque-info {
+  flex: 1;
+}
+
+.remolque-info strong,
+.remolque-info span {
+  display: block;
+}
+
+.remolque-info span {
+  margin-top: 0.2rem;
+  font-size: 0.9rem;
+  opacity: 0.65;
+}
+
+.estado {
+  padding: 2rem;
+  text-align: center;
+}
+
+.error {
+  font-weight: 600;
+}
+
+.vacio {
+  margin: 0;
+  opacity: 0.65;
+}
+
+@media (max-width: 800px) {
+
+  .camion-detail {
+    padding: 1rem;
+  }
+
+  .detail-header {
+    flex-direction: column;
+  }
+
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .documento {
+    grid-template-columns: 1fr;
+  }
+
+}
+
+@media (max-width: 500px) {
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+}

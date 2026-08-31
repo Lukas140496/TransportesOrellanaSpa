@@ -1,0 +1,471 @@
+.conductor-detail {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+
+/* =========================
+   ESTADOS
+========================= */
+
+.estado {
+  min-height: 300px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+}
+
+.estado p {
+  color: #6b7280;
+}
+
+.estado.error h2 {
+  margin-bottom: 0.5rem;
+}
+
+.spinner {
+  width: 38px;
+  height: 38px;
+
+  border: 4px solid #e5e7eb;
+  border-top-color: #2563eb;
+
+  border-radius: 50%;
+
+  animation: spin 0.8s linear infinite;
+
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* =========================
+   CABECERA
+========================= */
+
+.cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 2rem;
+
+  margin-bottom: 2rem;
+  padding: 2rem;
+
+  background: #ffffff;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+}
+
+.cabecera-info {
+  display: flex;
+  align-items: center;
+
+  gap: 1rem;
+}
+
+.avatar {
+  width: 64px;
+  height: 64px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #2563eb;
+  color: white;
+
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+.etiqueta {
+  font-size: 0.75rem;
+  font-weight: 700;
+
+  letter-spacing: 0.08em;
+
+  color: #2563eb;
+}
+
+.cabecera h1 {
+  margin: 0.25rem 0;
+
+  font-size: 1.8rem;
+  color: #111827;
+}
+
+.rut {
+  margin: 0;
+
+  color: #6b7280;
+}
+
+.cabecera-acciones {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+
+/* =========================
+   BADGES
+========================= */
+
+.estado-badge {
+  padding: 0.55rem 0.9rem;
+
+  border-radius: 999px;
+
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.estado-badge.activo {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.estado-badge.vencido {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+
+/* =========================
+   BOTÓN
+========================= */
+
+.btn-volver {
+  border: none;
+
+  padding: 0.65rem 1rem;
+
+  border-radius: 8px;
+
+  background: #f3f4f6;
+  color: #374151;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.btn-volver:hover {
+  background: #e5e7eb;
+  transform: translateY(-1px);
+}
+
+
+/* =========================
+   BLOQUES
+========================= */
+
+.bloque {
+  margin-bottom: 1.5rem;
+
+  padding: 1.75rem;
+
+  background: #ffffff;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+}
+
+.bloque-titulo {
+  display: flex;
+  align-items: center;
+
+  gap: 0.9rem;
+
+  margin-bottom: 1.5rem;
+}
+
+.icono {
+  font-size: 1.5rem;
+}
+
+.bloque-titulo h2 {
+  margin: 0;
+
+  font-size: 1.2rem;
+
+  color: #111827;
+}
+
+.bloque-titulo p {
+  margin: 0.25rem 0 0;
+
+  font-size: 0.9rem;
+
+  color: #6b7280;
+}
+
+
+/* =========================
+   DATOS
+========================= */
+
+.datos-grid {
+  display: grid;
+
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 1rem;
+}
+
+.dato {
+  padding: 1rem;
+
+  background: #f9fafb;
+
+  border-radius: 10px;
+}
+
+.dato-label {
+  display: block;
+
+  margin-bottom: 0.35rem;
+
+  font-size: 0.75rem;
+
+  color: #6b7280;
+
+  text-transform: uppercase;
+
+  letter-spacing: 0.04em;
+}
+
+.dato strong {
+  color: #111827;
+}
+
+
+/* =========================
+   LICENCIA
+========================= */
+
+.licencia-card {
+  display: grid;
+
+  grid-template-columns: 1fr 1fr 1fr;
+
+  gap: 1rem;
+}
+
+.licencia-card > div {
+  padding: 1.25rem;
+
+  background: #f9fafb;
+
+  border-radius: 10px;
+}
+
+.licencia-tipo {
+  font-size: 1.8rem;
+
+  color: #2563eb;
+}
+
+.texto-activo {
+  color: #15803d;
+}
+
+.texto-vencido {
+  color: #dc2626;
+}
+
+
+/* =========================
+   CAMIONES
+========================= */
+
+.camiones-grid {
+  display: grid;
+
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 1rem;
+}
+
+.camion-card {
+  display: flex;
+
+  align-items: center;
+
+  gap: 1rem;
+
+  padding: 1.2rem;
+
+  background: #f9fafb;
+
+  border: 1px solid #e5e7eb;
+
+  border-radius: 12px;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.camion-card:hover {
+  transform: translateY(-2px);
+
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+.camion-icono {
+  width: 46px;
+  height: 46px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 10px;
+
+  background: #eff6ff;
+
+  font-size: 1.4rem;
+}
+
+.camion-info h3 {
+  margin: 0.25rem 0;
+
+  font-size: 1rem;
+
+  color: #111827;
+}
+
+.camion-info p {
+  margin: 0;
+
+  color: #6b7280;
+}
+
+.camion-patente {
+  font-size: 0.8rem;
+
+  font-weight: 700;
+
+  color: #2563eb;
+}
+
+
+/* =========================
+   SIN CAMIONES
+========================= */
+
+.sin-camiones {
+  display: flex;
+
+  align-items: center;
+
+  gap: 1rem;
+
+  padding: 1.25rem;
+
+  background: #f9fafb;
+
+  border-radius: 10px;
+
+  color: #6b7280;
+}
+
+.sin-camiones > span {
+  font-size: 1.8rem;
+}
+
+.sin-camiones strong {
+  color: #374151;
+}
+
+.sin-camiones p {
+  margin: 0.25rem 0 0;
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 900px) {
+
+  .datos-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .licencia-card {
+    grid-template-columns: 1fr;
+  }
+
+  .camiones-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .cabecera {
+    align-items: flex-start;
+
+    flex-direction: column;
+  }
+
+  .cabecera-acciones {
+    width: 100%;
+
+    justify-content: space-between;
+  }
+
+}
+
+
+@media (max-width: 600px) {
+
+  .conductor-detail {
+    padding: 1rem;
+  }
+
+  .cabecera {
+    padding: 1.25rem;
+  }
+
+  .cabecera h1 {
+    font-size: 1.4rem;
+  }
+
+  .datos-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .camiones-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cabecera-acciones {
+    align-items: flex-start;
+
+    flex-direction: column;
+  }
+
+}
