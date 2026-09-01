@@ -1,0 +1,197 @@
+<div class="app-layout">
+
+  <!-- ========================= -->
+  <!-- OVERLAY MÓVIL -->
+  <!-- ========================= -->
+
+  @if (menuAbierto) {
+
+    <div
+      class="sidebar-overlay"
+      (click)="cerrarMenu()">
+    </div>
+
+  }
+
+
+  <!-- ========================= -->
+  <!-- SIDEBAR -->
+  <!-- ========================= -->
+
+  <aside
+    class="sidebar"
+    [class.open]="menuAbierto">
+
+    <div class="logo">
+
+      <span class="logo-mark">N</span>
+
+      <div class="logo-text">
+        <strong>Flota360</strong>
+        <span>Transportes Orellana SpA</span>
+      </div>
+
+    </div>
+
+
+    <!-- MENÚ PRINCIPAL -->
+
+    <nav class="menu">
+
+      <a
+        routerLink="/"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        (click)="cerrarMenu()">
+
+        <span class="icon">⌂</span>
+        <span>Dashboard</span>
+
+      </a>
+
+
+      <a
+        routerLink="/clientes"
+        routerLinkActive="active"
+        (click)="cerrarMenu()">
+
+        <span class="icon">◉</span>
+        <span>Clientes</span>
+
+      </a>
+
+
+      <a
+        routerLink="/viajes"
+        routerLinkActive="active"
+        (click)="cerrarMenu()">
+
+        <span class="icon">↔</span>
+        <span>Viajes</span>
+
+      </a>
+
+
+      <a
+        routerLink="/camiones"
+        routerLinkActive="active"
+        (click)="cerrarMenu()">
+
+        <span class="icon">▣</span>
+        <span>Camiones</span>
+
+      </a>
+
+
+      <a
+        routerLink="/conductores"
+        routerLinkActive="active"
+        (click)="cerrarMenu()">
+
+        <span class="icon">◎</span>
+        <span>Conductores</span>
+
+      </a>
+
+
+      <a
+        routerLink="/remolques"
+        routerLinkActive="active"
+        (click)="cerrarMenu()">
+
+        <span class="icon">▰</span>
+        <span>Remolques</span>
+
+      </a>
+
+    </nav>
+
+
+    <!-- PARTE INFERIOR -->
+
+    <div class="sidebar-footer">
+
+      <button type="button">
+        ⚙ Configuración
+      </button>
+
+      <button type="button">
+        ⇥ Cerrar sesión
+      </button>
+
+    </div>
+
+  </aside>
+
+
+  <!-- ========================= -->
+  <!-- CONTENIDO PRINCIPAL -->
+  <!-- ========================= -->
+
+  <main class="main-content">
+
+
+    <!-- ========================= -->
+    <!-- TOPBAR -->
+    <!-- ========================= -->
+
+    <header class="topbar">
+
+      <div class="topbar-left">
+
+        <!-- BOTÓN HAMBURGUESA -->
+
+        <button
+          type="button"
+          class="menu-toggle"
+          (click)="toggleMenu()"
+          aria-label="Abrir menú">
+
+          ☰
+
+        </button>
+
+
+        <div class="topbar-title">
+          <span>Administración</span>
+        </div>
+
+      </div>
+
+
+      <!-- USUARIO -->
+
+      <div class="user">
+
+        <div class="user-info">
+
+          <strong>Lukas Orellana</strong>
+
+          <span>
+            Administrador
+          </span>
+
+        </div>
+
+        <div class="avatar">
+          LO
+        </div>
+
+      </div>
+
+    </header>
+
+
+    <!-- ========================= -->
+    <!-- CONTENIDO DE LA RUTA -->
+    <!-- ========================= -->
+
+    <section class="page-content">
+
+      <router-outlet></router-outlet>
+
+    </section>
+
+  </main>
+
+</div>

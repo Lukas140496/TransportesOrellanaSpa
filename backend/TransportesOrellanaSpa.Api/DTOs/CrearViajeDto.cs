@@ -2,6 +2,8 @@ namespace TransportesOrellanaSpa.Api.DTOs;
 
 public class CrearViajeDto
 {
+    public string NumeroGuiaDespacho { get; set; } = string.Empty;
+
     public DateTime Fecha { get; set; }
 
     // =========================

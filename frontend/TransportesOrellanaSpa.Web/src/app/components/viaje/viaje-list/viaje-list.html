@@ -31,6 +31,7 @@
 
           <tr>
             <th>Fecha</th>
+            <th>Guía de Despacho</th>
             <th>Cliente</th>
             <th>Origen</th>
             <th>Destino</th>
@@ -55,6 +56,10 @@
 
               <td>
                 {{ viaje.fecha | date:'dd/MM/yyyy' }}
+              </td>
+
+              <td>
+                {{ viaje.numeroGuiaDespacho }}
               </td>
 
               <td>

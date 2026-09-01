@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TransportesOrellanaSpa.Api.Data;
@@ -11,9 +12,11 @@ using TransportesOrellanaSpa.Api.Data;
 namespace TransportesOrellanaSpa.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260831172410_ExpandClienteDireccion")]
+    partial class ExpandClienteDireccion
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -311,10 +314,6 @@ namespace TransportesOrellanaSpa.Api.Migrations
                     b.Property<double?>("Kilometros")
                         .HasColumnType("double precision");
 
-                    b.Property<string>("NumeroGuiaDespacho")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<string>("Observaciones")
                         .IsRequired()
                         .HasColumnType("text");
@@ -340,9 +339,6 @@ namespace TransportesOrellanaSpa.Api.Migrations
                     b.HasIndex("ClienteId");
 
                     b.HasIndex("ConductorId");
-
-                    b.HasIndex("NumeroGuiaDespacho")
-                        .IsUnique();
 
                     b.HasIndex("RemolqueId");
 

@@ -8,7 +8,11 @@ public class ClienteDto
 
     public string Rut { get; set; } = string.Empty;
 
-    public string Ubicacion { get; set; } = string.Empty;
+    public string Direccion { get; set; } = string.Empty;
+
+    public string Comuna { get; set; } = string.Empty;
+
+    public string Ciudad { get; set; } = string.Empty;
 
     public decimal Tarifa { get; set; }
 

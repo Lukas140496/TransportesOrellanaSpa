@@ -6,6 +6,8 @@ public class Viaje
 {
     public int Id { get; set; }
 
+    public string NumeroGuiaDespacho { get; set; } = string.Empty;
+
     public DateTime Fecha { get; set; }
 
     // =========================

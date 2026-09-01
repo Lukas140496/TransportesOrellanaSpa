@@ -1,0 +1,89 @@
+┌─────────────────────────────────────────────────────────────┐
+│ ┌─────────────────┐                                         │
+│ │                 │                         Lukas Orellana  │
+│ │    NovaFleet    │                                         │
+│ │                 │                                         │
+│ │  Dashboard      │     ← aquí cambia el contenido          │
+│ │  Clientes       │                                         │
+│ │  Viajes         │                                         │
+│ │                 │                                         │
+│ │  Camiones       │                                         │
+│ │  Conductores    │                                         │
+│ │  Remolques      │                                         │
+│ │                 │                                         │
+│ │                 │                                         │
+│ │  ⚙ Configuración│                                         │
+│ │                 │                                         │
+│ │  🚪 Cerrar sesión│                                        │
+│ └─────────────────┘                                         │
+└─────────────────────────────────────────────────────────────┘
+
+---------------------------------------------------------------
+
+Navegacion del menú:
+
+NovaFleet
+
+Dashboard
+──────────────
+Operaciones
+  Viajes
+  Clientes
+
+Flota
+  Camiones
+  Remolques
+  Conductores
+
+──────────────
+Configuración
+
+                         Lukas Orellana
+                         [Cerrar sesión]
+
+--------------------------------------------------------
+
+Menu Clientes:
+
+┌───────────────┬──────────────────────────────────────┐
+│ NovaFleet     │                                      │
+│               │     Clientes                         │
+│ Dashboard     │     ┌────────────────────────────┐   │
+│               │     │ Listado de clientes...     │   │
+│ Clientes      │     │                            │   │
+│ Camiones      │     │ [ + Nuevo cliente ]        │   │
+│ Conductores   │     │                            │   │
+│ Remolques     │     └────────────────────────────┘   │
+│ Viajes        │                                      │
+│               │                                      │
+│               │                                      │
+│ Cerrar sesión │                     Lukas Orellana   │
+└───────────────┴──────────────────────────────────────┘
+
+--------------------------------------------------------
+
+Menu Movil:
+
+┌──────────────────────────────────────┐
+│ ☰   Administración              LO   │
+├──────────────────────────────────────┤
+│                                      │
+│             CONTENIDO                │
+│                                      │
+└──────────────────────────────────────┘
+
+--------------------------------------------------------
+
+Estructura principal:
+
+                    MainLayout
+                       │
+          ┌────────────┴────────────┐
+          │                         │
+       Sidebar                  RouterOutlet
+                                    │
+                     ┌──────────────┼──────────────┐
+                     │              │              │
+                 Dashboard       Clientes        Viajes
+                                                   │
+                                                etc...

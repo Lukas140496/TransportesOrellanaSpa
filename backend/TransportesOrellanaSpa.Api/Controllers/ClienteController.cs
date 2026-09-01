@@ -49,7 +49,9 @@ public class ClienteController : ControllerBase
 
         var nombre = dto.Nombre.Trim();
         var rut = dto.Rut.Trim();
-        var ubicacion = dto.Ubicacion.Trim();
+        var direccion = dto.Direccion.Trim();
+        var comuna = dto.Comuna.Trim();
+        var ciudad = dto.Ciudad.Trim();
         var tipoCarga = dto.TipoCarga.Trim();
         var observaciones = dto.Observaciones.Trim();
 
@@ -73,7 +75,9 @@ public class ClienteController : ControllerBase
         {
             Nombre = nombre,
             Rut = rut,
-            Ubicacion = ubicacion,
+            Direccion = direccion,
+            Comuna = comuna,
+            Ciudad = ciudad,
             Tarifa = dto.Tarifa,
             TipoCarga = tipoCarga,
             Activo = true,
@@ -93,7 +97,9 @@ public class ClienteController : ControllerBase
             Id = cliente.Id,
             Nombre = cliente.Nombre,
             Rut = cliente.Rut,
-            Ubicacion = cliente.Ubicacion,
+            Direccion = cliente.Direccion,
+            Comuna = cliente.Comuna,
+            Ciudad = cliente.Ciudad,
             Tarifa = cliente.Tarifa,
             TipoCarga = cliente.TipoCarga,
             Activo = cliente.Activo,
@@ -121,7 +127,9 @@ public class ClienteController : ControllerBase
                 Id = c.Id,
                 Nombre = c.Nombre,
                 Rut = c.Rut,
-                Ubicacion = c.Ubicacion,
+                Direccion = c.Direccion,
+                Comuna = c.Comuna,
+                Ciudad = c.Ciudad,
                 Tarifa = c.Tarifa,
                 TipoCarga = c.TipoCarga,
                 Activo = c.Activo,
@@ -147,7 +155,9 @@ public class ClienteController : ControllerBase
                 Id = c.Id,
                 Nombre = c.Nombre,
                 Rut = c.Rut,
-                Ubicacion = c.Ubicacion,
+                Direccion = c.Direccion,
+                Comuna = c.Comuna,
+                Ciudad = c.Ciudad,
                 Tarifa = c.Tarifa,
                 TipoCarga = c.TipoCarga,
                 Activo = c.Activo,
@@ -227,7 +237,9 @@ public class ClienteController : ControllerBase
 
         cliente.Nombre = dto.Nombre.Trim();
         cliente.Rut = rut;
-        cliente.Ubicacion = dto.Ubicacion.Trim();
+        cliente.Direccion = dto.Direccion.Trim();
+        cliente.Comuna = dto.Comuna.Trim();
+        cliente.Ciudad = dto.Ciudad.Trim();
         cliente.Tarifa = dto.Tarifa;
         cliente.TipoCarga = dto.TipoCarga.Trim();
         cliente.Activo = dto.Activo;
@@ -244,7 +256,9 @@ public class ClienteController : ControllerBase
             Id = cliente.Id,
             Nombre = cliente.Nombre,
             Rut = cliente.Rut,
-            Ubicacion = cliente.Ubicacion,
+            Direccion = cliente.Direccion,
+            Comuna = cliente.Comuna,
+            Ciudad = cliente.Ciudad,
             Tarifa = cliente.Tarifa,
             TipoCarga = cliente.TipoCarga,
             Activo = cliente.Activo,

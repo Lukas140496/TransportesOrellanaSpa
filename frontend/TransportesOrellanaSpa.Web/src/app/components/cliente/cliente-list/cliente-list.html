@@ -32,7 +32,9 @@
           <tr>
             <th>Nombre</th>
             <th>RUT</th>
-            <th>Ubicación</th>
+            <th>Dirección</th>
+            <th>Comuna</th>
+            <th>Ciudad</th>
             <th>Tarifa</th>
             <th>Tipo de carga</th>
             <th>Estado</th>
@@ -56,7 +58,15 @@
               </td>
 
               <td>
-                {{ cliente.ubicacion }}
+                {{ cliente.direccion }}
+              </td>
+
+              <td>
+                {{ cliente.comuna }}
+              </td>
+
+              <td>
+                {{ cliente.ciudad }}
               </td>
 
               <td>

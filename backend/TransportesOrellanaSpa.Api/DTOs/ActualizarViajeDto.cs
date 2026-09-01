@@ -4,6 +4,8 @@ namespace TransportesOrellanaSpa.Api.DTOs;
 
 public class ActualizarViajeDto
 {
+    public string NumeroGuiaDespacho { get; set; } = string.Empty;
+
     public DateTime Fecha { get; set; }
 
     public int ClienteId { get; set; }

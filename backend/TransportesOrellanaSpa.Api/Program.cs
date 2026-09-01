@@ -4,7 +4,10 @@ using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// =========================
+// SERVICIOS
+// =========================
+
 builder.Services.AddOpenApi();
 
 builder.Services.AddControllers()
@@ -14,26 +17,44 @@ builder.Services.AddControllers()
             new JsonStringEnumConverter());
     });
 
+// =========================
+// CORS
+// =========================
 
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("Frontend", policy =>
     {
         policy
-            .WithOrigins("http://localhost:4200")
+            .WithOrigins(
+                "http://localhost:4200",
+                "http://172.20.10.13:4200"
+            )
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
-}); 
+});
+
+// =========================
+// BASE DE DATOS
+// =========================
+
 var connectionString =
     builder.Configuration.GetConnectionString("DefaultConnection");
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString));
 
+// =========================
+// APP
+// =========================
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// =========================
+// HTTP REQUEST PIPELINE
+// =========================
+
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();

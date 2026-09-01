@@ -91,7 +91,7 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Camion>()
             .Property(c => c.FechaSeguroObligatorio)
             .HasColumnType("date");
-            
+
         // =========================
         // VIAJE - ESTADOS
         // =========================
@@ -102,7 +102,7 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Viaje>()
             .Property(v => v.EstadoPago)
             .HasConversion<string>();
-            
+
         // =========================
         // ÍNDICES
         // =========================
@@ -120,6 +120,10 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<Cliente>()
             .HasIndex(c => c.Rut)
+            .IsUnique();
+
+        modelBuilder.Entity<Viaje>()
+            .HasIndex(v => v.NumeroGuiaDespacho)
             .IsUnique();
     }
 }

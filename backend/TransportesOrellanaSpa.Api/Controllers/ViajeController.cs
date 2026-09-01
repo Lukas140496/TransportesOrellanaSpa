@@ -26,6 +26,25 @@ public class ViajeController : ControllerBase
     public async Task<ActionResult<ViajeDto>> Create(CrearViajeDto dto)
     {
         // =========================
+        // VALIDAR GUÍA DESPACHO
+        // =========================
+
+        if (string.IsNullOrWhiteSpace(dto.NumeroGuiaDespacho))
+        {
+            return BadRequest("El número de guía de despacho es obligatorio.");
+        }
+
+        var numeroGuiaDespacho = dto.NumeroGuiaDespacho.Trim();
+
+        var guiaExiste = await _context.Viajes
+            .AnyAsync(v => v.NumeroGuiaDespacho == numeroGuiaDespacho);
+
+        if (guiaExiste)
+        {
+            return Conflict("Ya existe un viaje registrado con ese número de guía de despacho.");
+        }
+
+        // =========================
         // VALIDAR CLIENTE
         // =========================
 
@@ -79,6 +98,8 @@ public class ViajeController : ControllerBase
 
         var viaje = new Viaje
         {
+            NumeroGuiaDespacho = numeroGuiaDespacho,
+
             Fecha = dto.Fecha,
 
             ClienteId = dto.ClienteId,
@@ -116,6 +137,7 @@ public class ViajeController : ControllerBase
             .Select(v => new ViajeDto
             {
                 Id = v.Id,
+                NumeroGuiaDespacho = v.NumeroGuiaDespacho,
                 Fecha = v.Fecha,
 
                 Cliente = new ClienteResumenDto
@@ -184,6 +206,7 @@ public class ViajeController : ControllerBase
             .Select(v => new ViajeDto
             {
                 Id = v.Id,
+                NumeroGuiaDespacho = v.NumeroGuiaDespacho,
                 Fecha = v.Fecha,
 
                 Cliente = new ClienteResumenDto
@@ -249,6 +272,7 @@ public class ViajeController : ControllerBase
             .Select(v => new ViajeDto
             {
                 Id = v.Id,
+                NumeroGuiaDespacho = v.NumeroGuiaDespacho,
                 Fecha = v.Fecha,
 
                 Cliente = new ClienteResumenDto
@@ -328,6 +352,27 @@ public class ViajeController : ControllerBase
         }
 
         // =========================
+        // VALIDAR GUÍA DESPACHO
+        // =========================
+
+        if (string.IsNullOrWhiteSpace(dto.NumeroGuiaDespacho))
+        {
+            return BadRequest("El número de guía de despacho es obligatorio.");
+        }
+
+        var numeroGuiaDespacho = dto.NumeroGuiaDespacho.Trim();
+
+        var guiaExiste = await _context.Viajes
+            .AnyAsync(v =>
+                v.NumeroGuiaDespacho == numeroGuiaDespacho &&
+                v.Id != id);
+
+        if (guiaExiste)
+        {
+            return Conflict("Ya existe otro viaje registrado con ese número de guía de despacho.");
+        }
+
+        // =========================
         // VALIDAR CLIENTE
         // =========================
 
@@ -380,6 +425,7 @@ public class ViajeController : ControllerBase
         // =========================
 
         viaje.Fecha = dto.Fecha;
+        viaje.NumeroGuiaDespacho = numeroGuiaDespacho;
 
         viaje.ClienteId = dto.ClienteId;
         viaje.CamionId = dto.CamionId;
@@ -413,6 +459,7 @@ public class ViajeController : ControllerBase
             .Select(v => new ViajeDto
             {
                 Id = v.Id,
+                NumeroGuiaDespacho = v.NumeroGuiaDespacho,
                 Fecha = v.Fecha,
 
                 Cliente = new ClienteResumenDto
