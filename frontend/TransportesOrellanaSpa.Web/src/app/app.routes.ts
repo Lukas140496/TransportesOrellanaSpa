@@ -97,6 +97,10 @@ export const routes: Routes = [
         path: 'clientes/nuevo',
         component: ClienteForm
       },
+      {
+        path: 'clientes/:id/editar',
+        component: ClienteForm
+      },
 
       {
         path: 'clientes/:id',

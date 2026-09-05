@@ -55,6 +55,13 @@
 
         <button
           type="button"
+          class="btn-primary"
+          (click)="editar()">
+          Editar cliente
+        </button>
+
+        <button
+          type="button"
           class="btn-secondary"
           (click)="volver()">
           ← Volver
@@ -108,23 +115,46 @@
       <article class="card">
 
         <div class="card-header">
-          <h2>Información comercial</h2>
+          <h2>Información Comercial</h2>
           <span>02</span>
         </div>
 
         <div class="info-grid">
 
           <div class="info-item">
-            <span class="label">Tarifa</span>
+
+            <span class="label">
+              Tarifa
+            </span>
 
             <strong class="tarifa">
               ${{ cliente.tarifa | number:'1.0-0' }}
             </strong>
+
           </div>
 
           <div class="info-item">
-            <span class="label">Tipo de carga</span>
-            <strong>{{ cliente.tipoCarga }}</strong>
+
+            <span class="label">
+              Tipo de carga
+            </span>
+
+            <strong>
+              {{ cliente.tipoCarga }}
+            </strong>
+
+          </div>
+
+          <div class="info-item">
+
+            <span class="label">
+              Ciudad
+            </span>
+
+            <strong>
+              {{ cliente.ciudad }}
+            </strong>
+
           </div>
 
         </div>

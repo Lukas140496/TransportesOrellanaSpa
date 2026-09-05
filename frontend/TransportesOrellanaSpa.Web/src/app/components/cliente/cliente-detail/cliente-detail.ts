@@ -2,7 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DecimalPipe } from '@angular/common';
 
-import { ApiService } from '../../../core/services/api.service';
+import { ClienteService } from '../../../core/services/cliente.service';
 import { Cliente } from '../../../core/models/cliente';
 
 @Component({
@@ -13,7 +13,7 @@ import { Cliente } from '../../../core/models/cliente';
 })
 export class ClienteDetail implements OnInit {
 
-  private readonly api = inject(ApiService);
+  private readonly clienteService = inject(ClienteService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
 
@@ -40,23 +40,40 @@ export class ClienteDetail implements OnInit {
       return;
     }
 
-    this.api.getClienteById(clienteId).subscribe({
+    this.clienteService.getClienteById(clienteId).subscribe({
+
       next: cliente => {
         this.cliente = cliente;
         this.cargando = false;
       },
+
       error: error => {
         console.error('Error al cargar cliente:', error);
 
         this.error = 'No fue posible cargar la información del cliente.';
         this.cargando = false;
       }
+
     });
 
   }
 
   volver(): void {
     this.router.navigate(['/clientes']);
+  }
+
+  editar(): void {
+
+    if (!this.cliente) {
+      return;
+    }
+
+    this.router.navigate([
+      '/clientes',
+      this.cliente.id,
+      'editar'
+    ]);
+
   }
 
 }

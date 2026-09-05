@@ -6,7 +6,10 @@ import {
   ReactiveFormsModule,
   Validators
 } from '@angular/forms';
-import { Router } from '@angular/router';
+import {
+  ActivatedRoute,
+  Router
+} from '@angular/router';
 
 import { ClienteService } from '../../../core/services/cliente.service';
 
@@ -25,6 +28,7 @@ export class ClienteForm {
   private readonly fb = inject(FormBuilder);
   private readonly clienteService = inject(ClienteService);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
 
   clienteForm: FormGroup = this.fb.group({
     nombre: ['', [Validators.required, Validators.maxLength(150)]],
@@ -39,6 +43,9 @@ export class ClienteForm {
   });
 
   guardando = false;
+  cargando = false;
+
+  private clienteId: number | null = null;
 
   // Modal de error
   modalErrorVisible = false;
@@ -50,8 +57,81 @@ export class ClienteForm {
   modalExitoTitulo = '';
   modalExitoMensaje = '';
 
+  get modoEdicion(): boolean {
+    return this.clienteId !== null;
+  }
+
   get titulo(): string {
-    return 'Nuevo Cliente';
+    return this.modoEdicion
+      ? 'Editar cliente'
+      : 'Nuevo cliente';
+  }
+
+  constructor() {
+
+    const id = this.route.snapshot.paramMap.get('id');
+
+    if (id) {
+
+      const clienteId = Number(id);
+
+      if (isNaN(clienteId)) {
+
+        this.mostrarError(
+          'Cliente no válido',
+          'El identificador del cliente no es válido.'
+        );
+
+        return;
+      }
+
+      this.clienteId = clienteId;
+
+      this.cargarCliente(clienteId);
+    }
+  }
+
+  private cargarCliente(id: number): void {
+
+    this.cargando = true;
+
+    this.clienteService.getClienteById(id).subscribe({
+
+      next: cliente => {
+
+        this.clienteForm.patchValue({
+          nombre: cliente.nombre,
+          rut: cliente.rut,
+          direccion: cliente.direccion,
+          comuna: cliente.comuna,
+          ciudad: cliente.ciudad,
+          tarifa: cliente.tarifa,
+          tipoCarga: cliente.tipoCarga,
+          activo: cliente.activo,
+          observaciones: cliente.observaciones
+        });
+
+        this.cargando = false;
+
+      },
+
+      error: error => {
+
+        console.error(
+          'Error al cargar cliente:',
+          error
+        );
+
+        this.cargando = false;
+
+        this.mostrarError(
+          'No se pudo cargar el cliente',
+          'No fue posible obtener la información del cliente.'
+        );
+
+      }
+
+    });
   }
 
   cancelar(): void {
@@ -60,7 +140,7 @@ export class ClienteForm {
 
   guardar(): void {
 
-    if (this.guardando) {
+    if (this.guardando || this.cargando) {
       return;
     }
 
@@ -80,7 +160,67 @@ export class ClienteForm {
 
     const cliente = this.clienteForm.getRawValue();
 
-    console.log('Enviando cliente:', cliente);
+    console.log(
+      this.modoEdicion
+        ? 'Actualizando cliente:'
+        : 'Creando cliente:',
+      cliente
+    );
+
+    if (this.modoEdicion && this.clienteId !== null) {
+
+      this.clienteService
+        .actualizarCliente(this.clienteId, cliente)
+        .subscribe({
+
+          next: resultado => {
+
+            console.log(
+              'Cliente actualizado correctamente:',
+              resultado
+            );
+
+            this.guardando = false;
+
+            this.mostrarExito(
+              'Cliente actualizado correctamente',
+              `Los datos de ${resultado.nombre} fueron actualizados exitosamente.`
+            );
+
+          },
+
+          error: error => {
+
+            console.error(
+              'Error al actualizar cliente:',
+              error
+            );
+
+            this.guardando = false;
+
+            if (error.status === 409) {
+
+              this.mostrarError(
+                'No se pudo actualizar el cliente',
+                error.error ||
+                'Ya existe otro cliente registrado con ese RUT.'
+              );
+
+            } else {
+
+              this.mostrarError(
+                'No se pudo actualizar el cliente',
+                'Ocurrió un error al intentar guardar los cambios. Inténtalo nuevamente.'
+              );
+
+            }
+
+          }
+
+        });
+
+      return;
+    }
 
     this.clienteService.crearCliente(cliente).subscribe({
 
@@ -162,6 +302,16 @@ export class ClienteForm {
   cerrarModalExito(): void {
 
     this.modalExitoVisible = false;
+
+    if (this.modoEdicion && this.clienteId !== null) {
+
+      this.router.navigate([
+        '/clientes',
+        this.clienteId
+      ]);
+
+      return;
+    }
 
     this.router.navigate(['/clientes']);
 
