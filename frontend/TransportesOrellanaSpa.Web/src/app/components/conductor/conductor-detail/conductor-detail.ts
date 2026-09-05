@@ -2,7 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DatePipe } from '@angular/common';
 
-import { ApiService } from '../../../core/services/api';
+import { ApiService } from '../../../core/services/api.service';
 import { Conductor } from '../../../core/models/conductor';
 
 @Component({

@@ -18,6 +18,7 @@ import { ClienteDetail } from './components/cliente/cliente-detail/cliente-detai
 
 import { ViajeList } from './components/viaje/viaje-list/viaje-list';
 import { ViajeDetail } from './components/viaje/viaje-detail/viaje-detail';
+import { ClienteForm } from './components/cliente/cliente-form/cliente-form';
 
 
 export const routes: Routes = [
@@ -90,6 +91,11 @@ export const routes: Routes = [
       {
         path: 'clientes',
         component: ClienteList
+      },
+
+      {
+        path: 'clientes/nuevo',
+        component: ClienteForm
       },
 
       {

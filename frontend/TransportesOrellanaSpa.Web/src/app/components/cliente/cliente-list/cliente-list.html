@@ -1,10 +1,19 @@
 <section class="cliente-list">
 
   <div class="header">
+
     <div>
       <h1>Clientes</h1>
       <p>Listado de clientes registrados en el sistema.</p>
     </div>
+
+    <button
+      type="button"
+      class="btn-primary"
+      (click)="nuevoCliente()">
+      + Nuevo cliente
+    </button>
+
   </div>
 
   @if (cargando) {

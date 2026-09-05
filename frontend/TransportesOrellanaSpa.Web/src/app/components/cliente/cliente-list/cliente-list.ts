@@ -1,7 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { ApiService } from '../../../core/services/api';
+import { ApiService } from '../../../core/services/api.service';
 import { Cliente } from '../../../core/models/cliente';
 
 @Component({
@@ -37,6 +37,10 @@ export class ClienteList implements OnInit {
 
     });
 
+  }
+
+  nuevoCliente(): void {
+    this.router.navigate(['/clientes/nuevo']);
   }
 
   verDetalle(id: number): void {

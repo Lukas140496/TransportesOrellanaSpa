@@ -67,6 +67,23 @@ export class ApiService {
     );
   }
 
+  crearCliente(cliente: Omit<Cliente, 'id'>): Observable<Cliente> {
+    return this.http.post<Cliente>(
+      `${this.apiUrl}/cliente`,
+      cliente
+    );
+  }
+  
+  actualizarCliente(
+    id: number,
+    cliente: Omit<Cliente, 'id'>
+  ): Observable<Cliente> {
+    return this.http.put<Cliente>(
+      `${this.apiUrl}/cliente/${id}`,
+      cliente
+    );
+  }
+
   getViajes(): Observable<Viaje[]> {
     return this.http.get<Viaje[]>(
       `${this.apiUrl}/viaje`

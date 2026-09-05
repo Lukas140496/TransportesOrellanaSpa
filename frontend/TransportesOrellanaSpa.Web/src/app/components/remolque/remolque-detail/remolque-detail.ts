@@ -1,7 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { ApiService } from '../../../core/services/api';
+import { ApiService } from '../../../core/services/api.service';
 import { Remolque } from '../../../core/models/remolque';
 
 @Component({
