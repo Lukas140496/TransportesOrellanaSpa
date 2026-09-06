@@ -29,4 +29,12 @@ export class ClienteService {
   ): Observable<Cliente> {
     return this.api.actualizarCliente(id, cliente);
   }
+
+  desactivarCliente(id: number): Observable<Cliente> {
+    return this.api.desactivarCliente(id);
+  }
+
+  activarCliente(id: number): Observable<Cliente> {
+    return this.api.activarCliente(id);
+  }
 }

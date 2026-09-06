@@ -19,6 +19,10 @@ export class ApiService {
 
   private readonly apiUrl = environment.apiUrl;
 
+  // =========================
+  // CAMIONES
+  // =========================
+
   getCamiones(): Observable<Camion[]> {
     return this.http.get<Camion[]>(
       `${this.apiUrl}/camion`
@@ -30,6 +34,10 @@ export class ApiService {
       `${this.apiUrl}/camion/${id}`
     );
   }
+
+  // =========================
+  // CONDUCTORES
+  // =========================
 
   getConductores(): Observable<Conductor[]> {
     return this.http.get<Conductor[]>(
@@ -43,6 +51,10 @@ export class ApiService {
     );
   }
 
+  // =========================
+  // REMOLQUES
+  // =========================
+
   getRemolques(): Observable<Remolque[]> {
     return this.http.get<Remolque[]>(
       `${this.apiUrl}/remolque`
@@ -54,6 +66,10 @@ export class ApiService {
       `${this.apiUrl}/remolque/${patente}`
     );
   }
+
+  // =========================
+  // CLIENTES
+  // =========================
 
   getClientes(): Observable<Cliente[]> {
     return this.http.get<Cliente[]>(
@@ -83,6 +99,24 @@ export class ApiService {
       cliente
     );
   }
+
+  desactivarCliente(id: number): Observable<Cliente> {
+    return this.http.put<Cliente>(
+      `${this.apiUrl}/cliente/${id}/desactivar`,
+      {}
+    );
+  }
+
+  activarCliente(id: number): Observable<Cliente> {
+    return this.http.put<Cliente>(
+      `${this.apiUrl}/cliente/${id}/activar`,
+      {}
+    );
+  }
+
+  // =========================
+  // VIAJES
+  // =========================
 
   getViajes(): Observable<Viaje[]> {
     return this.http.get<Viaje[]>(

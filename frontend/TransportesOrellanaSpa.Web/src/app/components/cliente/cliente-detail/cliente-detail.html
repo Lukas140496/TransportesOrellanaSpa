@@ -60,6 +60,28 @@
           Editar cliente
         </button>
 
+        @if (cliente.activo) {
+
+          <button
+            type="button"
+            class="btn-danger"
+            (click)="mostrarConfirmacionEstado()"
+            [disabled]="procesandoEstado">
+            Desactivar cliente
+          </button>
+
+        } @else {
+
+          <button
+            type="button"
+            class="btn-success"
+            (click)="mostrarConfirmacionEstado()"
+            [disabled]="procesandoEstado">
+            Activar cliente
+          </button>
+
+        }
+
         <button
           type="button"
           class="btn-secondary"
@@ -115,7 +137,7 @@
       <article class="card">
 
         <div class="card-header">
-          <h2>Información Comercial</h2>
+          <h2>Información comercial</h2>
           <span>02</span>
         </div>
 
@@ -196,3 +218,206 @@
   }
 
 </section>
+
+
+<!-- =========================
+     MODAL DE CONFIRMACIÓN
+     ========================= -->
+
+@if (modalConfirmacionVisible && cliente) {
+
+  <div
+    class="modal-backdrop"
+    (click)="cerrarModalConfirmacion()">
+
+    <div
+      class="modal"
+      role="alertdialog"
+      aria-modal="true"
+      (click)="$event.stopPropagation()">
+
+      <div
+        class="modal-icon"
+        [class.warning]="cliente.activo"
+        [class.activate]="!cliente.activo">
+
+        @if (cliente.activo) {
+          !
+        } @else {
+          ✓
+        }
+
+      </div>
+
+      <h2>
+
+        @if (cliente.activo) {
+          ¿Desactivar cliente?
+        } @else {
+          ¿Activar cliente?
+        }
+
+      </h2>
+
+      <p>
+        Estás a punto de
+        @if (cliente.activo) {
+          desactivar
+        } @else {
+          activar
+        }
+        al cliente
+        <strong>{{ cliente.nombre }}</strong>.
+      </p>
+
+      <p class="modal-secondary-text">
+
+        @if (cliente.activo) {
+
+          El cliente no será eliminado y su historial se conservará.
+          No podrá utilizarse para nuevos viajes mientras esté inactivo.
+
+        } @else {
+
+          El cliente volverá a estar disponible para nuevos viajes.
+          Su historial y todos sus datos se conservarán.
+
+        }
+
+      </p>
+
+      <div class="modal-actions">
+
+        <button
+          type="button"
+          class="btn-secondary"
+          [disabled]="procesandoEstado"
+          (click)="cerrarModalConfirmacion()">
+          Cancelar
+        </button>
+
+        @if (cliente.activo) {
+
+          <button
+            type="button"
+            class="btn-danger"
+            [disabled]="procesandoEstado"
+            (click)="confirmarCambioEstado()">
+
+            @if (procesandoEstado) {
+              Desactivando...
+            } @else {
+              Sí, desactivar
+            }
+
+          </button>
+
+        } @else {
+
+          <button
+            type="button"
+            class="btn-success"
+            [disabled]="procesandoEstado"
+            (click)="confirmarCambioEstado()">
+
+            @if (procesandoEstado) {
+              Activando...
+            } @else {
+              Sí, activar
+            }
+
+          </button>
+
+        }
+
+      </div>
+
+    </div>
+
+  </div>
+
+}
+
+
+<!-- =========================
+     MODAL DE ERROR
+     ========================= -->
+
+@if (modalErrorVisible) {
+
+  <div
+    class="modal-backdrop"
+    (click)="cerrarModalError()">
+
+    <div
+      class="modal"
+      role="alertdialog"
+      aria-modal="true"
+      (click)="$event.stopPropagation()">
+
+      <div class="modal-icon error">
+        !
+      </div>
+
+      <h2>
+        {{ modalErrorTitulo }}
+      </h2>
+
+      <p>
+        {{ modalErrorMensaje }}
+      </p>
+
+      <button
+        type="button"
+        class="btn-primary modal-button"
+        (click)="cerrarModalError()">
+        Aceptar
+      </button>
+
+    </div>
+
+  </div>
+
+}
+
+
+<!-- =========================
+     MODAL DE ÉXITO
+     ========================= -->
+
+@if (modalExitoVisible) {
+
+  <div
+    class="modal-backdrop"
+    (click)="cerrarModalExito()">
+
+    <div
+      class="modal"
+      role="dialog"
+      aria-modal="true"
+      (click)="$event.stopPropagation()">
+
+      <div class="modal-icon success">
+        ✓
+      </div>
+
+      <h2>
+        {{ modalExitoTitulo }}
+      </h2>
+
+      <p>
+        {{ modalExitoMensaje }}
+      </p>
+
+      <button
+        type="button"
+        class="btn-primary modal-button"
+        (click)="cerrarModalExito()">
+        Aceptar
+      </button>
+
+    </div>
+
+  </div>
+
+}
