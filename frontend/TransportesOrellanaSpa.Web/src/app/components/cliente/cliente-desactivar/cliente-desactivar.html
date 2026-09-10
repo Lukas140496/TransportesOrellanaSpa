@@ -1,0 +1,438 @@
+<section class="cliente-desactivar">
+
+  <div class="page-header">
+
+    <div>
+      <h1>Desactivar Cliente</h1>
+
+      <p>
+        Busca el cliente que deseas desactivar.
+      </p>
+    </div>
+
+  </div>
+
+
+  @if (cargando) {
+
+    <div class="state-card">
+
+      <div class="state-icon">
+        ⏳
+      </div>
+
+      <h2>Cargando clientes...</h2>
+
+      <p>
+        Estamos obteniendo los clientes registrados.
+      </p>
+
+    </div>
+
+  }
+
+
+  @if (!cargando && error) {
+
+    <div class="state-card error-card">
+
+      <div class="state-icon">
+        !
+      </div>
+
+      <h2>No se pudieron cargar los clientes</h2>
+
+      <p>
+        {{ error }}
+      </p>
+
+    </div>
+
+  }
+
+
+  @if (!cargando && !error) {
+
+    <div class="search-card">
+
+      <div class="search-header">
+
+        <div class="search-icon">
+          🔎
+        </div>
+
+        <div>
+
+          <h2>Buscar cliente</h2>
+
+          <p>
+            Puedes buscar por nombre o RUT.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="search-row">
+
+        <div class="search-input-wrapper">
+
+          <input
+            type="text"
+            [(ngModel)]="terminoBusqueda"
+            (keyup.enter)="buscar()"
+            placeholder="Ej: Walmart o 76.123.456-7"
+            aria-label="Buscar cliente por nombre o RUT"
+          />
+
+        </div>
+
+
+        <button
+          type="button"
+          class="btn-primary"
+          (click)="buscar()">
+          Buscar
+        </button>
+
+
+        @if (terminoBusqueda) {
+
+          <button
+            type="button"
+            class="btn-secondary"
+            (click)="limpiarBusqueda()">
+            Limpiar
+          </button>
+
+        }
+
+      </div>
+
+    </div>
+
+
+    @if (resultados.length > 0) {
+
+      <div class="results-card">
+
+        <div class="results-header">
+
+          <div>
+
+            <h2>Resultados de búsqueda</h2>
+
+            <p>
+              {{ resultados.length }}
+              cliente(s) encontrado(s).
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div class="table-container">
+
+          <table>
+
+            <thead>
+
+              <tr>
+                <th>Nombre</th>
+                <th>RUT</th>
+                <th>Comuna</th>
+                <th>Ciudad</th>
+                <th>Tarifa</th>
+                <th>Estado</th>
+                <th>Acción</th>
+              </tr>
+
+            </thead>
+
+
+            <tbody>
+
+              @for (cliente of resultados; track cliente.id) {
+
+                <tr>
+
+                  <td>
+
+                    <strong>
+                      {{ cliente.nombre }}
+                    </strong>
+
+                  </td>
+
+                  <td>
+                    {{ cliente.rut }}
+                  </td>
+
+                  <td>
+                    {{ cliente.comuna }}
+                  </td>
+
+                  <td>
+                    {{ cliente.ciudad }}
+                  </td>
+
+                  <td>
+                    ${{ cliente.tarifa }}
+                  </td>
+
+                  <td>
+
+                    <span class="badge ok">
+                      Activo
+                    </span>
+
+                  </td>
+
+                  <td>
+
+                    <button
+                      type="button"
+                      class="btn-danger"
+                      (click)="mostrarConfirmacion(cliente)">
+                      Desactivar
+                    </button>
+
+                  </td>
+
+                </tr>
+
+              }
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
+    }
+
+
+    @if (
+      terminoBusqueda &&
+      resultados.length === 0
+    ) {
+
+      <div class="state-card">
+
+        <div class="state-icon">
+          🔎
+        </div>
+
+        <h2>Cliente no encontrado</h2>
+
+        <p>
+          No encontramos clientes activos que coincidan con
+          "{{ terminoBusqueda }}".
+        </p>
+
+        <button
+          type="button"
+          class="btn-secondary"
+          (click)="limpiarBusqueda()">
+          Limpiar búsqueda
+        </button>
+
+      </div>
+
+    }
+
+
+    @if (
+      !terminoBusqueda &&
+      resultados.length === 0
+    ) {
+
+      <div class="empty-card">
+
+        <div class="empty-icon">
+          👤
+        </div>
+
+        <h2>Busca un cliente para comenzar</h2>
+
+        <p>
+          Ingresa el nombre o RUT del cliente que deseas desactivar.
+        </p>
+
+      </div>
+
+    }
+
+  }
+
+</section>
+
+
+<!-- =========================
+     MODAL DE CONFIRMACIÓN
+     ========================= -->
+
+@if (modalConfirmacionVisible && clienteSeleccionado) {
+
+  <div
+    class="modal-backdrop"
+    (click)="cerrarModalConfirmacion()">
+
+    <div
+      class="modal"
+      role="alertdialog"
+      aria-modal="true"
+      (click)="$event.stopPropagation()">
+
+      <div class="modal-icon warning">
+        !
+      </div>
+
+
+      <h2>
+        ¿Desactivar cliente?
+      </h2>
+
+
+      <p>
+        Estás a punto de desactivar al cliente
+        <strong>
+          {{ clienteSeleccionado.nombre }}
+        </strong>.
+      </p>
+
+
+      <p class="modal-secondary-text">
+
+        El cliente no será eliminado y su historial se conservará.
+        No podrá utilizarse para nuevos viajes mientras esté inactivo.
+
+      </p>
+
+
+      <div class="modal-actions">
+
+        <button
+          type="button"
+          class="btn-secondary"
+          [disabled]="procesandoEstado"
+          (click)="cerrarModalConfirmacion()">
+          Cancelar
+        </button>
+
+
+        <button
+          type="button"
+          class="btn-danger modal-danger"
+          [disabled]="procesandoEstado"
+          (click)="confirmarDesactivacion()">
+
+          @if (procesandoEstado) {
+            Desactivando...
+          } @else {
+            Sí, desactivar
+          }
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+}
+
+
+<!-- =========================
+     MODAL DE ERROR
+     ========================= -->
+
+@if (modalErrorVisible) {
+
+  <div
+    class="modal-backdrop"
+    (click)="cerrarModalError()">
+
+    <div
+      class="modal"
+      role="alertdialog"
+      aria-modal="true"
+      (click)="$event.stopPropagation()">
+
+      <div class="modal-icon error">
+        !
+      </div>
+
+
+      <h2>
+        {{ modalErrorTitulo }}
+      </h2>
+
+
+      <p>
+        {{ modalErrorMensaje }}
+      </p>
+
+
+      <button
+        type="button"
+        class="btn-primary modal-button"
+        (click)="cerrarModalError()">
+        Aceptar
+      </button>
+
+    </div>
+
+  </div>
+
+}
+
+
+<!-- =========================
+     MODAL DE ÉXITO
+     ========================= -->
+
+@if (modalExitoVisible) {
+
+  <div
+    class="modal-backdrop"
+    (click)="cerrarModalExito()">
+
+    <div
+      class="modal"
+      role="dialog"
+      aria-modal="true"
+      (click)="$event.stopPropagation()">
+
+      <div class="modal-icon success">
+        ✓
+      </div>
+
+
+      <h2>
+        {{ modalExitoTitulo }}
+      </h2>
+
+
+      <p>
+        {{ modalExitoMensaje }}
+      </p>
+
+
+      <button
+        type="button"
+        class="btn-primary modal-button"
+        (click)="cerrarModalExito()">
+        Aceptar
+      </button>
+
+    </div>
+
+  </div>
+
+}

@@ -20,6 +20,7 @@ import {
 export class MainLayout {
 
   menuAbierto = false;
+  submenuAbierto: string | null = null;
 
   toggleMenu(): void {
     this.menuAbierto = !this.menuAbierto;
@@ -27,6 +28,13 @@ export class MainLayout {
 
   cerrarMenu(): void {
     this.menuAbierto = false;
+  }
+
+  toggleSubmenu(menu: string): void {
+    this.submenuAbierto =
+      this.submenuAbierto === menu
+        ? null
+        : menu;
   }
 
 }

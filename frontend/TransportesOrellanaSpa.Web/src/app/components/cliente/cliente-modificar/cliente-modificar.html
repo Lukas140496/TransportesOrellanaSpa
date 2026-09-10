@@ -1,0 +1,275 @@
+<section class="cliente-modificar">
+
+  <div class="page-header">
+
+    <div>
+      <h1>Modificar Cliente</h1>
+
+      <p>
+        Busca el cliente que deseas modificar.
+      </p>
+    </div>
+
+    <button
+      type="button"
+      class="btn-secondary"
+      (click)="volver()">
+      Volver
+    </button>
+
+  </div>
+
+
+  @if (cargando) {
+
+    <div class="state-card">
+
+      <div class="state-icon">
+        ⏳
+      </div>
+
+      <h2>Cargando clientes...</h2>
+
+      <p>
+        Estamos obteniendo los clientes registrados.
+      </p>
+
+    </div>
+
+  }
+
+
+  @if (!cargando && error) {
+
+    <div class="state-card error-card">
+
+      <div class="state-icon">
+        !
+      </div>
+
+      <h2>No se pudieron cargar los clientes</h2>
+
+      <p>
+        {{ error }}
+      </p>
+
+    </div>
+
+  }
+
+
+  @if (!cargando && !error) {
+
+    <div class="search-card">
+
+      <div class="search-header">
+
+        <div class="search-icon">
+          🔎
+        </div>
+
+        <div>
+          <h2>Buscar cliente</h2>
+
+          <p>
+            Puedes buscar por nombre o RUT.
+          </p>
+        </div>
+
+      </div>
+
+
+      <div class="search-row">
+
+        <div class="search-input-wrapper">
+
+          <input
+            type="text"
+            [(ngModel)]="terminoBusqueda"
+            (keyup.enter)="buscar()"
+            placeholder="Ej: Walmart o 76.123.456-7"
+            aria-label="Buscar cliente por nombre o RUT"
+          />
+
+        </div>
+
+        <button
+          type="button"
+          class="btn-primary"
+          (click)="buscar()">
+          Buscar
+        </button>
+
+        @if (terminoBusqueda) {
+
+          <button
+            type="button"
+            class="btn-secondary"
+            (click)="limpiarBusqueda()">
+            Limpiar
+          </button>
+
+        }
+
+      </div>
+
+    </div>
+
+
+    @if (resultados.length > 0) {
+
+      <div class="results-card">
+
+        <div class="results-header">
+
+          <div>
+            <h2>Resultados de búsqueda</h2>
+
+            <p>
+              {{ resultados.length }}
+              cliente(s) encontrado(s).
+            </p>
+          </div>
+
+        </div>
+
+
+        <div class="table-container">
+
+          <table>
+
+            <thead>
+
+              <tr>
+                <th>Nombre</th>
+                <th>RUT</th>
+                <th>Comuna</th>
+                <th>Ciudad</th>
+                <th>Estado</th>
+                <th>Acción</th>
+              </tr>
+
+            </thead>
+
+            <tbody>
+
+              @for (cliente of resultados; track cliente.id) {
+
+                <tr>
+
+                  <td>
+                    <strong>
+                      {{ cliente.nombre }}
+                    </strong>
+                  </td>
+
+                  <td>
+                    {{ cliente.rut }}
+                  </td>
+
+                  <td>
+                    {{ cliente.comuna }}
+                  </td>
+
+                  <td>
+                    {{ cliente.ciudad }}
+                  </td>
+
+                  <td>
+
+                    @if (cliente.activo) {
+
+                      <span class="badge ok">
+                        Activo
+                      </span>
+
+                    } @else {
+
+                      <span class="badge warning">
+                        Inactivo
+                      </span>
+
+                    }
+
+                  </td>
+
+                  <td>
+
+                    <button
+                      type="button"
+                      class="btn-edit"
+                      (click)="modificarCliente(cliente.id)">
+                      Modificar
+                    </button>
+
+                  </td>
+
+                </tr>
+
+              }
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      </div>
+
+    }
+
+
+    @if (
+      terminoBusqueda &&
+      resultados.length === 0
+    ) {
+
+      <div class="state-card">
+
+        <div class="state-icon">
+          🔎
+        </div>
+
+        <h2>Cliente no encontrado</h2>
+
+        <p>
+          No encontramos clientes que coincidan con
+          "{{ terminoBusqueda }}".
+        </p>
+
+        <button
+          type="button"
+          class="btn-secondary"
+          (click)="limpiarBusqueda()">
+          Limpiar búsqueda
+        </button>
+
+      </div>
+
+    }
+
+
+    @if (
+      !terminoBusqueda &&
+      resultados.length === 0
+    ) {
+
+      <div class="empty-card">
+
+        <div class="empty-icon">
+          👤
+        </div>
+
+        <h2>Busca un cliente para comenzar</h2>
+
+        <p>
+          Ingresa el nombre o RUT del cliente que deseas modificar.
+        </p>
+
+      </div>
+
+    }
+
+  }
+
+</section>

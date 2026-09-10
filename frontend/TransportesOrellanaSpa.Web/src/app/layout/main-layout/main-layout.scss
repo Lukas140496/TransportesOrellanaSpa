@@ -59,6 +59,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
 
   flex-shrink: 0;
 
@@ -68,6 +69,15 @@
 
   font-size: 20px;
   font-weight: 700;
+}
+
+.logo-mark img {
+  width: 110%;
+  height: 110%;
+
+  object-fit: contain;
+
+  display: block;
 }
 
 .logo-text {
@@ -100,7 +110,12 @@
   gap: 6px;
 }
 
-.menu a {
+
+/* ========================= */
+/* ENLACES PRINCIPALES */
+/* ========================= */
+
+.menu > a {
   display: flex;
   align-items: center;
 
@@ -121,17 +136,91 @@
     color 0.2s ease;
 }
 
-.menu a:hover {
+.menu > a:hover {
   background: rgba(255, 255, 255, 0.08);
 
   color: white;
 }
 
-.menu a.active {
-  background: #2f80ed;
+.menu > a.active {
+  background: #183b68;
 
   color: white;
 }
+
+
+/* ========================= */
+/* GRUPOS DEL MENÚ */
+/* ========================= */
+
+.menu-group {
+  display: flex;
+  flex-direction: column;
+}
+
+
+/* ========================= */
+/* BOTÓN PADRE DEL ACORDEÓN */
+/* ========================= */
+
+.menu-parent {
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 10px;
+
+  padding: 12px 14px;
+
+  border: none;
+  border-radius: 9px;
+
+  background: transparent;
+
+  color: rgba(255, 255, 255, 0.72);
+
+  font: inherit;
+  font-size: 14px;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  box-sizing: border-box;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+
+.menu-parent:hover {
+  background: rgba(255, 255, 255, 0.08);
+
+  color: white;
+}
+
+.menu-parent.open {
+  background: rgba(255, 255, 255, 0.08);
+
+  color: white;
+}
+
+
+.menu-parent-content {
+  display: flex;
+  align-items: center;
+
+  gap: 13px;
+
+  min-width: 0;
+}
+
+
+/* ========================= */
+/* ICONOS */
+/* ========================= */
 
 .icon {
   width: 20px;
@@ -144,6 +233,138 @@
 
   font-size: 17px;
 }
+
+
+/* ========================= */
+/* FLECHA SUBMENÚ */
+/* ========================= */
+
+.submenu-arrow {
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  width: 18px;
+  height: 18px;
+
+  flex-shrink: 0;
+
+  font-size: 16px;
+
+  line-height: 1;
+
+  opacity: 0.75;
+}
+
+
+/* ========================= */
+/* SUBMENÚS */
+/* ========================= */
+
+.submenu {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  
+    margin: 2px 0 4px;
+  
+    max-height: 0;
+  
+    opacity: 0;
+  
+    overflow: hidden;
+  
+    transform: translateY(-6px);
+  
+    visibility: hidden;
+  
+    pointer-events: none;
+  
+    transition:
+      max-height 0.45s ease,
+      opacity 0.35s ease,
+      transform 0.45s ease,
+      visibility 0s linear 0.35s;
+  }
+  
+  
+  /* ========================= */
+  /* SUBMENÚ ABIERTO */
+  /* ========================= */
+  
+  .submenu.open {
+    max-height: 240px;
+  
+    opacity: 1;
+  
+    transform: translateY(0);
+  
+    visibility: visible;
+  
+    pointer-events: auto;
+  
+    transition:
+      max-height 0.45s ease,
+      opacity 0.35s ease,
+      transform 0.45s ease,
+      visibility 0s linear 0s;
+  }
+  
+  
+  /* ========================= */
+  /* OPCIONES DEL SUBMENÚ */
+  /* ========================= */
+  
+  .submenu a {
+    display: flex;
+    align-items: center;
+  
+    min-height: 38px;
+  
+    padding: 9px 12px 9px 47px;
+  
+    border-radius: 8px;
+  
+    color: rgba(255, 255, 255, 0.58);
+  
+    text-decoration: none;
+  
+    font-size: 13px;
+  
+    box-sizing: border-box;
+  
+    transition:
+      background 0.2s ease,
+      color 0.2s ease,
+      padding-left 0.2s ease;
+  }
+  
+  
+  /* ========================= */
+  /* HOVER SUBMENÚ */
+  /* ========================= */
+  
+  .submenu a:hover {
+    background: rgba(255, 255, 255, 0.06);
+  
+    color: white;
+  
+    padding-left: 50px;
+  }
+  
+  
+  /* ========================= */
+  /* OPCIÓN ACTIVA */
+  /* ========================= */
+  
+  .submenu a.active {
+    background: rgba(47, 128, 237, 0.18);
+  
+    color: white;
+  
+    font-weight: 600;
+  }
 
 
 /* ========================= */
@@ -417,14 +638,24 @@
 
   /* MENÚ */
 
-  .menu a {
+  .menu > a {
     justify-content: flex-start;
 
     padding: 12px 14px;
   }
 
-  .menu a span:last-child {
-    display: inline;
+  .menu-parent {
+    justify-content: space-between;
+
+    padding: 12px 14px;
+  }
+
+  .submenu a {
+    padding-left: 47px;
+  }
+
+  .submenu a:hover {
+    padding-left: 50px;
   }
 
 
@@ -452,11 +683,9 @@
   }
 
 
-    /* TOPBAR */
+  /* TOPBAR */
 
-    /* TOPBAR */
-
-    .topbar {
+  .topbar {
     height: 64px;
 
     padding: 0 16px;
@@ -464,19 +693,19 @@
     background: #0f2747;
 
     border-bottom: none;
-    }
+  }
 
-    .topbar-title {
+  .topbar-title {
     color: rgba(255, 255, 255, 0.85);
-    }
+  }
 
-    .menu-toggle {
+  .menu-toggle {
     color: white;
-    }
+  }
 
-    .menu-toggle:hover {
+  .menu-toggle:hover {
     background: rgba(255, 255, 255, 0.08);
-    }
+  }
 
 
   /* CONTENIDO */
