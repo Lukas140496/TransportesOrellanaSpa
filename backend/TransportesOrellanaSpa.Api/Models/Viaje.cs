@@ -54,6 +54,10 @@ public class Viaje
 
     public double? Kilometros { get; set; }
 
+    public decimal LitrosCombustible { get; set; }
+
+    public decimal CostoCombustible { get; set; }
+
     public decimal Tarifa { get; set; }
 
     public string Observaciones { get; set; } = string.Empty;

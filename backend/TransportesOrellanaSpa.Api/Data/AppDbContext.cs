@@ -93,6 +93,17 @@ public class AppDbContext : DbContext
             .HasColumnType("date");
 
         // =========================
+        // VIAJE - COMBUSTIBLE
+        // =========================
+        modelBuilder.Entity<Viaje>()
+            .Property(v => v.LitrosCombustible)
+            .HasPrecision(10, 2);
+
+        modelBuilder.Entity<Viaje>()
+            .Property(v => v.CostoCombustible)
+            .HasPrecision(12, 2);
+
+        // =========================
         // VIAJE - ESTADOS
         // =========================
         modelBuilder.Entity<Viaje>()

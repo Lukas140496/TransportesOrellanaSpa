@@ -1,3 +1,5 @@
+using TransportesOrellanaSpa.Api.Enums;
+
 namespace TransportesOrellanaSpa.Api.DTOs;
 
 public class CrearViajeDto
@@ -34,7 +36,17 @@ public class CrearViajeDto
 
     public double? Kilometros { get; set; }
 
+    public decimal LitrosCombustible { get; set; }
+
+    public decimal CostoCombustible { get; set; }
+
     public decimal Tarifa { get; set; }
 
     public string Observaciones { get; set; } = string.Empty;
+
+    // =========================
+    // ESTADO DEL VIAJE
+    // =========================
+
+    public EstadoViaje Estado { get; set; }
 }
