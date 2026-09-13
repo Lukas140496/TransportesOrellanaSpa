@@ -21,6 +21,9 @@ import { ViajeDetail } from './components/viaje/viaje-detail/viaje-detail';
 import { ClienteForm } from './components/cliente/cliente-form/cliente-form';
 import { ClienteModificar } from './components/cliente/cliente-modificar/cliente-modificar';
 import { ClienteDesactivar } from './components/cliente/cliente-desactivar/cliente-desactivar';
+import { ViajeForm } from './components/viaje/viaje-form/viaje-form';
+
+import { Pagos } from './components/pagos/pagos';
 
 
 export const routes: Routes = [
@@ -131,8 +134,23 @@ export const routes: Routes = [
       },
 
       {
+        path: 'viajes/nuevo',
+        component: ViajeForm
+      },
+
+      {
         path: 'viajes/:id',
         component: ViajeDetail
+      },
+
+
+      // =========================
+      // PAGOS
+      // =========================
+
+      {
+        path: 'pagos',
+        component: Pagos
       }
 
     ]

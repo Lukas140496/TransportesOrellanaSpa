@@ -185,7 +185,8 @@
           </a>
 
           <a
-            routerLink="/viajes"
+            routerLink="/viajes/nuevo"
+            routerLinkActive="active"
             (click)="cerrarMenu()">
 
             <span>Agregar Viaje</span>
@@ -425,6 +426,22 @@
         </div>
 
       </div>
+
+
+      <!-- ========================= -->
+      <!-- PAGOS -->
+      <!-- ========================= -->
+
+      <a
+        routerLink="/pagos"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        (click)="cerrarMenu()">
+
+        <span class="icon">$</span>
+        <span>Pagos</span>
+
+      </a>
 
     </nav>
 

@@ -1,34 +1,954 @@
 <div class="dashboard">
 
-    <h1>Dashboard</h1>
-  
-    <div class="cards">
-  
-      <div class="card">
-        <span class="card-title">Camiones</span>
-        <span class="card-value">{{ camionesCount }}</span>
-      </div>
-  
-      <div class="card">
-        <span class="card-title">Conductores</span>
-        <span class="card-value">{{ conductoresCount }}</span>
-      </div>
-  
-      <div class="card">
-        <span class="card-title">Remolques</span>
-        <span class="card-value">{{ remolquesCount }}</span>
-      </div>
-  
-      <div class="card">
-        <span class="card-title">Clientes</span>
-        <span class="card-value">{{ clientesCount }}</span>
-      </div>
-  
-      <div class="card">
-        <span class="card-title">Viajes</span>
-        <span class="card-value">{{ viajesCount }}</span>
-      </div>
-  
+  <!-- ========================= -->
+  <!-- ENCABEZADO -->
+  <!-- ========================= -->
+
+  <div class="dashboard-header">
+
+    <div>
+      <span class="eyebrow">OPERACIONES</span>
+
+      <h1>Dashboard</h1>
+
+      <p>
+        Resumen general de Transportes Orellana SpA
+      </p>
     </div>
-  
+
+    <div class="periodo">
+
+      <span class="periodo-label">
+        Período
+      </span>
+
+      <button
+        type="button"
+        class="periodo-selector"
+        (click)="toggleSelector()">
+
+        <span class="periodo-value">
+          {{ periodoSeleccionado.nombre }}
+        </span>
+
+        <span
+          class="periodo-arrow"
+          [class.open]="selectorAbierto">
+          ▼
+        </span>
+
+      </button>
+
+
+      @if (selectorAbierto) {
+
+        <div class="periodo-dropdown">
+
+          @for (
+            periodo of periodos;
+            track periodo.year + '-' + periodo.month
+          ) {
+
+            <button
+              type="button"
+              class="periodo-option"
+              [class.selected]="
+                periodo.year === periodoSeleccionado.year &&
+                periodo.month === periodoSeleccionado.month
+              "
+              (click)="seleccionarPeriodo(periodo)">
+
+              <span>
+                {{ periodo.nombre }}
+              </span>
+
+              @if (
+                periodo.year === periodoSeleccionado.year &&
+                periodo.month === periodoSeleccionado.month
+              ) {
+                <span class="check">
+                  ✓
+                </span>
+              }
+
+            </button>
+
+          }
+
+        </div>
+
+      }
+
+    </div>
+
+  </div>
+
+
+  <!-- ========================= -->
+  <!-- CONTENIDO DEL DASHBOARD -->
+  <!-- ========================= -->
+
+  <div
+    class="dashboard-content"
+    [class.loading]="cargando"
+    [class.period-changing]="cambiandoPeriodo">
+
+
+    <!-- ========================= -->
+    <!-- ERROR -->
+    <!-- ========================= -->
+
+    @if (error) {
+
+      <div class="error-banner">
+
+        <div class="error-icon">
+          !
+        </div>
+
+        <div>
+          <strong>Error al cargar el dashboard</strong>
+
+          <span>
+            {{ error }}
+          </span>
+        </div>
+
+      </div>
+
+    }
+
+
+    <!-- ========================= -->
+    <!-- INVENTARIO -->
+    <!-- ========================= -->
+
+    <section class="section">
+
+      <div class="section-header">
+
+        <div>
+          <h2>Flota y Recursos</h2>
+
+          <span>
+            Estado actual de la empresa
+          </span>
+        </div>
+
+      </div>
+
+
+      <div class="cards inventory-cards">
+
+        <!-- CAMIONES -->
+
+        <div class="card">
+
+          <div class="card-top">
+
+            <div class="card-icon truck-icon">
+              🚛
+            </div>
+
+            <span class="card-label">
+              Camiones
+            </span>
+
+          </div>
+
+          @if (cargando) {
+
+            <div class="skeleton-value"></div>
+
+          } @else {
+
+            <strong class="card-value">
+              {{ resumen?.camiones ?? 0 }}
+            </strong>
+
+          }
+
+          <span class="card-description">
+            Vehículos registrados
+          </span>
+
+        </div>
+
+
+        <!-- CONDUCTORES -->
+
+        <div class="card">
+
+          <div class="card-top">
+
+            <div class="card-icon driver-icon">
+              👤
+            </div>
+
+            <span class="card-label">
+              Conductores
+            </span>
+
+          </div>
+
+          @if (cargando) {
+
+            <div class="skeleton-value"></div>
+
+          } @else {
+
+            <strong class="card-value">
+              {{ resumen?.conductores ?? 0 }}
+            </strong>
+
+          }
+
+          <span class="card-description">
+            Conductores registrados
+          </span>
+
+        </div>
+
+
+        <!-- REMOLQUES -->
+
+        <div class="card">
+
+          <div class="card-top">
+
+            <div class="card-icon trailer-icon">
+              🛞
+            </div>
+
+            <span class="card-label">
+              Remolques
+            </span>
+
+          </div>
+
+          @if (cargando) {
+
+            <div class="skeleton-value"></div>
+
+          } @else {
+
+            <strong class="card-value">
+              {{ resumen?.remolques ?? 0 }}
+            </strong>
+
+          }
+
+          <span class="card-description">
+            Remolques registrados
+          </span>
+
+        </div>
+
+
+        <!-- CLIENTES -->
+
+        <div class="card">
+
+          <div class="card-top">
+
+            <div class="card-icon client-icon">
+              🏢
+            </div>
+
+            <span class="card-label">
+              Clientes
+            </span>
+
+          </div>
+
+          @if (cargando) {
+
+            <div class="skeleton-value"></div>
+
+          } @else {
+
+            <strong class="card-value">
+              {{ resumen?.clientes ?? 0 }}
+            </strong>
+
+          }
+
+          <span class="card-description">
+            Clientes registrados
+          </span>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ========================= -->
+    <!-- OPERACIÓN DEL MES -->
+    <!-- ========================= -->
+
+    <section class="section">
+
+      <div class="section-header">
+
+        <div>
+          <h2>Operación del mes</h2>
+
+          <span>
+            Indicadores correspondientes al período seleccionado
+          </span>
+        </div>
+
+      </div>
+
+
+      <div class="cards operation-cards">
+
+
+        <!-- VIAJES -->
+
+        <div class="card metric-card">
+
+          <div class="metric-icon">
+            ↗
+          </div>
+
+          <div class="metric-content">
+
+            <span class="card-label">
+              Viajes
+            </span>
+
+            @if (cargando) {
+
+              <div class="skeleton-value small"></div>
+
+            } @else {
+
+              <strong class="metric-value">
+                {{ resumen?.viajesMes ?? 0 }}
+              </strong>
+
+            }
+
+            <span class="metric-description">
+              Viajes realizados
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <!-- PRODUCCIÓN -->
+
+        <div class="card metric-card production">
+
+          <div class="metric-icon">
+            $
+          </div>
+
+          <div class="metric-content">
+
+            <span class="card-label">
+              Producción
+            </span>
+
+            @if (cargando) {
+
+              <div class="skeleton-value small"></div>
+
+            } @else {
+
+              <strong class="metric-value">
+                {{ formatoMoneda(resumen?.produccionMes ?? 0) }}
+              </strong>
+
+            }
+
+            <span class="metric-description">
+              Ingresos por viajes
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <!-- LITROS -->
+
+        <div class="card metric-card fuel">
+
+          <div class="metric-icon">
+            L
+          </div>
+
+          <div class="metric-content">
+
+            <span class="card-label">
+              Combustible
+            </span>
+
+            @if (cargando) {
+
+              <div class="skeleton-value small"></div>
+
+            } @else {
+
+              <strong class="metric-value">
+                {{ resumen?.litrosCombustibleMes ?? 0 | number:'1.0-2' }} L
+              </strong>
+
+            }
+
+            <span class="metric-description">
+              Litros utilizados
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <!-- COSTO COMBUSTIBLE -->
+
+        <div class="card metric-card fuel-cost">
+
+          <div class="metric-icon">
+            $
+          </div>
+
+          <div class="metric-content">
+
+            <span class="card-label">
+              Costo combustible
+            </span>
+
+            @if (cargando) {
+
+              <div class="skeleton-value small"></div>
+
+            } @else {
+
+              <strong class="metric-value">
+                {{ formatoMoneda(resumen?.costoCombustibleMes ?? 0) }}
+              </strong>
+
+            }
+
+            <span class="metric-description">
+              Gasto en combustible
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <!-- KILÓMETROS -->
+
+        <div class="card metric-card kilometers">
+
+          <div class="metric-icon">
+            KM
+          </div>
+
+          <div class="metric-content">
+
+            <span class="card-label">
+              Kilómetros
+            </span>
+
+            @if (cargando) {
+
+              <div class="skeleton-value small"></div>
+
+            } @else {
+
+              <strong class="metric-value">
+                {{ formatoNumero(resumen?.kilometrosMes ?? 0) }} km
+              </strong>
+
+            }
+
+            <span class="metric-description">
+              Distancia recorrida
+            </span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ========================= -->
+<!-- GRÁFICOS -->
+<!-- ========================= -->
+
+<section class="charts-grid">
+
+
+  <!-- ========================= -->
+  <!-- PRODUCCIÓN POR CAMIÓN -->
+  <!-- ========================= -->
+
+  <div class="chart-card">
+
+    <div class="chart-header">
+
+      <div>
+
+        <h2>Producción por camión</h2>
+
+        <span>
+          Rendimiento durante el período
+        </span>
+
+      </div>
+
+      <div class="chart-header-icon">
+        🚛
+      </div>
+
+    </div>
+
+
+    @if (produccionCamiones.length === 0 && !cargando) {
+
+      <div class="empty-chart">
+
+        <div class="empty-icon">
+          —
+        </div>
+
+        <strong>
+          Sin viajes en el período
+        </strong>
+
+        <span>
+          Cuando existan viajes registrados aparecerá aquí la producción por camión.
+        </span>
+
+      </div>
+
+    } @else {
+
+      <div class="bars">
+
+        @for (
+          camion of produccionCamiones;
+          track camion.camionId
+        ) {
+
+          <div class="bar-item">
+
+            <div class="bar-info">
+
+              <div class="bar-title">
+
+                <strong>
+                  {{ camion.patente }}
+                </strong>
+
+                <span>
+                  {{ camion.viajes }}
+                  {{ camion.viajes === 1 ? 'viaje' : 'viajes' }}
+                </span>
+
+              </div>
+
+              <strong class="bar-value">
+                {{ formatoMoneda(camion.produccion) }}
+              </strong>
+
+            </div>
+
+
+            <div class="bar-track">
+
+              <div
+                class="bar-fill"
+                [style.width.%]="obtenerPorcentajeCamion(camion.produccion)">
+              </div>
+
+            </div>
+
+          </div>
+
+        }
+
+      </div>
+
+    }
+
+  </div>
+
+
+  <!-- ========================= -->
+  <!-- PRODUCCIÓN POR CONDUCTOR -->
+  <!-- ========================= -->
+
+  <div class="chart-card">
+
+    <div class="chart-header">
+
+      <div>
+
+        <h2>Producción por conductor</h2>
+
+        <span>
+          Producción generada durante el período
+        </span>
+
+      </div>
+
+      <div class="chart-header-icon">
+        👤
+      </div>
+
+    </div>
+
+
+    @if (produccionConductores.length === 0 && !cargando) {
+
+      <div class="empty-chart">
+
+        <div class="empty-icon">
+          —
+        </div>
+
+        <strong>
+          Sin viajes en el período
+        </strong>
+
+        <span>
+          Cuando existan viajes registrados aparecerá aquí la producción por conductor.
+        </span>
+
+      </div>
+
+    } @else {
+
+      <div class="bars">
+
+        @for (
+          conductor of produccionConductores;
+          track conductor.conductorId
+        ) {
+
+          <div class="bar-item">
+
+            <div class="bar-info">
+
+              <div class="bar-title">
+
+                <strong>
+                  {{ conductor.nombre }}
+                </strong>
+
+                <span>
+                  {{ conductor.viajes }}
+                  {{ conductor.viajes === 1 ? 'viaje' : 'viajes' }}
+                </span>
+
+              </div>
+
+              <strong class="bar-value">
+                {{ formatoMoneda(conductor.produccion) }}
+              </strong>
+
+            </div>
+
+
+            <div class="bar-track">
+
+              <div
+                class="bar-fill"
+                [style.width.%]="obtenerPorcentajeConductor(conductor.produccion)">
+              </div>
+
+            </div>
+
+          </div>
+
+        }
+
+      </div>
+
+    }
+
+  </div>
+
+
+  <!-- ========================= -->
+  <!-- PRODUCCIÓN POR CLIENTE -->
+  <!-- ========================= -->
+
+  <div class="chart-card">
+
+    <div class="chart-header">
+
+      <div>
+
+        <h2>Producción por cliente</h2>
+
+        <span>
+          Producción generada durante el período
+        </span>
+
+      </div>
+
+      <div class="chart-header-icon">
+        🏢
+      </div>
+
+    </div>
+
+
+    @if (produccionClientes.length === 0 && !cargando) {
+
+      <div class="empty-chart">
+
+        <div class="empty-icon">
+          —
+        </div>
+
+        <strong>
+          Sin viajes en el período
+        </strong>
+
+        <span>
+          Cuando existan viajes registrados aparecerá aquí la producción por cliente.
+        </span>
+
+      </div>
+
+    } @else {
+
+      <div class="bars">
+
+        @for (
+          cliente of produccionClientes;
+          track cliente.clienteId
+        ) {
+
+          <div class="bar-item">
+
+            <div class="bar-info">
+
+              <div class="bar-title">
+
+                <strong>
+                  {{ cliente.nombre }}
+                </strong>
+
+                <span>
+                  {{ cliente.viajes }}
+                  {{ cliente.viajes === 1 ? 'viaje' : 'viajes' }}
+                </span>
+
+              </div>
+
+              <strong class="bar-value">
+                {{ formatoMoneda(cliente.produccion) }}
+              </strong>
+
+            </div>
+
+
+            <div class="bar-track">
+
+              <div
+                class="bar-fill cliente"
+                [style.width.%]="obtenerPorcentajeCliente(cliente.produccion)">
+              </div>
+
+            </div>
+
+          </div>
+
+        }
+
+      </div>
+
+    }
+
+  </div>
+
+    <!-- ========================= -->
+    <!-- COSTO DE COMBUSTIBLE POR CAMIÓN -->
+    <!-- ========================= -->
+
+    <div class="chart-card">
+
+        <div class="chart-header">
+    
+        <div>
+    
+            <h2>Costo de combustible por camión</h2>
+    
+            <span>
+            Gasto en combustible durante el período
+            </span>
+    
+        </div>
+    
+        <div class="chart-header-icon">
+            ⛽
+        </div>
+    
+        </div>
+    
+    
+        @if (costoCombustibleCamiones.length === 0 && !cargando) {
+    
+        <div class="empty-chart">
+    
+            <div class="empty-icon">
+            —
+            </div>
+    
+            <strong>
+            Sin viajes en el período
+            </strong>
+    
+            <span>
+            Cuando existan viajes registrados aparecerá aquí el costo de combustible por camión.
+            </span>
+    
+        </div>
+    
+        } @else {
+    
+        <div class="bars">
+    
+            @for (
+            camion of costoCombustibleCamiones;
+            track camion.camionId
+            ) {
+    
+            <div class="bar-item">
+    
+                <div class="bar-info">
+    
+                <div class="bar-title">
+    
+                    <strong>
+                    {{ camion.patente }}
+                    </strong>
+    
+                    <span>
+                    {{ camion.litrosCombustible | number:'1.0-2' }} L
+                    </span>
+    
+                </div>
+    
+                <strong class="bar-value">
+                    {{ formatoMoneda(camion.costoCombustible) }}
+                </strong>
+    
+                </div>
+    
+    
+                <div class="bar-track">
+    
+                <div
+                    class="bar-fill conductor"
+                    [style.width.%]="
+                    obtenerPorcentajeCostoCombustible(
+                        camion.costoCombustible
+                    )
+                    ">
+                </div>
+    
+                </div>
+    
+            </div>
+    
+            }
+    
+        </div>
+    
+        }
+    
+    </div>
+
+
+</section>
+
+
+    <!-- ========================= -->
+    <!-- RESUMEN INFERIOR -->
+    <!-- ========================= -->
+
+    <section class="summary-strip">
+
+      <div class="summary-item">
+
+        <span>
+          Producción
+        </span>
+
+        <strong>
+          {{ formatoMoneda(resumen?.produccionMes ?? 0) }}
+        </strong>
+
+      </div>
+
+
+      <div class="summary-divider"></div>
+
+
+      <div class="summary-item">
+
+        <span>
+          Combustible
+        </span>
+
+        <strong>
+          {{ formatoMoneda(resumen?.costoCombustibleMes ?? 0) }}
+        </strong>
+
+      </div>
+
+
+      <div class="summary-divider"></div>
+
+
+      <div class="summary-item">
+
+        <span>
+          Distancia
+        </span>
+
+        <strong>
+          {{ formatoNumero(resumen?.kilometrosMes ?? 0) }} km
+        </strong>
+
+      </div>
+
+
+      <div class="summary-divider"></div>
+
+
+      <div class="summary-item">
+
+        <span>
+          Viajes
+        </span>
+
+        <strong>
+          {{ resumen?.viajesMes ?? 0 }}
+        </strong>
+
+      </div>
+
+    </section>
+
+  </div>
+
 </div>

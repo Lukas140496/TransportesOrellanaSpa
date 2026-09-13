@@ -1,139 +1,434 @@
 <section class="viaje-list">
 
+  <!-- =========================
+       ENCABEZADO
+       ========================= -->
+
   <div class="header">
+
     <div>
       <h1>Viajes</h1>
       <p>Listado de viajes registrados en el sistema.</p>
     </div>
+
   </div>
 
-  @if (cargando) {
 
-    <p>Cargando viajes...</p>
+  <!-- =========================
+       FILTROS
+       ========================= -->
 
-  }
+  <div class="filtros-card">
 
-  @if (error) {
+    <div class="filtros-header">
 
-    <p class="error">
-      {{ error }}
-    </p>
+      <div>
+        <h2>Buscar viajes</h2>
+        <p>Filtra los viajes por guía, fecha o cliente.</p>
+      </div>
 
-  }
+    </div>
 
-  @if (!cargando && !error) {
 
-    <div class="tabla-container">
+    <div class="filtros-grid">
 
-      <table>
+      <!-- GUÍA -->
 
-        <thead>
+      <div class="campo">
 
-          <tr>
-            <th>Fecha</th>
-            <th>Guía de Despacho</th>
-            <th>Cliente</th>
-            <th>Origen</th>
-            <th>Destino</th>
-            <th>Camión</th>
-            <th>Conductor</th>
-            <th>Remolque</th>
-            <th>Carga</th>
-            <th>Kilómetros</th>
-            <th>Tarifa</th>
-            <th>Estado</th>
-            <th>Pago</th>
-            <th>Acciones</th>
-          </tr>
+        <label for="guia">
+          Número de guía
+        </label>
 
-        </thead>
+        <input
+          id="guia"
+          type="text"
+          [(ngModel)]="guia"
+          placeholder="Ej. GD-12345"
+          autocomplete="off"
+        />
 
-        <tbody>
+      </div>
 
-          @for (viaje of viajes; track viaje.id) {
 
-            <tr>
+      <!-- FECHA DESDE -->
 
-              <td>
-                {{ viaje.fecha | date:'dd/MM/yyyy' }}
-              </td>
+      <div class="campo">
 
-              <td>
-                {{ viaje.numeroGuiaDespacho }}
-              </td>
+        <label for="fechaDesde">
+          Fecha desde
+        </label>
 
-              <td>
-                {{ viaje.cliente.nombre }}
-              </td>
+        <input
+          id="fechaDesde"
+          type="date"
+          [(ngModel)]="fechaDesde"
+        />
 
-              <td>
-                {{ viaje.comunaOrigen }}
-              </td>
+      </div>
 
-              <td>
-                {{ viaje.comunaDestino }}
-              </td>
 
-              <td>
-                {{ viaje.camion.patente }}
-              </td>
+      <!-- FECHA HASTA -->
 
-              <td>
-                {{ viaje.conductor.nombres }}
-                {{ viaje.conductor.apellidoPaterno }}
-              </td>
+      <div class="campo">
 
-              <td>
-                {{ viaje.remolque.patente }}
-              </td>
+        <label for="fechaHasta">
+          Fecha hasta
+        </label>
 
-              <td>
-                {{ viaje.tipoCarga }}
-              </td>
+        <input
+          id="fechaHasta"
+          type="date"
+          [(ngModel)]="fechaHasta"
+        />
 
-              <td>
-                @if (viaje.kilometros !== null) {
-                  {{ viaje.kilometros }} km
-                } @else {
-                  —
-                }
-              </td>
+      </div>
 
-              <td>
-                ${{ viaje.tarifa | number:'1.0-0' }}
-              </td>
 
-              <td>
-                <span class="badge">
-                  {{ viaje.estado }}
-                </span>
-              </td>
+      <!-- CLIENTE -->
 
-              <td>
-                <span class="badge">
-                  {{ viaje.estadoPago }}
-                </span>
-              </td>
+      <div class="campo">
 
-              <td>
+        <label for="cliente">
+          Cliente
+        </label>
 
-                <button
-                  type="button"
-                  (click)="verDetalle(viaje.id)">
-                  Ver detalle
-                </button>
+        <select
+          id="cliente"
+          [(ngModel)]="clienteId"
+        >
 
-              </td>
+          <option [ngValue]="null">
+            Todos los clientes
+          </option>
 
-            </tr>
+          @for (cliente of clientes; track cliente.id) {
+
+            <option [ngValue]="cliente.id">
+              {{ cliente.nombre }}
+            </option>
 
           }
 
-        </tbody>
+        </select>
 
-      </table>
+      </div>
 
     </div>
+
+
+    <!-- ACCIONES -->
+
+    <div class="filtros-acciones">
+
+      <button
+        type="button"
+        class="btn-limpiar"
+        (click)="limpiarFiltros()">
+
+        Limpiar filtros
+
+      </button>
+
+
+      <button
+        type="button"
+        class="btn-buscar"
+        (click)="buscar()">
+
+        <span>⌕</span>
+        Buscar viajes
+
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- =========================
+       ESTADOS
+       ========================= -->
+
+  @if (cargando) {
+
+    <div class="estado">
+
+      <div class="spinner"></div>
+
+      <p>Cargando viajes...</p>
+
+    </div>
+
+  }
+
+
+  @if (error) {
+
+    <div class="estado error">
+
+      <p>{{ error }}</p>
+
+    </div>
+
+  }
+
+
+  <!-- =========================
+       TABLA
+       ========================= -->
+
+  @if (!cargando && !error) {
+
+    <div class="resultado-header">
+
+      <div>
+
+        <h2>Viajes registrados</h2>
+
+        <span>
+          {{ viajes.length }}
+          {{ viajes.length === 1 ? 'viaje encontrado' : 'viajes encontrados' }}
+        </span>
+
+      </div>
+
+    </div>
+
+
+    @if (viajes.length > 0) {
+
+      <div class="tabla-container">
+
+        <table>
+
+          <thead>
+
+            <tr>
+
+              <th>Fecha</th>
+              <th>Guía de Despacho</th>
+              <th>Cliente</th>
+              <th>Origen</th>
+              <th>Destino</th>
+              <th>Camión</th>
+              <th>Conductor</th>
+              <th>Remolque</th>
+              <th>Carga</th>
+              <th>Kilómetros</th>
+              <th>Litros</th>
+              <th>Combustible</th>
+              <th>Tarifa</th>
+              <th>Estado</th>
+              <th>Pago</th>
+              <th>Acciones</th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            @for (viaje of viajes; track viaje.id) {
+
+              <tr>
+
+                <!-- FECHA -->
+
+                <td>
+                    {{ viaje.fecha | date:'dd/MM/yyyy':'UTC' }}
+                </td>
+
+
+                <!-- GUÍA -->
+
+                <td>
+                  <strong class="guia">
+                    {{ viaje.numeroGuiaDespacho }}
+                  </strong>
+                </td>
+
+
+                <!-- CLIENTE -->
+
+                <td>
+                  {{ viaje.cliente.nombre }}
+                </td>
+
+
+                <!-- ORIGEN -->
+
+                <td>
+                  {{ viaje.origen }}
+                </td>
+
+
+                <!-- DESTINO -->
+
+                <td>
+                  {{ viaje.destino }}
+                </td>
+
+
+                <!-- CAMIÓN -->
+
+                <td>
+                  {{ viaje.camion.patente }}
+                </td>
+
+
+                <!-- CONDUCTOR -->
+
+                <td>
+                  {{ viaje.conductor.nombres }}
+                  {{ viaje.conductor.apellidoPaterno }}
+                </td>
+
+
+                <!-- REMOLQUE -->
+
+                <td>
+                  {{ viaje.remolque.patente }}
+                </td>
+
+
+                <!-- CARGA -->
+
+                <td>
+                  {{ viaje.tipoCarga }}
+                </td>
+
+
+                <!-- KILÓMETROS -->
+
+                <td>
+
+                  @if (viaje.kilometros !== null) {
+
+                    {{ viaje.kilometros | number:'1.0-0' }} km
+
+                  } @else {
+
+                    —
+
+                  }
+
+                </td>
+
+
+                <!-- LITROS -->
+
+                <td>
+
+                  {{ viaje.litrosCombustible | number:'1.2-2' }} L
+
+                </td>
+
+
+                <!-- COSTO COMBUSTIBLE -->
+
+                <td>
+
+                  ${{ viaje.costoCombustible | number:'1.0-0' }}
+
+                </td>
+
+
+                <!-- TARIFA -->
+
+                <td>
+
+                  <strong>
+                    ${{ viaje.tarifa | number:'1.0-0' }}
+                  </strong>
+
+                </td>
+
+
+                <!-- ESTADO -->
+
+                <td>
+                    <span
+                      class="badge estado-badge"
+                      [class.estado-pendiente]="viaje.estado === 'Pendiente'"
+                      [class.estado-curso]="viaje.estado === 'EnCurso'"
+                      [class.estado-completado]="viaje.estado === 'Completado'"
+                      [class.estado-cancelado]="viaje.estado === 'Cancelado'">
+                  
+                        {{ formatoEstadoViaje(viaje.estado) }}
+                  
+                    </span>
+                </td>
+
+
+                <!-- PAGO -->
+
+                <td>
+
+                    <span
+                    class="badge pago-badge"
+                    [class.pago-pendiente]="viaje.estadoPago === 'Pendiente'"
+                    [class.pago-pagado]="viaje.estadoPago === 'Pagado'">
+                  
+                        {{ viaje.estadoPago }}
+                  
+                    </span>
+
+                </td>
+
+
+                <!-- ACCIONES -->
+
+                <td>
+
+                  <button
+                    type="button"
+                    class="btn-detalle"
+                    (click)="verDetalle(viaje.id)">
+
+                    Ver detalle
+
+                  </button>
+
+                </td>
+
+              </tr>
+
+            }
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    } @else {
+
+      <div class="sin-resultados">
+
+        <div class="sin-resultados-icon">
+          ⌕
+        </div>
+
+        <h3>No se encontraron viajes</h3>
+
+        <p>
+          No existen viajes que coincidan con los filtros seleccionados.
+        </p>
+
+        <button
+          type="button"
+          class="btn-limpiar"
+          (click)="limpiarFiltros()">
+
+          Limpiar filtros
+
+        </button>
+
+      </div>
+
+    }
 
   }
 

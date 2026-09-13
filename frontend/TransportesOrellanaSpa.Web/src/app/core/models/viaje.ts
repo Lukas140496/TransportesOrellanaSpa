@@ -36,6 +36,10 @@ export interface Viaje {
 
   kilometros: number;
 
+  litrosCombustible: number;
+
+  costoCombustible: number;
+
   tarifa: number;
 
   observaciones: string;
