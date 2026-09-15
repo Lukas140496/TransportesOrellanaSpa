@@ -70,8 +70,27 @@ public class DashboardController : ControllerBase
             // INDICADORES GENERALES
             // ===================================
 
-            var camiones = await _context.Camiones
+            var camionesActivos = _context.Camiones
+                .Where(c => c.Activo);
+
+            var camiones = await camionesActivos
                 .CountAsync();
+
+            var camionesRevisionVencida = await camionesActivos
+                .CountAsync(c => !c.RevisionAlDia);
+
+            var camionesPermisoVencido = await camionesActivos
+                .CountAsync(c => !c.PermisoAlDia);
+
+            var camionesSeguroVencido = await camionesActivos
+                .CountAsync(c => !c.SeguroAlDia);
+
+            var camionesDocumentacionVencida = await camionesActivos
+                .CountAsync(c =>
+                    !c.RevisionAlDia ||
+                    !c.PermisoAlDia ||
+                    !c.SeguroAlDia
+                );
 
             var conductores = await _context.Conductores
                 .CountAsync();
@@ -111,7 +130,23 @@ public class DashboardController : ControllerBase
                     .SumAsync(v => v.CostoCombustible),
 
                 KilometrosMes = await viajesMes
-                    .SumAsync(v => v.Kilometros ?? 0)
+                    .SumAsync(v => v.Kilometros ?? 0),
+
+                // ===================================
+                // DOCUMENTACIÓN DE LA FLOTA
+                // ===================================
+
+                CamionesRevisionVencida =
+                    camionesRevisionVencida,
+
+                CamionesPermisoVencido =
+                    camionesPermisoVencido,
+
+                CamionesSeguroVencido =
+                    camionesSeguroVencido,
+
+                CamionesDocumentacionVencida =
+                    camionesDocumentacionVencida
             };
 
             return Ok(resumen);
@@ -230,7 +265,7 @@ public class DashboardController : ControllerBase
         }
     }
 
-        // =========================================================
+    // =========================================================
     // GET: api/dashboard/produccion-por-cliente
     // =========================================================
 

@@ -25,6 +25,7 @@ export class CamionList implements OnInit {
   error = '';
 
   busqueda = '';
+  filtroEstado: 'todos' | 'activos' | 'inactivos' = 'todos';
 
   ngOnInit(): void {
 
@@ -62,27 +63,50 @@ export class CamionList implements OnInit {
         .trim()
         .toLowerCase();
 
-    if (!texto) {
-      return this.camiones;
-    }
-
     return this.camiones.filter(camion => {
 
-      return (
+      const coincideBusqueda =
+        !texto ||
         camion.patente
           .toLowerCase()
           .includes(texto) ||
-
         camion.marca
           .toLowerCase()
           .includes(texto) ||
-
         camion.modelo
           .toLowerCase()
-          .includes(texto)
-      );
+          .includes(texto);
+
+      const coincideEstado =
+        this.filtroEstado === 'todos' ||
+        (
+          this.filtroEstado === 'activos' &&
+          camion.activo
+        ) ||
+        (
+          this.filtroEstado === 'inactivos' &&
+          !camion.activo
+        );
+
+      return coincideBusqueda && coincideEstado;
 
     });
+
+  }
+
+  get cantidadActivos(): number {
+
+    return this.camiones.filter(
+      camion => camion.activo
+    ).length;
+
+  }
+
+  get cantidadInactivos(): number {
+
+    return this.camiones.filter(
+      camion => !camion.activo
+    ).length;
 
   }
 
@@ -102,16 +126,34 @@ export class CamionList implements OnInit {
 
   }
 
-  limpiarBusqueda(): void {
+  cambiarFiltroEstado(
+    filtro: 'todos' | 'activos' | 'inactivos'
+  ): void {
 
-    this.busqueda = '';
+    this.filtroEstado = filtro;
 
   }
 
-  hayBusqueda(): boolean {
+  limpiarFiltros(): void {
 
-    return this.busqueda.trim().length > 0;
+    this.busqueda = '';
+    this.filtroEstado = 'todos';
 
+  }
+
+  hayFiltrosAplicados(): boolean {
+
+    return (
+      this.busqueda.trim().length > 0 ||
+      this.filtroEstado !== 'todos'
+    );
+
+  }
+
+  limpiarBusqueda(): void {
+
+    this.busqueda = '';
+  
   }
 
   verDetalle(patente: string): void {

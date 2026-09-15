@@ -20,6 +20,7 @@ export interface Camion {
   revisionAlDia: boolean;
   permisoAlDia: boolean;
   seguroAlDia: boolean;
+  activo: boolean;
   conductoresHabituales: ConductorResumen[];
   remolques: RemolqueResumen[];
 }

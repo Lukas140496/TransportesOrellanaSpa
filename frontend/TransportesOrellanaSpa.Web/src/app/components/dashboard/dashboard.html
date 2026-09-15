@@ -882,71 +882,85 @@
 
 
     <!-- ========================= -->
-    <!-- RESUMEN INFERIOR -->
+    <!-- ESTADO DE DOCUMENTACIÓN -->
     <!-- ========================= -->
 
     <section class="summary-strip">
 
-      <div class="summary-item">
-
+        <div
+        class="summary-item document-alert"
+        [class.has-alert]="(resumen?.camionesRevisionVencida ?? 0) > 0"
+        >
         <span>
-          Producción
+            Revisión técnica
         </span>
-
+    
         <strong>
-          {{ formatoMoneda(resumen?.produccionMes ?? 0) }}
+            {{ resumen?.camionesRevisionVencida ?? 0 }}
         </strong>
-
-      </div>
-
-
-      <div class="summary-divider"></div>
-
-
-      <div class="summary-item">
-
+    
+        <small>
+            camiones vencidos
+        </small>
+        </div>
+    
+        <div class="summary-divider"></div>
+    
+        <div
+        class="summary-item document-alert"
+        [class.has-alert]="(resumen?.camionesPermisoVencido ?? 0) > 0"
+        >
         <span>
-          Combustible
+            Permiso de circulación
         </span>
-
+    
         <strong>
-          {{ formatoMoneda(resumen?.costoCombustibleMes ?? 0) }}
+            {{ resumen?.camionesPermisoVencido ?? 0 }}
         </strong>
-
-      </div>
-
-
-      <div class="summary-divider"></div>
-
-
-      <div class="summary-item">
-
+    
+        <small>
+            camiones vencidos
+        </small>
+        </div>
+    
+        <div class="summary-divider"></div>
+    
+        <div
+        class="summary-item document-alert"
+        [class.has-alert]="(resumen?.camionesSeguroVencido ?? 0) > 0"
+        >
         <span>
-          Distancia
+            Seguro obligatorio
         </span>
-
+    
         <strong>
-          {{ formatoNumero(resumen?.kilometrosMes ?? 0) }} km
+            {{ resumen?.camionesSeguroVencido ?? 0 }}
         </strong>
-
-      </div>
-
-
-      <div class="summary-divider"></div>
-
-
-      <div class="summary-item">
-
+    
+        <small>
+            camiones vencidos
+        </small>
+        </div>
+    
+        <div class="summary-divider"></div>
+    
+        <div
+        class="summary-item document-alert"
+        [class.has-alert]="(resumen?.camionesDocumentacionVencida ?? 0) > 0"
+        >
         <span>
-          Viajes
+            Algún documento
         </span>
-
+    
         <strong>
-          {{ resumen?.viajesMes ?? 0 }}
+            {{ resumen?.camionesDocumentacionVencida ?? 0 }}
         </strong>
-
-      </div>
-
+    
+        <small>
+            camiones afectados
+        </small>
+        </div>
+    
     </section>
 
   </div>

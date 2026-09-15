@@ -29,6 +29,7 @@ import { ViajeModificar } from './components/viaje/viaje-modificar/viaje-modific
 import { ViajeEliminar } from './components/viaje/viaje-eliminar/viaje-eliminar';
 import { CamionForm } from './components/camion/camion-form/camion-form';
 import { CamionModificar } from './components/camion/camion-modificar/camion-modificar';
+import { CamionDesactivar } from './components/camion/camion-desactivar/camion-desactivar';
 
 import { Pagos } from './components/pagos/pagos';
 
@@ -83,6 +84,11 @@ export const routes: Routes = [
       {
         path: 'camiones/asignar-conductor',
         component: CamionAsignarConductor
+      },
+
+      {
+        path: 'camiones/desactivar',
+        component: CamionDesactivar
       },
 
       {

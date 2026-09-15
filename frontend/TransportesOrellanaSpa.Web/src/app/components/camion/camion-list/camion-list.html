@@ -67,6 +67,10 @@
 
   @if (!cargando && !error) {
 
+    <!-- =====================================================
+         RESUMEN
+         ===================================================== -->
+
     <div class="resumen">
 
       <div class="resumen-card">
@@ -83,6 +87,48 @@
 
           <strong>
             {{ camiones.length }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <div class="resumen-card">
+
+        <div class="resumen-icon activo">
+          ✓
+        </div>
+
+        <div>
+
+          <span>
+            Camiones activos
+          </span>
+
+          <strong>
+            {{ cantidadActivos }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <div class="resumen-card">
+
+        <div class="resumen-icon inactivo">
+          !
+        </div>
+
+        <div>
+
+          <span>
+            Camiones inactivos
+          </span>
+
+          <strong>
+            {{ cantidadInactivos }}
           </strong>
 
         </div>
@@ -134,6 +180,10 @@
     </div>
 
 
+    <!-- =====================================================
+         FILTROS
+         ===================================================== -->
+
     <div class="filtros-card">
 
       <div class="busqueda">
@@ -165,8 +215,65 @@
 
       </div>
 
+
+      <div class="filtro-estado">
+
+        <span class="filtro-label">
+          Estado:
+        </span>
+
+
+        <button
+          type="button"
+          [class.active]="filtroEstado === 'todos'"
+          (click)="cambiarFiltroEstado('todos')">
+
+          Todos
+
+        </button>
+
+
+        <button
+          type="button"
+          [class.active]="filtroEstado === 'activos'"
+          (click)="cambiarFiltroEstado('activos')">
+
+          Activos
+
+        </button>
+
+
+        <button
+          type="button"
+          [class.active]="filtroEstado === 'inactivos'"
+          (click)="cambiarFiltroEstado('inactivos')">
+
+          Inactivos
+
+        </button>
+
+      </div>
+
+
+      @if (hayFiltrosAplicados()) {
+
+        <button
+          type="button"
+          class="btn-limpiar-filtros"
+          (click)="limpiarFiltros()">
+
+          Limpiar filtros
+
+        </button>
+
+      }
+
     </div>
 
+
+    <!-- =====================================================
+         RESULTADOS
+         ===================================================== -->
 
     <div class="resultado-info">
 
@@ -231,6 +338,10 @@
 
               <th>
                 Permiso
+              </th>
+
+              <th>
+                Estado
               </th>
 
               <th class="columna-acciones">
@@ -368,30 +479,58 @@
 
                 </td>
 
+
                 <td>
 
-                    @if (camion.permisoAlDia) {
-                  
-                      <span class="badge al-dia">
-                  
-                        <span class="badge-dot"></span>
-                  
-                        Al día
-                  
-                      </span>
-                  
-                    } @else {
-                  
-                      <span class="badge vencida">
-                  
-                        <span class="badge-dot"></span>
-                  
-                        Vencido
-                  
-                      </span>
-                  
-                    }
-                  
+                  @if (camion.permisoAlDia) {
+
+                    <span class="badge al-dia">
+
+                      <span class="badge-dot"></span>
+
+                      Al día
+
+                    </span>
+
+                  } @else {
+
+                    <span class="badge vencida">
+
+                      <span class="badge-dot"></span>
+
+                      Vencido
+
+                    </span>
+
+                  }
+
+                </td>
+
+
+                <td>
+
+                  @if (camion.activo) {
+
+                    <span class="badge activo">
+
+                      <span class="badge-dot"></span>
+
+                      Activo
+
+                    </span>
+
+                  } @else {
+
+                    <span class="badge inactivo">
+
+                      <span class="badge-dot"></span>
+
+                      Inactivo
+
+                    </span>
+
+                  }
+
                 </td>
 
 
@@ -438,15 +577,15 @@
         </h2>
 
         <p>
-          No hay camiones que coincidan con tu búsqueda.
+          No hay camiones que coincidan con los filtros seleccionados.
         </p>
 
         <button
           type="button"
           class="btn-restablecer"
-          (click)="limpiarBusqueda()">
+          (click)="limpiarFiltros()">
 
-          Limpiar búsqueda
+          Limpiar filtros
 
         </button>
 

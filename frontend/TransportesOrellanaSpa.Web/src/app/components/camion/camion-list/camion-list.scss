@@ -1,126 +1,193 @@
 .camion-list {
+
   max-width: 1400px;
+
   margin: 0 auto;
+
   padding: 32px;
+
   color: #172b4d;
+
 }
 
 
 // =====================================================
+
 // HEADER
+
 // =====================================================
 
 .page-header {
+
   display: flex;
+
   align-items: center;
+
   justify-content: space-between;
+
   gap: 24px;
 
   margin-bottom: 28px;
+
 }
 
 .header-content {
+
   display: flex;
+
   align-items: center;
+
   gap: 16px;
+
 }
 
 .header-icon {
+
   display: flex;
+
   align-items: center;
+
   justify-content: center;
 
   width: 48px;
+
   height: 48px;
+
   flex-shrink: 0;
 
   border: 1px solid #dce9f8;
+
   border-radius: 12px;
 
   background: #edf5ff;
 
   font-size: 21px;
+
 }
 
 .page-header h1 {
+
   margin: 0 0 5px;
 
   color: #172b4d;
 
   font-size: 28px;
+
   font-weight: 700;
+
   line-height: 1.2;
+
 }
 
 .page-header p {
+
   margin: 0;
 
   color: #6b778c;
 
   font-size: 14px;
+
 }
 
 
 // =====================================================
+
 // RESUMEN
+
 // =====================================================
 
 .resumen {
+
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+
   gap: 16px;
 
   margin-bottom: 20px;
+
 }
 
 .resumen-card {
+
   display: flex;
+
   align-items: center;
+
   gap: 14px;
 
   min-height: 82px;
+
   padding: 16px 18px;
 
   border: 1px solid #e5eaf0;
+
   border-radius: 12px;
 
   background: #fff;
 
   box-shadow:
+
     0 3px 14px rgba(15, 39, 71, 0.04);
+
 }
 
 .resumen-icon {
+
   display: flex;
+
   align-items: center;
+
   justify-content: center;
 
   width: 42px;
+
   height: 42px;
+
   flex-shrink: 0;
 
   border-radius: 10px;
 
   font-size: 18px;
+
   font-weight: 700;
+
 }
 
 .resumen-icon.total {
+
   background: #edf5ff;
+
   color: #2f80ed;
+
 }
 
 .resumen-icon.activo {
+
   background: #edf8f1;
+
   color: #18794e;
+
+}
+
+.resumen-icon.inactivo {
+
+  background: #fff0f0;
+
+  color: #c53030;
+
 }
 
 .resumen-icon.vencido {
+
   background: #fff0f0;
+
   color: #c53030;
+
 }
 
 .resumen-card span {
+
   display: block;
 
   margin-bottom: 4px;
@@ -128,128 +195,311 @@
   color: #7a869a;
 
   font-size: 12px;
+
   font-weight: 600;
+
 }
 
 .resumen-card strong {
+
   display: block;
 
   color: #172b4d;
 
   font-size: 21px;
+
   font-weight: 700;
+
 }
 
 
 // =====================================================
-// BUSQUEDA
+
+// FILTROS
+
 // =====================================================
 
 .filtros-card {
+
   display: flex;
+
   align-items: center;
+
+  gap: 18px;
 
   padding: 16px;
 
   border: 1px solid #e5eaf0;
+
   border-radius: 12px;
 
   background: #fff;
 
   box-shadow:
+
     0 3px 14px rgba(15, 39, 71, 0.04);
+
 }
 
 .busqueda {
+
   position: relative;
 
   display: flex;
+
   align-items: center;
 
-  width: 100%;
+  flex: 1;
+
+  min-width: 250px;
+
 }
 
 .search-icon {
+
   position: absolute;
+
   left: 13px;
 
   color: #7a869a;
 
   font-size: 21px;
+
   line-height: 1;
 
   pointer-events: none;
+
 }
 
 .busqueda input {
+
   width: 100%;
+
   height: 42px;
+
   box-sizing: border-box;
 
   padding: 0 40px 0 40px;
 
   border: 1px solid #d8dee8;
+
   border-radius: 8px;
 
   background: #fff;
+
   color: #172b4d;
 
   font: inherit;
+
   font-size: 13px;
 
   outline: none;
 
   transition:
+
     border-color 0.2s ease,
+
     box-shadow 0.2s ease;
+
 }
 
 .busqueda input:focus {
+
   border-color: #2f80ed;
 
   box-shadow:
+
     0 0 0 3px rgba(47, 128, 237, 0.1);
+
 }
 
 .busqueda input::placeholder {
+
   color: #a5adba;
+
 }
 
 .btn-limpiar-busqueda {
+
   position: absolute;
+
   right: 10px;
 
   display: flex;
+
   align-items: center;
+
   justify-content: center;
 
   width: 24px;
+
   height: 24px;
 
   border: 0;
+
   border-radius: 50%;
 
   background: #eef1f5;
+
   color: #6b778c;
 
   font-size: 17px;
+
   line-height: 1;
 
   cursor: pointer;
+
 }
 
 .btn-limpiar-busqueda:hover {
+
   background: #e2e7ee;
+
   color: #344563;
+
 }
 
 
 // =====================================================
+
+// FILTRO ESTADO
+
+// =====================================================
+
+.filtro-estado {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 5px;
+
+  flex-shrink: 0;
+
+}
+
+.filtro-label {
+
+  margin-right: 4px;
+
+  color: #6b778c;
+
+  font-size: 12px;
+
+  font-weight: 600;
+
+}
+
+.filtro-estado button {
+
+  height: 34px;
+
+  padding: 0 11px;
+
+  border: 1px solid #d8dee8;
+
+  border-radius: 7px;
+
+  background: #fff;
+
+  color: #6b778c;
+
+  font-size: 12px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+
+    background 0.2s ease,
+
+    border-color 0.2s ease,
+
+    color 0.2s ease;
+
+}
+
+.filtro-estado button:hover {
+
+  background: #f8fafc;
+
+  border-color: #c5ccd7;
+
+  color: #344563;
+
+}
+
+.filtro-estado button.active {
+
+  border-color: #2f80ed;
+
+  background: #edf5ff;
+
+  color: #2f80ed;
+
+}
+
+
+// =====================================================
+
+// LIMPIAR FILTROS
+
+// =====================================================
+
+.btn-limpiar-filtros {
+
+  height: 34px;
+
+  padding: 0 12px;
+
+  border: 1px solid #d8dee8;
+
+  border-radius: 7px;
+
+  background: #fff;
+
+  color: #52606d;
+
+  font-size: 12px;
+
+  font-weight: 600;
+
+  white-space: nowrap;
+
+  cursor: pointer;
+
+  transition:
+
+    background 0.2s ease,
+
+    border-color 0.2s ease,
+
+    color 0.2s ease;
+
+}
+
+.btn-limpiar-filtros:hover {
+
+  border-color: #b9d3f4;
+
+  background: #edf5ff;
+
+  color: #2f80ed;
+
+}
+
+
+// =====================================================
+
 // RESULTADOS
+
 // =====================================================
 
 .resultado-info {
+
   display: flex;
+
   justify-content: flex-end;
 
   margin: 14px 2px 10px;
@@ -257,42 +507,58 @@
   color: #7a869a;
 
   font-size: 12px;
+
 }
 
 .resultado-info strong {
+
   color: #344563;
+
   font-weight: 700;
+
 }
 
 
 // =====================================================
+
 // TABLA
+
 // =====================================================
 
 .tabla-container {
+
   overflow-x: auto;
 
   border: 1px solid #e5eaf0;
+
   border-radius: 12px;
 
   background: #fff;
 
   box-shadow:
+
     0 4px 18px rgba(15, 39, 71, 0.05);
+
 }
 
 table {
+
   width: 100%;
-  min-width: 1050px;
+
+  min-width: 1180px;
 
   border-collapse: collapse;
+
 }
 
 thead {
+
   background: #f8fafc;
+
 }
 
 th {
+
   height: 48px;
 
   padding: 0 18px;
@@ -302,15 +568,19 @@ th {
   color: #6b778c;
 
   font-size: 11px;
+
   font-weight: 700;
 
   text-align: left;
+
   text-transform: uppercase;
 
   letter-spacing: 0.35px;
+
 }
 
 td {
+
   padding: 15px 18px;
 
   border-bottom: 1px solid #edf0f4;
@@ -320,63 +590,88 @@ td {
   font-size: 13px;
 
   vertical-align: middle;
+
 }
 
 tbody tr:last-child td {
+
   border-bottom: 0;
+
 }
 
 tbody tr {
+
   transition:
+
     background 0.15s ease;
+
 }
 
 tbody tr:hover {
+
   background: #fbfcfe;
+
 }
 
 
 // =====================================================
+
 // CAMION
+
 // =====================================================
 
 .camion-info {
+
   display: flex;
+
   align-items: center;
+
   gap: 11px;
 
   min-width: 170px;
+
 }
 
 .camion-avatar {
+
   display: flex;
+
   align-items: center;
+
   justify-content: center;
 
   width: 38px;
+
   height: 38px;
+
   flex-shrink: 0;
 
   border-radius: 10px;
 
   background: #edf5ff;
+
   color: #2f80ed;
 
   font-size: 17px;
+
 }
 
 .camion-info strong {
+
   display: block;
 
   color: #172b4d;
 
   font-size: 13px;
+
   font-weight: 700;
 
   letter-spacing: 0.2px;
+
 }
 
 .camion-info span {
+
   display: block;
 
   margin-top: 3px;
@@ -384,195 +679,330 @@ tbody tr:hover {
   color: #8a94a6;
 
   font-size: 11px;
+
 }
 
 
 // =====================================================
+
 // DATOS
+
 // =====================================================
 
 .dato-principal {
+
   color: #344563;
 
   font-size: 13px;
+
   font-weight: 600;
+
 }
 
 .dato-secundario {
+
   color: #52606d;
 
   font-size: 13px;
+
 }
 
 
 // =====================================================
+
 // TIPO
+
 // =====================================================
 
 .tipo-camion {
+
   display: inline-flex;
+
   align-items: center;
 
   padding: 5px 9px;
 
   border: 1px solid #e2e8f0;
+
   border-radius: 6px;
 
   background: #f8fafc;
+
   color: #52606d;
 
   font-size: 11px;
+
   font-weight: 600;
 
   white-space: nowrap;
+
 }
 
 
 // =====================================================
+
 // CONTADORES
+
 // =====================================================
 
 .contador {
+
   display: inline-flex;
+
   align-items: center;
+
   gap: 6px;
 
   color: #344563;
 
   font-size: 13px;
+
   font-weight: 600;
+
 }
 
 .contador-icon {
+
   font-size: 13px;
+
 }
 
 
 // =====================================================
-// REVISION
+
+// BADGES
+
 // =====================================================
 
 .badge {
+
   display: inline-flex;
+
   align-items: center;
+
   gap: 6px;
-  white-space: nowrap;
 
   padding: 5px 9px;
 
   border-radius: 999px;
 
   font-size: 11px;
+
   font-weight: 700;
-}
 
-table th:nth-child(8),
-table td:nth-child(8) {
-  min-width: 105px;
-}
+  white-space: nowrap;
 
-table th:nth-child(9),
-table td:nth-child(9) {
-  min-width: 115px;
 }
 
 .badge-dot {
+
   width: 6px;
+
   height: 6px;
 
   border-radius: 50%;
+
 }
 
+
+// -----------------------------------------------------
+// Revisión / permiso
+// -----------------------------------------------------
+
 .badge.al-dia {
+
   background: #edf8f1;
+
   color: #18794e;
+
 }
 
 .badge.al-dia .badge-dot {
+
   background: #2ca66f;
+
 }
 
 .badge.vencida {
+
   background: #fff0f0;
+
   color: #c53030;
+
 }
 
 .badge.vencida .badge-dot {
+
   background: #d64545;
+
+}
+
+
+// -----------------------------------------------------
+// Estado del camión
+// -----------------------------------------------------
+
+.badge.activo {
+
+  background: #edf8f1;
+
+  color: #18794e;
+
+}
+
+.badge.activo .badge-dot {
+
+  background: #2ca66f;
+
+}
+
+.badge.inactivo {
+
+  background: #fff0f0;
+
+  color: #c53030;
+
+}
+
+.badge.inactivo .badge-dot {
+
+  background: #d64545;
+
 }
 
 
 // =====================================================
+
+// ANCHOS ESPECÍFICOS
+
+// =====================================================
+
+table th:nth-child(8),
+
+table td:nth-child(8) {
+
+  min-width: 105px;
+
+}
+
+table th:nth-child(9),
+
+table td:nth-child(9) {
+
+  min-width: 115px;
+
+}
+
+table th:nth-child(10),
+
+table td:nth-child(10) {
+
+  min-width: 105px;
+
+}
+
+
+// =====================================================
+
 // ACCIONES
+
 // =====================================================
 
 .columna-acciones {
+
   text-align: right;
+
 }
 
 .btn-detalle {
+
   display: inline-flex;
+
   align-items: center;
+
   gap: 6px;
 
   height: 34px;
+
   padding: 0 11px;
 
   border: 1px solid #d8dee8;
+
   border-radius: 7px;
 
   background: #fff;
+
   color: #344563;
 
   font-size: 12px;
+
   font-weight: 600;
 
   cursor: pointer;
 
   transition:
+
     background 0.2s ease,
+
     border-color 0.2s ease,
+
     color 0.2s ease,
+
     transform 0.15s ease;
+
 }
 
 .btn-detalle span {
+
   color: #7a869a;
 
   font-size: 14px;
 
   transition:
+
     transform 0.15s ease;
+
 }
 
 .btn-detalle:hover {
+
   border-color: #b9d3f4;
 
   background: #edf5ff;
+
   color: #2f80ed;
 
   transform: translateY(-1px);
+
 }
 
 .btn-detalle:hover span {
+
   color: #2f80ed;
 
   transform: translateX(2px);
+
 }
 
 
 // =====================================================
+
 // SIN RESULTADOS
+
 // =====================================================
 
 .sin-resultados {
+
   display: flex;
+
   align-items: center;
+
   flex-direction: column;
 
   padding: 60px 24px;
 
   border: 1px solid #e5eaf0;
+
   border-radius: 12px;
 
   background: #fff;
@@ -580,229 +1010,368 @@ table td:nth-child(9) {
   text-align: center;
 
   box-shadow:
+
     0 4px 18px rgba(15, 39, 71, 0.04);
+
 }
 
 .sin-resultados-icon {
+
   display: flex;
+
   align-items: center;
+
   justify-content: center;
 
   width: 54px;
+
   height: 54px;
+
   margin-bottom: 16px;
 
   border-radius: 50%;
 
   background: #f1f4f8;
+
   color: #7a869a;
 
   font-size: 24px;
+
 }
 
 .sin-resultados h2 {
+
   margin: 0 0 7px;
 
   color: #344563;
 
   font-size: 17px;
+
   font-weight: 700;
+
 }
 
 .sin-resultados p {
+
   margin: 0 0 20px;
 
   color: #7a869a;
 
   font-size: 13px;
+
 }
 
 .btn-restablecer {
+
   height: 38px;
+
   padding: 0 15px;
 
   border: 1px solid #d8dee8;
+
   border-radius: 7px;
 
   background: #fff;
+
   color: #344563;
 
   font-size: 12px;
+
   font-weight: 600;
 
   cursor: pointer;
 
   transition:
+
     background 0.2s ease,
+
     border-color 0.2s ease;
+
 }
 
 .btn-restablecer:hover {
+
   background: #f8fafc;
+
   border-color: #c5ccd7;
+
 }
 
 
 // =====================================================
+
 // CARGANDO
+
 // =====================================================
 
 .estado-container {
+
   display: flex;
+
   align-items: center;
+
   justify-content: center;
+
   flex-direction: column;
 
   min-height: 260px;
 
   border: 1px solid #e5eaf0;
+
   border-radius: 12px;
 
   background: #fff;
 
   box-shadow:
+
     0 4px 18px rgba(15, 39, 71, 0.04);
+
 }
 
 .estado-container p {
+
   margin: 14px 0 0;
 
   color: #7a869a;
 
   font-size: 13px;
+
 }
 
 .loading-spinner {
+
   width: 28px;
+
   height: 28px;
 
   border: 3px solid #e5eaf0;
+
   border-top-color: #2f80ed;
 
   border-radius: 50%;
 
   animation: spin 0.8s linear infinite;
+
 }
 
 @keyframes spin {
 
   to {
+
     transform: rotate(360deg);
+
   }
 
 }
 
 
 // =====================================================
+
 // ERROR
+
 // =====================================================
 
 .error-container {
+
   display: flex;
+
   align-items: center;
+
   gap: 14px;
 
   padding: 18px;
 
   border: 1px solid #f1cccc;
+
   border-radius: 10px;
 
   background: #fff8f8;
 
   color: #7f1d1d;
+
 }
 
 .error-icon {
+
   display: flex;
+
   align-items: center;
+
   justify-content: center;
 
   width: 38px;
+
   height: 38px;
+
   flex-shrink: 0;
 
   border-radius: 50%;
 
   background: #fdecec;
+
   color: #c53030;
 
   font-size: 17px;
+
   font-weight: 700;
+
 }
 
 .error-container strong {
+
   display: block;
 
   margin-bottom: 4px;
 
   font-size: 13px;
+
 }
 
 .error-container p {
+
   margin: 0;
 
   color: #9b4a4a;
 
   font-size: 12px;
+
 }
 
 
 // =====================================================
+
 // RESPONSIVE
+
 // =====================================================
+
+@media (max-width: 1250px) {
+
+  .resumen {
+
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+
+  }
+
+  .filtros-card {
+
+    flex-wrap: wrap;
+
+  }
+
+  .busqueda {
+
+    flex-basis: 100%;
+
+  }
+
+}
 
 @media (max-width: 1000px) {
 
   .resumen {
-    grid-template-columns: 1fr;
+
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
   }
 
 }
-
 
 @media (max-width: 700px) {
 
   .camion-list {
+
     padding: 20px 16px;
+
   }
 
   .page-header h1 {
+
     font-size: 24px;
+
+  }
+
+  .filtros-card {
+
+    align-items: stretch;
+
+    flex-direction: column;
+
+  }
+
+  .busqueda {
+
+    min-width: 0;
+
+    width: 100%;
+
+  }
+
+  .filtro-estado {
+
+    flex-wrap: wrap;
+
+  }
+
+  .btn-limpiar-filtros {
+
+    align-self: flex-start;
+
   }
 
   .resultado-info {
+
     justify-content: flex-start;
+
   }
 
   th,
+
   td {
+
     padding: 13px 14px;
+
   }
 
 }
 
-
 @media (max-width: 480px) {
 
   .camion-list {
+
     padding: 16px 12px;
+
   }
 
   .header-icon {
+
     width: 42px;
+
     height: 42px;
+
   }
 
   .page-header h1 {
+
     font-size: 22px;
+
   }
 
   .page-header p {
+
     font-size: 12px;
+
+  }
+
+  .resumen {
+
+    grid-template-columns: 1fr;
+
   }
 
   .resumen-card {
+
     min-height: 70px;
+
   }
 
 }

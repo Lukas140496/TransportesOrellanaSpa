@@ -3,9 +3,19 @@ export interface DashboardResumen {
   conductores: number;
   remolques: number;
   clientes: number;
+
   viajesMes: number;
   produccionMes: number;
   litrosCombustibleMes: number;
   costoCombustibleMes: number;
   kilometrosMes: number;
+
+  // ===================================
+  // DOCUMENTACIÓN DE LA FLOTA
+  // ===================================
+
+  camionesRevisionVencida: number;
+  camionesPermisoVencido: number;
+  camionesSeguroVencido: number;
+  camionesDocumentacionVencida: number;
 }

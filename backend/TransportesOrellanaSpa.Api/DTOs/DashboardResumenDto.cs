@@ -19,4 +19,16 @@ public class DashboardResumenDto
     public decimal CostoCombustibleMes { get; set; }
 
     public double KilometrosMes { get; set; }
+
+    // ===================================
+    // DOCUMENTACIÓN DE LA FLOTA
+    // ===================================
+
+    public int CamionesRevisionVencida { get; set; }
+
+    public int CamionesPermisoVencido { get; set; }
+
+    public int CamionesSeguroVencido { get; set; }
+
+    public int CamionesDocumentacionVencida { get; set; }
 }

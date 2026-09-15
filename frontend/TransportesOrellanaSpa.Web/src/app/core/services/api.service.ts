@@ -61,6 +61,24 @@ export class ApiService {
     );
   }
 
+  desactivarCamion(
+    patente: string
+  ): Observable<Camion> {
+    return this.http.patch<Camion>(
+      `${this.apiUrl}/camion/${patente}/desactivar`,
+      {}
+    );
+  }
+  
+  activarCamion(
+    patente: string
+  ): Observable<Camion> {
+    return this.http.patch<Camion>(
+      `${this.apiUrl}/camion/${patente}/activar`,
+      {}
+    );
+  }
+
   asignarRemolqueHabitual(
     patenteCamion: string,
     patenteRemolque: string

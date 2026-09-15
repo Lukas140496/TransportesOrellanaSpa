@@ -221,7 +221,12 @@
             <span>Asignar Remolque</span>
           </a>
 
-          <a routerLink="/camiones" (click)="cerrarMenu()">
+          <a
+            routerLink="/camiones/desactivar"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            (click)="cerrarMenu()"
+          >
             <span>Desactivar Camión</span>
           </a>
         </div>
