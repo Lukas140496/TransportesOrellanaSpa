@@ -24,7 +24,19 @@
 
       <div>
         <h2>Buscar viajes</h2>
-        <p>Filtra los viajes por guía, fecha o cliente.</p>
+      </div>
+
+      <div class="filtros-acciones">
+
+        <button
+          type="button"
+          class="btn-limpiar"
+          (click)="limpiarFiltros()">
+
+          Limpiar filtros
+
+        </button>
+
       </div>
 
     </div>
@@ -44,6 +56,7 @@
           id="guia"
           type="text"
           [(ngModel)]="guia"
+          (ngModelChange)="onGuiaChange()"
           placeholder="Ej. GD-12345"
           autocomplete="off"
         />
@@ -63,6 +76,7 @@
           id="fechaDesde"
           type="date"
           [(ngModel)]="fechaDesde"
+          (ngModelChange)="onFechaChange()"
         />
 
       </div>
@@ -80,6 +94,7 @@
           id="fechaHasta"
           type="date"
           [(ngModel)]="fechaHasta"
+          (ngModelChange)="onFechaChange()"
         />
 
       </div>
@@ -96,6 +111,7 @@
         <select
           id="cliente"
           [(ngModel)]="clienteId"
+          (ngModelChange)="onClienteChange()"
         >
 
           <option [ngValue]="null">
@@ -113,33 +129,6 @@
         </select>
 
       </div>
-
-    </div>
-
-
-    <!-- ACCIONES -->
-
-    <div class="filtros-acciones">
-
-      <button
-        type="button"
-        class="btn-limpiar"
-        (click)="limpiarFiltros()">
-
-        Limpiar filtros
-
-      </button>
-
-
-      <button
-        type="button"
-        class="btn-buscar"
-        (click)="buscar()">
-
-        <span>⌕</span>
-        Buscar viajes
-
-      </button>
 
     </div>
 
@@ -206,11 +195,10 @@
 
             <tr>
 
+              <th>Guía</th>
               <th>Fecha</th>
-              <th>Guía de Despacho</th>
               <th>Cliente</th>
-              <th>Origen</th>
-              <th>Destino</th>
+              <th>Ruta</th>
               <th>Camión</th>
               <th>Conductor</th>
               <th>Remolque</th>
@@ -234,69 +222,116 @@
 
               <tr>
 
-                <!-- FECHA -->
-
-                <td>
-                    {{ viaje.fecha | date:'dd/MM/yyyy':'UTC' }}
-                </td>
-
-
                 <!-- GUÍA -->
 
                 <td>
+
                   <strong class="guia">
                     {{ viaje.numeroGuiaDespacho }}
                   </strong>
+
+                </td>
+
+
+                <!-- FECHA -->
+
+                <td>
+
+                  <span class="date-text">
+                    {{ viaje.fecha | date:'dd/MM/yyyy':'UTC' }}
+                  </span>
+
                 </td>
 
 
                 <!-- CLIENTE -->
 
                 <td>
-                  {{ viaje.cliente.nombre }}
+
+                  <div class="client-cell">
+
+                    <strong>
+                      {{ viaje.cliente.nombre }}
+                    </strong>
+
+                    <span>
+                      {{ viaje.cliente.rut }}
+                    </span>
+
+                  </div>
+
                 </td>
 
 
-                <!-- ORIGEN -->
+                <!-- RUTA -->
 
                 <td>
-                  {{ viaje.origen }}
-                </td>
 
+                  <div class="route-cell">
 
-                <!-- DESTINO -->
+                    <span>
+                      {{ viaje.origen }}
+                    </span>
 
-                <td>
-                  {{ viaje.destino }}
+                    <span class="route-arrow">
+                      →
+                    </span>
+
+                    <span>
+                      {{ viaje.destino }}
+                    </span>
+
+                  </div>
+
                 </td>
 
 
                 <!-- CAMIÓN -->
 
                 <td>
-                  {{ viaje.camion.patente }}
+
+                  <span class="vehicle-text">
+                    {{ viaje.camion.patente }}
+                  </span>
+
                 </td>
 
 
                 <!-- CONDUCTOR -->
 
                 <td>
-                  {{ viaje.conductor.nombres }}
-                  {{ viaje.conductor.apellidoPaterno }}
+
+                  <div class="driver-cell">
+
+                    <strong>
+                      {{ viaje.conductor.nombres }}
+                      {{ viaje.conductor.apellidoPaterno }}
+                    </strong>
+
+                  </div>
+
                 </td>
 
 
                 <!-- REMOLQUE -->
 
                 <td>
-                  {{ viaje.remolque.patente }}
+
+                  <span class="vehicle-text">
+                    {{ viaje.remolque.patente }}
+                  </span>
+
                 </td>
 
 
                 <!-- CARGA -->
 
                 <td>
-                  {{ viaje.tipoCarga }}
+
+                  <span class="cargo-text">
+                    {{ viaje.tipoCarga }}
+                  </span>
+
                 </td>
 
 
@@ -326,7 +361,7 @@
                 </td>
 
 
-                <!-- COSTO COMBUSTIBLE -->
+                <!-- COMBUSTIBLE -->
 
                 <td>
 
@@ -339,7 +374,7 @@
 
                 <td>
 
-                  <strong>
+                  <strong class="tarifa">
                     ${{ viaje.tarifa | number:'1.0-0' }}
                   </strong>
 
@@ -349,16 +384,19 @@
                 <!-- ESTADO -->
 
                 <td>
-                    <span
-                      class="badge estado-badge"
-                      [class.estado-pendiente]="viaje.estado === 'Pendiente'"
-                      [class.estado-curso]="viaje.estado === 'EnCurso'"
-                      [class.estado-completado]="viaje.estado === 'Completado'"
-                      [class.estado-cancelado]="viaje.estado === 'Cancelado'">
-                  
-                        {{ formatoEstadoViaje(viaje.estado) }}
-                  
-                    </span>
+
+                  <span
+                    class="badge estado-badge"
+                    [class.estado-pendiente]="viaje.estado === 'Pendiente'"
+                    [class.estado-curso]="viaje.estado === 'EnCurso'"
+                    [class.estado-completado]="viaje.estado === 'Completado'"
+                    [class.estado-cancelado]="viaje.estado === 'Cancelado'"
+                  >
+
+                    {{ formatoEstadoViaje(viaje.estado) }}
+
+                  </span>
+
                 </td>
 
 
@@ -366,14 +404,15 @@
 
                 <td>
 
-                    <span
+                  <span
                     class="badge pago-badge"
                     [class.pago-pendiente]="viaje.estadoPago === 'Pendiente'"
-                    [class.pago-pagado]="viaje.estadoPago === 'Pagado'">
-                  
-                        {{ viaje.estadoPago }}
-                  
-                    </span>
+                    [class.pago-pagado]="viaje.estadoPago === 'Pagado'"
+                  >
+
+                    {{ viaje.estadoPago }}
+
+                  </span>
 
                 </td>
 
@@ -385,7 +424,8 @@
                   <button
                     type="button"
                     class="btn-detalle"
-                    (click)="verDetalle(viaje.id)">
+                    (click)="verDetalle(viaje.id)"
+                  >
 
                     Ver detalle
 
@@ -420,7 +460,8 @@
         <button
           type="button"
           class="btn-limpiar"
-          (click)="limpiarFiltros()">
+          (click)="limpiarFiltros()"
+        >
 
           Limpiar filtros
 

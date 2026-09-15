@@ -1,89 +1,458 @@
 <section class="camion-list">
 
-  <div class="header">
-    <div>
-      <h1>Camiones</h1>
-      <p>Listado de camiones registrados en el sistema.</p>
+  <div class="page-header">
+
+    <div class="header-content">
+
+      <div class="header-icon">
+        🚛
+      </div>
+
+      <div>
+
+        <h1>
+          Camiones
+        </h1>
+
+        <p>
+          Administra los camiones registrados en Transportes Orellana SpA.
+        </p>
+
+      </div>
+
     </div>
+
   </div>
 
+
   @if (cargando) {
-    <p>Cargando camiones...</p>
+
+    <div class="estado-container">
+
+      <div class="loading-spinner"></div>
+
+      <p>
+        Cargando camiones...
+      </p>
+
+    </div>
+
   }
 
+
   @if (error) {
-    <p class="error">
-      {{ error }}
-    </p>
+
+    <div class="error-container">
+
+      <div class="error-icon">
+        !
+      </div>
+
+      <div>
+
+        <strong>
+          No fue posible cargar los camiones
+        </strong>
+
+        <p>
+          {{ error }}
+        </p>
+
+      </div>
+
+    </div>
+
   }
+
 
   @if (!cargando && !error) {
 
-    <div class="tabla-container">
+    <div class="resumen">
 
-      <table>
+      <div class="resumen-card">
 
-        <thead>
-          <tr>
-            <th>Patente</th>
-            <th>Marca</th>
-            <th>Modelo</th>
-            <th>Año</th>
-            <th>Tipo</th>
-            <th>Conductores</th>
-            <th>Remolques</th>
-            <th>Revisión</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
+        <div class="resumen-icon total">
+          🚛
+        </div>
 
-        <tbody>
+        <div>
 
-          @for (camion of camiones; track camion.id) {
+          <span>
+            Total camiones
+          </span>
 
-            <tr>
-              <td>{{ camion.patente }}</td>
+          <strong>
+            {{ camiones.length }}
+          </strong>
 
-              <td>{{ camion.marca }}</td>
+        </div>
 
-              <td>{{ camion.modelo }}</td>
+      </div>
 
-              <td>{{ camion.ano }}</td>
 
-              <td>{{ camion.tipo }}</td>
+      <div class="resumen-card">
 
-              <td>
-                {{ camion.conductoresHabituales.length }}
-              </td>
+        <div class="resumen-icon activo">
+          ✓
+        </div>
 
-              <td>
-                {{ camion.remolques.length }}
-              </td>
+        <div>
 
-              <td>
-                @if (camion.revisionAlDia) {
-                  Al día
-                } @else {
-                  Vencida
-                }
-              </td>
+          <span>
+            Revisión al día
+          </span>
 
-              <td>
-                <button
-                  type="button"
-                  (click)="verDetalle(camion.patente)">
-                  Ver detalle
-                </button>
-              </td>
-            </tr>
+          <strong>
+            {{ revisionesAlDia }}
+          </strong>
 
-          }
+        </div>
 
-        </tbody>
+      </div>
 
-      </table>
+
+      <div class="resumen-card">
+
+        <div class="resumen-icon vencido">
+          !
+        </div>
+
+        <div>
+
+          <span>
+            Revisión vencida
+          </span>
+
+          <strong>
+            {{ revisionesVencidas }}
+          </strong>
+
+        </div>
+
+      </div>
 
     </div>
+
+
+    <div class="filtros-card">
+
+      <div class="busqueda">
+
+        <span class="search-icon">
+          ⌕
+        </span>
+
+        <input
+          type="text"
+          [(ngModel)]="busqueda"
+          placeholder="Buscar por patente, marca o modelo..."
+          aria-label="Buscar camiones"
+        />
+
+        @if (busqueda) {
+
+          <button
+            type="button"
+            class="btn-limpiar-busqueda"
+            (click)="limpiarBusqueda()"
+            aria-label="Limpiar búsqueda">
+
+            ×
+
+          </button>
+
+        }
+
+      </div>
+
+    </div>
+
+
+    <div class="resultado-info">
+
+      <span>
+
+        Mostrando
+        <strong>
+          {{ camionesFiltrados.length }}
+        </strong>
+        de
+        <strong>
+          {{ camiones.length }}
+        </strong>
+        camiones
+
+      </span>
+
+    </div>
+
+
+    @if (camionesFiltrados.length > 0) {
+
+      <div class="tabla-container">
+
+        <table>
+
+          <thead>
+
+            <tr>
+
+              <th>
+                Camión
+              </th>
+
+              <th>
+                Marca
+              </th>
+
+              <th>
+                Modelo
+              </th>
+
+              <th>
+                Año
+              </th>
+
+              <th>
+                Tipo
+              </th>
+
+              <th>
+                Conductores
+              </th>
+
+              <th>
+                Remolques
+              </th>
+
+              <th>
+                Revisión
+              </th>
+
+              <th>
+                Permiso
+              </th>
+
+              <th class="columna-acciones">
+                Acción
+              </th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            @for (
+              camion of camionesFiltrados;
+              track camion.id
+            ) {
+
+              <tr>
+
+                <td>
+
+                  <div class="camion-info">
+
+                    <div class="camion-avatar">
+                      🚛
+                    </div>
+
+                    <div>
+
+                      <strong>
+                        {{ camion.patente }}
+                      </strong>
+
+                      <span>
+                        {{ camion.tipo }}
+                      </span>
+
+                    </div>
+
+                  </div>
+
+                </td>
+
+
+                <td>
+
+                  <span class="dato-principal">
+                    {{ camion.marca }}
+                  </span>
+
+                </td>
+
+
+                <td>
+
+                  <span class="dato-principal">
+                    {{ camion.modelo }}
+                  </span>
+
+                </td>
+
+
+                <td>
+
+                  <span class="dato-secundario">
+                    {{ camion.ano }}
+                  </span>
+
+                </td>
+
+
+                <td>
+
+                  <span class="tipo-camion">
+                    {{ camion.tipo }}
+                  </span>
+
+                </td>
+
+
+                <td>
+
+                  <span class="contador">
+
+                    <span class="contador-icon">
+                      👤
+                    </span>
+
+                    {{ camion.conductoresHabituales.length }}
+
+                  </span>
+
+                </td>
+
+
+                <td>
+
+                  <span class="contador">
+
+                    <span class="contador-icon">
+                      🛻
+                    </span>
+
+                    {{ camion.remolques.length }}
+
+                  </span>
+
+                </td>
+
+
+                <td>
+
+                  @if (camion.revisionAlDia) {
+
+                    <span class="badge al-dia">
+
+                      <span class="badge-dot"></span>
+
+                      Al día
+
+                    </span>
+
+                  } @else {
+
+                    <span class="badge vencida">
+
+                      <span class="badge-dot"></span>
+
+                      Vencida
+
+                    </span>
+
+                  }
+
+                </td>
+
+                <td>
+
+                    @if (camion.permisoAlDia) {
+                  
+                      <span class="badge al-dia">
+                  
+                        <span class="badge-dot"></span>
+                  
+                        Al día
+                  
+                      </span>
+                  
+                    } @else {
+                  
+                      <span class="badge vencida">
+                  
+                        <span class="badge-dot"></span>
+                  
+                        Vencido
+                  
+                      </span>
+                  
+                    }
+                  
+                </td>
+
+
+                <td class="columna-acciones">
+
+                  <button
+                    type="button"
+                    class="btn-detalle"
+                    (click)="verDetalle(camion.patente)">
+
+                    Ver detalle
+
+                    <span>
+                      →
+                    </span>
+
+                  </button>
+
+                </td>
+
+              </tr>
+
+            }
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    }
+
+
+    @if (camionesFiltrados.length === 0) {
+
+      <div class="sin-resultados">
+
+        <div class="sin-resultados-icon">
+          ⌕
+        </div>
+
+        <h2>
+          No encontramos camiones
+        </h2>
+
+        <p>
+          No hay camiones que coincidan con tu búsqueda.
+        </p>
+
+        <button
+          type="button"
+          class="btn-restablecer"
+          (click)="limpiarBusqueda()">
+
+          Limpiar búsqueda
+
+        </button>
+
+      </div>
+
+    }
 
   }
 

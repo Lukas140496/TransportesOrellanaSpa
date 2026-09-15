@@ -1,4 +1,4 @@
-/* ========================= */
+ /* ========================= */
 /* LAYOUT PRINCIPAL */
 /* ========================= */
 
@@ -6,7 +6,10 @@
   display: flex;
 
   width: 100%;
+  height: 100vh;
   min-height: 100vh;
+
+  overflow: hidden;
 
   background: #f5f7fb;
 }
@@ -18,6 +21,7 @@
 
 .sidebar {
   width: 250px;
+  height: 100vh;
   min-height: 100vh;
 
   display: flex;
@@ -33,6 +37,8 @@
   box-sizing: border-box;
 
   z-index: 100;
+
+  overflow: hidden;
 
   transition:
     transform 0.25s ease;
@@ -50,6 +56,8 @@
   gap: 12px;
 
   padding: 8px 10px 30px;
+
+  flex-shrink: 0;
 }
 
 .logo-mark {
@@ -108,6 +116,33 @@
   flex-direction: column;
 
   gap: 6px;
+
+  flex: 1;
+
+  min-height: 0;
+
+  overflow-y: auto;
+
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
+}
+
+.menu::-webkit-scrollbar {
+  width: 5px;
+}
+
+.menu::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.menu::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.18);
+
+  border-radius: 10px;
+}
+
+.menu::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.28);
 }
 
 
@@ -130,6 +165,8 @@
   text-decoration: none;
 
   font-size: 14px;
+
+  flex-shrink: 0;
 
   transition:
     background 0.2s ease,
@@ -156,6 +193,8 @@
 .menu-group {
   display: flex;
   flex-direction: column;
+
+  flex-shrink: 0;
 }
 
 
@@ -190,6 +229,8 @@
 
   box-sizing: border-box;
 
+  flex-shrink: 0;
+
   transition:
     background 0.2s ease,
     color 0.2s ease;
@@ -206,7 +247,6 @@
 
   color: white;
 }
-
 
 .menu-parent-content {
   display: flex;
@@ -263,108 +303,111 @@
 /* ========================= */
 
 .submenu {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  
-    margin: 2px 0 4px;
-  
-    max-height: 0;
-  
-    opacity: 0;
-  
-    overflow: hidden;
-  
-    transform: translateY(-6px);
-  
-    visibility: hidden;
-  
-    pointer-events: none;
-  
-    transition:
-      max-height 0.45s ease,
-      opacity 0.35s ease,
-      transform 0.45s ease,
-      visibility 0s linear 0.35s;
-  }
-  
-  
-  /* ========================= */
-  /* SUBMENÚ ABIERTO */
-  /* ========================= */
-  
-  .submenu.open {
-    max-height: 240px;
-  
-    opacity: 1;
-  
-    transform: translateY(0);
-  
-    visibility: visible;
-  
-    pointer-events: auto;
-  
-    transition:
-      max-height 0.45s ease,
-      opacity 0.35s ease,
-      transform 0.45s ease,
-      visibility 0s linear 0s;
-  }
-  
-  
-  /* ========================= */
-  /* OPCIONES DEL SUBMENÚ */
-  /* ========================= */
-  
-  .submenu a {
-    display: flex;
-    align-items: center;
-  
-    min-height: 38px;
-  
-    padding: 9px 12px 9px 47px;
-  
-    border-radius: 8px;
-  
-    color: rgba(255, 255, 255, 0.58);
-  
-    text-decoration: none;
-  
-    font-size: 13px;
-  
-    box-sizing: border-box;
-  
-    transition:
-      background 0.2s ease,
-      color 0.2s ease,
-      padding-left 0.2s ease;
-  }
-  
-  
-  /* ========================= */
-  /* HOVER SUBMENÚ */
-  /* ========================= */
-  
-  .submenu a:hover {
-    background: rgba(255, 255, 255, 0.06);
-  
-    color: white;
-  
-    padding-left: 50px;
-  }
-  
-  
-  /* ========================= */
-  /* OPCIÓN ACTIVA */
-  /* ========================= */
-  
-  .submenu a.active {
-    background: rgba(47, 128, 237, 0.18);
-  
-    color: white;
-  
-    font-weight: 600;
-  }
+  display: flex;
+  flex-direction: column;
+
+  gap: 2px;
+
+  margin: 2px 0 4px;
+
+  max-height: 0;
+
+  opacity: 0;
+
+  overflow: hidden;
+
+  transform: translateY(-6px);
+
+  visibility: hidden;
+
+  pointer-events: none;
+
+  transition:
+    max-height 0.45s ease,
+    opacity 0.35s ease,
+    transform 0.45s ease,
+    visibility 0s linear 0.35s;
+}
+
+
+/* ========================= */
+/* SUBMENÚ ABIERTO */
+/* ========================= */
+
+.submenu.open {
+  max-height: 240px;
+
+  opacity: 1;
+
+  transform: translateY(0);
+
+  visibility: visible;
+
+  pointer-events: auto;
+
+  transition:
+    max-height 0.45s ease,
+    opacity 0.35s ease,
+    transform 0.45s ease,
+    visibility 0s linear 0s;
+}
+
+
+/* ========================= */
+/* OPCIONES DEL SUBMENÚ */
+/* ========================= */
+
+.submenu a {
+  display: flex;
+  align-items: center;
+
+  min-height: 38px;
+
+  padding: 9px 12px 9px 47px;
+
+  border-radius: 8px;
+
+  color: rgba(255, 255, 255, 0.58);
+
+  text-decoration: none;
+
+  font-size: 13px;
+
+  box-sizing: border-box;
+
+  flex-shrink: 0;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    padding-left 0.2s ease;
+}
+
+
+/* ========================= */
+/* HOVER SUBMENÚ */
+/* ========================= */
+
+.submenu a:hover {
+  background: rgba(255, 255, 255, 0.06);
+
+  color: white;
+
+  padding-left: 50px;
+}
+
+
+/* ========================= */
+/* OPCIÓN ACTIVA */
+/* ========================= */
+
+.submenu a.active {
+  background: rgba(47, 128, 237, 0.18);
+
+  color: white;
+
+  font-weight: 600;
+}
 
 
 /* ========================= */
@@ -380,6 +423,10 @@
   gap: 6px;
 
   padding-top: 20px;
+
+  flex-shrink: 0;
+
+  background: #0f2747;
 }
 
 .sidebar-footer button {
@@ -419,11 +466,14 @@
   flex: 1;
 
   min-width: 0;
+  min-height: 0;
 
-  min-height: 100vh;
+  height: 100vh;
 
   display: flex;
   flex-direction: column;
+
+  overflow: hidden;
 }
 
 
@@ -433,6 +483,7 @@
 
 .topbar {
   height: 72px;
+  min-height: 72px;
 
   display: flex;
   align-items: center;
@@ -551,9 +602,35 @@
 .page-content {
   flex: 1;
 
+  min-height: 0;
+
   padding: 30px;
 
   box-sizing: border-box;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  scrollbar-width: thin;
+  scrollbar-color: #c8d0db transparent;
+}
+
+.page-content::-webkit-scrollbar {
+  width: 7px;
+}
+
+.page-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.page-content::-webkit-scrollbar-thumb {
+  background: #c8d0db;
+
+  border-radius: 10px;
+}
+
+.page-content::-webkit-scrollbar-thumb:hover {
+  background: #aeb8c5;
 }
 
 
@@ -596,6 +673,14 @@
 /* ========================= */
 
 @media (max-width: 600px) {
+
+  .app-layout {
+    height: 100vh;
+    min-height: 100vh;
+
+    overflow: hidden;
+  }
+
 
   .sidebar {
     position: fixed;
@@ -687,6 +772,7 @@
 
   .topbar {
     height: 64px;
+    min-height: 64px;
 
     padding: 0 16px;
 
@@ -709,6 +795,12 @@
 
 
   /* CONTENIDO */
+
+  .main-content {
+    height: 100vh;
+
+    min-height: 0;
+  }
 
   .page-content {
     padding: 16px;

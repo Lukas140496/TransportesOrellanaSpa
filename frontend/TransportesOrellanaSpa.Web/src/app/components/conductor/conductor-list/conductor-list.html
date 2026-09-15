@@ -1,108 +1,421 @@
 <section class="conductor-list">
 
-  <div class="header">
-    <div>
-      <h1>Conductores</h1>
-      <p>Listado de conductores registrados en el sistema.</p>
+  <div class="page-header">
+
+    <div class="header-content">
+
+      <div class="header-icon">
+        👤
+      </div>
+
+      <div>
+
+        <h1>
+          Conductores
+        </h1>
+
+        <p>
+          Administra los conductores registrados en Transportes Orellana SpA.
+        </p>
+
+      </div>
+
     </div>
+
   </div>
+
 
   @if (cargando) {
 
-    <p>Cargando conductores...</p>
+    <div class="estado-container">
+
+      <div class="loading-spinner"></div>
+
+      <p>
+        Cargando conductores...
+      </p>
+
+    </div>
 
   }
+
 
   @if (error) {
 
-    <p class="error">
-      {{ error }}
-    </p>
+    <div class="error-container">
+
+      <div class="error-icon">
+        !
+      </div>
+
+      <div>
+
+        <strong>
+          No fue posible cargar los conductores
+        </strong>
+
+        <p>
+          {{ error }}
+        </p>
+
+      </div>
+
+    </div>
 
   }
 
+
   @if (!cargando && !error) {
 
-    <div class="tabla-container">
+    <div class="resumen">
 
-      <table>
+      <div class="resumen-card">
 
-        <thead>
+        <div class="resumen-icon total">
+          👤
+        </div>
 
-          <tr>
-            <th>RUT</th>
-            <th>Nombre</th>
-            <th>Teléfono</th>
-            <th>Licencia</th>
-            <th>Control licencia</th>
-            <th>Licencia</th>
-            <th>Camiones</th>
-            <th>Acciones</th>
-          </tr>
+        <div>
 
-        </thead>
+          <span>
+            Total conductores
+          </span>
 
-        <tbody>
+          <strong>
+            {{ conductores.length }}
+          </strong>
 
-          @for (conductor of conductores; track conductor.id) {
+        </div>
+
+      </div>
+
+
+      <div class="resumen-card">
+
+        <div class="resumen-icon activo">
+          ✓
+        </div>
+
+        <div>
+
+          <span>
+            Licencias al día
+          </span>
+
+          <strong>
+            {{ licenciasAlDia }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <div class="resumen-card">
+
+        <div class="resumen-icon vencido">
+          !
+        </div>
+
+        <div>
+
+          <span>
+            Licencias vencidas
+          </span>
+
+          <strong>
+            {{ licenciasVencidas }}
+          </strong>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="filtros-card">
+
+      <div class="busqueda">
+
+        <span class="search-icon">
+          ⌕
+        </span>
+
+        <input
+          type="text"
+          [(ngModel)]="busqueda"
+          placeholder="Buscar por RUT, nombre, teléfono o licencia..."
+          aria-label="Buscar conductores"
+        />
+
+        @if (busqueda) {
+
+          <button
+            type="button"
+            class="btn-limpiar-busqueda"
+            (click)="limpiarBusqueda()"
+            aria-label="Limpiar búsqueda">
+
+            ×
+
+          </button>
+
+        }
+
+      </div>
+
+    </div>
+
+
+    <div class="resultado-info">
+
+      <span>
+
+        Mostrando
+        <strong>
+          {{ conductoresFiltrados.length }}
+        </strong>
+        de
+        <strong>
+          {{ conductores.length }}
+        </strong>
+        conductores
+
+      </span>
+
+    </div>
+
+
+    @if (conductoresFiltrados.length > 0) {
+
+      <div class="tabla-container">
+
+        <table>
+
+          <thead>
 
             <tr>
 
-              <td>
-                {{ conductor.rut }}
-              </td>
+              <th>
+                Conductor
+              </th>
 
-              <td>
-                {{ conductor.nombres }}
-                {{ conductor.apellidoPaterno }}
-                {{ conductor.apellidoMaterno }}
-              </td>
+              <th>
+                RUT
+              </th>
 
-              <td>
-                {{ conductor.telefono }}
-              </td>
+              <th>
+                Teléfono
+              </th>
 
-              <td>
-                {{ conductor.tipoLicencia }}
-              </td>
+              <th>
+                Licencia
+              </th>
 
-              <td>
-                {{ conductor.fechaControlLicencia | date:'dd/MM/yyyy' }}
-              </td>
+              <th>
+                Control licencia
+              </th>
 
-              <td>
+              <th>
+                Estado
+              </th>
 
-                @if (conductor.licenciaAlDia) {
-                  <span class="badge ok">Al día</span>
-                } @else {
-                  <span class="badge warning">Vencida</span>
-                }
+              <th>
+                Camiones
+              </th>
 
-              </td>
-
-              <td>
-                {{ conductor.camionesHabituales.length }}
-              </td>
-
-              <td>
-
-                <button
-                  type="button"
-                  (click)="verDetalle(conductor.rut)">
-                  Ver detalle
-                </button>
-
-              </td>
+              <th class="columna-acciones">
+                Acción
+              </th>
 
             </tr>
 
-          }
+          </thead>
 
-        </tbody>
 
-      </table>
+          <tbody>
 
-    </div>
+            @for (
+              conductor of conductoresFiltrados;
+              track conductor.id
+            ) {
+
+              <tr>
+
+                <td>
+
+                  <div class="conductor-info">
+
+                    <div class="conductor-avatar">
+                      {{ conductor.nombres.charAt(0).toUpperCase() }}
+                    </div>
+
+                    <div>
+
+                      <strong>
+
+                        {{ conductor.nombres }}
+                        {{ conductor.apellidoPaterno }}
+                        {{ conductor.apellidoMaterno }}
+
+                      </strong>
+
+                      <span>
+                        Conductor
+                      </span>
+
+                    </div>
+
+                  </div>
+
+                </td>
+
+
+                <td>
+
+                  <span class="rut">
+
+                    {{ conductor.rut }}
+
+                  </span>
+
+                </td>
+
+
+                <td>
+
+                  <span class="dato-principal">
+
+                    {{ conductor.telefono }}
+
+                  </span>
+
+                </td>
+
+
+                <td>
+
+                  <span class="tipo-licencia">
+
+                    {{ conductor.tipoLicencia }}
+
+                  </span>
+
+                </td>
+
+
+                <td>
+
+                  <span class="fecha-control">
+
+                    {{ conductor.fechaControlLicencia | date:'dd/MM/yyyy' }}
+
+                  </span>
+
+                </td>
+
+
+                <td>
+
+                  @if (conductor.licenciaAlDia) {
+
+                    <span class="badge al-dia">
+
+                      <span class="badge-dot"></span>
+
+                      Al día
+
+                    </span>
+
+                  } @else {
+
+                    <span class="badge vencida">
+
+                      <span class="badge-dot"></span>
+
+                      Vencida
+
+                    </span>
+
+                  }
+
+                </td>
+
+
+                <td>
+
+                  <span class="contador">
+
+                    <span class="contador-icon">
+                      🚛
+                    </span>
+
+                    {{ conductor.camionesHabituales.length }}
+
+                  </span>
+
+                </td>
+
+
+                <td class="columna-acciones">
+
+                  <button
+                    type="button"
+                    class="btn-detalle"
+                    (click)="verDetalle(conductor.rut)">
+
+                    Ver detalle
+
+                    <span>
+                      →
+                    </span>
+
+                  </button>
+
+                </td>
+
+              </tr>
+
+            }
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    }
+
+
+    @if (conductoresFiltrados.length === 0) {
+
+      <div class="sin-resultados">
+
+        <div class="sin-resultados-icon">
+          ⌕
+        </div>
+
+        <h2>
+          No encontramos conductores
+        </h2>
+
+        <p>
+          No hay conductores que coincidan con tu búsqueda.
+        </p>
+
+        <button
+          type="button"
+          class="btn-restablecer"
+          (click)="limpiarBusqueda()">
+
+          Limpiar búsqueda
+
+        </button>
+
+      </div>
+
+    }
 
   }
 

@@ -16,6 +16,8 @@ import { DashboardProduccionConductor } from '../models/dashboard-produccion-con
 import { CrearViaje } from '../models/crear-viaje';
 import { DashboardProduccionCliente } from '../models/dashboard-produccion-cliente';
 import { DashboardCostoCombustibleCamion } from '../models/dashboard-costo-combustible-camion';
+import { ActualizarViaje } from '../models/actualizar-viaje';
+import { CrearCamion } from '../models/crear-camion';
 
 @Injectable({
   providedIn: 'root'
@@ -39,6 +41,92 @@ export class ApiService {
   getCamionById(id: number): Observable<Camion> {
     return this.http.get<Camion>(
       `${this.apiUrl}/camion/${id}`
+    );
+  }
+
+  crearCamion(camion: CrearCamion): Observable<Camion> {
+    return this.http.post<Camion>(
+      `${this.apiUrl}/camion`,
+      camion
+    );
+  }
+
+  actualizarCamion(
+    patente: string,
+    camion: Camion
+  ): Observable<Camion> {
+    return this.http.put<Camion>(
+      `${this.apiUrl}/camion/${patente}`,
+      camion
+    );
+  }
+
+  asignarRemolqueHabitual(
+    patenteCamion: string,
+    patenteRemolque: string
+  ): Observable<{
+    mensaje: string;
+    camion: string;
+    remolque: string;
+  }> {
+    return this.http.put<{
+      mensaje: string;
+      camion: string;
+      remolque: string;
+    }>(
+      `${this.apiUrl}/camion/${patenteCamion}/remolque-habitual`,
+      {
+        patente: patenteRemolque
+      }
+    );
+  }
+
+  desasignarRemolquesHabituales(
+    patenteCamion: string
+  ): Observable<{
+    mensaje: string;
+    camion: string;
+  }> {
+    return this.http.delete<{
+      mensaje: string;
+      camion: string;
+    }>(
+      `${this.apiUrl}/camion/${patenteCamion}/remolque-habitual`
+    );
+  }
+
+  asignarConductorHabitual(
+    patenteCamion: string,
+    rutConductor: string
+  ): Observable<{
+    mensaje: string;
+    camion: Camion;
+  }> {
+    return this.http.put<{
+      mensaje: string;
+      camion: Camion;
+    }>(
+      `${this.apiUrl}/camion/${patenteCamion}/conductor-habitual`,
+      {
+        rut: rutConductor
+      }
+    );
+  }
+
+  desasignarConductorHabitual(
+    patenteCamion: string,
+    rutConductor: string
+  ): Observable<{
+    mensaje: string;
+    camion: Camion;
+    conductor: string;
+  }> {
+    return this.http.delete<{
+      mensaje: string;
+      camion: Camion;
+      conductor: string;
+    }>(
+      `${this.apiUrl}/camion/${patenteCamion}/conductor-habitual/${rutConductor}`
     );
   }
 
@@ -71,6 +159,40 @@ export class ApiService {
   getRemolqueByPatente(patente: string): Observable<Remolque> {
     return this.http.get<Remolque>(
       `${this.apiUrl}/remolque/${patente}`
+    );
+  }
+
+  asignarCamionHabitual(
+    patenteRemolque: string,
+    patenteCamion: string
+  ): Observable<{
+    mensaje: string;
+    remolque: string;
+    camion: string;
+  }> {
+    return this.http.put<{
+      mensaje: string;
+      remolque: string;
+      camion: string;
+    }>(
+      `${this.apiUrl}/remolque/${patenteRemolque}/camion-habitual`,
+      {
+        patente: patenteCamion
+      }
+    );
+  }
+
+  desasignarCamionHabitual(
+    patenteRemolque: string
+  ): Observable<{
+    mensaje: string;
+    remolque: string;
+  }> {
+    return this.http.delete<{
+      mensaje: string;
+      remolque: string;
+    }>(
+      `${this.apiUrl}/remolque/${patenteRemolque}/camion-habitual`
     );
   }
 
@@ -131,25 +253,25 @@ export class ApiService {
     fechaHasta?: string,
     clienteId?: number
   ): Observable<Viaje[]> {
-  
+
     const params: Record<string, string> = {};
-  
+
     if (guia?.trim()) {
       params['guia'] = guia.trim();
     }
-  
+
     if (fechaDesde) {
       params['fechaDesde'] = fechaDesde;
     }
-  
+
     if (fechaHasta) {
       params['fechaHasta'] = fechaHasta;
     }
-  
+
     if (clienteId !== undefined) {
       params['clienteId'] = clienteId.toString();
     }
-  
+
     return this.http.get<Viaje[]>(
       `${this.apiUrl}/viaje`,
       {
@@ -171,6 +293,22 @@ export class ApiService {
     );
   }
 
+  actualizarViaje(
+    id: number,
+    viaje: ActualizarViaje
+  ): Observable<Viaje> {
+    return this.http.put<Viaje>(
+      `${this.apiUrl}/viaje/${id}`,
+      viaje
+    );
+  }
+
+  eliminarViaje(id: number): Observable<void> {
+    return this.http.delete<void>(
+      `${this.apiUrl}/viaje/${id}`
+    );
+  }
+
   completarViaje(id: number): Observable<Viaje> {
     return this.http.patch<Viaje>(
       `${this.apiUrl}/viaje/${id}/completar`,
@@ -188,13 +326,13 @@ export class ApiService {
   getViajesPendientesPago(
     clienteId?: number
   ): Observable<Viaje[]> {
-  
+
     const params: Record<string, string> = {};
-  
+
     if (clienteId !== undefined) {
       params['clienteId'] = clienteId.toString();
     }
-  
+
     return this.http.get<Viaje[]>(
       `${this.apiUrl}/viaje/pendientes-pago`,
       {
@@ -210,7 +348,7 @@ export class ApiService {
     guias: string[];
     fechaPago: string;
   }> {
-  
+
     return this.http.patch<{
       cantidad: number;
       guias: string[];
@@ -221,7 +359,7 @@ export class ApiService {
         numerosGuiaDespacho
       }
     );
-  
+
   }
 
   // =========================
@@ -301,17 +439,17 @@ export class ApiService {
     year?: number,
     month?: number
   ): Observable<DashboardProduccionCliente[]> {
-  
+
     const params: Record<string, string> = {};
-  
+
     if (year !== undefined) {
       params['year'] = year.toString();
     }
-  
+
     if (month !== undefined) {
       params['month'] = month.toString();
     }
-  
+
     return this.http.get<DashboardProduccionCliente[]>(
       `${this.apiUrl}/dashboard/produccion-por-cliente`,
       {
@@ -324,17 +462,17 @@ export class ApiService {
     year?: number,
     month?: number
   ): Observable<DashboardCostoCombustibleCamion[]> {
-  
+
     const params: Record<string, string> = {};
-  
+
     if (year !== undefined) {
       params['year'] = year.toString();
     }
-  
+
     if (month !== undefined) {
       params['month'] = month.toString();
     }
-  
+
     return this.http.get<DashboardCostoCombustibleCamion[]>(
       `${this.apiUrl}/dashboard/costo-combustible-por-camion`,
       {

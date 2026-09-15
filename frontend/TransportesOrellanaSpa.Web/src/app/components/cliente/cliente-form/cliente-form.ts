@@ -63,8 +63,8 @@ export class ClienteForm {
 
   get titulo(): string {
     return this.modoEdicion
-      ? 'Editar cliente'
-      : 'Nuevo cliente';
+      ? 'Editar Cliente'
+      : 'Nuevo Cliente';
   }
 
   constructor() {

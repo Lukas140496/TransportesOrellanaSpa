@@ -36,13 +36,17 @@
   background: #ffffff;
   border: 1px solid #e8ebf0;
   border-radius: 14px;
-  padding: 22px 24px;
+  padding: 20px 24px;
   margin-bottom: 24px;
   box-shadow: 0 3px 14px rgba(20, 35, 60, 0.04);
 }
 
 .filtros-header {
-  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 17px;
 
   h2 {
     margin: 0;
@@ -65,7 +69,7 @@
     minmax(160px, 1fr)
     minmax(160px, 1fr)
     minmax(220px, 1.2fr);
-  gap: 16px;
+  gap: 14px;
 }
 
 .campo {
@@ -92,6 +96,7 @@
     font-family: inherit;
     font-size: 13px;
     outline: none;
+
     transition:
       border-color 0.2s ease,
       box-shadow 0.2s ease;
@@ -118,56 +123,38 @@
 
 .filtros-acciones {
   display: flex;
-  justify-content: flex-end;
   align-items: center;
-  gap: 10px;
-  margin-top: 20px;
+  justify-content: flex-end;
+  flex-shrink: 0;
 }
 
-.btn-limpiar,
-.btn-buscar {
-  height: 40px;
-  padding: 0 16px;
+.btn-limpiar {
+  height: 36px;
+  padding: 0 14px;
+
+  border: 1px solid #dfe4eb;
   border-radius: 8px;
+
+  background: #183b68;
+  color: #ffffff;
+
   font-family: inherit;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
+
   cursor: pointer;
+
   transition:
     background 0.2s ease,
     border-color 0.2s ease,
     transform 0.15s ease,
     box-shadow 0.2s ease;
-}
-
-.btn-limpiar {
-  border: 1px solid #dfe4eb;
-  background: #ffffff;
-  color: #596477;
 
   &:hover {
     background: #f7f8fa;
     border-color: #cfd5de;
-  }
-}
-
-.btn-buscar {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 7px;
-  border: 1px solid #183b68;
-  background: #183b68;
-  color: #ffffff;
-
-  span {
-    font-size: 17px;
-    line-height: 1;
-  }
-
-  &:hover {
-    background: #214c84;
-    box-shadow: 0 4px 10px rgba(24, 59, 104, 0.2);
+    color: #183b68;
+    box-shadow: 0 2px 6px rgba(20, 35, 60, 0.08);
   }
 
   &:active {
@@ -214,7 +201,7 @@
 
 table {
   width: 100%;
-  min-width: 1450px;
+  min-width: 1380px;
   border-collapse: collapse;
   background: #ffffff;
 }
@@ -255,6 +242,71 @@ tbody tr:last-child td {
 
 .guia {
   color: #183b68;
+  font-weight: 700;
+}
+
+// =========================
+// CELDAS ESPECIALES
+// =========================
+
+.date-text {
+  color: #4c5668;
+  font-size: 13px;
+}
+
+.client-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+
+  strong {
+    color: #172033;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  span {
+    color: #8991a0;
+    font-size: 11px;
+  }
+}
+
+.route-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #4c5668;
+  font-size: 13px;
+}
+
+.route-arrow {
+  color: #7f8ea3;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.vehicle-text {
+  color: #315f92;
+  font-weight: 600;
+}
+
+.driver-cell {
+  display: flex;
+  flex-direction: column;
+
+  strong {
+    color: #4c5668;
+    font-size: 13px;
+    font-weight: 600;
+  }
+}
+
+.cargo-text {
+  color: #4c5668;
+}
+
+.tarifa {
+  color: #172033;
   font-weight: 700;
 }
 
@@ -324,6 +376,7 @@ tbody tr:last-child td {
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
+
   transition:
     background 0.2s ease,
     border-color 0.2s ease,
@@ -446,18 +499,22 @@ tbody tr:last-child td {
     padding: 19px;
   }
 
-  .filtros-grid {
-    grid-template-columns: 1fr;
+  .filtros-header {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 12px;
   }
 
   .filtros-acciones {
-    flex-direction: column-reverse;
-    align-items: stretch;
+    justify-content: stretch;
 
-    .btn-limpiar,
-    .btn-buscar {
+    .btn-limpiar {
       width: 100%;
     }
+  }
+
+  .filtros-grid {
+    grid-template-columns: 1fr;
   }
 
 }

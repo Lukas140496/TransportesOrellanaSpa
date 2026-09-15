@@ -45,22 +45,32 @@
 
       </div>
 
-      <div class="estado-camion">
+      <div class="detail-actions">
 
         @if (camion.revisionAlDia && camion.permisoAlDia && camion.seguroAlDia) {
-
+      
           <span class="estado-ok">
             Documentación al día
           </span>
-
+      
         } @else {
-
+      
           <span class="estado-warning">
             Documentación pendiente
           </span>
-
+      
         }
-
+      
+        <button
+          type="button"
+          class="btn-editar"
+          (click)="editarCamion()">
+      
+          ✎
+          Editar camión
+      
+        </button>
+      
       </div>
 
     </header>

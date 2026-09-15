@@ -196,6 +196,73 @@ public class RemolqueController : ControllerBase
         return NoContent();
     }
 
+    // PUT: api/remolque/ABC123/camion-habitual
+    [HttpPut("{patente}/camion-habitual")]
+    public async Task<IActionResult> AsignarCamionHabitual(
+        string patente,
+        AsignarCamionHabitualDto dto)
+    {
+        patente = patente.Trim().ToUpperInvariant();
+
+        var remolque = await _context.Remolques
+            .FirstOrDefaultAsync(r => r.Patente == patente);
+
+        if (remolque == null)
+        {
+            return NotFound(
+                $"No existe un remolque con la patente {patente}.");
+        }
+
+        var patenteCamion = dto.Patente.Trim().ToUpperInvariant();
+
+        var camion = await _context.Camiones
+            .FirstOrDefaultAsync(c => c.Patente == patenteCamion);
+
+        if (camion == null)
+        {
+            return NotFound(
+                $"No existe un camión con la patente {patenteCamion}.");
+        }
+
+        remolque.CamionHabitualId = camion.Id;
+
+        await _context.SaveChangesAsync();
+
+        return Ok(new
+        {
+            Mensaje = "Camión habitual asignado correctamente al remolque.",
+            Remolque = remolque.Patente,
+            Camion = camion.Patente
+        });
+    }
+
+    // DELETE: api/remolque/ABC123/camion-habitual
+    [HttpDelete("{patente}/camion-habitual")]
+    public async Task<IActionResult> DesasignarCamionHabitual(
+        string patente)
+    {
+        patente = patente.Trim().ToUpperInvariant();
+
+        var remolque = await _context.Remolques
+            .FirstOrDefaultAsync(r => r.Patente == patente);
+
+        if (remolque == null)
+        {
+            return NotFound(
+                $"No existe un remolque con la patente {patente}.");
+        }
+
+        remolque.CamionHabitualId = null;
+
+        await _context.SaveChangesAsync();
+
+        return Ok(new
+        {
+            Mensaje = "Camión habitual desasignado correctamente.",
+            Remolque = remolque.Patente
+        });
+    }
+
     // DELETE: api/remolque/ABC123
     [HttpDelete("{patente}")]
     public async Task<IActionResult> Delete(string patente)

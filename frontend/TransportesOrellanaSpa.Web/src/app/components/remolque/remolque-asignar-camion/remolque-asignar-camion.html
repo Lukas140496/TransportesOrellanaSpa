@@ -1,0 +1,488 @@
+<section class="asignar-camion">
+
+  <div class="page-header">
+
+    <div class="header-content">
+
+      <div class="header-icon">
+        🚛
+      </div>
+
+      <div>
+
+        <h1>
+          Asignar camión
+        </h1>
+
+        <p>
+          Administra el camión habitual asociado a cada remolque.
+        </p>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  @if (cargando) {
+
+    <div class="estado-container">
+
+      <div class="loading-spinner"></div>
+
+      <p>
+        Cargando remolques y camiones...
+      </p>
+
+    </div>
+
+  }
+
+
+  @if (error) {
+
+    <div class="error-container">
+
+      <div class="error-icon">
+        !
+      </div>
+
+      <div>
+
+        <strong>
+          No fue posible cargar la información
+        </strong>
+
+        <p>
+          {{ error }}
+        </p>
+
+      </div>
+
+    </div>
+
+  }
+
+
+  @if (!cargando && !error) {
+
+    <div class="contenido">
+
+
+      <!-- REMOLQUE -->
+
+      <div class="seccion-card">
+
+        <div class="seccion-header">
+
+          <div class="seccion-icon remolque">
+            🛻
+          </div>
+
+          <div>
+
+            <h2>
+              1. Selecciona un remolque
+            </h2>
+
+            <p>
+              Elige el remolque al que quieres administrar su camión habitual.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div class="campo">
+
+          <label for="remolque">
+            Remolque
+          </label>
+
+          <select
+            id="remolque"
+            [(ngModel)]="patenteRemolque"
+            (ngModelChange)="seleccionarRemolque()">
+
+            <option value="">
+              Selecciona un remolque...
+            </option>
+
+            @for (
+              remolque of remolques;
+              track remolque.id
+            ) {
+
+              <option [value]="remolque.patente">
+
+                {{ remolque.patente }}
+                —
+                {{ remolque.marca }}
+                {{ remolque.modelo }}
+
+              </option>
+
+            }
+
+          </select>
+
+        </div>
+
+
+        @if (remolqueSeleccionado) {
+
+          <div class="remolque-seleccionado">
+
+            <div class="remolque-avatar">
+              🛻
+            </div>
+
+            <div class="remolque-datos">
+
+              <strong>
+                {{ remolqueSeleccionado.patente }}
+              </strong>
+
+              <span>
+                {{ remolqueSeleccionado.marca }}
+                {{ remolqueSeleccionado.modelo }}
+                ·
+                {{ remolqueSeleccionado.ano }}
+              </span>
+
+              <span>
+                {{ remolqueSeleccionado.tipo }}
+                ·
+                {{ remolqueSeleccionado.capacidadToneladas }}
+                toneladas
+              </span>
+
+            </div>
+
+          </div>
+
+
+          @if (camionActual) {
+
+            <div class="asignacion-actual">
+
+              <div class="asignacion-icon">
+                🚛
+              </div>
+
+              <div class="asignacion-datos">
+
+                <span>
+                  Camión habitual actual
+                </span>
+
+                <strong>
+                  {{ camionActual.patente }}
+                </strong>
+
+                <small>
+                  {{ camionActual.marca }}
+                  {{ camionActual.modelo }}
+                </small>
+
+              </div>
+
+            </div>
+
+          } @else {
+
+            <div class="sin-asignacion">
+
+              <span class="sin-asignacion-icon">
+                🚛
+              </span>
+
+              <div>
+
+                <strong>
+                  Sin camión habitual
+                </strong>
+
+                <p>
+                  Este remolque todavía no tiene un camión habitual asignado.
+                </p>
+
+              </div>
+
+            </div>
+
+          }
+
+        }
+
+      </div>
+
+
+      <!-- CAMIÓN -->
+
+      <div class="seccion-card">
+
+        <div class="seccion-header">
+
+          <div class="seccion-icon camion">
+            🚛
+          </div>
+
+          <div>
+
+            <h2>
+              2. Selecciona un camión
+            </h2>
+
+            <p>
+              Elige el camión que quieres establecer como habitual.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div class="campo">
+
+          <label for="camion">
+            Camión
+          </label>
+
+          <select
+            id="camion"
+            [(ngModel)]="patenteCamion"
+            (ngModelChange)="seleccionarCamion()"
+            [disabled]="!remolqueSeleccionado">
+
+            <option value="">
+              Selecciona un camión...
+            </option>
+
+            @for (
+              camion of camiones;
+              track camion.id
+            ) {
+
+              <option [value]="camion.patente">
+
+                {{ camion.patente }}
+                —
+                {{ camion.marca }}
+                {{ camion.modelo }}
+
+              </option>
+
+            }
+
+          </select>
+
+        </div>
+
+
+        @if (camionSeleccionado) {
+
+          <div class="camion-seleccionado">
+
+            <div class="camion-avatar">
+              🚛
+            </div>
+
+            <div class="camion-datos">
+
+              <strong>
+                {{ camionSeleccionado.patente }}
+              </strong>
+
+              <span>
+                {{ camionSeleccionado.marca }}
+                {{ camionSeleccionado.modelo }}
+              </span>
+
+              <span>
+                {{ camionSeleccionado.tipo }}
+                ·
+                {{ camionSeleccionado.ano }}
+              </span>
+
+            </div>
+
+          </div>
+
+
+          @if (camionSeleccionado.remolques.length > 0) {
+
+            <div class="advertencia">
+
+              <div class="advertencia-icon">
+                ⚠️
+              </div>
+
+              <div>
+
+                <strong>
+                  Este camión ya tiene un remolque habitual
+                </strong>
+
+                <p>
+
+                  El camión
+                  <strong>
+                    {{ camionSeleccionado.patente }}
+                  </strong>
+                  ya tiene asociado el remolque
+
+                  <strong>
+                    {{ camionSeleccionado.remolques[0].patente }}
+                  </strong>.
+
+                </p>
+
+                <span class="advertencia-ayuda">
+
+                  Al asignar este remolque se actualizará su relación habitual.
+
+                </span>
+
+              </div>
+
+            </div>
+
+          }
+
+
+          @if (camionYaAsignadoAlRemolque) {
+
+            <div class="info-asignado">
+
+              <span class="info-icon">
+                ✓
+              </span>
+
+              <div>
+
+                <strong>
+                  Remolque ya asignado
+                </strong>
+
+                <p>
+                  Este camión ya es el camión habitual de este remolque.
+                </p>
+
+              </div>
+
+            </div>
+
+          }
+
+
+          <div class="acciones">
+
+            @if (puedeAsignar) {
+
+              <button
+                type="button"
+                class="btn-principal"
+                [disabled]="procesando"
+                (click)="asignarCamion()">
+
+                @if (procesando) {
+
+                  <span class="mini-spinner"></span>
+
+                  Procesando...
+
+                } @else {
+
+                  <span>
+                    ✓
+                  </span>
+
+                  Asignar camión
+
+                }
+
+              </button>
+
+            }
+
+
+            @if (puedeDesasignar) {
+
+              <button
+                type="button"
+                class="btn-secundario"
+                [disabled]="procesando"
+                (click)="desasignarCamion()">
+
+                <span>
+                  ×
+                </span>
+
+                Desasignar camión
+
+              </button>
+
+            }
+
+          </div>
+
+        }
+
+      </div>
+
+
+    </div>
+
+  }
+
+</section>
+
+
+@if (modalVisible) {
+
+  <div
+    class="modal-overlay"
+    (click)="cerrarModal()">
+
+    <div
+      class="modal"
+      (click)="$event.stopPropagation()">
+
+      <div
+        class="modal-icon"
+        [class.exito]="modalTipo === 'exito'"
+        [class.error]="modalTipo === 'error'">
+
+        @if (modalTipo === 'exito') {
+          ✓
+        } @else {
+          !
+        }
+
+      </div>
+
+      <h2>
+        {{ modalTitulo }}
+      </h2>
+
+      <p>
+        {{ modalMensaje }}
+      </p>
+
+      <button
+        type="button"
+        class="modal-btn"
+        (click)="cerrarModal()">
+
+        Entendido
+
+      </button>
+
+    </div>
+
+  </div>
+
+}

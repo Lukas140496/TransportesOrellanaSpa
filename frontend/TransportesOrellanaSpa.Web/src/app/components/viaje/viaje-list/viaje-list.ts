@@ -37,6 +37,8 @@ export class ViajeList implements OnInit {
   fechaHasta = '';
   clienteId: number | null = null;
 
+  private guiaTimeout: ReturnType<typeof setTimeout> | null = null;
+
   // =========================
   // INICIALIZACIÓN
   // =========================
@@ -99,10 +101,34 @@ export class ViajeList implements OnInit {
   }
 
   // =========================
-  // BUSCAR
+  // FILTRO GUÍA
   // =========================
 
-  buscar(): void {
+  onGuiaChange(): void {
+
+    if (this.guiaTimeout) {
+      clearTimeout(this.guiaTimeout);
+    }
+
+    this.guiaTimeout = setTimeout(() => {
+      this.cargarViajes();
+    }, 300);
+
+  }
+
+  // =========================
+  // FILTRO FECHAS
+  // =========================
+
+  onFechaChange(): void {
+    this.cargarViajes();
+  }
+
+  // =========================
+  // FILTRO CLIENTE
+  // =========================
+
+  onClienteChange(): void {
     this.cargarViajes();
   }
 
@@ -111,6 +137,11 @@ export class ViajeList implements OnInit {
   // =========================
 
   limpiarFiltros(): void {
+
+    if (this.guiaTimeout) {
+      clearTimeout(this.guiaTimeout);
+      this.guiaTimeout = null;
+    }
 
     this.guia = '';
     this.fechaDesde = '';
@@ -128,14 +159,21 @@ export class ViajeList implements OnInit {
     this.router.navigate(['/viajes', id]);
   }
 
+  // =========================
+  // FORMATO ESTADO
+  // =========================
+
   formatoEstadoViaje(estado: string): string {
+
     switch (estado) {
+
       case 'EnCurso':
         return 'En Curso';
-  
+
       default:
         return estado;
     }
+
   }
 
 }

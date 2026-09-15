@@ -1,4 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { ApiService } from '../../../core/services/api.service';
@@ -6,7 +7,10 @@ import { Camion } from '../../../core/models/camion';
 
 @Component({
   selector: 'app-camion-list',
-  imports: [],
+  standalone: true,
+  imports: [
+    FormsModule
+  ],
   templateUrl: './camion-list.html',
   styleUrl: './camion-list.scss'
 })
@@ -16,25 +20,107 @@ export class CamionList implements OnInit {
   private readonly router = inject(Router);
 
   camiones: Camion[] = [];
+
   cargando = true;
   error = '';
 
+  busqueda = '';
+
   ngOnInit(): void {
+
     this.api.getCamiones().subscribe({
+
       next: camiones => {
+
         this.camiones = camiones;
         this.cargando = false;
-      },
-      error: error => {
-        console.error('Error al cargar camiones:', error);
 
-        this.error = 'No fue posible cargar los camiones.';
+      },
+
+      error: error => {
+
+        console.error(
+          'Error al cargar camiones:',
+          error
+        );
+
+        this.error =
+          'No fue posible cargar los camiones.';
+
         this.cargando = false;
+
       }
+
     });
+
+  }
+
+  get camionesFiltrados(): Camion[] {
+
+    const texto =
+      this.busqueda
+        .trim()
+        .toLowerCase();
+
+    if (!texto) {
+      return this.camiones;
+    }
+
+    return this.camiones.filter(camion => {
+
+      return (
+        camion.patente
+          .toLowerCase()
+          .includes(texto) ||
+
+        camion.marca
+          .toLowerCase()
+          .includes(texto) ||
+
+        camion.modelo
+          .toLowerCase()
+          .includes(texto)
+      );
+
+    });
+
+  }
+
+  get revisionesAlDia(): number {
+
+    return this.camiones.filter(
+      camion => camion.revisionAlDia
+    ).length;
+
+  }
+
+  get revisionesVencidas(): number {
+
+    return this.camiones.filter(
+      camion => !camion.revisionAlDia
+    ).length;
+
+  }
+
+  limpiarBusqueda(): void {
+
+    this.busqueda = '';
+
+  }
+
+  hayBusqueda(): boolean {
+
+    return this.busqueda.trim().length > 0;
+
   }
 
   verDetalle(patente: string): void {
-    this.router.navigate(['/camiones', patente]);
+
+    this.router.navigate([
+      '/camiones',
+      patente
+    ]);
+
   }
+
 }

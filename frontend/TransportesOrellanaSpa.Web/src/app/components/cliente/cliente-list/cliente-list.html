@@ -1,121 +1,458 @@
 <section class="cliente-list">
 
-  <div class="header">
+  <div class="page-header">
 
-    <div>
-      <h1>Clientes</h1>
-      <p>Listado de clientes registrados en el sistema.</p>
+    <div class="header-content">
+
+      <div class="header-icon">
+        👥
+      </div>
+
+      <div>
+        <h1>Clientes</h1>
+
+        <p>
+          Administra los clientes registrados en Transportes Orellana SpA.
+        </p>
+      </div>
+
     </div>
+
+    <button
+      type="button"
+      class="btn-nuevo"
+      (click)="nuevoCliente()">
+
+      <span class="btn-icon">+</span>
+
+      Nuevo cliente
+
+    </button>
 
   </div>
 
+
   @if (cargando) {
 
-    <p>Cargando clientes...</p>
+    <div class="estado-container">
+
+      <div class="loading-spinner"></div>
+
+      <p>
+        Cargando clientes...
+      </p>
+
+    </div>
 
   }
+
 
   @if (error) {
 
-    <p class="error">
-      {{ error }}
-    </p>
+    <div class="error-container">
+
+      <div class="error-icon">
+        !
+      </div>
+
+      <div>
+        <strong>
+          No fue posible cargar los clientes
+        </strong>
+
+        <p>
+          {{ error }}
+        </p>
+      </div>
+
+    </div>
 
   }
 
+
   @if (!cargando && !error) {
 
-    <div class="tabla-container">
+    <div class="resumen">
 
-      <table>
+      <div class="resumen-card">
 
-        <thead>
+        <div class="resumen-icon total">
+          👥
+        </div>
 
-          <tr>
-            <th>Nombre</th>
-            <th>RUT</th>
-            <th>Dirección</th>
-            <th>Comuna</th>
-            <th>Ciudad</th>
-            <th>Tarifa</th>
-            <th>Tipo de carga</th>
-            <th>Estado</th>
-            <th>Acciones</th>
-          </tr>
+        <div>
 
-        </thead>
+          <span>
+            Total clientes
+          </span>
 
-        <tbody>
+          <strong>
+            {{ clientes.length }}
+          </strong>
 
-          @for (cliente of clientes; track cliente.id) {
+        </div>
+
+      </div>
+
+
+      <div class="resumen-card">
+
+        <div class="resumen-icon activo">
+          ✓
+        </div>
+
+        <div>
+
+          <span>
+            Clientes activos
+          </span>
+
+          <strong>
+            {{ cantidadActivos }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <div class="resumen-card">
+
+        <div class="resumen-icon inactivo">
+          !
+        </div>
+
+        <div>
+
+          <span>
+            Clientes inactivos
+          </span>
+
+          <strong>
+            {{ cantidadInactivos }}
+          </strong>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="filtros-card">
+
+      <div class="busqueda">
+
+        <span class="search-icon">
+          ⌕
+        </span>
+
+        <input
+          type="text"
+          [(ngModel)]="busqueda"
+          placeholder="Buscar por nombre, RUT, comuna, ciudad o tipo de carga..."
+          aria-label="Buscar clientes"
+        />
+
+        @if (busqueda) {
+
+          <button
+            type="button"
+            class="btn-limpiar-busqueda"
+            (click)="busqueda = ''"
+            aria-label="Limpiar búsqueda">
+
+            ×
+
+          </button>
+
+        }
+
+      </div>
+
+
+      <div class="filtro-estado">
+
+        <span class="filtro-label">
+          Estado:
+        </span>
+
+
+        <button
+          type="button"
+          [class.active]="filtroEstado === 'todos'"
+          (click)="cambiarFiltroEstado('todos')">
+
+          Todos
+
+        </button>
+
+
+        <button
+          type="button"
+          [class.active]="filtroEstado === 'activos'"
+          (click)="cambiarFiltroEstado('activos')">
+
+          Activos
+
+        </button>
+
+
+        <button
+          type="button"
+          [class.active]="filtroEstado === 'inactivos'"
+          (click)="cambiarFiltroEstado('inactivos')">
+
+          Inactivos
+
+        </button>
+
+      </div>
+
+
+      @if (hayFiltrosAplicados()) {
+
+        <button
+          type="button"
+          class="btn-limpiar-filtros"
+          (click)="limpiarFiltros()">
+
+          Limpiar filtros
+
+        </button>
+
+      }
+
+    </div>
+
+
+    <div class="resultado-info">
+
+      <span>
+
+        Mostrando
+        <strong>
+          {{ clientesFiltrados.length }}
+        </strong>
+        de
+        <strong>
+          {{ clientes.length }}
+        </strong>
+        clientes
+
+      </span>
+
+    </div>
+
+
+    @if (clientesFiltrados.length > 0) {
+
+      <div class="tabla-container">
+
+        <table>
+
+          <thead>
 
             <tr>
 
-              <td>
-                {{ cliente.nombre }}
-              </td>
+              <th>
+                Cliente
+              </th>
 
-              <td>
-                {{ cliente.rut }}
-              </td>
+              <th>
+                RUT
+              </th>
 
-              <td>
-                {{ cliente.direccion }}
-              </td>
+              <th>
+                Ubicación
+              </th>
 
-              <td>
-                {{ cliente.comuna }}
-              </td>
+              <th>
+                Tarifa
+              </th>
 
-              <td>
-                {{ cliente.ciudad }}
-              </td>
+              <th>
+                Tipo de carga
+              </th>
 
-              <td>
-                ${{ cliente.tarifa }}
-              </td>
+              <th>
+                Estado
+              </th>
 
-              <td>
-                {{ cliente.tipoCarga }}
-              </td>
-
-              <td>
-
-                @if (cliente.activo) {
-
-                  <span class="badge ok">
-                    Activo
-                  </span>
-
-                } @else {
-
-                  <span class="badge warning">
-                    Inactivo
-                  </span>
-
-                }
-
-              </td>
-
-              <td>
-
-                <button
-                  type="button"
-                  (click)="verDetalle(cliente.id)">
-                  Ver detalle
-                </button>
-
-              </td>
+              <th class="columna-acciones">
+                Acción
+              </th>
 
             </tr>
 
-          }
+          </thead>
 
-        </tbody>
 
-      </table>
+          <tbody>
 
-    </div>
+            @for (
+              cliente of clientesFiltrados;
+              track cliente.id
+            ) {
+
+              <tr>
+
+                <td>
+
+                  <div class="cliente-info">
+
+                    <div class="cliente-avatar">
+
+                      {{ cliente.nombre.charAt(0).toUpperCase() }}
+
+                    </div>
+
+                    <div>
+
+                      <strong>
+                        {{ cliente.nombre }}
+                      </strong>
+
+                      @if (cliente.observaciones) {
+
+                        <span class="cliente-observacion">
+                          {{ cliente.observaciones }}
+                        </span>
+
+                      }
+
+                    </div>
+
+                  </div>
+
+                </td>
+
+
+                <td>
+
+                  <span class="rut">
+                    {{ cliente.rut }}
+                  </span>
+
+                </td>
+
+
+                <td>
+
+                  <div class="ubicacion">
+
+                    <strong>
+                      {{ cliente.comuna }}
+                    </strong>
+
+                    <span>
+                      {{ cliente.ciudad }}
+                    </span>
+
+                  </div>
+
+                </td>
+
+
+                <td>
+
+                  <span class="tarifa">
+                    ${{ cliente.tarifa | number:'1.0-0' }}
+                  </span>
+
+                </td>
+
+
+                <td>
+
+                  <span class="tipo-carga">
+                    {{ cliente.tipoCarga }}
+                  </span>
+
+                </td>
+
+
+                <td>
+
+                  @if (cliente.activo) {
+
+                    <span class="badge activo">
+
+                      <span class="badge-dot"></span>
+
+                      Activo
+
+                    </span>
+
+                  } @else {
+
+                    <span class="badge inactivo">
+
+                      <span class="badge-dot"></span>
+
+                      Inactivo
+
+                    </span>
+
+                  }
+
+                </td>
+
+
+                <td class="columna-acciones">
+
+                  <button
+                    type="button"
+                    class="btn-detalle"
+                    (click)="verDetalle(cliente.id)">
+
+                    Ver detalle
+
+                  </button>
+
+                </td>
+
+              </tr>
+
+            }
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    }
+
+
+    @if (clientesFiltrados.length === 0) {
+
+      <div class="sin-resultados">
+
+        <div class="sin-resultados-icon">
+          ⌕
+        </div>
+
+        <h2>
+          No encontramos clientes
+        </h2>
+
+        <p>
+          No hay clientes que coincidan con los filtros seleccionados.
+        </p>
+
+        <button
+          type="button"
+          class="btn-restablecer"
+          (click)="limpiarFiltros()">
+
+          Limpiar filtros
+
+        </button>
+
+      </div>
+
+    }
 
   }
 

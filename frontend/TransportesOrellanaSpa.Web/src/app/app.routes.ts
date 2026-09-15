@@ -22,6 +22,13 @@ import { ClienteForm } from './components/cliente/cliente-form/cliente-form';
 import { ClienteModificar } from './components/cliente/cliente-modificar/cliente-modificar';
 import { ClienteDesactivar } from './components/cliente/cliente-desactivar/cliente-desactivar';
 import { ViajeForm } from './components/viaje/viaje-form/viaje-form';
+import { CamionAsignarRemolque } from './components/camion/camion-asignar-remolque/camion-asignar-remolque';
+import { CamionAsignarConductor } from './components/camion/camion-asignar-conductor/camion-asignar-conductor';
+import { RemolqueAsignarCamion } from './components/remolque/remolque-asignar-camion/remolque-asignar-camion';
+import { ViajeModificar } from './components/viaje/viaje-modificar/viaje-modificar';
+import { ViajeEliminar } from './components/viaje/viaje-eliminar/viaje-eliminar';
+import { CamionForm } from './components/camion/camion-form/camion-form';
+import { CamionModificar } from './components/camion/camion-modificar/camion-modificar';
 
 import { Pagos } from './components/pagos/pagos';
 
@@ -54,6 +61,31 @@ export const routes: Routes = [
       },
 
       {
+        path: 'camiones/nuevo',
+        component: CamionForm
+      },
+
+      {
+        path: 'camiones/modificar',
+        component: CamionModificar
+      },
+
+      {
+        path: 'camiones/modificar/:patente',
+        component: CamionModificar
+      },
+
+      {
+        path: 'camiones/asignar-remolque',
+        component: CamionAsignarRemolque
+      },
+
+      {
+        path: 'camiones/asignar-conductor',
+        component: CamionAsignarConductor
+      },
+
+      {
         path: 'camiones/:patente',
         component: CamionDetail
       },
@@ -81,6 +113,11 @@ export const routes: Routes = [
       {
         path: 'remolques',
         component: RemolqueList
+      },
+
+      {
+        path: 'remolques/asignar-camion',
+        component: RemolqueAsignarCamion
       },
 
       {
@@ -136,6 +173,16 @@ export const routes: Routes = [
       {
         path: 'viajes/nuevo',
         component: ViajeForm
+      },
+
+      {
+        path: 'viajes/modificar',
+        component: ViajeModificar
+      },
+
+      {
+        path: 'viajes/eliminar',
+        component: ViajeEliminar
       },
 
       {

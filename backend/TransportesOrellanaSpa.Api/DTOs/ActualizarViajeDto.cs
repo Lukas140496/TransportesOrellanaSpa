@@ -37,8 +37,4 @@ public class ActualizarViajeDto
     public string Observaciones { get; set; } = string.Empty;
 
     public EstadoViaje Estado { get; set; }
-
-    public EstadoPago EstadoPago { get; set; }
-
-    public DateTime? FechaPago { get; set; }
 }

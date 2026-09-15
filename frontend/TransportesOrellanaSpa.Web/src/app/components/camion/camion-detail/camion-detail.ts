@@ -25,11 +25,15 @@ export class CamionDetail implements OnInit {
 
   ngOnInit(): void {
 
-    const patente = this.route.snapshot.paramMap.get('patente');
+    const patente =
+      this.route.snapshot.paramMap.get('patente');
 
     if (!patente) {
-      this.error = 'No se indicó la patente del camión.';
+      this.error =
+        'No se indicó la patente del camión.';
+
       this.cargando = false;
+
       return;
     }
 
@@ -40,14 +44,19 @@ export class CamionDetail implements OnInit {
         this.camion =
           camiones.find(
             camion =>
-              camion.patente.toUpperCase() === patente.toUpperCase()
+              camion.patente.toUpperCase() ===
+              patente.toUpperCase()
           ) ?? null;
 
         if (!this.camion) {
-          this.error = 'No se encontró el camión solicitado.';
+
+          this.error =
+            'No se encontró el camión solicitado.';
+
         }
 
         this.cargando = false;
+
       },
 
       error: error => {
@@ -61,12 +70,31 @@ export class CamionDetail implements OnInit {
           'No fue posible cargar la información del camión.';
 
         this.cargando = false;
+
       }
 
     });
   }
 
-  volver(): void {
-    this.router.navigate(['/camiones']);
+  editarCamion(): void {
+
+    if (!this.camion) {
+      return;
+    }
+
+    this.router.navigate([
+      '/camiones/modificar',
+      this.camion.patente
+    ]);
+
   }
+
+  volver(): void {
+
+    this.router.navigate([
+      '/camiones'
+    ]);
+
+  }
+
 }

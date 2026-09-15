@@ -348,6 +348,117 @@ public class CamionController : ControllerBase
         });
     }
 
+    // PUT: api/camion/VJ8427/remolque-habitual
+    [HttpPut("{patente}/remolque-habitual")]
+    public async Task<IActionResult> AsignarRemolqueHabitual(
+        string patente,
+        AsignarRemolqueDto dto)
+    {
+        patente = patente.Trim().ToUpperInvariant();
+
+        var camion = await _context.Camiones
+            .FirstOrDefaultAsync(c => c.Patente == patente);
+
+        if (camion == null)
+        {
+            return NotFound(
+                $"No existe un camión con la patente {patente}.");
+        }
+
+        var patenteRemolque = dto.Patente.Trim().ToUpperInvariant();
+
+        var remolque = await _context.Remolques
+            .FirstOrDefaultAsync(r => r.Patente == patenteRemolque);
+
+        if (remolque == null)
+        {
+            return NotFound(
+                $"No existe un remolque con la patente {patenteRemolque}.");
+        }
+
+        remolque.CamionHabitualId = camion.Id;
+
+        await _context.SaveChangesAsync();
+
+        return Ok(new
+        {
+            Mensaje = "Remolque habitual asignado correctamente al camión.",
+            Camion = camion.Patente,
+            Remolque = remolque.Patente
+        });
+    }
+
+    // DELETE: api/camion/VJ8427/conductor-habitual/RUT
+    [HttpDelete("{patente}/conductor-habitual/{rut}")]
+    public async Task<IActionResult> DesasignarConductorHabitual(
+        string patente,
+        string rut)
+    {
+        patente = patente.Trim().ToUpperInvariant();
+        rut = rut.Trim();
+
+        var camion = await _context.Camiones
+            .Include(c => c.ConductoresHabituales)
+            .FirstOrDefaultAsync(c => c.Patente == patente);
+
+        if (camion == null)
+        {
+            return NotFound(
+                $"No existe un camión con la patente {patente}.");
+        }
+
+        var conductor = camion.ConductoresHabituales
+            .FirstOrDefault(c => c.Rut == rut);
+
+        if (conductor == null)
+        {
+            return NotFound(
+                $"El conductor con RUT {rut} no está asignado a este camión.");
+        }
+
+        camion.ConductoresHabituales.Remove(conductor);
+
+        await _context.SaveChangesAsync();
+
+        return Ok(new
+        {
+            Mensaje = "Conductor habitual desasignado correctamente.",
+            Camion = camion.Patente,
+            Conductor = conductor.Rut
+        });
+    }
+
+    // DELETE: api/camion/VJ8427/remolque-habitual
+    [HttpDelete("{patente}/remolque-habitual")]
+    public async Task<IActionResult> DesasignarRemolqueHabitual(
+        string patente)
+    {
+        patente = patente.Trim().ToUpperInvariant();
+
+        var camion = await _context.Camiones
+            .Include(c => c.Remolques)
+            .FirstOrDefaultAsync(c => c.Patente == patente);
+
+        if (camion == null)
+        {
+            return NotFound(
+                $"No existe un camión con la patente {patente}.");
+        }
+
+        foreach (var remolque in camion.Remolques)
+        {
+            remolque.CamionHabitualId = null;
+        }
+
+        await _context.SaveChangesAsync();
+
+        return Ok(new
+        {
+            Mensaje = "Remolque habitual desasignado correctamente.",
+            Camion = camion.Patente
+        });
+    }
+
 
     // DELETE: api/camion/VJ8427
     [HttpDelete("{patente}")]

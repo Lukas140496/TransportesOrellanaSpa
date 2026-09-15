@@ -1,0 +1,637 @@
+.asignar-remolque {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 8px 0 40px;
+}
+
+.page-header {
+  margin-bottom: 28px;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.header-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: #eaf2fb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  flex-shrink: 0;
+}
+
+.page-header h1 {
+  margin: 0;
+  color: #102a43;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.page-header p {
+  margin: 6px 0 0;
+  color: #718096;
+  font-size: 14px;
+}
+
+.estado-container {
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #718096;
+}
+
+.loading-spinner {
+  width: 38px;
+  height: 38px;
+  border: 4px solid #e5edf5;
+  border-top-color: #1c4f80;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-bottom: 14px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.error-container {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 18px 20px;
+  background: #fff5f5;
+  border: 1px solid #fed7d7;
+  border-radius: 14px;
+  color: #742a2a;
+}
+
+.error-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #e53e3e;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.error-container strong {
+  display: block;
+  font-size: 14px;
+}
+
+.error-container p {
+  margin: 4px 0 0;
+  font-size: 13px;
+}
+
+.contenido {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.seleccion-card {
+  background: white;
+  border: 1px solid #e6edf4;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 14px rgba(16, 42, 67, 0.04);
+}
+
+.card-header {
+  margin-bottom: 20px;
+}
+
+.card-eyebrow {
+  display: block;
+  color: #66809b;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  margin-bottom: 5px;
+}
+
+.card-header h2,
+.seccion-titulo h2 {
+  margin: 0;
+  color: #102a43;
+  font-size: 19px;
+  font-weight: 700;
+}
+
+.card-header p,
+.seccion-titulo p {
+  margin: 6px 0 0;
+  color: #718096;
+  font-size: 13px;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.campo label {
+  color: #334e68;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.campo select {
+  width: 100%;
+  min-height: 46px;
+  padding: 0 14px;
+  border: 1px solid #d9e2ec;
+  border-radius: 10px;
+  background: #fff;
+  color: #243b53;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.campo select:focus {
+  border-color: #2f6ea5;
+  box-shadow: 0 0 0 3px rgba(47, 110, 165, 0.1);
+}
+
+.camion-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 22px;
+  background: #f5f9fd;
+  border: 1px solid #dce8f3;
+  border-radius: 16px;
+}
+
+.camion-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: #dfeefa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 25px;
+  flex-shrink: 0;
+}
+
+.camion-datos {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.etiqueta {
+  color: #718096;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  margin-bottom: 3px;
+}
+
+.camion-datos strong {
+  color: #102a43;
+  font-size: 20px;
+}
+
+.camion-datos span:not(.etiqueta) {
+  color: #627d98;
+  font-size: 13px;
+  margin-top: 3px;
+}
+
+.camion-tipo {
+  margin-left: auto;
+}
+
+.camion-tipo span {
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 11px;
+  border-radius: 8px;
+  background: #e5eef7;
+  color: #365f83;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.seccion {
+  background: white;
+  border: 1px solid #e6edf4;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 14px rgba(16, 42, 67, 0.04);
+}
+
+.seccion-titulo {
+  margin-bottom: 20px;
+}
+
+.asignacion-actual,
+.remolque-seleccionado {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px;
+  border-radius: 13px;
+  background: #f8fafc;
+  border: 1px solid #e5edf4;
+}
+
+.remolque-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: #edf3f8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 23px;
+  flex-shrink: 0;
+}
+
+.remolque-datos {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.remolque-datos strong {
+  color: #102a43;
+  font-size: 17px;
+}
+
+.remolque-datos span:not(.etiqueta) {
+  color: #486581;
+  font-size: 13px;
+  margin-top: 2px;
+}
+
+.remolque-datos small {
+  color: #829ab1;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.estado-asignacion {
+  margin-left: auto;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.badge.asignado {
+  background: #e8f7ef;
+  color: #257942;
+}
+
+.badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.btn-desasignar {
+  min-height: 38px;
+  padding: 0 14px;
+  border: 1px solid #f0b6b6;
+  border-radius: 9px;
+  background: #fff;
+  color: #c53030;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-desasignar:hover:not(:disabled) {
+  background: #fff5f5;
+  border-color: #e53e3e;
+}
+
+.btn-desasignar:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.sin-asignacion {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px;
+  background: #f8fafc;
+  border: 1px dashed #cbd5e0;
+  border-radius: 13px;
+}
+
+.sin-asignacion-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 11px;
+  background: #edf2f7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.sin-asignacion strong {
+  display: block;
+  color: #334e68;
+  font-size: 14px;
+}
+
+.sin-asignacion p {
+  margin: 4px 0 0;
+  color: #829ab1;
+  font-size: 12px;
+}
+
+.asignacion-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.remolque-seleccionado {
+  position: relative;
+  flex-wrap: wrap;
+}
+
+.aviso-asignacion {
+  flex: 1 1 100%;
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  padding: 11px 13px;
+  border-radius: 9px;
+  background: #fffaf0;
+  border: 1px solid #f6d58c;
+  color: #805b15;
+}
+
+.aviso-asignacion > span {
+  font-size: 14px;
+}
+
+.aviso-asignacion p {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.acciones {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 4px;
+}
+
+.btn-asignar {
+  min-height: 44px;
+  padding: 0 20px;
+  border: 0;
+  border-radius: 10px;
+  background: #183b68;
+  color: white;
+  font-size: 13px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.btn-asignar:hover:not(:disabled) {
+  background: #123052;
+  transform: translateY(-1px);
+}
+
+.btn-asignar:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.boton-spinner {
+  width: 15px;
+  height: 15px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(15, 32, 52, 0.52);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal {
+  width: min(440px, 100%);
+  background: white;
+  border-radius: 18px;
+  padding: 30px;
+  text-align: center;
+  box-shadow: 0 20px 50px rgba(16, 42, 67, 0.2);
+  animation: modalEntrada 0.2s ease-out;
+}
+
+@keyframes modalEntrada {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.modal-icon {
+  width: 58px;
+  height: 58px;
+  margin: 0 auto 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 27px;
+  font-weight: 700;
+}
+
+.modal-icon.exito {
+  background: #e8f7ef;
+  color: #25844a;
+}
+
+.modal-icon.error {
+  background: #fff0f0;
+  color: #d64545;
+}
+
+.modal h2 {
+  margin: 0;
+  color: #102a43;
+  font-size: 20px;
+}
+
+.modal p {
+  margin: 9px 0 22px;
+  color: #627d98;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.btn-modal {
+  min-width: 120px;
+  min-height: 40px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 9px;
+  background: #183b68;
+  color: white;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.btn-modal:hover {
+  background: #123052;
+}
+
+@media (max-width: 768px) {
+
+  .asignar-remolque {
+    padding: 4px 0 30px;
+  }
+
+  .page-header h1 {
+    font-size: 24px;
+  }
+
+  .page-header p {
+    font-size: 13px;
+  }
+
+  .seleccion-card,
+  .seccion {
+    padding: 18px;
+  }
+
+  .camion-card {
+    align-items: flex-start;
+    flex-wrap: wrap;
+    padding: 18px;
+  }
+
+  .camion-tipo {
+    width: 100%;
+    margin-left: 68px;
+    margin-top: -6px;
+  }
+
+  .asignacion-actual {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .estado-asignacion {
+    margin-left: 64px;
+    margin-top: -4px;
+  }
+
+  .btn-desasignar {
+    width: 100%;
+    margin-left: 64px;
+  }
+
+  .acciones {
+    justify-content: stretch;
+  }
+
+  .btn-asignar {
+    width: 100%;
+  }
+
+}
+
+@media (max-width: 480px) {
+
+  .header-content {
+    align-items: flex-start;
+  }
+
+  .header-icon {
+    width: 46px;
+    height: 46px;
+    font-size: 22px;
+  }
+
+  .page-header h1 {
+    font-size: 21px;
+  }
+
+  .camion-card {
+    gap: 12px;
+  }
+
+  .camion-icon {
+    width: 46px;
+    height: 46px;
+    font-size: 22px;
+  }
+
+  .camion-datos strong {
+    font-size: 18px;
+  }
+
+  .camion-tipo {
+    margin-left: 58px;
+  }
+
+  .estado-asignacion,
+  .btn-desasignar {
+    margin-left: 60px;
+  }
+
+  .modal {
+    padding: 24px 20px;
+  }
+
+}

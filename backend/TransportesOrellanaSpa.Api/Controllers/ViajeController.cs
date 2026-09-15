@@ -18,6 +18,23 @@ public class ViajeController : ControllerBase
         _context = context;
     }
 
+    private static DateTime ConvertirFechaChileAUtc(DateTime fecha)
+    {
+        var fechaChile = DateTime.SpecifyKind(
+            fecha,
+            DateTimeKind.Unspecified
+        );
+
+        var zonaChile = TimeZoneInfo.FindSystemTimeZoneById(
+            "America/Santiago"
+        );
+
+        return TimeZoneInfo.ConvertTimeToUtc(
+            fechaChile,
+            zonaChile
+        );
+    }
+
     // =========================
     // POST: api/viaje
     // =========================
@@ -109,9 +126,8 @@ public class ViajeController : ControllerBase
             NumeroGuiaDespacho =
                 numeroGuiaDespacho,
 
-            Fecha = DateTime.SpecifyKind(
-                dto.Fecha,
-                DateTimeKind.Utc
+            Fecha = ConvertirFechaChileAUtc(
+                dto.Fecha
             ),
 
             ClienteId =
@@ -330,9 +346,8 @@ public class ViajeController : ControllerBase
 
         if (fechaDesde.HasValue)
         {
-            var inicio = DateTime.SpecifyKind(
-                fechaDesde.Value.Date,
-                DateTimeKind.Utc
+            var inicio = ConvertirFechaChileAUtc(
+                fechaDesde.Value.Date
             );
 
             query = query.Where(v =>
@@ -345,9 +360,8 @@ public class ViajeController : ControllerBase
 
         if (fechaHasta.HasValue)
         {
-            var fin = DateTime.SpecifyKind(
-                fechaHasta.Value.Date.AddDays(1),
-                DateTimeKind.Utc
+            var fin = ConvertirFechaChileAUtc(
+                fechaHasta.Value.Date.AddDays(1)
             );
 
             query = query.Where(v =>
@@ -609,6 +623,32 @@ public class ViajeController : ControllerBase
         return Ok(viaje);
     }
 
+    // ELIMINAR VIAJE
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(int id)
+    {
+        var viaje = await _context.Viajes
+            .FirstOrDefaultAsync(v => v.Id == id);
+
+        if (viaje == null)
+        {
+            return NotFound("El viaje no existe.");
+        }
+
+        if (viaje.EstadoPago == EstadoPago.Pagado)
+        {
+            return Conflict(
+                "No se puede eliminar un viaje que ya fue pagado."
+            );
+        }
+
+        _context.Viajes.Remove(viaje);
+
+        await _context.SaveChangesAsync();
+
+        return NoContent();
+    }
+
     // =========================
     // PUT: api/viaje/{id}
     // =========================
@@ -718,7 +758,9 @@ public class ViajeController : ControllerBase
         // =========================
 
         viaje.Fecha =
-            dto.Fecha;
+            ConvertirFechaChileAUtc(
+                dto.Fecha
+            );
 
         viaje.NumeroGuiaDespacho =
             numeroGuiaDespacho;
@@ -767,12 +809,6 @@ public class ViajeController : ControllerBase
 
         viaje.Estado =
             dto.Estado;
-
-        viaje.EstadoPago =
-            dto.EstadoPago;
-
-        viaje.FechaPago =
-            dto.FechaPago;
 
         await _context.SaveChangesAsync();
 
