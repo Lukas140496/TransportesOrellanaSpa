@@ -1,0 +1,540 @@
+<div class="form-page">
+
+  <!-- ENCABEZADO -->
+  <div class="page-header">
+
+    <div>
+      <h1>Agregar Remolque</h1>
+      <p>Ingresa la información del nuevo remolque.</p>
+    </div>
+
+    <button
+      type="button"
+      class="btn-cancelar-header"
+      (click)="cancelar()"
+      [disabled]="guardando">
+      Cancelar
+    </button>
+
+  </div>
+
+  <!-- FORMULARIO -->
+  <form
+    [formGroup]="formulario"
+    (ngSubmit)="guardar()"
+    class="form-card">
+
+    <!-- INFORMACIÓN BÁSICA -->
+    <section class="form-section">
+
+      <div class="section-header">
+
+        <div class="section-icon">
+          🚚
+        </div>
+
+        <div>
+          <h2>Información básica</h2>
+          <p>Identificación general del remolque.</p>
+        </div>
+
+      </div>
+
+      <div class="form-grid">
+
+        <!-- PATENTE -->
+        <div class="form-group">
+
+          <label for="patente">
+            Patente
+          </label>
+
+          <input
+            id="patente"
+            type="text"
+            formControlName="patente"
+            placeholder="Ej: AB1234"
+            maxlength="10"
+            autocomplete="off"
+            [disabled]="guardando"
+          />
+
+          @if (
+            formulario.get('patente')?.touched &&
+            formulario.get('patente')?.hasError('required')
+          ) {
+            <span class="error-message">
+              La patente es obligatoria.
+            </span>
+          }
+
+        </div>
+
+        <!-- MARCA -->
+        <div class="form-group">
+
+          <label for="marca">
+            Marca
+          </label>
+
+          <input
+            id="marca"
+            type="text"
+            formControlName="marca"
+            placeholder="Ej: Frijaust"
+            [disabled]="guardando"
+          />
+
+          @if (
+            formulario.get('marca')?.touched &&
+            formulario.get('marca')?.hasError('required')
+          ) {
+            <span class="error-message">
+              La marca es obligatoria.
+            </span>
+          }
+
+        </div>
+
+        <!-- MODELO -->
+        <div class="form-group">
+
+          <label for="modelo">
+            Modelo
+          </label>
+
+          <input
+            id="modelo"
+            type="text"
+            formControlName="modelo"
+            placeholder="Ej: Plataforma"
+            [disabled]="guardando"
+          />
+
+          @if (
+            formulario.get('modelo')?.touched &&
+            formulario.get('modelo')?.hasError('required')
+          ) {
+            <span class="error-message">
+              El modelo es obligatorio.
+            </span>
+          }
+
+        </div>
+
+        <!-- AÑO -->
+        <div class="form-group">
+
+          <label for="ano">
+            Año
+          </label>
+
+          <input
+            id="ano"
+            type="number"
+            formControlName="ano"
+            min="1950"
+            max="2100"
+            placeholder="Ej: 1985"
+            [disabled]="guardando"
+          />
+
+          @if (
+            formulario.get('ano')?.touched &&
+            formulario.get('ano')?.hasError('required')
+          ) {
+            <span class="error-message">
+              El año es obligatorio.
+            </span>
+          }
+
+          @if (
+            formulario.get('ano')?.touched &&
+            formulario.get('ano')?.hasError('min')
+          ) {
+            <span class="error-message">
+              El año no puede ser menor a 1950.
+            </span>
+          }
+
+          @if (
+            formulario.get('ano')?.touched &&
+            formulario.get('ano')?.hasError('max')
+          ) {
+            <span class="error-message">
+              El año ingresado no es válido.
+            </span>
+          }
+
+        </div>
+
+        <!-- TIPO -->
+        <div class="form-group">
+
+          <label for="tipo">
+            Tipo
+          </label>
+
+          <input
+            id="tipo"
+            type="text"
+            formControlName="tipo"
+            placeholder="Ej: Rampla plana"
+            [disabled]="guardando"
+          />
+
+          @if (
+            formulario.get('tipo')?.touched &&
+            formulario.get('tipo')?.hasError('required')
+          ) {
+            <span class="error-message">
+              El tipo es obligatorio.
+            </span>
+          }
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- CARACTERÍSTICAS -->
+    <section class="form-section">
+
+      <div class="section-header">
+
+        <div class="section-icon">
+          ⚙️
+        </div>
+
+        <div>
+          <h2>Características</h2>
+          <p>Información técnica y de capacidad del remolque.</p>
+        </div>
+
+      </div>
+
+      <div class="form-grid">
+
+        <!-- CAPACIDAD -->
+        <div class="form-group">
+
+          <label for="capacidadToneladas">
+            Capacidad
+          </label>
+
+          <input
+            id="capacidadToneladas"
+            type="number"
+            formControlName="capacidadToneladas"
+            min="0.1"
+            step="0.01"
+            placeholder="Ej: 30"
+            [disabled]="guardando"
+          />
+
+          @if (
+            formulario.get('capacidadToneladas')?.touched &&
+            formulario.get('capacidadToneladas')?.hasError('required')
+          ) {
+            <span class="error-message">
+              La capacidad es obligatoria.
+            </span>
+          }
+
+          @if (
+            formulario.get('capacidadToneladas')?.touched &&
+            formulario.get('capacidadToneladas')?.hasError('min')
+          ) {
+            <span class="error-message">
+              La capacidad debe ser mayor a 0.
+            </span>
+          }
+
+          <span class="field-hint">
+            Capacidad máxima en toneladas.
+          </span>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- CAMIÓN HABITUAL -->
+    <section class="form-section">
+
+      <div class="section-header">
+
+        <div class="section-icon">
+          🚛
+        </div>
+
+        <div>
+          <h2>Camión habitual</h2>
+          <p>Asocia este remolque a un camión habitual.</p>
+        </div>
+
+      </div>
+
+      <div class="form-grid">
+
+        <div class="form-group">
+
+          <label for="camionHabitualId">
+            Camión habitual
+          </label>
+
+          <select
+            id="camionHabitualId"
+            formControlName="camionHabitualId"
+            [disabled]="guardando || cargandoCamiones">
+
+            <option [ngValue]="null">
+              Sin camión habitual
+            </option>
+
+            @for (camion of camiones; track camion.id) {
+
+              <option [ngValue]="camion.id">
+                {{ camion.patente }} — {{ camion.marca }} {{ camion.modelo }}
+              </option>
+
+            }
+
+          </select>
+
+          @if (cargandoCamiones) {
+
+            <span class="field-hint">
+              Cargando camiones...
+            </span>
+
+          } @else {
+
+            <span class="field-hint">
+              Solo se muestran camiones activos.
+            </span>
+
+          }
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ESTADO -->
+    <section class="form-section">
+
+      <div class="section-header">
+
+        <div class="section-icon">
+          ✓
+        </div>
+
+        <div>
+          <h2>Estado</h2>
+          <p>Indica si el remolque estará disponible para operar.</p>
+        </div>
+
+      </div>
+
+      <div class="status-grid">
+
+        <label class="status-option">
+
+          <input
+            type="checkbox"
+            formControlName="activa"
+            [disabled]="guardando"
+          />
+
+          <span class="status-content">
+
+            <strong>
+              Remolque activo
+            </strong>
+
+            <small>
+              Disponible para ser utilizado en operaciones.
+            </small>
+
+          </span>
+
+        </label>
+
+      </div>
+
+    </section>
+
+    <!-- ACCIONES -->
+    <div class="form-actions">
+
+      <button
+        type="button"
+        class="btn-secondary"
+        (click)="cancelar()"
+        [disabled]="guardando">
+        Cancelar
+      </button>
+
+      <button
+        type="submit"
+        class="btn-primary"
+        [disabled]="guardando">
+
+        @if (guardando) {
+
+          <span class="spinner"></span>
+          Guardando...
+
+        } @else {
+
+          Guardar remolque
+
+        }
+
+      </button>
+
+    </div>
+
+  </form>
+
+</div>
+
+
+<!-- MODAL ÉXITO -->
+@if (mostrarModalExito) {
+
+  <div
+    class="modal-overlay"
+    (click)="cerrarModalExito()">
+
+    <div
+      class="modal"
+      role="dialog"
+      aria-modal="true"
+      (click)="$event.stopPropagation()">
+
+      <div class="modal-icon success">
+        ✓
+      </div>
+
+      <h2>
+        Remolque creado correctamente
+      </h2>
+
+      <p>
+        El remolque fue agregado correctamente a la flota.
+      </p>
+
+      <div class="camion-confirmacion">
+
+        <div class="camion-dato">
+          <span>Marca</span>
+          <strong>{{ remolqueCreado.marca }}</strong>
+        </div>
+
+        <div class="camion-dato">
+          <span>Modelo</span>
+          <strong>{{ remolqueCreado.modelo }}</strong>
+        </div>
+
+        <div class="camion-dato">
+          <span>Patente</span>
+          <strong>{{ remolqueCreado.patente }}</strong>
+        </div>
+
+      </div>
+
+      <button
+        type="button"
+        class="btn-primary modal-button"
+        (click)="cerrarModalExito()">
+        Ir al listado
+      </button>
+
+    </div>
+
+  </div>
+
+}
+
+
+<!-- MODAL FORMULARIO INCOMPLETO -->
+@if (mostrarModalIncompleto) {
+
+  <div
+    class="modal-overlay"
+    (click)="cerrarModalIncompleto()">
+
+    <div
+      class="modal"
+      role="alertdialog"
+      aria-modal="true"
+      (click)="$event.stopPropagation()">
+
+      <div class="modal-icon error">
+        !
+      </div>
+
+      <h2>
+        Formulario incompleto
+      </h2>
+
+      <p>
+        Debes completar todos los campos obligatorios antes de guardar el remolque.
+      </p>
+
+      <button
+        type="button"
+        class="btn-primary modal-button"
+        (click)="cerrarModalIncompleto()">
+        Aceptar
+      </button>
+
+    </div>
+
+  </div>
+
+}
+
+
+<!-- MODAL ERROR -->
+@if (mostrarModalError) {
+
+  <div
+    class="modal-overlay"
+    (click)="cerrarModalError()">
+
+    <div
+      class="modal"
+      role="alertdialog"
+      aria-modal="true"
+      (click)="$event.stopPropagation()">
+
+      <div class="modal-icon error">
+        !
+      </div>
+
+      <h2>
+        No fue posible crear el remolque
+      </h2>
+
+      <p>
+        {{ mensajeError }}
+      </p>
+
+      <button
+        type="button"
+        class="btn-primary modal-button"
+        (click)="cerrarModalError()">
+        Aceptar
+      </button>
+
+    </div>
+
+  </div>
+
+}

@@ -91,7 +91,33 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Camion>()
             .Property(c => c.FechaSeguroObligatorio)
             .HasColumnType("date");
-            
+
+        // =========================
+        // CONDUCTOR - FECHAS
+        // =========================
+        modelBuilder.Entity<Conductor>()
+            .Property(c => c.FechaNacimiento)
+            .HasColumnType("date");
+
+        modelBuilder.Entity<Conductor>()
+            .Property(c => c.FechaIngreso)
+            .HasColumnType("date");
+
+        modelBuilder.Entity<Conductor>()
+            .Property(c => c.FechaControlLicencia)
+            .HasColumnType("date");
+
+        // =========================
+        // VIAJE - COMBUSTIBLE
+        // =========================
+        modelBuilder.Entity<Viaje>()
+            .Property(v => v.LitrosCombustible)
+            .HasPrecision(10, 2);
+
+        modelBuilder.Entity<Viaje>()
+            .Property(v => v.CostoCombustible)
+            .HasPrecision(12, 2);
+
         // =========================
         // VIAJE - ESTADOS
         // =========================
@@ -102,7 +128,7 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<Viaje>()
             .Property(v => v.EstadoPago)
             .HasConversion<string>();
-            
+
         // =========================
         // ÍNDICES
         // =========================
@@ -120,6 +146,10 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<Cliente>()
             .HasIndex(c => c.Rut)
+            .IsUnique();
+
+        modelBuilder.Entity<Viaje>()
+            .HasIndex(v => v.NumeroGuiaDespacho)
             .IsUnique();
     }
 }

@@ -1,0 +1,527 @@
+<section class="asignar-conductor">
+
+  <div class="page-header">
+
+    <div class="header-content">
+
+      <div class="header-icon">
+        👤
+      </div>
+
+      <div>
+
+        <h1>
+          Asignar Conductor Habitual
+        </h1>
+
+        <p>
+          Administra los conductores habituales asociados a cada camión.
+        </p>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  @if (cargando) {
+
+    <div class="estado-container">
+
+      <div class="loading-spinner"></div>
+
+      <p>
+        Cargando camiones y conductores...
+      </p>
+
+    </div>
+
+  }
+
+
+  @if (error) {
+
+    <div class="error-container">
+
+      <div class="error-icon">
+        !
+      </div>
+
+      <div>
+
+        <strong>
+          No fue posible cargar la información
+        </strong>
+
+        <p>
+          {{ error }}
+        </p>
+
+      </div>
+
+    </div>
+
+  }
+
+
+  @if (!cargando && !error) {
+
+    <div class="contenido">
+
+
+      <!-- CAMIÓN -->
+
+      <div class="seccion-card">
+
+        <div class="seccion-header">
+
+          <div class="seccion-icon camion">
+            🚛
+          </div>
+
+          <div>
+
+            <h2>
+              1. Selecciona un camión
+            </h2>
+
+            <p>
+              Elige el camión al que quieres administrar sus conductores habituales.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div class="campo">
+
+          <label for="camion">
+            Camión
+          </label>
+
+          <select
+            id="camion"
+            [(ngModel)]="patenteCamion"
+            (ngModelChange)="seleccionarCamion()">
+
+            <option value="">
+              Selecciona un camión...
+            </option>
+
+            @for (
+              camion of camiones;
+              track camion.id
+            ) {
+
+              <option [value]="camion.patente">
+
+                {{ camion.patente }}
+                —
+                {{ camion.marca }}
+                {{ camion.modelo }}
+
+              </option>
+
+            }
+
+          </select>
+
+        </div>
+
+
+        @if (camionSeleccionado) {
+
+          <div class="camion-seleccionado">
+
+            <div class="camion-avatar">
+              🚛
+            </div>
+
+            <div class="camion-datos">
+
+              <strong>
+                {{ camionSeleccionado.patente }}
+              </strong>
+
+              <span>
+                {{ camionSeleccionado.marca }}
+                {{ camionSeleccionado.modelo }}
+                ·
+                {{ camionSeleccionado.ano }}
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <div class="conductores-actuales">
+
+            <div class="subtitulo">
+
+              <span>
+                Conductores habituales
+              </span>
+
+              <strong>
+                {{ conductoresActuales.length }}
+              </strong>
+
+            </div>
+
+
+            @if (conductoresActuales.length > 0) {
+
+              <div class="conductores-lista">
+
+                @for (
+                  conductor of conductoresActuales;
+                  track conductor.rut
+                ) {
+
+                  <button
+                    type="button"
+                    class="conductor-item"
+                    [class.seleccionado]="
+                      rutConductor === conductor.rut
+                    "
+                    (click)="
+                      rutConductor = conductor.rut;
+                      seleccionarConductor()
+                    ">
+
+                    <div class="conductor-avatar">
+                      👤
+                    </div>
+
+                    <div class="conductor-datos">
+
+                      <strong>
+                        {{ conductor.nombres }}
+                        {{ conductor.apellidoPaterno }}
+                      </strong>
+
+                      <span>
+                        {{ conductor.rut }}
+                      </span>
+
+                    </div>
+
+                    @if (rutConductor === conductor.rut) {
+
+                      <span class="check">
+                        ✓
+                      </span>
+
+                    }
+
+                  </button>
+
+                }
+
+              </div>
+
+            } @else {
+
+              <div class="sin-conductores">
+
+                <span class="sin-conductores-icon">
+                  👤
+                </span>
+
+                <div>
+
+                  <strong>
+                    Sin conductores habituales
+                  </strong>
+
+                  <p>
+                    Este camión todavía no tiene conductores asignados.
+                  </p>
+
+                </div>
+
+              </div>
+
+            }
+
+          </div>
+
+        }
+
+      </div>
+
+
+      <!-- CONDUCTOR -->
+
+      <div class="seccion-card">
+
+        <div class="seccion-header">
+
+          <div class="seccion-icon conductor">
+            👤
+          </div>
+
+          <div>
+
+            <h2>
+              2. Selecciona un conductor
+            </h2>
+
+            <p>
+              Elige el conductor que quieres asignar al camión.
+            </p>
+
+          </div>
+
+        </div>
+
+
+        <div class="campo">
+
+          <label for="conductor">
+            Conductor
+          </label>
+
+          <select
+            id="conductor"
+            [(ngModel)]="rutConductor"
+            (ngModelChange)="seleccionarConductor()"
+            [disabled]="!camionSeleccionado">
+
+            <option value="">
+              Selecciona un conductor...
+            </option>
+
+            @for (
+              conductor of conductores;
+              track conductor.rut
+            ) {
+
+              <option [value]="conductor.rut">
+
+                {{ conductor.nombres }}
+                {{ conductor.apellidoPaterno }}
+                —
+                {{ conductor.rut }}
+
+              </option>
+
+            }
+
+          </select>
+
+        </div>
+
+
+        @if (conductorSeleccionado) {
+
+          <div class="conductor-seleccionado">
+
+            <div class="conductor-avatar grande">
+              👤
+            </div>
+
+            <div class="conductor-datos">
+
+              <strong>
+                {{ conductorSeleccionado.nombres }}
+                {{ conductorSeleccionado.apellidoPaterno }}
+              </strong>
+
+              <span>
+                RUT:
+                {{ conductorSeleccionado.rut }}
+              </span>
+
+              @if (conductorSeleccionado.telefono) {
+
+                <span>
+                  📞
+                  {{ conductorSeleccionado.telefono }}
+                </span>
+
+              }
+
+            </div>
+
+          </div>
+
+
+          @if (camionDelConductor) {
+
+            <div class="advertencia">
+
+              <div class="advertencia-icon">
+                ⚠️
+              </div>
+
+              <div>
+
+                <strong>
+                  Este conductor ya está asignado a otro camión
+                </strong>
+
+                <p>
+
+                  El conductor
+                  <strong>
+                    {{ conductorSeleccionado.nombres }}
+                    {{ conductorSeleccionado.apellidoPaterno }}
+                  </strong>
+                  está actualmente asignado como habitual al camión
+
+                  <strong>
+                    {{ camionDelConductor.patente }}
+                  </strong>.
+
+                </p>
+
+                <span class="advertencia-ayuda">
+
+                  Puedes asignarlo igualmente al camión seleccionado.
+
+                </span>
+
+              </div>
+
+            </div>
+
+          }
+
+
+          @if (conductorYaAsignadoAlCamion) {
+
+            <div class="info-asignado">
+
+              <span class="info-icon">
+                ✓
+              </span>
+
+              <div>
+
+                <strong>
+                  Conductor ya asignado
+                </strong>
+
+                <p>
+                  Este conductor ya es habitual de este camión.
+                </p>
+
+              </div>
+
+            </div>
+
+          }
+
+
+          <div class="acciones">
+
+            @if (puedeAsignar) {
+
+              <button
+                type="button"
+                class="btn-principal"
+                [disabled]="procesando"
+                (click)="asignarConductor()">
+
+                @if (procesando) {
+
+                  <span class="mini-spinner"></span>
+
+                  Procesando...
+
+                } @else {
+
+                  <span>
+                    ✓
+                  </span>
+
+                  Asignar conductor
+
+                }
+
+              </button>
+
+            }
+
+
+            @if (puedeDesasignar) {
+
+              <button
+                type="button"
+                class="btn-secundario"
+                [disabled]="procesando"
+                (click)="desasignarConductor()">
+
+                <span>
+                  ×
+                </span>
+
+                Desasignar conductor
+
+              </button>
+
+            }
+
+          </div>
+
+        }
+
+      </div>
+
+
+    </div>
+
+  }
+
+</section>
+
+
+@if (modalVisible) {
+
+  <div
+    class="modal-overlay"
+    (click)="cerrarModal()">
+
+    <div
+      class="modal"
+      (click)="$event.stopPropagation()">
+
+      <div
+        class="modal-icon"
+        [class.exito]="modalTipo === 'exito'"
+        [class.error]="modalTipo === 'error'">
+
+        @if (modalTipo === 'exito') {
+          ✓
+        } @else {
+          !
+        }
+
+      </div>
+
+      <h2>
+        {{ modalTitulo }}
+      </h2>
+
+      <p>
+        {{ modalMensaje }}
+      </p>
+
+      <button
+        type="button"
+        class="modal-btn"
+        (click)="cerrarModal()">
+
+        Entendido
+
+      </button>
+
+    </div>
+
+  </div>
+
+}

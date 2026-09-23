@@ -157,7 +157,7 @@ public class RemolqueController : ControllerBase
 
     // PUT: api/remolque/ABC123
     [HttpPut("{patente}")]
-    public async Task<IActionResult> Update(
+    public async Task<ActionResult<RemolqueDto>> Update(
         string patente,
         ActualizarRemolqueDto dto)
     {
@@ -193,7 +193,213 @@ public class RemolqueController : ControllerBase
 
         await _context.SaveChangesAsync();
 
-        return NoContent();
+        var resultado = await _context.Remolques
+            .AsNoTracking()
+            .Where(r => r.Patente == patente)
+            .Select(r => new RemolqueDto
+            {
+                Id = r.Id,
+                Patente = r.Patente,
+                Marca = r.Marca,
+                Modelo = r.Modelo,
+                Ano = r.Ano,
+                Tipo = r.Tipo,
+                CapacidadToneladas = r.CapacidadToneladas,
+                Activa = r.Activa,
+                CamionHabitualId = r.CamionHabitualId,
+
+                CamionHabitual = r.CamionHabitual == null
+                    ? null
+                    : new CamionResumenDto
+                    {
+                        Id = r.CamionHabitual.Id,
+                        Patente = r.CamionHabitual.Patente,
+                        Marca = r.CamionHabitual.Marca,
+                        Modelo = r.CamionHabitual.Modelo
+                    }
+            })
+            .FirstOrDefaultAsync();
+
+        return Ok(resultado);
+    }
+
+    // PATCH: api/remolque/ABC123/desactivar
+    [HttpPatch("{patente}/desactivar")]
+    public async Task<ActionResult<RemolqueDto>> Desactivar(
+        string patente)
+    {
+        patente = patente.Trim().ToUpperInvariant();
+
+        var remolque = await _context.Remolques
+            .FirstOrDefaultAsync(r => r.Patente == patente);
+
+        if (remolque == null)
+        {
+            return NotFound(
+                $"No existe un remolque con la patente {patente}.");
+        }
+
+        if (!remolque.Activa)
+        {
+            return Conflict(
+                $"El remolque con patente {patente} ya se encuentra inactivo.");
+        }
+
+        remolque.Activa = false;
+
+        await _context.SaveChangesAsync();
+
+        var resultado = await _context.Remolques
+            .AsNoTracking()
+            .Where(r => r.Patente == patente)
+            .Select(r => new RemolqueDto
+            {
+                Id = r.Id,
+                Patente = r.Patente,
+                Marca = r.Marca,
+                Modelo = r.Modelo,
+                Ano = r.Ano,
+                Tipo = r.Tipo,
+                CapacidadToneladas = r.CapacidadToneladas,
+                Activa = r.Activa,
+                CamionHabitualId = r.CamionHabitualId,
+
+                CamionHabitual = r.CamionHabitual == null
+                    ? null
+                    : new CamionResumenDto
+                    {
+                        Id = r.CamionHabitual.Id,
+                        Patente = r.CamionHabitual.Patente,
+                        Marca = r.CamionHabitual.Marca,
+                        Modelo = r.CamionHabitual.Modelo
+                    }
+            })
+            .FirstOrDefaultAsync();
+
+        return Ok(resultado);
+    }
+
+    // PATCH: api/remolque/ABC123/activar
+    [HttpPatch("{patente}/activar")]
+    public async Task<ActionResult<RemolqueDto>> Activar(
+        string patente)
+    {
+        patente = patente.Trim().ToUpperInvariant();
+
+        var remolque = await _context.Remolques
+            .FirstOrDefaultAsync(r => r.Patente == patente);
+
+        if (remolque == null)
+        {
+            return NotFound(
+                $"No existe un remolque con la patente {patente}.");
+        }
+
+        if (remolque.Activa)
+        {
+            return Conflict(
+                $"El remolque con patente {patente} ya se encuentra activo.");
+        }
+
+        remolque.Activa = true;
+
+        await _context.SaveChangesAsync();
+
+        var resultado = await _context.Remolques
+            .AsNoTracking()
+            .Where(r => r.Patente == patente)
+            .Select(r => new RemolqueDto
+            {
+                Id = r.Id,
+                Patente = r.Patente,
+                Marca = r.Marca,
+                Modelo = r.Modelo,
+                Ano = r.Ano,
+                Tipo = r.Tipo,
+                CapacidadToneladas = r.CapacidadToneladas,
+                Activa = r.Activa,
+                CamionHabitualId = r.CamionHabitualId,
+
+                CamionHabitual = r.CamionHabitual == null
+                    ? null
+                    : new CamionResumenDto
+                    {
+                        Id = r.CamionHabitual.Id,
+                        Patente = r.CamionHabitual.Patente,
+                        Marca = r.CamionHabitual.Marca,
+                        Modelo = r.CamionHabitual.Modelo
+                    }
+            })
+            .FirstOrDefaultAsync();
+
+        return Ok(resultado);
+    }
+
+    // PUT: api/remolque/ABC123/camion-habitual
+    [HttpPut("{patente}/camion-habitual")]
+    public async Task<IActionResult> AsignarCamionHabitual(
+        string patente,
+        AsignarCamionHabitualDto dto)
+    {
+        patente = patente.Trim().ToUpperInvariant();
+
+        var remolque = await _context.Remolques
+            .FirstOrDefaultAsync(r => r.Patente == patente);
+
+        if (remolque == null)
+        {
+            return NotFound(
+                $"No existe un remolque con la patente {patente}.");
+        }
+
+        var patenteCamion = dto.Patente.Trim().ToUpperInvariant();
+
+        var camion = await _context.Camiones
+            .FirstOrDefaultAsync(c => c.Patente == patenteCamion);
+
+        if (camion == null)
+        {
+            return NotFound(
+                $"No existe un camión con la patente {patenteCamion}.");
+        }
+
+        remolque.CamionHabitualId = camion.Id;
+
+        await _context.SaveChangesAsync();
+
+        return Ok(new
+        {
+            Mensaje = "Camión habitual asignado correctamente al remolque.",
+            Remolque = remolque.Patente,
+            Camion = camion.Patente
+        });
+    }
+
+    // DELETE: api/remolque/ABC123/camion-habitual
+    [HttpDelete("{patente}/camion-habitual")]
+    public async Task<IActionResult> DesasignarCamionHabitual(
+        string patente)
+    {
+        patente = patente.Trim().ToUpperInvariant();
+
+        var remolque = await _context.Remolques
+            .FirstOrDefaultAsync(r => r.Patente == patente);
+
+        if (remolque == null)
+        {
+            return NotFound(
+                $"No existe un remolque con la patente {patente}.");
+        }
+
+        remolque.CamionHabitualId = null;
+
+        await _context.SaveChangesAsync();
+
+        return Ok(new
+        {
+            Mensaje = "Camión habitual desasignado correctamente.",
+            Remolque = remolque.Patente
+        });
     }
 
     // DELETE: api/remolque/ABC123

@@ -1,0 +1,619 @@
+<div class="form-page">
+
+  <!-- Encabezado -->
+  <div class="page-header">
+
+    <div>
+      <h1>Desactivar Remolque</h1>
+
+      <p>
+        Busca y selecciona el remolque que deseas desactivar.
+      </p>
+    </div>
+
+  </div>
+
+  <!-- Búsqueda -->
+  <div class="search-card">
+
+    <div class="section-header">
+
+      <div class="section-icon">🚚</div>
+
+      <div>
+        <h2>Buscar remolque</h2>
+
+        <p>
+          Ingresa la patente, marca o modelo para encontrar el remolque.
+        </p>
+      </div>
+
+    </div>
+
+    <div class="search-row">
+
+      <div class="form-group">
+
+        <label for="busqueda">
+          Remolque
+        </label>
+
+        <input
+          id="busqueda"
+          type="text"
+          [(ngModel)]="busqueda"
+          (ngModelChange)="buscarRemolques()"
+          placeholder="Ej: ABC123, Frijaust o plataforma"
+          autocomplete="off"
+        />
+
+      </div>
+
+      <button
+        type="button"
+        class="btn-secondary"
+        (click)="busqueda = ''; buscarRemolques()">
+
+        Limpiar
+
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- Cargando -->
+  @if (cargando) {
+
+    <div class="loading-card">
+
+      <div class="loading-spinner"></div>
+
+      <span>
+        Cargando remolques...
+      </span>
+
+    </div>
+
+  }
+
+  <!-- Error -->
+  @if (!cargando && error) {
+
+    <div class="error-card">
+
+      <div class="error-icon">
+        !
+      </div>
+
+      <div>
+
+        <strong>
+          No fue posible cargar los remolques
+        </strong>
+
+        <p>
+          {{ error }}
+        </p>
+
+      </div>
+
+    </div>
+
+  }
+
+  <!-- Resultados -->
+  @if (!cargando && !error && !remolqueSeleccionado) {
+
+    <div class="results-card">
+
+      <div class="results-header">
+
+        <div>
+
+          <h2>
+            Remolques disponibles
+          </h2>
+
+          <span>
+            {{ remolquesFiltrados.length }} resultado(s)
+          </span>
+
+        </div>
+
+      </div>
+
+      @if (remolquesFiltrados.length === 0) {
+
+        <div class="empty-state">
+
+          <div class="empty-icon">
+            🚚
+          </div>
+
+          <h3>
+            No se encontraron remolques
+          </h3>
+
+          <p>
+            No existe ningún remolque activo que coincida con
+            la búsqueda ingresada.
+          </p>
+
+        </div>
+
+      } @else {
+
+        <div class="results-list">
+
+          @for (
+            remolque of remolquesFiltrados;
+            track remolque.id
+          ) {
+
+            <button
+              type="button"
+              class="remolque-item"
+              (click)="seleccionarRemolque(remolque)">
+
+              <div class="remolque-main">
+
+                <div class="remolque-patente">
+
+                  <span class="label">
+                    Patente
+                  </span>
+
+                  <strong>
+                    {{ remolque.patente }}
+                  </strong>
+
+                </div>
+
+                <div class="remolque-marca">
+
+                  <span class="label">
+                    Marca
+                  </span>
+
+                  <strong>
+                    {{ remolque.marca }}
+                  </strong>
+
+                </div>
+
+                <div class="remolque-modelo">
+
+                  <span class="label">
+                    Modelo
+                  </span>
+
+                  <strong>
+                    {{ remolque.modelo }}
+                  </strong>
+
+                </div>
+
+                <div class="remolque-ano">
+
+                  <span class="label">
+                    Año
+                  </span>
+
+                  <strong>
+                    {{ remolque.ano }}
+                  </strong>
+
+                </div>
+
+                <div class="remolque-tipo">
+
+                  <span class="label">
+                    Tipo
+                  </span>
+
+                  <strong>
+                    {{ remolque.tipo }}
+                  </strong>
+
+                </div>
+
+                <div class="remolque-estado">
+
+                  <span class="estado-activo">
+
+                    <span class="estado-dot"></span>
+
+                    Activo
+
+                  </span>
+
+                </div>
+
+              </div>
+
+              <div class="select-arrow">
+                →
+              </div>
+
+            </button>
+
+          }
+
+        </div>
+
+      }
+
+    </div>
+
+  }
+
+  <!-- Remolque seleccionado -->
+  @if (remolqueSeleccionado) {
+
+    <div class="selected-summary">
+
+      <div class="selected-header">
+
+        <div>
+
+          <span class="selected-label">
+            Remolque seleccionado
+          </span>
+
+          <h2>
+            {{ remolqueSeleccionado.patente }}
+          </h2>
+
+        </div>
+
+        <button
+          type="button"
+          class="btn-secondary"
+          (click)="limpiarSeleccion()">
+
+          Cambiar remolque
+
+        </button>
+
+      </div>
+
+      <div class="selected-grid">
+
+        <div class="selected-item">
+
+          <span>
+            Patente
+          </span>
+
+          <strong>
+            {{ remolqueSeleccionado.patente }}
+          </strong>
+
+        </div>
+
+        <div class="selected-item">
+
+          <span>
+            Marca
+          </span>
+
+          <strong>
+            {{ remolqueSeleccionado.marca }}
+          </strong>
+
+        </div>
+
+        <div class="selected-item">
+
+          <span>
+            Modelo
+          </span>
+
+          <strong>
+            {{ remolqueSeleccionado.modelo }}
+          </strong>
+
+        </div>
+
+        <div class="selected-item">
+
+          <span>
+            Año
+          </span>
+
+          <strong>
+            {{ remolqueSeleccionado.ano }}
+          </strong>
+
+        </div>
+
+        <div class="selected-item">
+
+          <span>
+            Tipo
+          </span>
+
+          <strong>
+            {{ remolqueSeleccionado.tipo }}
+          </strong>
+
+        </div>
+
+        <div class="selected-item">
+
+          <span>
+            Capacidad
+          </span>
+
+          <strong>
+            {{ remolqueSeleccionado.capacidadToneladas }} t
+          </strong>
+
+        </div>
+
+        <div class="selected-item">
+
+          <span>
+            Camión habitual
+          </span>
+
+          <strong>
+
+            @if (remolqueSeleccionado.camionHabitual) {
+
+              {{ remolqueSeleccionado.camionHabitual.patente }}
+
+            } @else {
+
+              Sin asignar
+
+            }
+
+          </strong>
+
+        </div>
+
+        <div class="selected-item">
+
+          <span>
+            Estado
+          </span>
+
+          <strong>
+            Activo
+          </strong>
+
+        </div>
+
+      </div>
+
+      <!-- Advertencia -->
+      <div class="deactivate-warning">
+
+        <div class="warning-icon">
+          ⚠️
+        </div>
+
+        <div>
+
+          <strong>
+            Atención: desactivación del remolque
+          </strong>
+
+          <p>
+            El remolque dejará de estar disponible como remolque activo,
+            pero <strong>no será eliminado</strong>. Sus datos,
+            relaciones e historial se conservarán y podrá volver
+            a activarse posteriormente.
+          </p>
+
+        </div>
+
+      </div>
+
+      <!-- Acciones -->
+      <div class="selected-actions">
+
+        <button
+          type="button"
+          class="btn-secondary"
+          (click)="limpiarSeleccion()">
+
+          Cancelar
+
+        </button>
+
+        <button
+          type="button"
+          class="btn-warning"
+          [disabled]="
+            !remolqueSeleccionado.activa ||
+            desactivando
+          "
+          (click)="abrirModalConfirmacion()">
+
+          @if (desactivando) {
+
+            Desactivando...
+
+          } @else {
+
+            Desactivar remolque
+
+          }
+
+        </button>
+
+      </div>
+
+    </div>
+
+  }
+
+</div>
+
+<!-- Modal de confirmación -->
+@if (
+  modalConfirmacionVisible &&
+  remolqueSeleccionado
+) {
+
+  <div
+    class="modal-backdrop"
+    (click)="cerrarModalConfirmacion()">
+
+    <div
+      class="modal"
+      role="dialog"
+      aria-modal="true"
+      (click)="$event.stopPropagation()">
+
+      <div class="modal-icon warning">
+        ⚠
+      </div>
+
+      <h2>
+        ¿Desactivar remolque?
+      </h2>
+
+      <p>
+
+        Estás a punto de desactivar el remolque
+
+        <strong>
+          {{ remolqueSeleccionado.patente }}
+        </strong>.
+
+      </p>
+
+      <p class="modal-warning-text">
+        El remolque no será eliminado. Podrás volver a activarlo
+        posteriormente.
+      </p>
+
+      <div class="modal-actions">
+
+        <button
+          type="button"
+          class="btn-secondary"
+          (click)="cerrarModalConfirmacion()"
+          [disabled]="desactivando">
+
+          Cancelar
+
+        </button>
+
+        <button
+          type="button"
+          class="btn-warning"
+          (click)="confirmarDesactivacion()"
+          [disabled]="desactivando">
+
+          @if (desactivando) {
+
+            Desactivando...
+
+          } @else {
+
+            Sí, desactivar
+
+          }
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+}
+
+<!-- Modal de error -->
+@if (modalErrorVisible) {
+
+  <div
+    class="modal-backdrop"
+    (click)="cerrarModalError()">
+
+    <div
+      class="modal"
+      role="alertdialog"
+      aria-modal="true"
+      (click)="$event.stopPropagation()">
+
+      <div class="modal-icon error">
+        !
+      </div>
+
+      <h2>
+        {{ modalErrorTitulo }}
+      </h2>
+
+      <p>
+        {{ modalErrorMensaje }}
+      </p>
+
+      <button
+        type="button"
+        class="btn-primary modal-button"
+        (click)="cerrarModalError()">
+
+        Aceptar
+
+      </button>
+
+    </div>
+
+  </div>
+
+}
+
+<!-- Modal de éxito -->
+@if (modalExitoVisible) {
+
+  <div
+    class="modal-backdrop"
+    (click)="cerrarModalExito()">
+
+    <div
+      class="modal"
+      role="dialog"
+      aria-modal="true"
+      (click)="$event.stopPropagation()">
+
+      <div class="modal-icon success">
+        ✓
+      </div>
+
+      <h2>
+        Remolque desactivado
+      </h2>
+
+      <p>
+
+        El remolque
+
+        <strong>
+          {{ remolqueSeleccionado?.patente }}
+        </strong>
+
+        fue desactivado correctamente.
+
+      </p>
+
+      <button
+        type="button"
+        class="btn-primary modal-button"
+        (click)="cerrarModalExito()">
+
+        Aceptar
+
+      </button>
+
+    </div>
+
+  </div>
+
+}

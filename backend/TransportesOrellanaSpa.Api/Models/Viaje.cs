@@ -6,6 +6,8 @@ public class Viaje
 {
     public int Id { get; set; }
 
+    public string NumeroGuiaDespacho { get; set; } = string.Empty;
+
     public DateTime Fecha { get; set; }
 
     // =========================
@@ -51,6 +53,10 @@ public class Viaje
     public string TipoCarga { get; set; } = string.Empty;
 
     public double? Kilometros { get; set; }
+
+    public decimal LitrosCombustible { get; set; }
+
+    public decimal CostoCombustible { get; set; }
 
     public decimal Tarifa { get; set; }
 

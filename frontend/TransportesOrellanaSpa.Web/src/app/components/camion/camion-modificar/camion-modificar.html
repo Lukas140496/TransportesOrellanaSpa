@@ -1,0 +1,875 @@
+<div class="modificar-page">
+
+    <div class="page-header">
+      <div>
+        <h1>Modificar Camión</h1>
+        <p>Selecciona un camión y actualiza su información.</p>
+      </div>
+  
+      <button
+        type="button"
+        class="btn-cancelar-header"
+        (click)="cancelar()"
+        [disabled]="guardando">
+        Cancelar
+      </button>
+    </div>
+  
+    @if (cargando) {
+  
+      <div class="loading-card">
+        <div class="spinner"></div>
+        <span>Cargando camiones...</span>
+      </div>
+  
+    } @else if (error) {
+  
+      <div class="error-card">
+        <div class="error-icon">!</div>
+  
+        <div>
+          <strong>No fue posible cargar los camiones</strong>
+          <p>{{ error }}</p>
+        </div>
+  
+        <button
+          type="button"
+          class="btn-reintentar"
+          (click)="cargarCamiones()">
+          Reintentar
+        </button>
+      </div>
+  
+    } @else {
+  
+      <div class="busqueda-card">
+  
+        <div class="busqueda-header">
+          <div>
+            <h2>Buscar camión</h2>
+            <p>Busca por patente, marca o modelo.</p>
+          </div>
+  
+          @if (camionSeleccionado) {
+            <button
+              type="button"
+              class="btn-limpiar"
+              (click)="limpiarSeleccion()"
+              [disabled]="guardando">
+              Cambiar camión
+            </button>
+          }
+        </div>
+  
+        <div class="busqueda-input">
+  
+          <span class="search-icon">⌕</span>
+  
+          <input
+            type="text"
+            [(ngModel)]="busqueda"
+            (ngModelChange)="buscarCamiones()"
+            placeholder="Ej: AB1234, Freightliner, FLD 120"
+            autocomplete="off"
+            [disabled]="guardando"
+          />
+  
+          @if (busqueda) {
+            <button
+              type="button"
+              class="btn-limpiar-busqueda"
+              (click)="busqueda = ''; buscarCamiones()"
+              [disabled]="guardando">
+              ×
+            </button>
+          }
+  
+        </div>
+  
+      </div>
+  
+      @if (!camionSeleccionado) {
+  
+        <div class="lista-card">
+  
+          <div class="lista-header">
+            <div>
+              <h2>Camiones disponibles</h2>
+              <p>
+                {{ camionesFiltrados.length }}
+                {{ camionesFiltrados.length === 1
+                  ? 'camión encontrado'
+                  : 'camiones encontrados' }}
+              </p>
+            </div>
+          </div>
+  
+          @if (camionesFiltrados.length > 0) {
+  
+            <div class="camiones-lista">
+  
+              @for (camion of camionesFiltrados; track camion.id) {
+  
+                <button
+                  type="button"
+                  class="camion-item"
+                  (click)="seleccionarCamion(camion)">
+  
+                  <div class="camion-icon">
+                    🚛
+                  </div>
+  
+                  <div class="camion-info">
+  
+                    <div class="camion-principal">
+  
+                      <strong>
+                        {{ camion.patente }}
+                      </strong>
+  
+                      <span class="camion-estado">
+  
+                        @if (
+                          camion.revisionAlDia &&
+                          camion.permisoAlDia &&
+                          camion.seguroAlDia
+                        ) {
+                          Documentación al día
+                        } @else {
+                          Revisar documentación
+                        }
+  
+                      </span>
+  
+                    </div>
+  
+                    <div class="camion-detalle">
+                      <span>{{ camion.marca }}</span>
+                      <span>{{ camion.modelo }}</span>
+                      <span>{{ camion.ano }}</span>
+                    </div>
+  
+                  </div>
+  
+                  <span class="camion-arrow">
+                    →
+                  </span>
+  
+                </button>
+  
+              }
+  
+            </div>
+  
+          } @else {
+  
+            <div class="empty-state">
+  
+              <div class="empty-icon">
+                🚛
+              </div>
+  
+              <h3>No encontramos camiones</h3>
+  
+              <p>
+                Intenta buscar utilizando otra patente, marca o modelo.
+              </p>
+  
+              @if (busqueda) {
+  
+                <button
+                  type="button"
+                  class="btn-limpiar-empty"
+                  (click)="busqueda = ''; buscarCamiones()">
+                  Limpiar búsqueda
+                </button>
+  
+              }
+  
+            </div>
+  
+          }
+  
+        </div>
+  
+      } @else {
+  
+        <div class="selected-summary">
+  
+          <div class="selected-header">
+  
+            <div>
+              <span class="selected-label">
+                Camión seleccionado
+              </span>
+  
+              <h2>
+                {{ camionSeleccionado.patente }}
+              </h2>
+  
+              <p>
+                {{ camionSeleccionado.marca }}
+                {{ camionSeleccionado.modelo }}
+                · {{ camionSeleccionado.ano }}
+              </p>
+            </div>
+  
+            <button
+              type="button"
+              class="btn-cambiar"
+              (click)="limpiarSeleccion()"
+              [disabled]="guardando">
+              Cambiar camión
+            </button>
+  
+          </div>
+  
+        </div>
+  
+        <div class="form-card">
+  
+          <!-- INFORMACIÓN BÁSICA -->
+  
+          <section class="form-section">
+  
+            <div class="section-header">
+  
+              <div class="section-icon">
+                🚛
+              </div>
+  
+              <div>
+                <h2>Información básica</h2>
+                <p>
+                  Identificación general del camión.
+                </p>
+              </div>
+  
+            </div>
+  
+            <div class="form-grid">
+  
+              <div
+                class="form-group"
+                [class.campo-invalido]="campoTieneError('marca')">
+  
+                <label for="marca">
+                  Marca
+                </label>
+  
+                <input
+                  id="marca"
+                  type="text"
+                  [(ngModel)]="camionSeleccionado.marca"
+                  name="marca"
+                  placeholder="Ej: Freightliner"
+                  [disabled]="guardando"
+                  required
+                />
+  
+                @if (campoTieneError('marca')) {
+                  <span class="error-message">
+                    La marca es obligatoria.
+                  </span>
+                }
+  
+              </div>
+  
+              <div
+                class="form-group"
+                [class.campo-invalido]="campoTieneError('modelo')">
+  
+                <label for="modelo">
+                  Modelo
+                </label>
+  
+                <input
+                  id="modelo"
+                  type="text"
+                  [(ngModel)]="camionSeleccionado.modelo"
+                  name="modelo"
+                  placeholder="Ej: FLD 120"
+                  [disabled]="guardando"
+                  required
+                />
+  
+                @if (campoTieneError('modelo')) {
+                  <span class="error-message">
+                    El modelo es obligatorio.
+                  </span>
+                }
+  
+              </div>
+  
+              <div
+                class="form-group"
+                [class.campo-invalido]="campoTieneError('ano')">
+  
+                <label for="ano">
+                  Año
+                </label>
+  
+                <input
+                  id="ano"
+                  type="number"
+                  [(ngModel)]="camionSeleccionado.ano"
+                  name="ano"
+                  min="1950"
+                  max="2100"
+                  [disabled]="guardando"
+                  required
+                />
+  
+                @if (campoTieneError('ano')) {
+                  <span class="error-message">
+                    El año debe ser válido.
+                  </span>
+                }
+  
+              </div>
+  
+              <div
+                class="form-group"
+                [class.campo-invalido]="campoTieneError('tipo')">
+  
+                <label for="tipo">
+                  Tipo
+                </label>
+  
+                <input
+                  id="tipo"
+                  type="text"
+                  [(ngModel)]="camionSeleccionado.tipo"
+                  name="tipo"
+                  placeholder="Ej: Tracto Camión"
+                  [disabled]="guardando"
+                  required
+                />
+  
+                @if (campoTieneError('tipo')) {
+                  <span class="error-message">
+                    El tipo es obligatorio.
+                  </span>
+                }
+  
+              </div>
+  
+              <div
+                class="form-group"
+                [class.campo-invalido]="campoTieneError('color')">
+  
+                <label for="color">
+                  Color
+                </label>
+  
+                <input
+                  id="color"
+                  type="text"
+                  [(ngModel)]="camionSeleccionado.color"
+                  name="color"
+                  placeholder="Ej: Azul"
+                  [disabled]="guardando"
+                  required
+                />
+  
+                @if (campoTieneError('color')) {
+                  <span class="error-message">
+                    El color es obligatorio.
+                  </span>
+                }
+  
+              </div>
+  
+              <div class="form-group">
+  
+                <label for="patente">
+                  Patente
+                </label>
+  
+                <input
+                  id="patente"
+                  type="text"
+                  [ngModel]="camionSeleccionado.patente"
+                  name="patente"
+                  disabled
+                />
+  
+                <span class="field-hint">
+                  La patente no puede modificarse.
+                </span>
+  
+              </div>
+  
+            </div>
+  
+          </section>
+  
+          <!-- CARACTERÍSTICAS -->
+  
+          <section class="form-section">
+  
+            <div class="section-header">
+  
+              <div class="section-icon">
+                ⚙️
+              </div>
+  
+              <div>
+                <h2>
+                  Características del vehículo
+                </h2>
+  
+                <p>
+                  Información técnica y mecánica del camión.
+                </p>
+              </div>
+  
+            </div>
+  
+            <div class="form-grid">
+  
+              <div
+                class="form-group"
+                [class.campo-invalido]="campoTieneError('capacidad')">
+  
+                <label for="capacidad">
+                  Capacidad
+                </label>
+  
+                <input
+                  id="capacidad"
+                  type="text"
+                  [(ngModel)]="camionSeleccionado.capacidad"
+                  name="capacidad"
+                  placeholder="Ej: 30 toneladas"
+                  [disabled]="guardando"
+                  required
+                />
+  
+                @if (campoTieneError('capacidad')) {
+                  <span class="error-message">
+                    La capacidad es obligatoria.
+                  </span>
+                }
+  
+              </div>
+  
+              <div
+                class="form-group"
+                [class.campo-invalido]="campoTieneError('motor')">
+  
+                <label for="motor">
+                  Motor
+                </label>
+  
+                <input
+                  id="motor"
+                  type="text"
+                  [(ngModel)]="camionSeleccionado.motor"
+                  name="motor"
+                  placeholder="Ej: Detroit Series 60"
+                  [disabled]="guardando"
+                  required
+                />
+  
+                @if (campoTieneError('motor')) {
+                  <span class="error-message">
+                    El motor es obligatorio.
+                  </span>
+                }
+  
+              </div>
+  
+              <div
+                class="form-group"
+                [class.campo-invalido]="campoTieneError('caballos')">
+  
+                <label for="caballos">
+                  Caballos
+                </label>
+  
+                <input
+                  id="caballos"
+                  type="text"
+                  [(ngModel)]="camionSeleccionado.caballos"
+                  name="caballos"
+                  placeholder="Ej: 430 HP"
+                  [disabled]="guardando"
+                  required
+                />
+  
+                @if (campoTieneError('caballos')) {
+                  <span class="error-message">
+                    Los caballos son obligatorios.
+                  </span>
+                }
+  
+              </div>
+  
+              <div
+                class="form-group"
+                [class.campo-invalido]="campoTieneError('cilindrada')">
+  
+                <label for="cilindrada">
+                  Cilindrada
+                </label>
+  
+                <input
+                  id="cilindrada"
+                  type="text"
+                  [(ngModel)]="camionSeleccionado.cilindrada"
+                  name="cilindrada"
+                  placeholder="Ej: 14.0 L"
+                  [disabled]="guardando"
+                  required
+                />
+  
+                @if (campoTieneError('cilindrada')) {
+                  <span class="error-message">
+                    La cilindrada es obligatoria.
+                  </span>
+                }
+  
+              </div>
+  
+              <div
+                class="form-group"
+                [class.campo-invalido]="campoTieneError('transmision')">
+  
+                <label for="transmision">
+                  Transmisión
+                </label>
+  
+                <input
+                  id="transmision"
+                  type="text"
+                  [(ngModel)]="camionSeleccionado.transmision"
+                  name="transmision"
+                  placeholder="Ej: Fuller 18 velocidades"
+                  [disabled]="guardando"
+                  required
+                />
+  
+                @if (campoTieneError('transmision')) {
+                  <span class="error-message">
+                    La transmisión es obligatoria.
+                  </span>
+                }
+  
+              </div>
+  
+            </div>
+  
+          </section>
+  
+          <!-- DOCUMENTACIÓN -->
+  
+          <section class="form-section">
+  
+            <div class="section-header">
+  
+              <div class="section-icon">
+                📄
+              </div>
+  
+              <div>
+                <h2>Documentación</h2>
+                <p>
+                  Fechas de vencimiento de la documentación.
+                </p>
+              </div>
+  
+            </div>
+  
+            <div class="form-grid">
+  
+              <div
+                class="form-group"
+                [class.campo-invalido]="campoTieneError('fechaRevisionTecnica')">
+  
+                <label for="revisionTecnica">
+                  Revisión técnica
+                </label>
+  
+                <input
+                  id="revisionTecnica"
+                  type="date"
+                  [(ngModel)]="camionSeleccionado.fechaRevisionTecnica"
+                  name="fechaRevisionTecnica"
+                  [disabled]="guardando"
+                  required
+                />
+  
+                @if (campoTieneError('fechaRevisionTecnica')) {
+                  <span class="error-message">
+                    La fecha de revisión técnica es obligatoria.
+                  </span>
+                }
+  
+              </div>
+  
+              <div
+                class="form-group"
+                [class.campo-invalido]="campoTieneError('fechaPermisoCirculacion')">
+  
+                <label for="permisoCirculacion">
+                  Permiso de circulación
+                </label>
+  
+                <input
+                  id="permisoCirculacion"
+                  type="date"
+                  [(ngModel)]="camionSeleccionado.fechaPermisoCirculacion"
+                  name="fechaPermisoCirculacion"
+                  [disabled]="guardando"
+                  required
+                />
+  
+                @if (campoTieneError('fechaPermisoCirculacion')) {
+                  <span class="error-message">
+                    La fecha del permiso de circulación es obligatoria.
+                  </span>
+                }
+  
+              </div>
+  
+              <div
+                class="form-group"
+                [class.campo-invalido]="campoTieneError('fechaSeguroObligatorio')">
+  
+                <label for="seguroObligatorio">
+                  Seguro obligatorio (SOAP)
+                </label>
+  
+                <input
+                  id="seguroObligatorio"
+                  type="date"
+                  [(ngModel)]="camionSeleccionado.fechaSeguroObligatorio"
+                  name="fechaSeguroObligatorio"
+                  [disabled]="guardando"
+                  required
+                />
+  
+                @if (campoTieneError('fechaSeguroObligatorio')) {
+                  <span class="error-message">
+                    La fecha del SOAP es obligatoria.
+                  </span>
+                }
+  
+              </div>
+  
+            </div>
+  
+          </section>
+  
+          <!-- ESTADO DOCUMENTAL -->
+  
+          <section class="form-section">
+  
+            <div class="section-header">
+  
+              <div class="section-icon">
+                ✓
+              </div>
+  
+              <div>
+                <h2>Estado documental</h2>
+  
+                <p>
+                  Indica si cada documento se encuentra vigente.
+                </p>
+              </div>
+  
+            </div>
+  
+            <div class="status-grid">
+  
+              <label class="status-option">
+  
+                <input
+                  type="checkbox"
+                  [(ngModel)]="camionSeleccionado.revisionAlDia"
+                  name="revisionAlDia"
+                  [disabled]="guardando"
+                />
+  
+                <span class="status-content">
+                  <strong>Revisión técnica</strong>
+                  <small>
+                    Se encuentra al día
+                  </small>
+                </span>
+  
+              </label>
+  
+              <label class="status-option">
+  
+                <input
+                  type="checkbox"
+                  [(ngModel)]="camionSeleccionado.permisoAlDia"
+                  name="permisoAlDia"
+                  [disabled]="guardando"
+                />
+  
+                <span class="status-content">
+                  <strong>Permiso de circulación</strong>
+                  <small>
+                    Se encuentra al día
+                  </small>
+                </span>
+  
+              </label>
+  
+              <label class="status-option">
+  
+                <input
+                  type="checkbox"
+                  [(ngModel)]="camionSeleccionado.seguroAlDia"
+                  name="seguroAlDia"
+                  [disabled]="guardando"
+                />
+  
+                <span class="status-content">
+                  <strong>Seguro obligatorio</strong>
+                  <small>
+                    Se encuentra al día
+                  </small>
+                </span>
+  
+              </label>
+  
+            </div>
+  
+          </section>
+  
+          <!-- ACCIONES -->
+  
+          <div class="form-actions">
+  
+            <button
+              type="button"
+              class="btn-secondary"
+              (click)="limpiarSeleccion()"
+              [disabled]="guardando">
+              Cancelar
+            </button>
+  
+            <button
+              type="button"
+              class="btn-primary"
+              (click)="guardarCambios()"
+              [disabled]="guardando">
+  
+              @if (guardando) {
+  
+                <span class="spinner"></span>
+                Guardando...
+  
+              } @else {
+  
+                Guardar cambios
+  
+              }
+  
+            </button>
+  
+          </div>
+  
+        </div>
+  
+      }
+  
+    }
+  
+  </div>
+  
+  <!-- MODAL ÉXITO -->
+  
+  @if (modalExitoVisible) {
+  
+    <div class="modal-overlay">
+  
+      <div class="modal">
+  
+        <div class="modal-icon success">
+          ✓
+        </div>
+  
+        <h2>
+          Camión modificado correctamente
+        </h2>
+  
+        <p>
+          Los cambios fueron guardados correctamente.
+        </p>
+  
+        <div class="camion-confirmacion">
+  
+          <div class="camion-dato">
+            <span>Marca</span>
+            <strong>
+              {{ camionConfirmado.marca }}
+            </strong>
+          </div>
+  
+          <div class="camion-dato">
+            <span>Modelo</span>
+            <strong>
+              {{ camionConfirmado.modelo }}
+            </strong>
+          </div>
+  
+          <div class="camion-dato">
+            <span>Patente</span>
+            <strong>
+              {{ camionConfirmado.patente }}
+            </strong>
+          </div>
+  
+        </div>
+  
+        <button
+          type="button"
+          class="btn-primary modal-button"
+          (click)="cerrarModalExito()">
+          Ir al listado
+        </button>
+  
+      </div>
+  
+    </div>
+  
+  }
+  
+  <!-- MODAL ERROR -->
+  
+  @if (modalErrorVisible) {
+  
+    <div class="modal-overlay">
+  
+      <div class="modal">
+  
+        <div class="modal-icon error">
+          !
+        </div>
+  
+        <h2>
+          {{ modalErrorTitulo }}
+        </h2>
+  
+        <p>
+          {{ modalErrorMensaje }}
+        </p>
+  
+        <button
+          type="button"
+          class="btn-primary modal-button"
+          (click)="cerrarModalError()">
+          Entendido
+        </button>
+  
+      </div>
+  
+    </div>
+  
+  }

@@ -1,0 +1,506 @@
+<section class="remolque-list">
+
+  <div class="page-header">
+
+    <div class="header-content">
+
+      <div class="header-icon">
+        🛻
+      </div>
+
+      <div>
+
+        <h1>
+          Remolques
+        </h1>
+
+        <p>
+          Administra los remolques registrados en Transportes Orellana SpA.
+        </p>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  @if (cargando) {
+
+    <div class="estado-container">
+
+      <div class="loading-spinner"></div>
+
+      <p>
+        Cargando remolques...
+      </p>
+
+    </div>
+
+  }
+
+
+  @if (error) {
+
+    <div class="error-container">
+
+      <div class="error-icon">
+        !
+      </div>
+
+      <div>
+
+        <strong>
+          No fue posible cargar los remolques
+        </strong>
+
+        <p>
+          {{ error }}
+        </p>
+
+      </div>
+
+    </div>
+
+  }
+
+
+  @if (!cargando && !error) {
+
+    <div class="resumen">
+
+      <div class="resumen-card">
+
+        <div class="resumen-icon total">
+          🛻
+        </div>
+
+        <div>
+
+          <span>
+            Total remolques
+          </span>
+
+          <strong>
+            {{ remolques.length }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <div class="resumen-card">
+
+        <div class="resumen-icon activo">
+          ✓
+        </div>
+
+        <div>
+
+          <span>
+            Remolques activos
+          </span>
+
+          <strong>
+            {{ remolquesActivos }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <div class="resumen-card">
+
+        <div class="resumen-icon inactivo">
+          !
+        </div>
+
+        <div>
+
+          <span>
+            Remolques inactivos
+          </span>
+
+          <strong>
+            {{ remolquesInactivos }}
+          </strong>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         FILTROS
+         ===================================================== -->
+
+    <div class="filtros-card">
+
+      <div class="busqueda">
+
+        <span class="search-icon">
+          ⌕
+        </span>
+
+        <input
+          type="text"
+          [(ngModel)]="busqueda"
+          placeholder="Buscar por patente, marca, modelo, tipo o camión..."
+          aria-label="Buscar remolques"
+        />
+
+        @if (busqueda) {
+
+          <button
+            type="button"
+            class="btn-limpiar-busqueda"
+            (click)="limpiarBusqueda()"
+            aria-label="Limpiar búsqueda">
+
+            ×
+
+          </button>
+
+        }
+
+      </div>
+
+
+      <div class="filtro-estado">
+
+        <span class="filtro-label">
+          Estado:
+        </span>
+
+
+        <button
+          type="button"
+          [class.active]="filtroEstado === 'todos'"
+          (click)="cambiarFiltroEstado('todos')">
+
+          Todos
+
+        </button>
+
+
+        <button
+          type="button"
+          [class.active]="filtroEstado === 'activos'"
+          (click)="cambiarFiltroEstado('activos')">
+
+          Activos
+
+        </button>
+
+
+        <button
+          type="button"
+          [class.active]="filtroEstado === 'inactivos'"
+          (click)="cambiarFiltroEstado('inactivos')">
+
+          Inactivos
+
+        </button>
+
+      </div>
+
+
+      @if (hayFiltrosAplicados()) {
+
+        <button
+          type="button"
+          class="btn-limpiar-filtros"
+          (click)="limpiarFiltros()">
+
+          Limpiar filtros
+
+        </button>
+
+      }
+
+    </div>
+
+
+    <!-- =====================================================
+         RESULTADOS
+         ===================================================== -->
+
+    <div class="resultado-info">
+
+      <span>
+
+        Mostrando
+
+        <strong>
+          {{ remolquesFiltrados.length }}
+        </strong>
+
+        de
+
+        <strong>
+          {{ remolques.length }}
+        </strong>
+
+        remolques
+
+      </span>
+
+    </div>
+
+
+    @if (remolquesFiltrados.length > 0) {
+
+      <div class="tabla-container">
+
+        <table>
+
+          <thead>
+
+            <tr>
+
+              <th>
+                Remolque
+              </th>
+
+              <th>
+                Marca
+              </th>
+
+              <th>
+                Modelo
+              </th>
+
+              <th>
+                Año
+              </th>
+
+              <th>
+                Tipo
+              </th>
+
+              <th>
+                Capacidad
+              </th>
+
+              <th>
+                Camión habitual
+              </th>
+
+              <th>
+                Estado
+              </th>
+
+              <th class="columna-acciones">
+                Acción
+              </th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            @for (
+              remolque of remolquesFiltrados;
+              track remolque.id
+            ) {
+
+              <tr>
+
+                <td>
+
+                  <div class="remolque-info">
+
+                    <div class="remolque-avatar">
+                      🛻
+                    </div>
+
+                    <div>
+
+                      <strong>
+                        {{ remolque.patente }}
+                      </strong>
+
+                      <span>
+                        {{ remolque.tipo }}
+                      </span>
+
+                    </div>
+
+                  </div>
+
+                </td>
+
+
+                <td>
+
+                  <span class="dato-principal">
+                    {{ remolque.marca }}
+                  </span>
+
+                </td>
+
+
+                <td>
+
+                  <span class="dato-principal">
+                    {{ remolque.modelo }}
+                  </span>
+
+                </td>
+
+
+                <td>
+
+                  <span class="dato-secundario">
+                    {{ remolque.ano }}
+                  </span>
+
+                </td>
+
+
+                <td>
+
+                  <span class="tipo-remolque">
+                    {{ remolque.tipo }}
+                  </span>
+
+                </td>
+
+
+                <td>
+
+                  <span class="capacidad">
+
+                    <strong>
+                      {{ remolque.capacidadToneladas }}
+                    </strong>
+
+                    Ton
+
+                  </span>
+
+                </td>
+
+
+                <td>
+
+                  @if (remolque.camionHabitual) {
+
+                    <div class="camion-asignado">
+
+                      <span class="camion-icon">
+                        🚛
+                      </span>
+
+                      <strong>
+                        {{ remolque.camionHabitual.patente }}
+                      </strong>
+
+                    </div>
+
+                  } @else {
+
+                    <span class="sin-asignar">
+                      Sin asignar
+                    </span>
+
+                  }
+
+                </td>
+
+
+                <td>
+
+                  @if (remolque.activa) {
+
+                    <span class="badge activo">
+
+                      <span class="badge-dot"></span>
+
+                      Activo
+
+                    </span>
+
+                  } @else {
+
+                    <span class="badge inactivo">
+
+                      <span class="badge-dot"></span>
+
+                      Inactivo
+
+                    </span>
+
+                  }
+
+                </td>
+
+
+                <td class="columna-acciones">
+
+                  <button
+                    type="button"
+                    class="btn-detalle"
+                    (click)="verDetalle(remolque.patente)">
+
+                    Ver detalle
+
+                    <span>
+                      →
+                    </span>
+
+                  </button>
+
+                </td>
+
+              </tr>
+
+            }
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    }
+
+
+    @if (remolquesFiltrados.length === 0) {
+
+      <div class="sin-resultados">
+
+        <div class="sin-resultados-icon">
+          ⌕
+        </div>
+
+        <h2>
+          No encontramos remolques
+        </h2>
+
+        <p>
+          No hay remolques que coincidan con los filtros seleccionados.
+        </p>
+
+        <button
+          type="button"
+          class="btn-restablecer"
+          (click)="limpiarFiltros()">
+
+          Limpiar filtros
+
+        </button>
+
+      </div>
+
+    }
+
+  }
+
+</section>

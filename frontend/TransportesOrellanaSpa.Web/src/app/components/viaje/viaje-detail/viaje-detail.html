@@ -1,0 +1,706 @@
+<section class="viaje-detail">
+
+  @if (cargando) {
+
+    <p>Cargando información del viaje...</p>
+
+  }
+
+  @if (error) {
+
+    <p class="error">
+      {{ error }}
+    </p>
+
+  }
+
+  @if (!cargando && !error && viaje) {
+
+    <div class="header">
+
+      <div>
+        <h1>
+          Detalle del viaje # {{ viaje.numeroGuiaDespacho }}
+        </h1>
+
+        <p>
+          Información completa del viaje registrado.
+        </p>
+      </div>
+
+      <div class="header-actions">
+
+        <!-- COMPLETAR VIAJE -->
+
+        @if (viaje.estado === 'Pendiente') {
+
+          <button
+            type="button"
+            class="btn-completar"
+            (click)="mostrarConfirmacionCompletar()">
+
+            Marcar como completado
+
+          </button>
+
+        }
+
+        @if (viaje.estado === 'EnCurso') {
+
+          <button
+            type="button"
+            class="btn-completar"
+            (click)="mostrarConfirmacionCompletar()">
+
+            Marcar como completado
+
+          </button>
+
+        }
+
+
+        <!-- MARCAR COMO PAGADO -->
+
+        @if (viaje.estadoPago === 'Pendiente') {
+
+          <button
+            type="button"
+            class="btn-pagar"
+            (click)="mostrarConfirmacionPago()">
+
+            Marcar como pagado
+
+          </button>
+
+        }
+
+
+        <!-- ESTADO DEL PAGO -->
+
+        @if (viaje.estadoPago === 'Pagado') {
+
+          <span class="payment-status paid">
+
+            <span class="payment-status-dot"></span>
+
+            Servicio pagado
+
+          </span>
+
+        } @else {
+
+          <span class="payment-status pending">
+
+            <span class="payment-status-dot"></span>
+
+            Servicio pendiente de pago
+
+          </span>
+
+        }
+
+
+        <!-- VOLVER -->
+
+        <button
+          type="button"
+          (click)="volver()">
+
+          Volver
+
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <!-- ========================= -->
+    <!-- INFORMACIÓN GENERAL -->
+    <!-- ========================= -->
+
+    <div class="card">
+
+      <h2>Información general</h2>
+
+      <div class="grid">
+
+        <div>
+
+          <span class="label">
+            Fecha
+          </span>
+
+          <strong>
+            {{ viaje.fecha | date:'dd/MM/yyyy' }}
+          </strong>
+
+        </div>
+
+
+        <div>
+
+          <span class="label">
+            Estado del viaje
+          </span>
+
+          @if (viaje.estado === 'EnCurso') {
+
+            <strong>
+              En Curso
+            </strong>
+
+          } @else {
+
+            <strong>
+              {{ viaje.estado }}
+            </strong>
+
+          }
+
+        </div>
+
+
+        <div>
+
+          <span class="label">
+            Estado del pago
+          </span>
+
+          <strong>
+            {{ viaje.estadoPago }}
+          </strong>
+
+        </div>
+
+
+        <div>
+
+          <span class="label">
+            Fecha de pago
+          </span>
+
+          @if (viaje.fechaPago) {
+
+            <strong>
+              {{ viaje.fechaPago | date:'dd/MM/yyyy' }}
+            </strong>
+
+          } @else {
+
+            <strong>
+              Sin pago registrado
+            </strong>
+
+          }
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- ========================= -->
+    <!-- CLIENTE -->
+    <!-- ========================= -->
+
+    <div class="card">
+
+      <h2>Cliente</h2>
+
+      <div class="grid">
+
+        <div>
+
+          <span class="label">
+            Nombre
+          </span>
+
+          <strong>
+            {{ viaje.cliente.nombre }}
+          </strong>
+
+        </div>
+
+
+        <div>
+
+          <span class="label">
+            RUT
+          </span>
+
+          <strong>
+            {{ viaje.cliente.rut }}
+          </strong>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- ========================= -->
+    <!-- RUTA -->
+    <!-- ========================= -->
+
+    <div class="card">
+
+      <h2>Ruta</h2>
+
+      <div class="grid">
+
+        <div>
+
+          <span class="label">
+            Origen
+          </span>
+
+          <strong>
+            {{ viaje.origen }}
+          </strong>
+
+        </div>
+
+
+        <div>
+
+          <span class="label">
+            Comuna origen
+          </span>
+
+          <strong>
+            {{ viaje.comunaOrigen }}
+          </strong>
+
+        </div>
+
+
+        <div>
+
+          <span class="label">
+            Destino
+          </span>
+
+          <strong>
+            {{ viaje.destino }}
+          </strong>
+
+        </div>
+
+
+        <div>
+
+          <span class="label">
+            Comuna destino
+          </span>
+
+          <strong>
+            {{ viaje.comunaDestino }}
+          </strong>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- ========================= -->
+    <!-- EQUIPO ASIGNADO -->
+    <!-- ========================= -->
+
+    <div class="card">
+
+      <h2>Equipo asignado</h2>
+
+      <div class="grid">
+
+        <div>
+
+          <span class="label">
+            Camión
+          </span>
+
+          <strong>
+            {{ viaje.camion.patente }}
+          </strong>
+
+          <span>
+            {{ viaje.camion.marca }}
+            {{ viaje.camion.modelo }}
+          </span>
+
+        </div>
+
+
+        <div>
+
+          <span class="label">
+            Conductor
+          </span>
+
+          <strong>
+            {{ viaje.conductor.nombres }}
+            {{ viaje.conductor.apellidoPaterno }}
+            {{ viaje.conductor.apellidoMaterno }}
+          </strong>
+
+          <span>
+            RUT: {{ viaje.conductor.rut }}
+          </span>
+
+        </div>
+
+
+        <div>
+
+          <span class="label">
+            Remolque
+          </span>
+
+          <strong>
+            {{ viaje.remolque.patente }}
+          </strong>
+
+          <span>
+            {{ viaje.remolque.marca }}
+            {{ viaje.remolque.modelo }}
+          </span>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- ========================= -->
+    <!-- CARGA Y VALORES -->
+    <!-- ========================= -->
+
+    <div class="card">
+
+      <h2>Carga y valores</h2>
+
+      <div class="grid">
+
+        <div>
+
+          <span class="label">
+            Tipo de carga
+          </span>
+
+          <strong>
+            {{ viaje.tipoCarga }}
+          </strong>
+
+        </div>
+
+
+        <div>
+
+          <span class="label">
+            Kilómetros
+          </span>
+
+          @if (viaje.kilometros !== null) {
+
+            <strong>
+              {{ viaje.kilometros | number:'1.0-2' }} km
+            </strong>
+
+          } @else {
+
+            <strong>
+              Sin información
+            </strong>
+
+          }
+
+        </div>
+
+
+        <div>
+
+          <span class="label">
+            Tarifa
+          </span>
+
+          <strong>
+            ${{ viaje.tarifa | number:'1.0-0' }}
+          </strong>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- ========================= -->
+    <!-- OBSERVACIONES -->
+    <!-- ========================= -->
+
+    <div class="card">
+
+      <h2>Observaciones</h2>
+
+      @if (viaje.observaciones) {
+
+        <p>
+          {{ viaje.observaciones }}
+        </p>
+
+      } @else {
+
+        <p class="sin-datos">
+          Sin observaciones registradas.
+        </p>
+
+      }
+
+    </div>
+
+  }
+
+</section>
+
+
+<!-- ===================================================== -->
+<!-- MODAL CONFIRMACIÓN COMPLETAR -->
+<!-- ===================================================== -->
+
+@if (modalConfirmacionVisible) {
+
+  <div class="modal-overlay">
+
+    <div class="modal">
+
+      <div class="modal-icon modal-icon-confirm">
+        ✓
+      </div>
+
+      <h2>
+        ¿Marcar viaje como completado?
+      </h2>
+
+      <p>
+
+        El viaje con guía
+
+        <strong>
+          {{ viaje?.numeroGuiaDespacho }}
+        </strong>
+
+        será marcado como completado.
+
+      </p>
+
+      <p class="modal-warning">
+
+        Esta acción cambiará únicamente el estado del viaje.
+        El estado de pago no será modificado.
+
+      </p>
+
+      <div class="modal-actions">
+
+        <button
+          type="button"
+          class="btn-modal-secondary"
+          [disabled]="completando"
+          (click)="cerrarModalConfirmacion()">
+
+          Cancelar
+
+        </button>
+
+
+        <button
+          type="button"
+          class="btn-modal-primary"
+          [disabled]="completando"
+          (click)="confirmarCompletar()">
+
+          @if (completando) {
+
+            Completando...
+
+          } @else {
+
+            Sí, completar
+
+          }
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+}
+
+
+<!-- ===================================================== -->
+<!-- MODAL CONFIRMACIÓN PAGO -->
+<!-- ===================================================== -->
+
+@if (modalPagoVisible) {
+
+  <div class="modal-overlay">
+
+    <div class="modal">
+
+      <div class="modal-icon modal-icon-payment">
+        $
+      </div>
+
+      <h2>
+        ¿Marcar viaje como pagado?
+      </h2>
+
+      <p>
+
+        El viaje con guía
+
+        <strong>
+          {{ viaje?.numeroGuiaDespacho }}
+        </strong>
+
+        será marcado como pagado.
+
+      </p>
+
+      <p class="modal-warning">
+
+        Esta acción registrará el pago y la fecha actual.
+        El estado del viaje no será modificado.
+
+      </p>
+
+      <div class="modal-actions">
+
+        <button
+          type="button"
+          class="btn-modal-secondary"
+          [disabled]="pagando"
+          (click)="cerrarModalPago()">
+
+          Cancelar
+
+        </button>
+
+
+        <button
+          type="button"
+          class="btn-modal-primary"
+          [disabled]="pagando"
+          (click)="confirmarPago()">
+
+          @if (pagando) {
+
+            Registrando...
+
+          } @else {
+
+            Sí, marcar como pagado
+
+          }
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+}
+
+
+<!-- ===================================================== -->
+<!-- MODAL ÉXITO -->
+<!-- ===================================================== -->
+
+@if (modalExitoVisible) {
+
+  <div class="modal-overlay">
+
+    <div class="modal">
+
+      <div class="modal-icon modal-icon-success">
+        ✓
+      </div>
+
+      <h2>
+        {{ modalExitoTitulo }}
+      </h2>
+
+      <p>
+        {{ modalExitoMensaje }}
+      </p>
+
+      <div class="modal-actions modal-actions-single">
+
+        <button
+          type="button"
+          class="btn-modal-primary"
+          (click)="cerrarModalExito()">
+
+          Aceptar
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+}
+
+
+<!-- ===================================================== -->
+<!-- MODAL ERROR -->
+<!-- ===================================================== -->
+
+@if (modalErrorVisible) {
+
+  <div class="modal-overlay">
+
+    <div class="modal">
+
+      <div class="modal-icon modal-icon-error">
+        !
+      </div>
+
+      <h2>
+        {{ modalErrorTitulo }}
+      </h2>
+
+      <p>
+        {{ modalErrorMensaje }}
+      </p>
+
+      <div class="modal-actions modal-actions-single">
+
+        <button
+          type="button"
+          class="btn-modal-primary"
+          (click)="cerrarModalError()">
+
+          Aceptar
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+}

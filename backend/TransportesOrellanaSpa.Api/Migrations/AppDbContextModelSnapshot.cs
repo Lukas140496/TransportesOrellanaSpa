@@ -45,6 +45,9 @@ namespace TransportesOrellanaSpa.Api.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<bool>("Activo")
+                        .HasColumnType("boolean");
+
                     b.Property<int>("Ano")
                         .HasColumnType("integer");
 
@@ -125,6 +128,18 @@ namespace TransportesOrellanaSpa.Api.Migrations
                     b.Property<bool>("Activo")
                         .HasColumnType("boolean");
 
+                    b.Property<string>("Ciudad")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Comuna")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Direccion")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasColumnType("text");
@@ -144,10 +159,6 @@ namespace TransportesOrellanaSpa.Api.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Ubicacion")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.HasKey("Id");
 
                     b.HasIndex("Rut")
@@ -164,6 +175,9 @@ namespace TransportesOrellanaSpa.Api.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<bool>("Activo")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("ApellidoMaterno")
                         .IsRequired()
                         .HasColumnType("text");
@@ -176,13 +190,13 @@ namespace TransportesOrellanaSpa.Api.Migrations
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("FechaControlLicencia")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("date");
 
                     b.Property<DateTime>("FechaIngreso")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("date");
 
                     b.Property<DateTime>("FechaNacimiento")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("date");
 
                     b.Property<bool>("LicenciaAlDia")
                         .HasColumnType("boolean");
@@ -282,6 +296,10 @@ namespace TransportesOrellanaSpa.Api.Migrations
                     b.Property<int>("ConductorId")
                         .HasColumnType("integer");
 
+                    b.Property<decimal>("CostoCombustible")
+                        .HasPrecision(12, 2)
+                        .HasColumnType("numeric(12,2)");
+
                     b.Property<string>("Destino")
                         .IsRequired()
                         .HasColumnType("text");
@@ -302,6 +320,14 @@ namespace TransportesOrellanaSpa.Api.Migrations
 
                     b.Property<double?>("Kilometros")
                         .HasColumnType("double precision");
+
+                    b.Property<decimal>("LitrosCombustible")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("numeric(10,2)");
+
+                    b.Property<string>("NumeroGuiaDespacho")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("Observaciones")
                         .IsRequired()
@@ -328,6 +354,9 @@ namespace TransportesOrellanaSpa.Api.Migrations
                     b.HasIndex("ClienteId");
 
                     b.HasIndex("ConductorId");
+
+                    b.HasIndex("NumeroGuiaDespacho")
+                        .IsUnique();
 
                     b.HasIndex("RemolqueId");
 

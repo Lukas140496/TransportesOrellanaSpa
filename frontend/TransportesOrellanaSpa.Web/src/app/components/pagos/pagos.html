@@ -1,0 +1,582 @@
+<section class="pagos-page">
+
+  <!-- ========================= -->
+  <!-- HEADER -->
+  <!-- ========================= -->
+
+  <div class="page-header">
+
+    <div>
+
+      <h1>
+        Pagos
+      </h1>
+
+      <p>
+        Gestiona los viajes pendientes de pago.
+      </p>
+
+    </div>
+
+  </div>
+
+
+  <!-- ========================= -->
+  <!-- FILTROS -->
+  <!-- ========================= -->
+
+  <div class="filter-card">
+
+    <div class="filter-group">
+
+      <label for="cliente">
+        Cliente
+      </label>
+
+      <select
+        id="cliente"
+        [(ngModel)]="clienteId"
+        (ngModelChange)="cambiarCliente()">
+
+        <option [ngValue]="null">
+          Todos los clientes
+        </option>
+
+        @for (cliente of clientes; track cliente.id) {
+
+          <option [ngValue]="cliente.id">
+            {{ cliente.nombre }}
+          </option>
+
+        }
+
+      </select>
+
+    </div>
+
+
+    @if (clienteId !== null) {
+
+      <button
+        type="button"
+        class="btn-limpiar"
+        (click)="limpiarFiltro()">
+
+        Limpiar filtro
+
+      </button>
+
+    }
+
+  </div>
+
+
+  <!-- ========================= -->
+  <!-- CARGANDO -->
+  <!-- ========================= -->
+
+  @if (cargando) {
+
+    <div class="state-card">
+
+      <div class="loading-icon">
+        ⟳
+      </div>
+
+      <p>
+        Cargando viajes pendientes de pago...
+      </p>
+
+    </div>
+
+  }
+
+
+  <!-- ========================= -->
+  <!-- ERROR -->
+  <!-- ========================= -->
+
+  @if (!cargando && error) {
+
+    <div class="state-card error-state">
+
+      <div class="state-icon">
+        !
+      </div>
+
+      <p>
+        {{ error }}
+      </p>
+
+      <button
+        type="button"
+        class="btn-reintentar"
+        (click)="cargarViajesPendientes()">
+
+        Reintentar
+
+      </button>
+
+    </div>
+
+  }
+
+
+  @if (!cargando && !error) {
+
+    <!-- ========================= -->
+    <!-- RESUMEN -->
+    <!-- ========================= -->
+
+    <div class="summary-card">
+
+      <div class="summary-item">
+
+        <span class="summary-label">
+          Viajes pendientes
+        </span>
+
+        <strong>
+          {{ viajes.length }}
+        </strong>
+
+      </div>
+
+
+      <div class="summary-divider"></div>
+
+
+      <div class="summary-item">
+
+        <span class="summary-label">
+          Viajes seleccionados
+        </span>
+
+        <strong>
+          {{ cantidadSeleccionados() }}
+        </strong>
+
+      </div>
+
+
+      <div class="summary-divider"></div>
+
+
+      <div class="summary-item total">
+
+        <span class="summary-label">
+          Total seleccionado
+        </span>
+
+        <strong>
+          ${{ totalSeleccionado() | number:'1.0-0' }}
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <!-- ========================= -->
+    <!-- TABLA -->
+    <!-- ========================= -->
+
+    <div class="table-card">
+
+      @if (viajes.length > 0) {
+
+        <div class="table-header">
+
+          <div>
+
+            <h2>
+              Viajes pendientes de pago
+            </h2>
+
+            <p>
+              Selecciona los viajes que deseas marcar como pagados.
+            </p>
+
+          </div>
+
+
+          <button
+            type="button"
+            class="btn-seleccionar"
+            (click)="alternarSeleccionTodos()">
+
+            @if (todosSeleccionados()) {
+
+              Deseleccionar todos
+
+            } @else {
+
+              Seleccionar todos
+
+            }
+
+          </button>
+
+        </div>
+
+
+        <div class="table-wrapper">
+
+          <table>
+
+            <thead>
+
+              <tr>
+
+                <th class="check-column">
+
+                  <input
+                    type="checkbox"
+                    [checked]="todosSeleccionados()"
+                    (change)="alternarSeleccionTodos()"
+                    aria-label="Seleccionar todos">
+
+                </th>
+
+                <th>
+                  Guía
+                </th>
+
+                <th>
+                  Cliente
+                </th>
+
+                <th>
+                  Fecha
+                </th>
+
+                <th>
+                  Origen
+                </th>
+
+                <th>
+                  Destino
+                </th>
+
+                <th>
+                  Tarifa
+                </th>
+
+                <th>
+                  Estado
+                </th>
+
+              </tr>
+
+            </thead>
+
+
+            <tbody>
+
+              @for (viaje of viajes; track viaje.id) {
+
+                <tr
+                  [class.row-selected]="estaSeleccionado(viaje.id)">
+
+                  <td class="check-column">
+
+                    <input
+                      type="checkbox"
+                      [checked]="estaSeleccionado(viaje.id)"
+                      (change)="
+                        cambiarSeleccion(
+                          viaje.id,
+                          $any($event.target).checked
+                        )
+                      "
+                      [attr.aria-label]="
+                        'Seleccionar viaje ' +
+                        viaje.numeroGuiaDespacho
+                      ">
+
+                  </td>
+
+
+                  <td>
+
+                    <strong class="guia">
+                      {{ viaje.numeroGuiaDespacho }}
+                    </strong>
+
+                  </td>
+
+
+                  <td>
+
+                    <div class="cliente-cell">
+
+                      <strong>
+                        {{ viaje.cliente.nombre }}
+                      </strong>
+
+                      <span>
+                        {{ viaje.cliente.rut }}
+                      </span>
+
+                    </div>
+
+                  </td>
+
+
+                  <td>
+
+                    {{ viaje.fecha | date:'dd/MM/yyyy':'UTC' }}
+
+                  </td>
+
+
+                  <td>
+
+                    {{ viaje.origen }}
+
+                    <span class="comuna">
+                      {{ viaje.comunaOrigen }}
+                    </span>
+
+                  </td>
+
+
+                  <td>
+
+                    {{ viaje.destino }}
+
+                    <span class="comuna">
+                      {{ viaje.comunaDestino }}
+                    </span>
+
+                  </td>
+
+
+                  <td class="tarifa">
+
+                    ${{ viaje.tarifa | number:'1.0-0' }}
+
+                  </td>
+
+
+                  <td>
+
+                    <span class="payment-badge">
+
+                      <span class="payment-dot"></span>
+
+                      Pendiente
+
+                    </span>
+
+                  </td>
+
+                </tr>
+
+              }
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+
+        <!-- ========================= -->
+        <!-- ACCIONES -->
+        <!-- ========================= -->
+
+        <div class="payment-actions">
+
+          <div class="selection-info">
+
+            @if (cantidadSeleccionados() > 0) {
+
+              <span>
+
+                {{ cantidadSeleccionados() }}
+                {{ cantidadSeleccionados() === 1 ? 'viaje' : 'viajes' }}
+                seleccionado{{ cantidadSeleccionados() === 1 ? '' : 's' }}
+
+              </span>
+
+              <strong>
+
+                ${{ totalSeleccionado() | number:'1.0-0' }}
+
+              </strong>
+
+            } @else {
+
+              <span>
+                Selecciona uno o más viajes para continuar.
+              </span>
+
+            }
+
+          </div>
+
+
+          <button
+            type="button"
+            class="btn-pagar-seleccionados"
+            [disabled]="
+              cantidadSeleccionados() === 0 ||
+              pagando
+            "
+            (click)="mostrarConfirmacionPagoMasivo()">
+
+            @if (pagando) {
+
+              Procesando pago...
+
+            } @else {
+
+              Marcar seleccionados como pagados
+
+            }
+
+          </button>
+
+        </div>
+
+      } @else {
+
+        <!-- ========================= -->
+        <!-- SIN RESULTADOS -->
+        <!-- ========================= -->
+
+        <div class="empty-state">
+
+          <div class="empty-icon">
+            $
+          </div>
+
+          <h2>
+            No hay viajes pendientes de pago
+          </h2>
+
+          <p>
+
+            @if (clienteId !== null) {
+
+              El cliente seleccionado no tiene viajes pendientes de pago.
+
+            } @else {
+
+              Actualmente no existen viajes pendientes de pago.
+
+            }
+
+          </p>
+
+        </div>
+
+      }
+
+    </div>
+
+  }
+
+</section>
+
+
+<!-- ========================= -->
+<!-- MODAL CONFIRMACIÓN PAGO -->
+<!-- ========================= -->
+
+@if (modalConfirmacionVisible) {
+
+  <div
+    class="modal-overlay"
+    (click)="cerrarModalConfirmacion()">
+
+    <div
+      class="modal-card"
+      (click)="$event.stopPropagation()">
+
+      <div class="modal-icon">
+        $
+      </div>
+
+
+      <h2>
+        Confirmar pago
+      </h2>
+
+
+      <p class="modal-message">
+
+        ¿Estás seguro de que deseas marcar como pagados los viajes seleccionados?
+
+      </p>
+
+
+      <div class="modal-summary">
+
+        <div class="modal-summary-item">
+
+          <span>
+            Viajes
+          </span>
+
+          <strong>
+            {{ cantidadSeleccionados() }}
+          </strong>
+
+        </div>
+
+
+        <div class="modal-summary-item">
+
+          <span>
+            Total
+          </span>
+
+          <strong>
+            ${{ totalSeleccionado() | number:'1.0-0' }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <div class="modal-actions">
+
+        <button
+          type="button"
+          class="btn-modal-cancelar"
+          [disabled]="pagando"
+          (click)="cerrarModalConfirmacion()">
+
+          Cancelar
+
+        </button>
+
+
+        <button
+          type="button"
+          class="btn-modal-confirmar"
+          [disabled]="pagando"
+          (click)="confirmarPagoMasivo()">
+
+          @if (pagando) {
+
+            Procesando...
+
+          } @else {
+
+            Confirmar pago
+
+          }
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+}

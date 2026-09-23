@@ -4,6 +4,8 @@ namespace TransportesOrellanaSpa.Api.DTOs;
 
 public class ActualizarViajeDto
 {
+    public string NumeroGuiaDespacho { get; set; } = string.Empty;
+
     public DateTime Fecha { get; set; }
 
     public int ClienteId { get; set; }
@@ -26,13 +28,13 @@ public class ActualizarViajeDto
 
     public double? Kilometros { get; set; }
 
+    public decimal LitrosCombustible { get; set; }
+
+    public decimal CostoCombustible { get; set; }
+
     public decimal Tarifa { get; set; }
 
     public string Observaciones { get; set; } = string.Empty;
 
     public EstadoViaje Estado { get; set; }
-
-    public EstadoPago EstadoPago { get; set; }
-
-    public DateTime? FechaPago { get; set; }
 }

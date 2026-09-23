@@ -1,0 +1,501 @@
+<div class="app-layout">
+  <!-- ========================= -->
+  <!-- OVERLAY MÓVIL -->
+  <!-- ========================= -->
+
+  @if (menuAbierto) {
+
+  <div class="sidebar-overlay" (click)="cerrarMenu()"></div>
+
+  }
+
+  <!-- ========================= -->
+  <!-- SIDEBAR -->
+  <!-- ========================= -->
+
+  <aside class="sidebar" [class.open]="menuAbierto">
+    <div class="logo">
+      <div class="logo-mark">
+        <img src="/images/logo.png" alt="Transportes Orellana SpA" />
+      </div>
+
+      <div class="logo-text">
+        <strong>Flota360</strong>
+        <span>Transportes Orellana SpA</span>
+      </div>
+    </div>
+
+    <!-- ========================= -->
+    <!-- MENÚ PRINCIPAL -->
+    <!-- ========================= -->
+
+    <nav class="menu">
+      <!-- DASHBOARD -->
+
+      <div class="menu-group">
+        <button
+          type="button"
+          class="menu-parent"
+          [class.open]="submenuAbierto === 'dashboard'"
+          (click)="toggleSubmenu('dashboard')"
+        >
+          <span class="menu-parent-content">
+            <span class="icon"> ⌂ </span>
+
+            <span> Dashboard </span>
+          </span>
+
+          <span class="submenu-arrow">
+            {{ submenuAbierto === 'dashboard' ? '⌃' : '⌵' }}
+          </span>
+        </button>
+
+        <div class="submenu" [class.open]="submenuAbierto === 'dashboard'">
+          <a
+            routerLink="/dashboard"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            (click)="cerrarMenu()"
+          >
+            <span> Resumen General </span>
+          </a>
+
+          <a
+            routerLink="/dashboard/produccion"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            (click)="cerrarMenu()"
+          >
+            <span> Resumen Producción </span>
+          </a>
+
+          <a
+            routerLink="/dashboard/operacion"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            (click)="cerrarMenu()"
+          >
+            <span> Resumen Operación </span>
+          </a>
+
+          <a
+            routerLink="/dashboard/gastos"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            (click)="cerrarMenu()"
+          >
+            <span> Resumen Gastos </span>
+          </a>
+
+          <a
+            routerLink="/dashboard/documentacion"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            (click)="cerrarMenu()"
+          >
+            <span> Resumen Documentación </span>
+          </a>
+
+          <a
+            routerLink="/dashboard/personal"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            (click)="cerrarMenu()"
+          >
+            <span> Resumen Personal </span>
+          </a>
+        </div>
+      </div>
+
+      <!-- ========================= -->
+      <!-- CLIENTES -->
+      <!-- ========================= -->
+
+      <div class="menu-group">
+        <button
+          type="button"
+          class="menu-parent"
+          [class.open]="submenuAbierto === 'clientes'"
+          (click)="toggleSubmenu('clientes')"
+        >
+          <span class="menu-parent-content">
+            <span class="icon">◉</span>
+
+            <span>Clientes</span>
+          </span>
+
+          <span class="submenu-arrow"> @if (submenuAbierto === 'clientes') { ⌃ } @else { ⌵ } </span>
+        </button>
+
+        <div class="submenu" [class.open]="submenuAbierto === 'clientes'">
+          <a
+            routerLink="/clientes"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            (click)="cerrarMenu()"
+          >
+            <span>Listado Clientes</span>
+          </a>
+
+          <a
+            routerLink="/clientes/nuevo"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            (click)="cerrarMenu()"
+          >
+            <span>Agregar Cliente</span>
+          </a>
+
+          <a
+            routerLink="/clientes/modificar"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            (click)="cerrarMenu()"
+          >
+            <span>Modificar Cliente</span>
+          </a>
+
+          <a
+            routerLink="/clientes/desactivar"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            (click)="cerrarMenu()"
+          >
+            <span>Desactivar Cliente</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- ========================= -->
+      <!-- VIAJES -->
+      <!-- ========================= -->
+
+      <div class="menu-group">
+        <button
+          type="button"
+          class="menu-parent"
+          [class.open]="submenuAbierto === 'viajes'"
+          (click)="toggleSubmenu('viajes')"
+        >
+          <span class="menu-parent-content">
+            <span class="icon">↔</span>
+
+            <span>Viajes</span>
+          </span>
+
+          <span class="submenu-arrow"> @if (submenuAbierto === 'viajes') { ⌃ } @else { ⌵ } </span>
+        </button>
+
+        <div class="submenu" [class.open]="submenuAbierto === 'viajes'">
+          <a
+            routerLink="/viajes"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            (click)="cerrarMenu()"
+          >
+            <span>Listado Viajes</span>
+          </a>
+
+          <a routerLink="/viajes/nuevo" routerLinkActive="active" (click)="cerrarMenu()">
+            <span>Agregar Viaje</span>
+          </a>
+
+          <a
+            routerLink="/viajes/modificar"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            (click)="cerrarMenu()"
+          >
+            <span>Modificar Viaje</span>
+          </a>
+
+          <a
+            routerLink="/viajes/eliminar"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            (click)="cerrarMenu()"
+          >
+            <span>Eliminar Viaje</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- ========================= -->
+      <!-- CAMIONES -->
+      <!-- ========================= -->
+
+      <div class="menu-group">
+        <button
+          type="button"
+          class="menu-parent"
+          [class.open]="submenuAbierto === 'camiones'"
+          (click)="toggleSubmenu('camiones')"
+        >
+          <span class="menu-parent-content">
+            <span class="icon">▣</span>
+
+            <span>Camiones</span>
+          </span>
+
+          <span class="submenu-arrow"> @if (submenuAbierto === 'camiones') { ⌃ } @else { ⌵ } </span>
+        </button>
+
+        <div class="submenu" [class.open]="submenuAbierto === 'camiones'">
+          <a
+            routerLink="/camiones"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            (click)="cerrarMenu()"
+          >
+            <span>Listado Camiones</span>
+          </a>
+
+          <a
+            routerLink="/camiones/nuevo"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            (click)="cerrarMenu()"
+          >
+            <span>Agregar Camión</span>
+          </a>
+
+          <a
+            routerLink="/camiones/modificar"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            (click)="cerrarMenu()"
+          >
+            <span>Modificar Camión</span>
+          </a>
+
+          <a
+            routerLink="/camiones/asignar-conductor"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            (click)="cerrarMenu()"
+          >
+            <span>Asignar Conductor</span>
+          </a>
+
+          <a
+            routerLink="/camiones/asignar-remolque"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            (click)="cerrarMenu()"
+          >
+            <span>Asignar Remolque</span>
+          </a>
+
+          <a
+            routerLink="/camiones/desactivar"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            (click)="cerrarMenu()"
+          >
+            <span>Desactivar Camión</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- ========================= -->
+      <!-- CONDUCTORES -->
+      <!-- ========================= -->
+
+      <div class="menu-group">
+        <button
+          type="button"
+          class="menu-parent"
+          [class.open]="submenuAbierto === 'conductores'"
+          (click)="toggleSubmenu('conductores')"
+        >
+          <span class="menu-parent-content">
+            <span class="icon">◎</span>
+
+            <span>Conductores</span>
+          </span>
+
+          <span class="submenu-arrow">
+            @if (submenuAbierto === 'conductores') { ⌃ } @else { ⌵ }
+          </span>
+        </button>
+
+        <div class="submenu" [class.open]="submenuAbierto === 'conductores'">
+          <a
+            routerLink="/conductores"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            (click)="cerrarMenu()"
+          >
+            <span>Listado Conductores</span>
+          </a>
+
+          <a
+            routerLink="/conductores/nuevo"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            (click)="cerrarMenu()"
+          >
+            <span>Agregar Conductor</span>
+          </a>
+
+          <a
+            routerLink="/conductores/modificar"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            (click)="cerrarMenu()"
+          >
+            <span>Modificar Conductor</span>
+          </a>
+
+          <a
+            routerLink="/conductores/desactivar"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            (click)="cerrarMenu()"
+          >
+            <span>Desactivar Conductor</span>
+          </a>
+
+        </div>
+
+      </div>
+
+      <!-- ========================= -->
+      <!-- REMOLQUES -->
+      <!-- ========================= -->
+
+      <div class="menu-group">
+        <button
+          type="button"
+          class="menu-parent"
+          [class.open]="submenuAbierto === 'remolques'"
+          (click)="toggleSubmenu('remolques')"
+        >
+          <span class="menu-parent-content">
+            <span class="icon">▰</span>
+
+            <span>Remolques</span>
+          </span>
+
+          <span class="submenu-arrow">
+            @if (submenuAbierto === 'remolques') { ⌃ } @else { ⌵ }
+          </span>
+        </button>
+
+        <div class="submenu" [class.open]="submenuAbierto === 'remolques'">
+          <a
+            routerLink="/remolques"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            (click)="cerrarMenu()"
+          >
+            <span>Listado Remolques</span>
+          </a>
+
+          <a
+            routerLink="/remolques/nuevo"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            (click)="cerrarMenu()"
+          >
+            <span>Agregar Remolque</span>
+          </a>
+
+          <a
+            routerLink="/remolques/modificar"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            (click)="cerrarMenu()"
+          >
+            <span>Modificar Remolque</span>
+          </a>
+
+          <a
+            routerLink="/remolques/desactivar"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            (click)="cerrarMenu()"
+          >
+            <span>Desactivar Remolque</span>
+          </a>
+
+          <a
+            routerLink="/remolques/asignar-camion"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            (click)="cerrarMenu()"
+          >
+            <span>Asignar Camión</span>
+          </a>
+
+        </div>
+      </div>
+
+      <!-- ========================= -->
+      <!-- PAGOS -->
+      <!-- ========================= -->
+
+      <a
+        routerLink="/pagos"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+        (click)="cerrarMenu()"
+      >
+        <span class="icon">$</span>
+        <span>Pagos</span>
+      </a>
+    </nav>
+
+    <!-- ========================= -->
+    <!-- PARTE INFERIOR -->
+    <!-- ========================= -->
+
+    <div class="sidebar-footer">
+      <button type="button">⚙ Configuración</button>
+
+      <button type="button">⇥ Cerrar sesión</button>
+    </div>
+  </aside>
+
+  <!-- ========================= -->
+  <!-- CONTENIDO PRINCIPAL -->
+  <!-- ========================= -->
+
+  <main class="main-content">
+    <!-- ========================= -->
+    <!-- TOPBAR -->
+    <!-- ========================= -->
+
+    <header class="topbar">
+      <div class="topbar-left">
+        <button type="button" class="menu-toggle" (click)="toggleMenu()" aria-label="Abrir menú">
+          ☰
+        </button>
+
+        <div class="topbar-title">
+          <span>Administración</span>
+        </div>
+      </div>
+
+      <!-- USUARIO -->
+
+      <div class="user">
+        <div class="user-info">
+          <strong>Lukas Orellana</strong>
+
+          <span> Administrador </span>
+        </div>
+
+        <div class="avatar">LO</div>
+      </div>
+    </header>
+
+    <!-- ========================= -->
+    <!-- CONTENIDO DE LA RUTA -->
+    <!-- ========================= -->
+
+    <section class="page-content">
+      <router-outlet></router-outlet>
+    </section>
+  </main>
+</div>

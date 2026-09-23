@@ -42,8 +42,9 @@ public class CamionController : ControllerBase
                 FechaSeguroObligatorio = c.FechaSeguroObligatorio,
                 RevisionAlDia = c.RevisionAlDia,
                 PermisoAlDia = c.PermisoAlDia,
-
                 SeguroAlDia = c.SeguroAlDia,
+
+                Activo = c.Activo,
 
                 ConductoresHabituales = c.ConductoresHabituales
                     .Select(cond => new ConductorResumenDto
@@ -56,17 +57,17 @@ public class CamionController : ControllerBase
                     .ToList(),
 
                 Remolques = c.Remolques
-                .Select(r => new RemolqueResumenDto
-                {
-                    Id = r.Id,
-                    Patente = r.Patente,
-                    Marca = r.Marca,
-                    Modelo = r.Modelo,
-                    Tipo = r.Tipo,
-                    CapacidadToneladas = r.CapacidadToneladas,
-                    Activa = r.Activa
-                })
-                .ToList()
+                    .Select(r => new RemolqueResumenDto
+                    {
+                        Id = r.Id,
+                        Patente = r.Patente,
+                        Marca = r.Marca,
+                        Modelo = r.Modelo,
+                        Tipo = r.Tipo,
+                        CapacidadToneladas = r.CapacidadToneladas,
+                        Activa = r.Activa
+                    })
+                    .ToList()
             })
             .ToListAsync();
 
@@ -101,8 +102,9 @@ public class CamionController : ControllerBase
                 FechaSeguroObligatorio = c.FechaSeguroObligatorio,
                 RevisionAlDia = c.RevisionAlDia,
                 PermisoAlDia = c.PermisoAlDia,
-
                 SeguroAlDia = c.SeguroAlDia,
+
+                Activo = c.Activo,
 
                 ConductoresHabituales = c.ConductoresHabituales
                     .Select(cond => new ConductorResumenDto
@@ -115,17 +117,17 @@ public class CamionController : ControllerBase
                     .ToList(),
 
                 Remolques = c.Remolques
-                .Select(r => new RemolqueResumenDto
-                {
-                    Id = r.Id,
-                    Patente = r.Patente,
-                    Marca = r.Marca,
-                    Modelo = r.Modelo,
-                    Tipo = r.Tipo,
-                    CapacidadToneladas = r.CapacidadToneladas,
-                    Activa = r.Activa
-                })
-                .ToList()
+                    .Select(r => new RemolqueResumenDto
+                    {
+                        Id = r.Id,
+                        Patente = r.Patente,
+                        Marca = r.Marca,
+                        Modelo = r.Modelo,
+                        Tipo = r.Tipo,
+                        CapacidadToneladas = r.CapacidadToneladas,
+                        Activa = r.Activa
+                    })
+                    .ToList()
             })
             .FirstOrDefaultAsync();
 
@@ -148,7 +150,8 @@ public class CamionController : ControllerBase
 
         if (existe)
         {
-            return Conflict($"Ya existe un camión con la patente {patente}.");
+            return Conflict(
+                $"Ya existe un camión con la patente {patente}.");
         }
 
         var camion = new Camion
@@ -169,10 +172,12 @@ public class CamionController : ControllerBase
             FechaSeguroObligatorio = dto.FechaSeguroObligatorio,
             RevisionAlDia = dto.RevisionAlDia,
             PermisoAlDia = dto.PermisoAlDia,
-            SeguroAlDia = dto.SeguroAlDia
+            SeguroAlDia = dto.SeguroAlDia,
+            Activo = true
         };
 
         _context.Camiones.Add(camion);
+
         await _context.SaveChangesAsync();
 
         var resultado = await _context.Camiones
@@ -197,8 +202,9 @@ public class CamionController : ControllerBase
                 FechaSeguroObligatorio = c.FechaSeguroObligatorio,
                 RevisionAlDia = c.RevisionAlDia,
                 PermisoAlDia = c.PermisoAlDia,
-
                 SeguroAlDia = c.SeguroAlDia,
+
+                Activo = c.Activo,
 
                 ConductoresHabituales = c.ConductoresHabituales
                     .Select(cond => new ConductorResumenDto
@@ -208,7 +214,7 @@ public class CamionController : ControllerBase
                         ApellidoPaterno = cond.ApellidoPaterno,
                         ApellidoMaterno = cond.ApellidoMaterno
                     })
-                    .ToList(),
+                    .ToList()
             })
             .FirstAsync();
 
@@ -257,6 +263,166 @@ public class CamionController : ControllerBase
         return NoContent();
     }
 
+    // PATCH: api/camion/VJ8427/desactivar
+    [HttpPatch("{patente}/desactivar")]
+    public async Task<ActionResult<CamionDto>> Desactivar(
+        string patente)
+    {
+        patente = patente.Trim().ToUpperInvariant();
+
+        var camion = await _context.Camiones
+            .FirstOrDefaultAsync(c => c.Patente == patente);
+
+        if (camion == null)
+        {
+            return NotFound(
+                $"No existe un camión con la patente {patente}.");
+        }
+
+        if (!camion.Activo)
+        {
+            return Conflict(
+                $"El camión {patente} ya se encuentra desactivado.");
+        }
+
+        camion.Activo = false;
+
+        await _context.SaveChangesAsync();
+
+        var resultado = await _context.Camiones
+            .AsNoTracking()
+            .Where(c => c.Id == camion.Id)
+            .Select(c => new CamionDto
+            {
+                Id = c.Id,
+                Patente = c.Patente,
+                Marca = c.Marca,
+                Modelo = c.Modelo,
+                Ano = c.Ano,
+                Tipo = c.Tipo,
+                Color = c.Color,
+                Capacidad = c.Capacidad,
+                Motor = c.Motor,
+                Caballos = c.Caballos,
+                Cilindrada = c.Cilindrada,
+                Transmision = c.Transmision,
+                FechaRevisionTecnica = c.FechaRevisionTecnica,
+                FechaPermisoCirculacion = c.FechaPermisoCirculacion,
+                FechaSeguroObligatorio = c.FechaSeguroObligatorio,
+                RevisionAlDia = c.RevisionAlDia,
+                PermisoAlDia = c.PermisoAlDia,
+                SeguroAlDia = c.SeguroAlDia,
+
+                Activo = c.Activo,
+
+                ConductoresHabituales = c.ConductoresHabituales
+                    .Select(cond => new ConductorResumenDto
+                    {
+                        Rut = cond.Rut,
+                        Nombres = cond.Nombres,
+                        ApellidoPaterno = cond.ApellidoPaterno,
+                        ApellidoMaterno = cond.ApellidoMaterno
+                    })
+                    .ToList(),
+
+                Remolques = c.Remolques
+                    .Select(r => new RemolqueResumenDto
+                    {
+                        Id = r.Id,
+                        Patente = r.Patente,
+                        Marca = r.Marca,
+                        Modelo = r.Modelo,
+                        Tipo = r.Tipo,
+                        CapacidadToneladas = r.CapacidadToneladas,
+                        Activa = r.Activa
+                    })
+                    .ToList()
+            })
+            .FirstAsync();
+
+        return Ok(resultado);
+    }
+
+    // PATCH: api/camion/VJ8427/activar
+    [HttpPatch("{patente}/activar")]
+    public async Task<ActionResult<CamionDto>> Activar(
+        string patente)
+    {
+        patente = patente.Trim().ToUpperInvariant();
+
+        var camion = await _context.Camiones
+            .FirstOrDefaultAsync(c => c.Patente == patente);
+
+        if (camion == null)
+        {
+            return NotFound(
+                $"No existe un camión con la patente {patente}.");
+        }
+
+        if (camion.Activo)
+        {
+            return Conflict(
+                $"El camión {patente} ya se encuentra activo.");
+        }
+
+        camion.Activo = true;
+
+        await _context.SaveChangesAsync();
+
+        var resultado = await _context.Camiones
+            .AsNoTracking()
+            .Where(c => c.Id == camion.Id)
+            .Select(c => new CamionDto
+            {
+                Id = c.Id,
+                Patente = c.Patente,
+                Marca = c.Marca,
+                Modelo = c.Modelo,
+                Ano = c.Ano,
+                Tipo = c.Tipo,
+                Color = c.Color,
+                Capacidad = c.Capacidad,
+                Motor = c.Motor,
+                Caballos = c.Caballos,
+                Cilindrada = c.Cilindrada,
+                Transmision = c.Transmision,
+                FechaRevisionTecnica = c.FechaRevisionTecnica,
+                FechaPermisoCirculacion = c.FechaPermisoCirculacion,
+                FechaSeguroObligatorio = c.FechaSeguroObligatorio,
+                RevisionAlDia = c.RevisionAlDia,
+                PermisoAlDia = c.PermisoAlDia,
+                SeguroAlDia = c.SeguroAlDia,
+
+                Activo = c.Activo,
+
+                ConductoresHabituales = c.ConductoresHabituales
+                    .Select(cond => new ConductorResumenDto
+                    {
+                        Rut = cond.Rut,
+                        Nombres = cond.Nombres,
+                        ApellidoPaterno = cond.ApellidoPaterno,
+                        ApellidoMaterno = cond.ApellidoMaterno
+                    })
+                    .ToList(),
+
+                Remolques = c.Remolques
+                    .Select(r => new RemolqueResumenDto
+                    {
+                        Id = r.Id,
+                        Patente = r.Patente,
+                        Marca = r.Marca,
+                        Modelo = r.Modelo,
+                        Tipo = r.Tipo,
+                        CapacidadToneladas = r.CapacidadToneladas,
+                        Activa = r.Activa
+                    })
+                    .ToList()
+            })
+            .FirstAsync();
+
+        return Ok(resultado);
+    }
+
     // PUT: api/camion/VJ8427/conductor-habitual
     [HttpPut("{patente}/conductor-habitual")]
     public async Task<IActionResult> AsignarConductorHabitual(
@@ -274,26 +440,29 @@ public class CamionController : ControllerBase
 
         if (camion == null)
         {
-            return NotFound($"No existe un camión con la patente {patente}.");
+            return NotFound(
+                $"No existe un camión con la patente {patente}.");
         }
 
-        // 2. OPTIMIZACIÓN: Buscamos solo el ID y los datos básicos del conductor para validar existencia
+        // 2. Buscamos solo el ID y los datos básicos del conductor
         var conductor = await _context.Conductores
             .FirstOrDefaultAsync(c => c.Rut == rut);
 
         if (conductor == null)
         {
-            return NotFound($"No existe un conductor con el RUT {rut}.");
+            return NotFound(
+                $"No existe un conductor con el RUT {rut}.");
         }
 
         // 3. Realizamos la asignación física
-        if (!camion.ConductoresHabituales.Any(cond => cond.Id == conductor.Id))
+        if (!camion.ConductoresHabituales
+            .Any(cond => cond.Id == conductor.Id))
         {
             camion.ConductoresHabituales.Add(conductor);
             await _context.SaveChangesAsync();
         }
 
-        // 4. Construimos el DTO de salida del Camión con el Conductor recién asignado
+        // 4. Construimos el DTO de salida del Camión
         var camionDto = new CamionDto
         {
             Id = camion.Id,
@@ -315,7 +484,8 @@ public class CamionController : ControllerBase
             PermisoAlDia = camion.PermisoAlDia,
             SeguroAlDia = camion.SeguroAlDia,
 
-            // Asignamos el resumen del conductor que acabamos de vincular
+            Activo = camion.Activo,
+
             ConductoresHabituales = camion.ConductoresHabituales
                 .Select(cond => new ConductorResumenDto
                 {
@@ -348,6 +518,116 @@ public class CamionController : ControllerBase
         });
     }
 
+    // PUT: api/camion/VJ8427/remolque-habitual
+    [HttpPut("{patente}/remolque-habitual")]
+    public async Task<IActionResult> AsignarRemolqueHabitual(
+        string patente,
+        AsignarRemolqueDto dto)
+    {
+        patente = patente.Trim().ToUpperInvariant();
+
+        var camion = await _context.Camiones
+            .FirstOrDefaultAsync(c => c.Patente == patente);
+
+        if (camion == null)
+        {
+            return NotFound(
+                $"No existe un camión con la patente {patente}.");
+        }
+
+        var patenteRemolque = dto.Patente.Trim().ToUpperInvariant();
+
+        var remolque = await _context.Remolques
+            .FirstOrDefaultAsync(r => r.Patente == patenteRemolque);
+
+        if (remolque == null)
+        {
+            return NotFound(
+                $"No existe un remolque con la patente {patenteRemolque}.");
+        }
+
+        remolque.CamionHabitualId = camion.Id;
+
+        await _context.SaveChangesAsync();
+
+        return Ok(new
+        {
+            Mensaje = "Remolque habitual asignado correctamente al camión.",
+            Camion = camion.Patente,
+            Remolque = remolque.Patente
+        });
+    }
+
+    // DELETE: api/camion/VJ8427/conductor-habitual/RUT
+    [HttpDelete("{patente}/conductor-habitual/{rut}")]
+    public async Task<IActionResult> DesasignarConductorHabitual(
+        string patente,
+        string rut)
+    {
+        patente = patente.Trim().ToUpperInvariant();
+        rut = rut.Trim();
+
+        var camion = await _context.Camiones
+            .Include(c => c.ConductoresHabituales)
+            .FirstOrDefaultAsync(c => c.Patente == patente);
+
+        if (camion == null)
+        {
+            return NotFound(
+                $"No existe un camión con la patente {patente}.");
+        }
+
+        var conductor = camion.ConductoresHabituales
+            .FirstOrDefault(c => c.Rut == rut);
+
+        if (conductor == null)
+        {
+            return NotFound(
+                $"El conductor con RUT {rut} no está asignado a este camión.");
+        }
+
+        camion.ConductoresHabituales.Remove(conductor);
+
+        await _context.SaveChangesAsync();
+
+        return Ok(new
+        {
+            Mensaje = "Conductor habitual desasignado correctamente.",
+            Camion = camion.Patente,
+            Conductor = conductor.Rut
+        });
+    }
+
+    // DELETE: api/camion/VJ8427/remolque-habitual
+    [HttpDelete("{patente}/remolque-habitual")]
+    public async Task<IActionResult> DesasignarRemolqueHabitual(
+        string patente)
+    {
+        patente = patente.Trim().ToUpperInvariant();
+
+        var camion = await _context.Camiones
+            .Include(c => c.Remolques)
+            .FirstOrDefaultAsync(c => c.Patente == patente);
+
+        if (camion == null)
+        {
+            return NotFound(
+                $"No existe un camión con la patente {patente}.");
+        }
+
+        foreach (var remolque in camion.Remolques)
+        {
+            remolque.CamionHabitualId = null;
+        }
+
+        await _context.SaveChangesAsync();
+
+        return Ok(new
+        {
+            Mensaje = "Remolque habitual desasignado correctamente.",
+            Camion = camion.Patente
+        });
+    }
 
     // DELETE: api/camion/VJ8427
     [HttpDelete("{patente}")]
@@ -364,6 +644,7 @@ public class CamionController : ControllerBase
         }
 
         _context.Camiones.Remove(camion);
+
         await _context.SaveChangesAsync();
 
         return NoContent();

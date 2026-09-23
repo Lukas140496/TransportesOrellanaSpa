@@ -1,0 +1,423 @@
+<section class="cliente-detail">
+
+  @if (cargando) {
+
+    <div class="estado">
+      <p>Cargando información del cliente...</p>
+    </div>
+
+  }
+
+  @if (error) {
+
+    <div class="estado error">
+      <p>{{ error }}</p>
+
+      <button
+        type="button"
+        (click)="volver()">
+        Volver a clientes
+      </button>
+    </div>
+
+  }
+
+  @if (!cargando && !error && cliente) {
+
+    <div class="header">
+
+      <div>
+        <span class="eyebrow">FICHA DE CLIENTE</span>
+
+        <h1>
+          {{ cliente.nombre }}
+        </h1>
+
+        <p>
+          Información comercial y administrativa del cliente.
+        </p>
+      </div>
+
+      <div class="header-actions">
+
+        <span
+          class="badge"
+          [class.ok]="cliente.activo"
+          [class.warning]="!cliente.activo">
+
+          @if (cliente.activo) {
+            Activo
+          } @else {
+            Inactivo
+          }
+
+        </span>
+
+        <button
+          type="button"
+          class="btn-primary"
+          (click)="editar()">
+          Editar cliente
+        </button>
+
+        @if (cliente.activo) {
+
+          <button
+            type="button"
+            class="btn-danger"
+            (click)="mostrarConfirmacionEstado()"
+            [disabled]="procesandoEstado">
+            Desactivar cliente
+          </button>
+
+        } @else {
+
+          <button
+            type="button"
+            class="btn-success"
+            (click)="mostrarConfirmacionEstado()"
+            [disabled]="procesandoEstado">
+            Activar cliente
+          </button>
+
+        }
+
+        <button
+          type="button"
+          class="btn-secondary"
+          (click)="volver()">
+          ← Volver
+        </button>
+
+      </div>
+
+    </div>
+
+
+    <div class="content-grid">
+
+      <!-- IDENTIFICACIÓN -->
+
+      <article class="card">
+
+        <div class="card-header">
+          <h2>Identificación</h2>
+          <span>01</span>
+        </div>
+
+        <div class="info-grid">
+
+          <div class="info-item">
+            <span class="label">Nombre</span>
+            <strong>{{ cliente.nombre }}</strong>
+          </div>
+
+          <div class="info-item">
+            <span class="label">RUT</span>
+            <strong>{{ cliente.rut }}</strong>
+          </div>
+
+          <div class="info-item">
+            <span class="label">Dirección</span>
+            <strong>{{ cliente.direccion }}</strong>
+          </div>
+
+          <div class="info-item">
+            <span class="label">Comuna</span>
+            <strong>{{ cliente.comuna }}</strong>
+          </div>
+
+        </div>
+
+      </article>
+
+
+      <!-- INFORMACIÓN COMERCIAL -->
+
+      <article class="card">
+
+        <div class="card-header">
+          <h2>Información comercial</h2>
+          <span>02</span>
+        </div>
+
+        <div class="info-grid">
+
+          <div class="info-item">
+
+            <span class="label">
+              Tarifa
+            </span>
+
+            <strong class="tarifa">
+              ${{ cliente.tarifa | number:'1.0-0' }}
+            </strong>
+
+          </div>
+
+          <div class="info-item">
+
+            <span class="label">
+              Tipo de carga
+            </span>
+
+            <strong>
+              {{ cliente.tipoCarga }}
+            </strong>
+
+          </div>
+
+          <div class="info-item">
+
+            <span class="label">
+              Ciudad
+            </span>
+
+            <strong>
+              {{ cliente.ciudad }}
+            </strong>
+
+          </div>
+
+        </div>
+
+      </article>
+
+
+      <!-- OBSERVACIONES -->
+
+      <article class="card card-full">
+
+        <div class="card-header">
+          <h2>Observaciones</h2>
+          <span>03</span>
+        </div>
+
+        <div class="observaciones">
+
+          @if (cliente.observaciones) {
+
+            <p>
+              {{ cliente.observaciones }}
+            </p>
+
+          } @else {
+
+            <p class="sin-datos">
+              No existen observaciones registradas.
+            </p>
+
+          }
+
+        </div>
+
+      </article>
+
+    </div>
+
+  }
+
+</section>
+
+
+<!-- =========================
+     MODAL DE CONFIRMACIÓN
+     ========================= -->
+
+@if (modalConfirmacionVisible && cliente) {
+
+  <div
+    class="modal-backdrop"
+    (click)="cerrarModalConfirmacion()">
+
+    <div
+      class="modal"
+      role="alertdialog"
+      aria-modal="true"
+      (click)="$event.stopPropagation()">
+
+      <div
+        class="modal-icon"
+        [class.warning]="cliente.activo"
+        [class.activate]="!cliente.activo">
+
+        @if (cliente.activo) {
+          !
+        } @else {
+          ✓
+        }
+
+      </div>
+
+      <h2>
+
+        @if (cliente.activo) {
+          ¿Desactivar cliente?
+        } @else {
+          ¿Activar cliente?
+        }
+
+      </h2>
+
+      <p>
+        Estás a punto de
+        @if (cliente.activo) {
+          desactivar
+        } @else {
+          activar
+        }
+        al cliente
+        <strong>{{ cliente.nombre }}</strong>.
+      </p>
+
+      <p class="modal-secondary-text">
+
+        @if (cliente.activo) {
+
+          El cliente no será eliminado y su historial se conservará.
+          No podrá utilizarse para nuevos viajes mientras esté inactivo.
+
+        } @else {
+
+          El cliente volverá a estar disponible para nuevos viajes.
+          Su historial y todos sus datos se conservarán.
+
+        }
+
+      </p>
+
+      <div class="modal-actions">
+
+        <button
+          type="button"
+          class="btn-secondary"
+          [disabled]="procesandoEstado"
+          (click)="cerrarModalConfirmacion()">
+          Cancelar
+        </button>
+
+        @if (cliente.activo) {
+
+          <button
+            type="button"
+            class="btn-danger"
+            [disabled]="procesandoEstado"
+            (click)="confirmarCambioEstado()">
+
+            @if (procesandoEstado) {
+              Desactivando...
+            } @else {
+              Sí, desactivar
+            }
+
+          </button>
+
+        } @else {
+
+          <button
+            type="button"
+            class="btn-success"
+            [disabled]="procesandoEstado"
+            (click)="confirmarCambioEstado()">
+
+            @if (procesandoEstado) {
+              Activando...
+            } @else {
+              Sí, activar
+            }
+
+          </button>
+
+        }
+
+      </div>
+
+    </div>
+
+  </div>
+
+}
+
+
+<!-- =========================
+     MODAL DE ERROR
+     ========================= -->
+
+@if (modalErrorVisible) {
+
+  <div
+    class="modal-backdrop"
+    (click)="cerrarModalError()">
+
+    <div
+      class="modal"
+      role="alertdialog"
+      aria-modal="true"
+      (click)="$event.stopPropagation()">
+
+      <div class="modal-icon error">
+        !
+      </div>
+
+      <h2>
+        {{ modalErrorTitulo }}
+      </h2>
+
+      <p>
+        {{ modalErrorMensaje }}
+      </p>
+
+      <button
+        type="button"
+        class="btn-primary modal-button"
+        (click)="cerrarModalError()">
+        Aceptar
+      </button>
+
+    </div>
+
+  </div>
+
+}
+
+
+<!-- =========================
+     MODAL DE ÉXITO
+     ========================= -->
+
+@if (modalExitoVisible) {
+
+  <div
+    class="modal-backdrop"
+    (click)="cerrarModalExito()">
+
+    <div
+      class="modal"
+      role="dialog"
+      aria-modal="true"
+      (click)="$event.stopPropagation()">
+
+      <div class="modal-icon success">
+        ✓
+      </div>
+
+      <h2>
+        {{ modalExitoTitulo }}
+      </h2>
+
+      <p>
+        {{ modalExitoMensaje }}
+      </p>
+
+      <button
+        type="button"
+        class="btn-primary modal-button"
+        (click)="cerrarModalExito()">
+        Aceptar
+      </button>
+
+    </div>
+
+  </div>
+
+}

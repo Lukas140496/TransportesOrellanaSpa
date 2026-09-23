@@ -1,0 +1,757 @@
+<div class="form-page">
+
+  <div class="page-header">
+
+    <div>
+      <h1>Agregar Viaje</h1>
+      <p>Ingresa la información del viaje.</p>
+    </div>
+
+    <button
+      type="button"
+      class="btn-secondary"
+      (click)="volver()"
+      [disabled]="guardando">
+      Cancelar
+    </button>
+
+  </div>
+
+  @if (cargando) {
+
+    <div class="loading-card">
+      <div class="spinner"></div>
+      <span>Cargando información...</span>
+    </div>
+
+  } @else {
+
+    <form
+      class="form-card"
+      (ngSubmit)="guardar()">
+
+      <!-- INFORMACIÓN GENERAL -->
+      <section class="form-section">
+
+        <div class="section-header">
+
+          <div class="section-icon">📋</div>
+
+          <div>
+            <h2>Información general</h2>
+            <p>Información principal del viaje.</p>
+          </div>
+
+        </div>
+
+        <div class="form-grid">
+
+          <div class="form-group">
+
+            <label for="numeroGuia">
+              N° Guía de despacho
+            </label>
+
+            <input
+              id="numeroGuia"
+              type="text"
+              name="numeroGuiaDespacho"
+              placeholder="Ej: GD-000123"
+              maxlength="50"
+              [(ngModel)]="viaje.numeroGuiaDespacho"
+              (blur)="campoTocado('numeroGuiaDespacho')"
+            />
+
+            @if (campoTieneError('numeroGuiaDespacho')) {
+
+              <span class="error-message">
+                El número de guía es obligatorio.
+              </span>
+
+            }
+
+          </div>
+
+          <div class="form-group">
+
+            <label for="fecha">
+              Fecha
+            </label>
+
+            <input
+              id="fecha"
+              type="date"
+              name="fecha"
+              [(ngModel)]="viaje.fecha"
+              (blur)="campoTocado('fecha')"
+            />
+
+            @if (campoTieneError('fecha')) {
+
+              <span class="error-message">
+                La fecha es obligatoria.
+              </span>
+
+            }
+
+          </div>
+
+          <div class="form-group">
+
+            <label for="estado">
+              Estado del viaje
+            </label>
+
+            <select
+              id="estado"
+              name="estado"
+              [(ngModel)]="viaje.estado"
+              (blur)="campoTocado('estado')">
+
+              <option value="Completado">
+                Completado
+              </option>
+
+              <option value="Pendiente">
+                Pendiente
+              </option>
+
+              <option value="EnCurso">
+                En curso
+              </option>
+
+              <option value="Cancelado">
+                Cancelado
+              </option>
+
+            </select>
+
+            @if (campoTieneError('estado')) {
+
+              <span class="error-message">
+                Debes seleccionar un estado.
+              </span>
+
+            }
+
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- ASIGNACIÓN -->
+      <section class="form-section">
+
+        <div class="section-header">
+
+          <div class="section-icon">🚛</div>
+
+          <div>
+            <h2>Asignación</h2>
+            <p>Selecciona los recursos utilizados en el viaje.</p>
+          </div>
+
+        </div>
+
+        <div class="form-grid">
+
+          <div class="form-group">
+
+            <label for="cliente">
+              Cliente
+            </label>
+
+            <select
+              id="cliente"
+              name="clienteId"
+              [(ngModel)]="viaje.clienteId"
+              (blur)="campoTocado('clienteId')">
+
+              <option [ngValue]="0">
+                Selecciona un cliente
+              </option>
+
+              @for (cliente of clientes; track cliente.id) {
+
+                <option [ngValue]="cliente.id">
+                  {{ cliente.nombre }}
+                </option>
+
+              }
+
+            </select>
+
+            @if (campoTieneError('clienteId')) {
+
+              <span class="error-message">
+                Debes seleccionar un cliente.
+              </span>
+
+            }
+
+          </div>
+
+          <div class="form-group">
+
+            <label for="camion">
+              Camión
+            </label>
+          
+            <select
+              id="camion"
+              name="camionId"
+              [(ngModel)]="viaje.camionId"
+              (ngModelChange)="cambioCamion($event)"
+              (blur)="campoTocado('camionId')">
+          
+              <option [ngValue]="0">
+                Selecciona un camión
+              </option>
+          
+              @for (camion of camiones; track camion.id) {
+          
+                <option [ngValue]="camion.id">
+                  {{ camion.patente }}
+                  - {{ camion.marca }}
+                  {{ camion.modelo }}
+                </option>
+          
+              }
+          
+            </select>
+          
+            @if (campoTieneError('camionId')) {
+          
+              <span class="error-message">
+                Debes seleccionar un camión.
+              </span>
+          
+            }
+          
+          </div>
+
+          <div class="form-group">
+
+            <label for="conductor">
+              Conductor
+            </label>
+
+            <select
+              id="conductor"
+              name="conductorId"
+              [(ngModel)]="viaje.conductorId"
+              (blur)="campoTocado('conductorId')">
+
+              <option [ngValue]="0">
+                Selecciona un conductor
+              </option>
+
+              @for (conductor of conductores; track conductor.id) {
+
+                <option [ngValue]="conductor.id">
+                  {{ conductor.nombres }}
+                  {{ conductor.apellidoPaterno }}
+                  {{ conductor.apellidoMaterno }}
+                </option>
+
+              }
+
+            </select>
+
+            @if (campoTieneError('conductorId')) {
+
+              <span class="error-message">
+                Debes seleccionar un conductor.
+              </span>
+
+            }
+
+          </div>
+
+          <div class="form-group">
+
+            <label for="remolque">
+              Remolque
+            </label>
+
+            <select
+              id="remolque"
+              name="remolqueId"
+              [(ngModel)]="viaje.remolqueId"
+              [disabled]="!remolqueObligatorio"
+              (blur)="campoTocado('remolqueId')">
+
+              <option [ngValue]="0">
+                Selecciona un remolque
+              </option>
+
+              @for (remolque of remolques; track remolque.id) {
+
+                <option [ngValue]="remolque.id">
+                  {{ remolque.patente }}
+                  - {{ remolque.marca }}
+                  {{ remolque.modelo }}
+                </option>
+
+              }
+
+            </select>
+
+            @if (campoTieneError('remolqueId')) {
+
+              <span class="error-message">
+                Debes seleccionar un remolque.
+              </span>
+
+            }
+
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- RUTA -->
+      <section class="form-section">
+
+        <div class="section-header">
+
+          <div class="section-icon">📍</div>
+
+          <div>
+            <h2>Ruta</h2>
+            <p>Información sobre el origen y destino del viaje.</p>
+          </div>
+
+        </div>
+
+        <div class="form-grid">
+
+          <div class="form-group">
+
+            <label for="origen">
+              Origen
+            </label>
+
+            <input
+              id="origen"
+              type="text"
+              name="origen"
+              maxlength="200"
+              placeholder="Ej: Centro de distribución"
+              [(ngModel)]="viaje.origen"
+              (blur)="campoTocado('origen')"
+            />
+
+            @if (campoTieneError('origen')) {
+
+              <span class="error-message">
+                El origen es obligatorio.
+              </span>
+
+            }
+
+          </div>
+
+          <div class="form-group">
+
+            <label for="destino">
+              Destino
+            </label>
+
+            <input
+              id="destino"
+              type="text"
+              name="destino"
+              maxlength="200"
+              placeholder="Ej: Bodega cliente"
+              [(ngModel)]="viaje.destino"
+              (blur)="campoTocado('destino')"
+            />
+
+            @if (campoTieneError('destino')) {
+
+              <span class="error-message">
+                El destino es obligatorio.
+              </span>
+
+            }
+
+          </div>
+
+          <div class="form-group">
+
+            <label for="comunaOrigen">
+              Comuna origen
+            </label>
+
+            <input
+              id="comunaOrigen"
+              type="text"
+              name="comunaOrigen"
+              maxlength="100"
+              placeholder="Ej: Quilicura"
+              [(ngModel)]="viaje.comunaOrigen"
+              (blur)="campoTocado('comunaOrigen')"
+            />
+
+            @if (campoTieneError('comunaOrigen')) {
+
+              <span class="error-message">
+                La comuna de origen es obligatoria.
+              </span>
+
+            }
+
+          </div>
+
+          <div class="form-group">
+
+            <label for="comunaDestino">
+              Comuna destino
+            </label>
+
+            <input
+              id="comunaDestino"
+              type="text"
+              name="comunaDestino"
+              maxlength="100"
+              placeholder="Ej: Rancagua"
+              [(ngModel)]="viaje.comunaDestino"
+              (blur)="campoTocado('comunaDestino')"
+            />
+
+            @if (campoTieneError('comunaDestino')) {
+
+              <span class="error-message">
+                La comuna de destino es obligatoria.
+              </span>
+
+            }
+
+          </div>
+
+          <div class="form-group">
+
+            <label for="kilometros">
+              Kilómetros
+            </label>
+
+            <input
+              id="kilometros"
+              type="number"
+              name="kilometros"
+              min="0"
+              step="0.1"
+              placeholder="Ej: 85.5"
+              [(ngModel)]="viaje.kilometros"
+              (blur)="campoTocado('kilometros')"
+            />
+
+            @if (campoTieneError('kilometros')) {
+
+              <span class="error-message">
+                Los kilómetros no pueden ser negativos.
+              </span>
+
+            }
+
+          </div>
+
+          <div class="form-group">
+
+            <label for="tipoCarga">
+              Tipo de carga
+            </label>
+
+            <input
+              id="tipoCarga"
+              type="text"
+              name="tipoCarga"
+              maxlength="100"
+              placeholder="Ej: Carga general"
+              [(ngModel)]="viaje.tipoCarga"
+              (blur)="campoTocado('tipoCarga')"
+            />
+
+            @if (campoTieneError('tipoCarga')) {
+
+              <span class="error-message">
+                El tipo de carga es obligatorio.
+              </span>
+
+            }
+
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- COMBUSTIBLE Y TARIFA -->
+      <section class="form-section">
+
+        <div class="section-header">
+
+          <div class="section-icon">⛽</div>
+
+          <div>
+            <h2>Combustible y tarifa</h2>
+            <p>Registra los costos asociados al viaje.</p>
+          </div>
+
+        </div>
+
+        <div class="form-grid">
+
+          <div class="form-group">
+
+            <label for="litros">
+              Litros de combustible
+            </label>
+
+            <input
+              id="litros"
+              type="number"
+              name="litrosCombustible"
+              min="0"
+              step="0.01"
+              placeholder="Ej: 54.10"
+              [(ngModel)]="viaje.litrosCombustible"
+              (blur)="campoTocado('litrosCombustible')"
+            />
+
+            @if (campoTieneError('litrosCombustible')) {
+
+              <span class="error-message">
+                Los litros de combustible no pueden ser negativos.
+              </span>
+
+            }
+
+          </div>
+
+          <div class="form-group">
+
+            <label for="costoCombustible">
+              Costo combustible
+            </label>
+
+            <div class="input-with-prefix">
+
+              <span>$</span>
+
+              <input
+                id="costoCombustible"
+                type="number"
+                name="costoCombustible"
+                min="0"
+                step="1"
+                placeholder="0"
+                [(ngModel)]="viaje.costoCombustible"
+                (blur)="campoTocado('costoCombustible')"
+              />
+
+            </div>
+
+            @if (campoTieneError('costoCombustible')) {
+
+              <span class="error-message">
+                El costo de combustible no puede ser negativo.
+              </span>
+
+            }
+
+          </div>
+
+          <div class="form-group">
+
+            <label for="tarifa">
+              Tarifa
+            </label>
+
+            <div class="input-with-prefix">
+
+              <span>$</span>
+
+              <input
+                id="tarifa"
+                type="number"
+                name="tarifa"
+                min="0"
+                step="1"
+                placeholder="0"
+                [(ngModel)]="viaje.tarifa"
+                (blur)="campoTocado('tarifa')"
+              />
+
+            </div>
+
+            @if (campoTieneError('tarifa')) {
+
+              <span class="error-message">
+                La tarifa no puede ser negativa.
+              </span>
+
+            }
+
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- OBSERVACIONES -->
+      <section class="form-section">
+
+        <div class="section-header">
+
+          <div class="section-icon">📝</div>
+
+          <div>
+            <h2>Observaciones</h2>
+            <p>Información adicional del viaje.</p>
+          </div>
+
+        </div>
+
+        <div class="form-group form-group-full">
+
+          <label for="observaciones">
+            Observaciones
+          </label>
+
+          <textarea
+            id="observaciones"
+            name="observaciones"
+            rows="5"
+            maxlength="500"
+            placeholder="Ingresa cualquier información adicional..."
+            [(ngModel)]="viaje.observaciones"
+            (blur)="campoTocado('observaciones')"
+          ></textarea>
+
+          @if (campoTieneError('observaciones')) {
+
+            <span class="error-message">
+              Las observaciones no pueden superar los 500 caracteres.
+            </span>
+
+          }
+
+        </div>
+
+      </section>
+
+      <!-- ACCIONES -->
+      <div class="form-actions">
+
+        <button
+          type="button"
+          class="btn-secondary"
+          (click)="volver()"
+          [disabled]="guardando">
+          Cancelar
+        </button>
+
+        <button
+          type="submit"
+          class="btn-primary"
+          [disabled]="guardando">
+
+          @if (guardando) {
+
+            Guardando...
+
+          } @else {
+
+            Guardar viaje
+
+          }
+
+        </button>
+
+      </div>
+
+    </form>
+
+  }
+
+</div>
+
+<!-- MODAL DE ERROR -->
+@if (modalErrorVisible) {
+
+  <div
+    class="modal-backdrop"
+    (click)="cerrarModalError()">
+
+    <div
+      class="modal"
+      role="alertdialog"
+      aria-modal="true"
+      (click)="$event.stopPropagation()">
+
+      <div class="modal-icon error">
+        !
+      </div>
+
+      <h2>
+        {{ modalErrorTitulo }}
+      </h2>
+
+      <p>
+        {{ modalErrorMensaje }}
+      </p>
+
+      <button
+        type="button"
+        class="btn-primary modal-button"
+        (click)="cerrarModalError()">
+        Aceptar
+      </button>
+
+    </div>
+
+  </div>
+
+}
+
+<!-- MODAL DE ÉXITO -->
+@if (modalExitoVisible) {
+
+  <div
+    class="modal-backdrop"
+    (click)="cerrarModalExito()">
+
+    <div
+      class="modal"
+      role="dialog"
+      aria-modal="true"
+      (click)="$event.stopPropagation()">
+
+      <div class="modal-icon success">
+        ✓
+      </div>
+
+      <h2>
+        {{ modalExitoTitulo }}
+      </h2>
+
+      <p>
+        {{ modalExitoMensaje }}
+      </p>
+
+      <button
+        type="button"
+        class="btn-primary modal-button"
+        (click)="cerrarModalExito()">
+        Aceptar
+      </button>
+
+    </div>
+
+  </div>
+
+}

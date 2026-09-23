@@ -1,0 +1,458 @@
+<div class="form-page">
+
+  <!-- Encabezado -->
+  <div class="page-header">
+    <div>
+      <h1>Eliminar Viaje</h1>
+      <p>Busca y selecciona el viaje que deseas eliminar.</p>
+    </div>
+  </div>
+
+  <!-- Búsqueda -->
+  <div class="search-card">
+
+    <div class="section-header">
+      <div class="section-icon">🔎</div>
+
+      <div>
+        <h2>Buscar viaje</h2>
+        <p>Ingresa el número de guía para encontrar el viaje.</p>
+      </div>
+    </div>
+
+    <div class="search-row">
+
+      <div class="form-group">
+        <label for="guia">Número de guía</label>
+
+        <input
+          id="guia"
+          type="text"
+          [(ngModel)]="guia"
+          (ngModelChange)="buscarViajes()"
+          placeholder="Ej: GD-12345"
+          autocomplete="off"
+        />
+      </div>
+
+      <button
+        type="button"
+        class="btn-secondary"
+        (click)="guia = ''; buscarViajes()">
+        Limpiar
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- Cargando -->
+  @if (cargando) {
+
+    <div class="loading-card">
+      <div class="loading-spinner"></div>
+      <span>Cargando viajes...</span>
+    </div>
+
+  }
+
+  <!-- Error -->
+  @if (!cargando && error) {
+
+    <div class="error-card">
+      <div class="error-icon">!</div>
+
+      <div>
+        <strong>No fue posible cargar los viajes</strong>
+        <p>{{ error }}</p>
+      </div>
+    </div>
+
+  }
+
+  <!-- Resultados -->
+  @if (!cargando && !error && !viajeSeleccionado) {
+
+    <div class="results-card">
+
+      <div class="results-header">
+        <div>
+          <h2>Viajes encontrados</h2>
+          <span>{{ viajesFiltrados.length }} resultado(s)</span>
+        </div>
+      </div>
+
+      @if (viajesFiltrados.length === 0) {
+
+        <div class="empty-state">
+          <div class="empty-icon">📭</div>
+
+          <h3>No se encontraron viajes</h3>
+
+          <p>
+            No existe ningún viaje que coincida con el número de guía ingresado.
+          </p>
+        </div>
+
+      } @else {
+
+        <div class="results-list">
+
+          @for (viaje of viajesFiltrados; track viaje.id) {
+
+            <button
+              type="button"
+              class="viaje-item"
+              (click)="seleccionarViaje(viaje)">
+
+              <div class="viaje-main">
+
+                <div class="viaje-guide">
+                  <span class="label">Guía</span>
+                  <strong>{{ viaje.numeroGuiaDespacho }}</strong>
+                </div>
+
+                <div class="viaje-date">
+                  <span class="label">Fecha</span>
+                  <strong>
+                    {{ viaje.fecha | date:'dd/MM/yyyy':'UTC' }}
+                  </strong>
+                </div>
+
+                <div class="viaje-client">
+                  <span class="label">Cliente</span>
+                  <strong>{{ viaje.cliente.nombre }}</strong>
+                  <span>{{ viaje.cliente.rut }}</span>
+                </div>
+
+                <div class="viaje-route">
+                  <span class="label">Ruta</span>
+
+                  <strong>
+                    {{ viaje.origen }}
+                    <span class="arrow">→</span>
+                    {{ viaje.destino }}
+                  </strong>
+                </div>
+
+                <div class="viaje-status">
+                  <span
+                    class="status-badge"
+                    [class.pendiente]="viaje.estado === 'Pendiente'"
+                    [class.en-curso]="viaje.estado === 'EnCurso'"
+                    [class.completado]="viaje.estado === 'Completado'"
+                    [class.cancelado]="viaje.estado === 'Cancelado'">
+                    {{ formatoEstadoViaje(viaje.estado) }}
+                  </span>
+
+                  <span
+                    class="payment-badge"
+                    [class.pagado]="viaje.estadoPago === 'Pagado'"
+                    [class.pendiente]="viaje.estadoPago !== 'Pagado'">
+                    {{ viaje.estadoPago }}
+                  </span>
+                </div>
+
+              </div>
+
+              <div class="select-arrow">
+                →
+              </div>
+
+            </button>
+
+          }
+
+        </div>
+
+      }
+
+    </div>
+
+  }
+
+  <!-- Viaje seleccionado -->
+  @if (viajeSeleccionado) {
+
+    <div class="selected-summary">
+
+      <div class="selected-header">
+
+        <div>
+          <span class="selected-label">Viaje seleccionado</span>
+
+          <h2>
+            Guía {{ viajeSeleccionado.numeroGuiaDespacho }}
+          </h2>
+        </div>
+
+        <button
+          type="button"
+          class="btn-secondary"
+          (click)="limpiarSeleccion()">
+          Cambiar viaje
+        </button>
+
+      </div>
+
+      <div class="selected-grid">
+
+        <div class="selected-item">
+          <span>Fecha</span>
+          <strong>
+            {{ viajeSeleccionado.fecha | date:'dd/MM/yyyy':'UTC' }}
+          </strong>
+        </div>
+
+        <div class="selected-item">
+          <span>Cliente</span>
+          <strong>
+            {{ viajeSeleccionado.cliente.nombre }}
+          </strong>
+          <small>
+            {{ viajeSeleccionado.cliente.rut }}
+          </small>
+        </div>
+
+        <div class="selected-item">
+          <span>Camión</span>
+          <strong>
+            {{ viajeSeleccionado.camion.patente }}
+          </strong>
+        </div>
+
+        <div class="selected-item">
+          <span>Conductor</span>
+          <strong>
+            {{ viajeSeleccionado.conductor.nombres }}
+          </strong>
+        </div>
+
+        <div class="selected-item">
+          <span>Remolque</span>
+          <strong>
+            {{ viajeSeleccionado.remolque.patente }}
+          </strong>
+        </div>
+
+        <div class="selected-item">
+          <span>Carga</span>
+          <strong>
+            {{ viajeSeleccionado.tipoCarga }}
+          </strong>
+        </div>
+
+        <div class="selected-item selected-route">
+          <span>Ruta</span>
+          <strong>
+            {{ viajeSeleccionado.origen }}
+            <b>→</b>
+            {{ viajeSeleccionado.destino }}
+          </strong>
+        </div>
+
+        <div class="selected-item">
+          <span>Tarifa</span>
+          <strong>
+            ${{ viajeSeleccionado.tarifa | number:'1.0-0' }}
+          </strong>
+        </div>
+
+      </div>
+
+      <!-- Advertencia -->
+      <div
+        class="delete-warning"
+        [class.warning-paid]="viajeSeleccionado.estadoPago === 'Pagado'">
+
+        <div class="warning-icon">
+          {{ viajeSeleccionado.estadoPago === 'Pagado' ? '🔒' : '⚠️' }}
+        </div>
+
+        <div>
+          @if (viajeSeleccionado.estadoPago === 'Pagado') {
+
+            <strong>Este viaje ya fue pagado</strong>
+
+            <p>
+              Los viajes pagados no pueden eliminarse para proteger
+              la información financiera.
+            </p>
+
+          } @else {
+
+            <strong>Atención: eliminación permanente</strong>
+
+            <p>
+              Este viaje será eliminado definitivamente y esta acción
+              no se puede deshacer.
+            </p>
+
+          }
+        </div>
+
+      </div>
+
+      <!-- Acciones -->
+      <div class="selected-actions">
+
+        <button
+          type="button"
+          class="btn-secondary"
+          (click)="limpiarSeleccion()">
+          Cancelar
+        </button>
+
+        <button
+            type="button"
+            class="btn-danger"
+            [disabled]="
+                viajeSeleccionado.estadoPago === 'Pagado' ||
+                eliminando
+            "
+            (click)="abrirModalConfirmacion()">
+
+            @if (eliminando) {
+                Eliminando...
+            } @else {
+                Eliminar viaje
+            }
+
+        </button>
+
+      </div>
+
+    </div>
+
+  }
+
+</div>
+
+<!-- Modal de confirmación -->
+@if (modalConfirmacionVisible && viajeSeleccionado) {
+  <div
+    class="modal-backdrop"
+    (click)="cerrarModalConfirmacion()">
+
+    <div
+      class="modal"
+      role="dialog"
+      aria-modal="true"
+      (click)="$event.stopPropagation()">
+
+      <div class="modal-icon warning">
+        ⚠
+      </div>
+
+      <h2>¿Eliminar viaje?</h2>
+
+      <p>
+        Estás a punto de eliminar el viaje
+        <strong>
+          {{ viajeSeleccionado.numeroGuiaDespacho }}
+        </strong>.
+      </p>
+
+      <p class="modal-warning-text">
+        Esta acción es permanente y no se puede deshacer.
+      </p>
+
+      <div class="modal-actions">
+
+        <button
+          type="button"
+          class="btn-secondary"
+          (click)="cerrarModalConfirmacion()"
+          [disabled]="eliminando">
+          Cancelar
+        </button>
+
+        <button
+          type="button"
+          class="btn-danger"
+          (click)="confirmarEliminacion()"
+          [disabled]="eliminando">
+
+          @if (eliminando) {
+            Eliminando...
+          } @else {
+            Sí, eliminar
+          }
+
+        </button>
+
+      </div>
+
+    </div>
+  </div>
+}
+
+<!-- Modal de error -->
+@if (modalErrorVisible) {
+  <div
+    class="modal-backdrop"
+    (click)="cerrarModalError()">
+
+    <div
+      class="modal"
+      role="alertdialog"
+      aria-modal="true"
+      (click)="$event.stopPropagation()">
+
+      <div class="modal-icon error">
+        !
+      </div>
+
+      <h2>{{ modalErrorTitulo }}</h2>
+
+      <p>
+        {{ modalErrorMensaje }}
+      </p>
+
+      <button
+        type="button"
+        class="btn-primary modal-button"
+        (click)="cerrarModalError()">
+        Aceptar
+      </button>
+
+    </div>
+  </div>
+}
+
+<!-- Modal de éxito -->
+@if (modalExitoVisible) {
+  <div
+    class="modal-backdrop"
+    (click)="cerrarModalExito()">
+
+    <div
+      class="modal"
+      role="dialog"
+      aria-modal="true"
+      (click)="$event.stopPropagation()">
+
+      <div class="modal-icon success">
+        ✓
+      </div>
+
+      <h2>Viaje eliminado</h2>
+
+      <p>
+        El viaje
+        <strong>
+          {{ viajeSeleccionado?.numeroGuiaDespacho }}
+        </strong>
+        fue eliminado correctamente.
+      </p>
+
+      <button
+        type="button"
+        class="btn-primary modal-button"
+        (click)="cerrarModalExito()">
+        Aceptar
+      </button>
+
+    </div>
+  </div>
+}

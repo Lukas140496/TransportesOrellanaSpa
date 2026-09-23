@@ -24,10 +24,6 @@ public class ClienteController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<ClienteDto>> Create(CrearClienteDto dto)
     {
-        // =========================
-        // VALIDAR DATOS
-        // =========================
-
         if (string.IsNullOrWhiteSpace(dto.Nombre))
         {
             return BadRequest("El nombre del cliente es obligatorio.");
@@ -43,19 +39,13 @@ public class ClienteController : ControllerBase
             return BadRequest("La tarifa no puede ser negativa.");
         }
 
-        // =========================
-        // NORMALIZAR DATOS
-        // =========================
-
         var nombre = dto.Nombre.Trim();
         var rut = dto.Rut.Trim();
-        var ubicacion = dto.Ubicacion.Trim();
+        var direccion = dto.Direccion.Trim();
+        var comuna = dto.Comuna.Trim();
+        var ciudad = dto.Ciudad.Trim();
         var tipoCarga = dto.TipoCarga.Trim();
         var observaciones = dto.Observaciones.Trim();
-
-        // =========================
-        // VALIDAR RUT ÚNICO
-        // =========================
 
         var rutExiste = await _context.Clientes
             .AnyAsync(c => c.Rut == rut);
@@ -65,15 +55,13 @@ public class ClienteController : ControllerBase
             return Conflict("Ya existe un cliente registrado con ese RUT.");
         }
 
-        // =========================
-        // CREAR CLIENTE
-        // =========================
-
         var cliente = new Cliente
         {
             Nombre = nombre,
             Rut = rut,
-            Ubicacion = ubicacion,
+            Direccion = direccion,
+            Comuna = comuna,
+            Ciudad = ciudad,
             Tarifa = dto.Tarifa,
             TipoCarga = tipoCarga,
             Activo = true,
@@ -84,16 +72,14 @@ public class ClienteController : ControllerBase
 
         await _context.SaveChangesAsync();
 
-        // =========================
-        // CREAR RESPUESTA
-        // =========================
-
         var resultado = new ClienteDto
         {
             Id = cliente.Id,
             Nombre = cliente.Nombre,
             Rut = cliente.Rut,
-            Ubicacion = cliente.Ubicacion,
+            Direccion = cliente.Direccion,
+            Comuna = cliente.Comuna,
+            Ciudad = cliente.Ciudad,
             Tarifa = cliente.Tarifa,
             TipoCarga = cliente.TipoCarga,
             Activo = cliente.Activo,
@@ -121,7 +107,9 @@ public class ClienteController : ControllerBase
                 Id = c.Id,
                 Nombre = c.Nombre,
                 Rut = c.Rut,
-                Ubicacion = c.Ubicacion,
+                Direccion = c.Direccion,
+                Comuna = c.Comuna,
+                Ciudad = c.Ciudad,
                 Tarifa = c.Tarifa,
                 TipoCarga = c.TipoCarga,
                 Activo = c.Activo,
@@ -147,7 +135,9 @@ public class ClienteController : ControllerBase
                 Id = c.Id,
                 Nombre = c.Nombre,
                 Rut = c.Rut,
-                Ubicacion = c.Ubicacion,
+                Direccion = c.Direccion,
+                Comuna = c.Comuna,
+                Ciudad = c.Ciudad,
                 Tarifa = c.Tarifa,
                 TipoCarga = c.TipoCarga,
                 Activo = c.Activo,
@@ -172,10 +162,6 @@ public class ClienteController : ControllerBase
         int id,
         ActualizarClienteDto dto)
     {
-        // =========================
-        // BUSCAR CLIENTE
-        // =========================
-
         var cliente = await _context.Clientes
             .FirstOrDefaultAsync(c => c.Id == id);
 
@@ -183,10 +169,6 @@ public class ClienteController : ControllerBase
         {
             return NotFound("El cliente indicado no existe.");
         }
-
-        // =========================
-        // VALIDAR DATOS
-        // =========================
 
         if (string.IsNullOrWhiteSpace(dto.Nombre))
         {
@@ -203,15 +185,7 @@ public class ClienteController : ControllerBase
             return BadRequest("La tarifa no puede ser negativa.");
         }
 
-        // =========================
-        // NORMALIZAR DATOS
-        // =========================
-
         var rut = dto.Rut.Trim();
-
-        // =========================
-        // VALIDAR RUT ÚNICO
-        // =========================
 
         var rutExiste = await _context.Clientes
             .AnyAsync(c => c.Rut == rut && c.Id != id);
@@ -221,13 +195,11 @@ public class ClienteController : ControllerBase
             return Conflict("Ya existe otro cliente registrado con ese RUT.");
         }
 
-        // =========================
-        // ACTUALIZAR CLIENTE
-        // =========================
-
         cliente.Nombre = dto.Nombre.Trim();
         cliente.Rut = rut;
-        cliente.Ubicacion = dto.Ubicacion.Trim();
+        cliente.Direccion = dto.Direccion.Trim();
+        cliente.Comuna = dto.Comuna.Trim();
+        cliente.Ciudad = dto.Ciudad.Trim();
         cliente.Tarifa = dto.Tarifa;
         cliente.TipoCarga = dto.TipoCarga.Trim();
         cliente.Activo = dto.Activo;
@@ -235,16 +207,96 @@ public class ClienteController : ControllerBase
 
         await _context.SaveChangesAsync();
 
-        // =========================
-        // RESPUESTA
-        // =========================
+        var resultado = new ClienteDto
+        {
+            Id = cliente.Id,
+            Nombre = cliente.Nombre,
+            Rut = cliente.Rut,
+            Direccion = cliente.Direccion,
+            Comuna = cliente.Comuna,
+            Ciudad = cliente.Ciudad,
+            Tarifa = cliente.Tarifa,
+            TipoCarga = cliente.TipoCarga,
+            Activo = cliente.Activo,
+            Observaciones = cliente.Observaciones
+        };
+
+        return Ok(resultado);
+    }
+
+    // =========================
+    // PUT: api/cliente/{id}/desactivar
+    // =========================
+
+    [HttpPut("{id}/desactivar")]
+    public async Task<ActionResult<ClienteDto>> Desactivar(int id)
+    {
+        var cliente = await _context.Clientes
+            .FirstOrDefaultAsync(c => c.Id == id);
+
+        if (cliente == null)
+        {
+            return NotFound("El cliente indicado no existe.");
+        }
+
+        if (!cliente.Activo)
+        {
+            return BadRequest("El cliente ya se encuentra inactivo.");
+        }
+
+        cliente.Activo = false;
+
+        await _context.SaveChangesAsync();
 
         var resultado = new ClienteDto
         {
             Id = cliente.Id,
             Nombre = cliente.Nombre,
             Rut = cliente.Rut,
-            Ubicacion = cliente.Ubicacion,
+            Direccion = cliente.Direccion,
+            Comuna = cliente.Comuna,
+            Ciudad = cliente.Ciudad,
+            Tarifa = cliente.Tarifa,
+            TipoCarga = cliente.TipoCarga,
+            Activo = cliente.Activo,
+            Observaciones = cliente.Observaciones
+        };
+
+        return Ok(resultado);
+    }
+
+    // =========================
+    // PUT: api/cliente/{id}/activar
+    // =========================
+
+    [HttpPut("{id}/activar")]
+    public async Task<ActionResult<ClienteDto>> Activar(int id)
+    {
+        var cliente = await _context.Clientes
+            .FirstOrDefaultAsync(c => c.Id == id);
+
+        if (cliente == null)
+        {
+            return NotFound("El cliente indicado no existe.");
+        }
+
+        if (cliente.Activo)
+        {
+            return BadRequest("El cliente ya se encuentra activo.");
+        }
+
+        cliente.Activo = true;
+
+        await _context.SaveChangesAsync();
+
+        var resultado = new ClienteDto
+        {
+            Id = cliente.Id,
+            Nombre = cliente.Nombre,
+            Rut = cliente.Rut,
+            Direccion = cliente.Direccion,
+            Comuna = cliente.Comuna,
+            Ciudad = cliente.Ciudad,
             Tarifa = cliente.Tarifa,
             TipoCarga = cliente.TipoCarga,
             Activo = cliente.Activo,

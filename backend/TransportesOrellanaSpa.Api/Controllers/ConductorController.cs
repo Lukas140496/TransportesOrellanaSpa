@@ -37,6 +37,7 @@ public class ConductorController : ControllerBase
                 TipoLicencia = c.TipoLicencia,
                 FechaControlLicencia = c.FechaControlLicencia,
                 LicenciaAlDia = c.LicenciaAlDia,
+                Activo = c.Activo,
 
                 // Proyectamos la lista completa de camiones asignados
                 CamionesHabituales = c.CamionesHabituales
@@ -77,6 +78,7 @@ public class ConductorController : ControllerBase
                 TipoLicencia = c.TipoLicencia,
                 FechaControlLicencia = c.FechaControlLicencia,
                 LicenciaAlDia = c.LicenciaAlDia,
+                Activo = c.Activo,
 
                 CamionesHabituales = c.CamionesHabituales
                     .Select(cam => new CamionResumenDto
@@ -92,7 +94,9 @@ public class ConductorController : ControllerBase
 
         if (conductor == null)
         {
-            return NotFound($"No existe un conductor con el RUT {rut}.");
+            return NotFound(
+                $"No existe un conductor con el RUT {rut}."
+            );
         }
 
         return Ok(conductor);
@@ -100,7 +104,8 @@ public class ConductorController : ControllerBase
 
     // POST: api/conductor
     [HttpPost]
-    public async Task<ActionResult<ConductorDto>> Create(CrearConductorDto dto)
+    public async Task<ActionResult<ConductorDto>> Create(
+        CrearConductorDto dto)
     {
         var rut = dto.Rut.Trim();
 
@@ -109,7 +114,9 @@ public class ConductorController : ControllerBase
 
         if (existe)
         {
-            return Conflict($"Ya existe un conductor registrado con el RUT {rut}.");
+            return Conflict(
+                $"Ya existe un conductor registrado con el RUT {rut}."
+            );
         }
 
         var conductor = new Conductor
@@ -124,13 +131,18 @@ public class ConductorController : ControllerBase
             Telefono = dto.Telefono,
             TipoLicencia = dto.TipoLicencia,
             FechaControlLicencia = dto.FechaControlLicencia,
-            LicenciaAlDia = dto.LicenciaAlDia
+            LicenciaAlDia = dto.LicenciaAlDia,
+
+            // Todo conductor nuevo nace activo
+            Activo = true
         };
 
         _context.Conductores.Add(conductor);
+
         await _context.SaveChangesAsync();
 
-        // Busca el registro creado para retornar la estructura DTO limpia
+        // Busca el registro creado para retornar
+        // la estructura DTO limpia
         var resultado = await _context.Conductores
             .AsNoTracking()
             .Where(c => c.Id == conductor.Id)
@@ -148,7 +160,10 @@ public class ConductorController : ControllerBase
                 TipoLicencia = c.TipoLicencia,
                 FechaControlLicencia = c.FechaControlLicencia,
                 LicenciaAlDia = c.LicenciaAlDia,
-                CamionesHabituales = new List<CamionResumenDto>() // Al crearse, nace sin camiones
+                Activo = c.Activo,
+
+                CamionesHabituales =
+                    new List<CamionResumenDto>()
             })
             .FirstAsync();
 
@@ -163,124 +178,226 @@ public class ConductorController : ControllerBase
     [HttpPut("{rut}")]
     public async Task<IActionResult> Update(
         string rut,
-        Conductor conductor)
+        ActualizarConductorDto dto)
     {
-        if (!string.Equals(
-                rut,
-                conductor.Rut,
-                StringComparison.OrdinalIgnoreCase))
+        rut = rut.Trim();
+
+        if (string.IsNullOrWhiteSpace(dto.Nombres))
         {
             return BadRequest(
-                "El RUT de la URL no coincide con el RUT del conductor."
+                "El nombre del conductor es obligatorio."
             );
         }
 
-        var conductorExistente = await _context.Conductores
-            .FirstOrDefaultAsync(c => c.Rut == rut);
+        if (string.IsNullOrWhiteSpace(dto.ApellidoPaterno))
+        {
+            return BadRequest(
+                "El apellido paterno es obligatorio."
+            );
+        }
+
+        if (string.IsNullOrWhiteSpace(dto.ApellidoMaterno))
+        {
+            return BadRequest(
+                "El apellido materno es obligatorio."
+            );
+        }
+
+        if (dto.FechaNacimiento == default)
+        {
+            return BadRequest(
+                "La fecha de nacimiento es obligatoria."
+            );
+        }
+
+        if (dto.FechaIngreso == default)
+        {
+            return BadRequest(
+                "La fecha de ingreso es obligatoria."
+            );
+        }
+
+        if (string.IsNullOrWhiteSpace(dto.Telefono))
+        {
+            return BadRequest(
+                "El teléfono es obligatorio."
+            );
+        }
+
+        if (string.IsNullOrWhiteSpace(dto.TipoLicencia))
+        {
+            return BadRequest(
+                "El tipo de licencia es obligatorio."
+            );
+        }
+
+        if (dto.FechaControlLicencia == default)
+        {
+            return BadRequest(
+                "La fecha de control de licencia es obligatoria."
+            );
+        }
+
+        var conductorExistente =
+            await _context.Conductores
+                .FirstOrDefaultAsync(c => c.Rut == rut);
 
         if (conductorExistente == null)
         {
             return NotFound();
         }
 
-        conductorExistente.Nombres = conductor.Nombres;
-        conductorExistente.ApellidoPaterno = conductor.ApellidoPaterno;
-        conductorExistente.ApellidoMaterno = conductor.ApellidoMaterno;
-        conductorExistente.FechaNacimiento = conductor.FechaNacimiento;
-        conductorExistente.Edad = conductor.Edad;
-        conductorExistente.FechaIngreso = conductor.FechaIngreso;
-        conductorExistente.Telefono = conductor.Telefono;
-        conductorExistente.TipoLicencia = conductor.TipoLicencia;
-        conductorExistente.FechaControlLicencia = conductor.FechaControlLicencia;
-        conductorExistente.LicenciaAlDia = conductor.LicenciaAlDia;
+        conductorExistente.Nombres =
+            dto.Nombres.Trim();
+
+        conductorExistente.ApellidoPaterno =
+            dto.ApellidoPaterno.Trim();
+
+        conductorExistente.ApellidoMaterno =
+            dto.ApellidoMaterno.Trim();
+
+        conductorExistente.FechaNacimiento =
+            dto.FechaNacimiento;
+
+        conductorExistente.Edad =
+            dto.Edad;
+
+        conductorExistente.FechaIngreso =
+            dto.FechaIngreso;
+
+        conductorExistente.Telefono =
+            dto.Telefono.Trim();
+
+        conductorExistente.TipoLicencia =
+            dto.TipoLicencia.Trim();
+
+        conductorExistente.FechaControlLicencia =
+            dto.FechaControlLicencia;
+
+        conductorExistente.LicenciaAlDia =
+            dto.LicenciaAlDia;
+
+        // Importante:
+        // Update NO modifica Activo.
+        // El estado se controla mediante los endpoints
+        // de activar/desactivar.
 
         await _context.SaveChangesAsync();
 
         return NoContent();
     }
 
-        // PUT: api/conductor/19.374.867-8/camion-habitual
-    [HttpPut("{rut}/camion-habitual")]
-    public async Task<IActionResult> AsignarCamionHabitual(string rut, AsignarCamionHabitualDto dto)
+    // PATCH: api/conductor/12.345.678-9/desactivar
+    [HttpPatch("{rut}/desactivar")]
+    public async Task<IActionResult> Desactivar(string rut)
     {
         rut = rut.Trim();
-        var patente = dto.Patente.Trim().ToUpperInvariant();
 
-        // 1. Buscamos al conductor por su RUT, incluyendo la colección de camiones
+        var conductor = await _context.Conductores
+            .FirstOrDefaultAsync(c => c.Rut == rut);
+
+        if (conductor == null)
+        {
+            return NotFound(
+                $"No existe un conductor con el RUT {rut}."
+            );
+        }
+
+        if (!conductor.Activo)
+        {
+            return BadRequest(
+                $"El conductor con RUT {rut} ya está desactivado."
+            );
+        }
+
+        conductor.Activo = false;
+
+        await _context.SaveChangesAsync();
+
+        return Ok(new
+        {
+            Mensaje = "Conductor desactivado correctamente."
+        });
+    }
+
+    [HttpPatch("{rut}/activar")]
+    public async Task<IActionResult> Activar(string rut)
+    {
+        rut = rut.Trim();
+
+        var conductor = await _context.Conductores
+            .FirstOrDefaultAsync(c => c.Rut == rut);
+
+        if (conductor == null)
+        {
+            return NotFound(
+                $"No existe un conductor con el RUT {rut}."
+            );
+        }
+
+        if (conductor.Activo)
+        {
+            return Conflict(
+                $"El conductor con RUT {rut} ya se encuentra activo."
+            );
+        }
+
+        conductor.Activo = true;
+
+        await _context.SaveChangesAsync();
+
+        return NoContent();
+    }
+
+    // PUT: api/conductor/19.374.867-8/camion-habitual
+    [HttpPut("{rut}/camion-habitual")]
+    public async Task<IActionResult> AsignarCamionHabitual(
+        string rut,
+        AsignarCamionHabitualDto dto)
+    {
+        rut = rut.Trim();
+
+        var patente =
+            dto.Patente
+                .Trim()
+                .ToUpperInvariant();
+
+        // 1. Buscamos al conductor por su RUT,
+        // incluyendo la colección de camiones
         var conductor = await _context.Conductores
             .Include(c => c.CamionesHabituales)
             .FirstOrDefaultAsync(c => c.Rut == rut);
 
-        if (conductor == null) return NotFound($"No existe un conductor con el RUT {rut}.");
+        if (conductor == null)
+        {
+            return NotFound(
+                $"No existe un conductor con el RUT {rut}."
+            );
+        }
 
-        // 2. Buscamos el camión por la patente que viene en el Body JSON
-        var camion = await _context.Camiones.FirstOrDefaultAsync(c => c.Patente == patente);
-        if (camion == null) return NotFound($"No existe un camión con la patente {patente}.");
+        // 2. Buscamos el camión por patente
+        var camion = await _context.Camiones
+            .FirstOrDefaultAsync(
+                c => c.Patente == patente
+            );
 
-        // 3. CORREGIDO: Guardamos la relación en la lista Muchos a Muchos de manera bidireccional
-        if (!conductor.CamionesHabituales.Any(cam => cam.Id == camion.Id))
+        if (camion == null)
+        {
+            return NotFound(
+                $"No existe un camión con la patente {patente}."
+            );
+        }
+
+        // 3. Guardamos la relación Muchos a Muchos
+        if (!conductor.CamionesHabituales
+            .Any(cam => cam.Id == camion.Id))
         {
             conductor.CamionesHabituales.Add(camion);
+
             await _context.SaveChangesAsync();
         }
 
-        // 4. Retornamos el perfil del conductor actualizado de acuerdo al nuevo ConductorDto
-        var conductorDto = new ConductorDto {
-            Id = conductor.Id,
-            Rut = conductor.Rut,
-            Nombres = conductor.Nombres,
-            ApellidoPaterno = conductor.ApellidoPaterno,
-            ApellidoMaterno = conductor.ApellidoMaterno,
-            FechaNacimiento = conductor.FechaNacimiento,
-            Edad = conductor.Edad,
-            FechaIngreso = conductor.FechaIngreso,
-            Telefono = conductor.Telefono,
-            TipoLicencia = conductor.TipoLicencia,
-            FechaControlLicencia = conductor.FechaControlLicencia,
-            LicenciaAlDia = conductor.LicenciaAlDia,
-            
-            CamionesHabituales = conductor.CamionesHabituales.Select(cam => new CamionResumenDto {
-                Id = cam.Id,
-                Patente = cam.Patente,
-                Marca = cam.Marca,
-                Modelo = cam.Modelo
-            }).ToList()
-        };
-
-        return Ok(new { Mensaje = "Camión asignado al conductor correctamente", Conductor = conductorDto });
-    }
-
-    // PUT: api/conductor/25.522.461-8/desasignar-camion/VZ9625
-    [HttpPut("{rut}/desasignar-camion/{patente}")]
-    public async Task<IActionResult> DesasignarCamionHabitual(string rut, string patente)
-    {
-        rut = rut.Trim();
-        patente = patente.Trim().ToUpperInvariant();
-
-        // 1. Buscamos al conductor incluyendo su lista actual de camiones
-        var conductor = await _context.Conductores
-            .Include(c => c.CamionesHabituales)
-            .FirstOrDefaultAsync(c => c.Rut == rut);
-
-        if (conductor == null) 
-        {
-            return NotFound($"No existe un conductor con el RUT {rut}.");
-        }
-
-        // 2. Buscamos si el camión está dentro de la lista de este conductor
-        var camionAsociado = conductor.CamionesHabituales
-            .FirstOrDefault(c => c.Patente == patente);
-
-        if (camionAsociado == null)
-        {
-            return BadRequest($"El conductor con RUT {rut} no tiene asignado el camión con patente {patente}.");
-        }
-
-        // 3. Removemos solo este camión de la colección (EF se encarga de borrar la fila en la tabla intermedia)
-        conductor.CamionesHabituales.Remove(camionAsociado);
-        await _context.SaveChangesAsync();
-
-        // 4. Construimos el DTO de respuesta con el estado real final del chofer
+        // 4. Retornamos el perfil actualizado
         var conductorDto = new ConductorDto
         {
             Id = conductor.Id,
@@ -293,21 +410,118 @@ public class ConductorController : ControllerBase
             FechaIngreso = conductor.FechaIngreso,
             Telefono = conductor.Telefono,
             TipoLicencia = conductor.TipoLicencia,
-            FechaControlLicencia = conductor.FechaControlLicencia,
-            LicenciaAlDia = conductor.LicenciaAlDia,
-            
-            CamionesHabituales = conductor.CamionesHabituales.Select(cam => new CamionResumenDto
-            {
-                Id = cam.Id,
-                Patente = cam.Patente,
-                Marca = cam.Marca,
-                Modelo = cam.Modelo
-            }).ToList()
+            FechaControlLicencia =
+                conductor.FechaControlLicencia,
+            LicenciaAlDia =
+                conductor.LicenciaAlDia,
+            Activo =
+                conductor.Activo,
+
+            CamionesHabituales =
+                conductor.CamionesHabituales
+                    .Select(cam => new CamionResumenDto
+                    {
+                        Id = cam.Id,
+                        Patente = cam.Patente,
+                        Marca = cam.Marca,
+                        Modelo = cam.Modelo
+                    })
+                    .ToList()
         };
 
         return Ok(new
         {
-            Mensaje = "Camión desasignado del conductor correctamente",
+            Mensaje =
+                "Camión asignado al conductor correctamente",
+
+            Conductor = conductorDto
+        });
+    }
+
+    // PUT: api/conductor/25.522.461-8/desasignar-camion/VZ9625
+    [HttpPut("{rut}/desasignar-camion/{patente}")]
+    public async Task<IActionResult> DesasignarCamionHabitual(
+        string rut,
+        string patente)
+    {
+        rut = rut.Trim();
+
+        patente =
+            patente
+                .Trim()
+                .ToUpperInvariant();
+
+        // 1. Buscamos el conductor incluyendo
+        // su lista actual de camiones
+        var conductor = await _context.Conductores
+            .Include(c => c.CamionesHabituales)
+            .FirstOrDefaultAsync(c => c.Rut == rut);
+
+        if (conductor == null)
+        {
+            return NotFound(
+                $"No existe un conductor con el RUT {rut}."
+            );
+        }
+
+        // 2. Buscamos el camión asociado
+        var camionAsociado =
+            conductor.CamionesHabituales
+                .FirstOrDefault(
+                    c => c.Patente == patente
+                );
+
+        if (camionAsociado == null)
+        {
+            return BadRequest(
+                $"El conductor con RUT {rut} no tiene " +
+                $"asignado el camión con patente {patente}."
+            );
+        }
+
+        // 3. Removemos solamente esta relación
+        conductor.CamionesHabituales
+            .Remove(camionAsociado);
+
+        await _context.SaveChangesAsync();
+
+        // 4. Construimos el DTO actualizado
+        var conductorDto = new ConductorDto
+        {
+            Id = conductor.Id,
+            Rut = conductor.Rut,
+            Nombres = conductor.Nombres,
+            ApellidoPaterno = conductor.ApellidoPaterno,
+            ApellidoMaterno = conductor.ApellidoMaterno,
+            FechaNacimiento = conductor.FechaNacimiento,
+            Edad = conductor.Edad,
+            FechaIngreso = conductor.FechaIngreso,
+            Telefono = conductor.Telefono,
+            TipoLicencia = conductor.TipoLicencia,
+            FechaControlLicencia =
+                conductor.FechaControlLicencia,
+            LicenciaAlDia =
+                conductor.LicenciaAlDia,
+            Activo =
+                conductor.Activo,
+
+            CamionesHabituales =
+                conductor.CamionesHabituales
+                    .Select(cam => new CamionResumenDto
+                    {
+                        Id = cam.Id,
+                        Patente = cam.Patente,
+                        Marca = cam.Marca,
+                        Modelo = cam.Modelo
+                    })
+                    .ToList()
+        };
+
+        return Ok(new
+        {
+            Mensaje =
+                "Camión desasignado del conductor correctamente",
+
             Conductor = conductorDto
         });
     }
@@ -325,6 +539,7 @@ public class ConductorController : ControllerBase
         }
 
         _context.Conductores.Remove(conductor);
+
         await _context.SaveChangesAsync();
 
         return NoContent();

@@ -1,0 +1,735 @@
+<div class="form-page">
+
+  <!-- =========================
+       ENCABEZADO
+  ========================== -->
+
+  <div class="page-header">
+
+    <div>
+      <h1>Modificar Remolque</h1>
+
+      <p>
+        Selecciona un remolque para modificar su información.
+      </p>
+    </div>
+
+    <button
+      type="button"
+      class="btn-cancelar-header"
+      (click)="cancelar()"
+      [disabled]="guardando">
+      Cancelar
+    </button>
+
+  </div>
+
+
+  <!-- =========================
+       CARGANDO
+  ========================== -->
+
+  <div
+    class="estado-cargando"
+    *ngIf="cargando">
+
+    <div class="spinner"></div>
+
+    <span>
+      Cargando remolques...
+    </span>
+
+  </div>
+
+
+  <!-- =========================
+       ERROR GENERAL
+  ========================== -->
+
+  <div
+    class="estado-error"
+    *ngIf="!cargando && error">
+
+    {{ error }}
+
+  </div>
+
+
+  <!-- =========================
+       SELECCIÓN
+  ========================== -->
+
+  <div
+    class="selector-card"
+    *ngIf="!cargando && !error && !remolqueSeleccionado">
+
+    <div class="selector-header">
+
+      <div>
+        <h2>Seleccionar remolque</h2>
+
+        <p>
+          Busca por patente, marca, modelo o tipo.
+        </p>
+      </div>
+
+    </div>
+
+    <div class="busqueda">
+
+      <span class="busqueda-icono">⌕</span>
+
+      <input
+        type="text"
+        [(ngModel)]="busqueda"
+        (input)="buscarRemolques()"
+        placeholder="Buscar remolque...">
+
+    </div>
+
+
+    <div
+      class="remolques-lista"
+      *ngIf="remolquesFiltrados.length > 0">
+
+      <button
+        type="button"
+        class="remolque-item"
+        *ngFor="let remolque of remolquesFiltrados"
+        (click)="seleccionarRemolque(remolque)">
+
+        <div class="remolque-item-principal">
+
+          <!-- PATENTE + CAMIÓN -->
+
+          <div class="remolque-item-dato">
+
+            <strong>
+              {{ remolque.patente }}
+            </strong>
+
+            <span>
+              Camión asignado:
+              {{ remolque.camionHabitual?.patente || 'Sin asignar' }}
+            </span>
+
+          </div>
+
+
+          <!-- MARCA + MODELO + AÑO -->
+
+          <div class="remolque-item-dato">
+
+            <strong>
+              {{ remolque.marca }}
+              {{ remolque.modelo }}
+            </strong>
+
+            <span>
+              Año {{ remolque.ano }}
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div class="remolque-item-secundario">
+
+          <span>
+            {{ remolque.tipo }}
+          </span>
+
+          <span
+            class="estado-badge"
+            [class.activo]="remolque.activa"
+            [class.inactivo]="!remolque.activa">
+
+            {{ remolque.activa ? 'Activo' : 'Inactivo' }}
+
+          </span>
+
+        </div>
+
+      </button>
+
+    </div>
+
+
+    <div
+      class="empty-state"
+      *ngIf="remolquesFiltrados.length === 0">
+
+      <div class="empty-icon">
+        🔎
+      </div>
+
+      <h3>
+        No se encontraron remolques
+      </h3>
+
+      <p>
+        Intenta con otra patente, marca, modelo o tipo.
+      </p>
+
+    </div>
+
+  </div>
+
+
+  <!-- =========================
+       FORMULARIO
+  ========================== -->
+
+  <div
+    class="form-card"
+    *ngIf="remolqueSeleccionado">
+
+    <div class="form-card-header">
+
+      <div>
+
+        <span class="form-card-label">
+          Remolque seleccionado
+        </span>
+
+        <h2>
+          {{ remolqueSeleccionado.patente }}
+        </h2>
+
+        <span class="form-card-subinfo">
+          Camión habitual:
+          {{ remolqueSeleccionado.camionHabitual?.patente || 'Sin camión' }}
+        </span>
+
+      </div>
+
+
+      <div>
+
+        <strong class="form-card-vehiculo">
+          {{ remolqueSeleccionado.marca }}
+          {{ remolqueSeleccionado.modelo }}
+        </strong>
+
+        <span class="form-card-subinfo">
+          Año {{ remolqueSeleccionado.ano }}
+        </span>
+
+      </div>
+
+
+      <button
+        type="button"
+        class="btn-cambiar"
+        (click)="limpiarSeleccion()"
+        [disabled]="guardando">
+
+        Cambiar remolque
+
+      </button>
+
+    </div>
+
+
+    <!-- =========================
+         INFORMACIÓN BÁSICA
+    ========================== -->
+
+    <section class="form-section">
+
+      <div class="section-header">
+
+        <div class="section-icon">
+          🚚
+        </div>
+
+        <div>
+          <h3>
+            Información básica
+          </h3>
+
+          <p>
+            Datos principales del remolque.
+          </p>
+        </div>
+
+      </div>
+
+
+      <div class="form-grid">
+
+        <!-- PATENTE -->
+
+        <div class="form-group">
+
+          <label for="patente">
+            Patente
+          </label>
+
+          <input
+            id="patente"
+            type="text"
+            [value]="remolqueSeleccionado.patente"
+            disabled>
+
+          <span class="field-hint">
+            La patente no puede modificarse.
+          </span>
+
+        </div>
+
+
+        <!-- MARCA -->
+
+        <div
+          class="form-group"
+          [class.campo-invalido]="campoTieneError('marca')">
+
+          <label for="marca">
+            Marca
+          </label>
+
+          <input
+            id="marca"
+            type="text"
+            [(ngModel)]="remolqueSeleccionado.marca"
+            maxlength="100"
+            autocomplete="off">
+
+          <span
+            class="error-message"
+            *ngIf="campoTieneError('marca')">
+
+            {{ obtenerMensajeError('marca') }}
+
+          </span>
+
+        </div>
+
+
+        <!-- MODELO -->
+
+        <div
+          class="form-group"
+          [class.campo-invalido]="campoTieneError('modelo')">
+
+          <label for="modelo">
+            Modelo
+          </label>
+
+          <input
+            id="modelo"
+            type="text"
+            [(ngModel)]="remolqueSeleccionado.modelo"
+            maxlength="100"
+            autocomplete="off">
+
+          <span
+            class="error-message"
+            *ngIf="campoTieneError('modelo')">
+
+            {{ obtenerMensajeError('modelo') }}
+
+          </span>
+
+        </div>
+
+
+        <!-- AÑO -->
+
+        <div
+          class="form-group"
+          [class.campo-invalido]="campoTieneError('ano')">
+
+          <label for="ano">
+            Año
+          </label>
+
+          <input
+            id="ano"
+            type="number"
+            [(ngModel)]="remolqueSeleccionado.ano"
+            min="1950"
+            [max]="anoMaximo">
+
+          <span
+            class="error-message"
+            *ngIf="campoTieneError('ano')">
+
+            {{ obtenerMensajeError('ano') }}
+
+          </span>
+
+        </div>
+
+
+        <!-- TIPO -->
+
+        <div
+          class="form-group"
+          [class.campo-invalido]="campoTieneError('tipo')">
+
+          <label for="tipo">
+            Tipo
+          </label>
+
+          <input
+            id="tipo"
+            type="text"
+            [(ngModel)]="remolqueSeleccionado.tipo"
+            maxlength="100"
+            autocomplete="off">
+
+          <span
+            class="error-message"
+            *ngIf="campoTieneError('tipo')">
+
+            {{ obtenerMensajeError('tipo') }}
+
+          </span>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =========================
+         CARACTERÍSTICAS
+    ========================== -->
+
+    <section class="form-section">
+
+      <div class="section-header">
+
+        <div class="section-icon">
+          ⚙️
+        </div>
+
+        <div>
+          <h3>
+            Características
+          </h3>
+
+          <p>
+            Capacidad y características del remolque.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="form-grid">
+
+        <div
+          class="form-group"
+          [class.campo-invalido]="campoTieneError('capacidadToneladas')">
+
+          <label for="capacidadToneladas">
+            Capacidad
+          </label>
+
+          <div class="input-con-unidad">
+
+            <input
+              id="capacidadToneladas"
+              type="number"
+              [(ngModel)]="remolqueSeleccionado.capacidadToneladas"
+              min="0.1"
+              step="0.1">
+
+            <span>
+              toneladas
+            </span>
+
+          </div>
+
+          <span
+            class="error-message"
+            *ngIf="campoTieneError('capacidadToneladas')">
+
+            {{ obtenerMensajeError('capacidadToneladas') }}
+
+          </span>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =========================
+         CAMIÓN HABITUAL
+    ========================== -->
+
+    <section class="form-section">
+
+      <div class="section-header">
+
+        <div class="section-icon">
+          🚛
+        </div>
+
+        <div>
+          <h3>
+            Camión habitual
+          </h3>
+
+          <p>
+            Puedes asociar este remolque a un camión habitual.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="form-grid">
+
+        <div class="form-group">
+
+          <label for="camionHabitualId">
+            Camión habitual
+          </label>
+
+          <select
+            id="camionHabitualId"
+            [(ngModel)]="remolqueSeleccionado.camionHabitualId">
+
+            <option [ngValue]="null">
+              Sin camión habitual
+            </option>
+
+            <option
+              *ngFor="let camion of camiones"
+              [ngValue]="camion.id">
+
+              {{ camion.patente }}
+              -
+              {{ camion.marca }}
+              {{ camion.modelo }}
+
+            </option>
+
+          </select>
+
+          <span
+            class="field-hint"
+            *ngIf="cargandoCamiones">
+
+            Cargando camiones...
+
+          </span>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- =========================
+         ESTADO
+    ========================== -->
+
+    <section class="form-section">
+
+      <div class="section-header">
+
+        <div class="section-icon">
+          ✓
+        </div>
+
+        <div>
+          <h3>
+            Estado
+          </h3>
+
+          <p>
+            Define si el remolque está disponible para operar.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="status-grid">
+
+        <label class="status-option">
+
+          <input
+            type="checkbox"
+            [(ngModel)]="remolqueSeleccionado.activa">
+
+          <span>
+            Remolque activo
+          </span>
+
+        </label>
+
+      </div>
+
+    </section>
+
+
+    <!-- =========================
+         ACCIONES
+    ========================== -->
+
+    <div class="form-actions">
+
+      <button
+        type="button"
+        class="btn-secondary"
+        (click)="cancelar()"
+        [disabled]="guardando">
+
+        Cancelar
+
+      </button>
+
+      <button
+        type="button"
+        class="btn-primary"
+        (click)="guardarCambios()"
+        [disabled]="guardando">
+
+        <span
+          class="spinner"
+          *ngIf="guardando">
+        </span>
+
+        {{
+          guardando
+            ? 'Guardando...'
+            : 'Guardar cambios'
+        }}
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- =========================
+     MODAL ÉXITO
+========================== -->
+
+<div
+  class="modal-overlay"
+  *ngIf="modalExitoVisible">
+
+  <div class="modal">
+
+    <div class="modal-icon success">
+      ✓
+    </div>
+
+    <h2>
+      Remolque modificado correctamente
+    </h2>
+
+    <p>
+      Los cambios del remolque
+      <strong>{{ remolqueConfirmado.patente }}</strong>
+      fueron guardados correctamente.
+    </p>
+
+
+    <div class="remolque-confirmacion">
+
+      <div class="remolque-dato">
+
+        <span>
+          Patente
+        </span>
+
+        <strong>
+          {{ remolqueConfirmado.patente }}
+        </strong>
+
+      </div>
+
+      <div class="remolque-dato">
+
+        <span>
+          Marca
+        </span>
+
+        <strong>
+          {{ remolqueConfirmado.marca }}
+        </strong>
+
+      </div>
+
+      <div class="remolque-dato">
+
+        <span>
+          Modelo
+        </span>
+
+        <strong>
+          {{ remolqueConfirmado.modelo }}
+        </strong>
+
+      </div>
+
+    </div>
+
+
+    <button
+      type="button"
+      class="modal-button"
+      (click)="cerrarModalExito()">
+
+      Continuar
+
+    </button>
+
+  </div>
+
+</div>
+
+
+<!-- =========================
+     MODAL ERROR / INCOMPLETO
+========================== -->
+
+<div
+  class="modal-overlay"
+  *ngIf="modalErrorVisible">
+
+  <div class="modal">
+
+    <div class="modal-icon error">
+      !
+    </div>
+
+    <h2>
+      {{ modalErrorTitulo }}
+    </h2>
+
+    <p>
+      {{ modalErrorMensaje }}
+    </p>
+
+    <button
+      type="button"
+      class="modal-button"
+      (click)="cerrarModalError()">
+
+      Volver al formulario
+
+    </button>
+
+  </div>
+
+</div>

@@ -23,6 +23,7 @@ public class Camion
     public bool RevisionAlDia { get; set; }
     public bool PermisoAlDia { get; set; }
     public bool SeguroAlDia { get; set; }
+    public bool Activo { get; set; } = true;
 
     // NUEVO: Colección de conductores habituales (Muchos a Muchos)
     public virtual ICollection<Conductor> ConductoresHabituales { get; set; } = new List<Conductor>();
