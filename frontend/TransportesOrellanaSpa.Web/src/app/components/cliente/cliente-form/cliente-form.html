@@ -1,120 +1,76 @@
 <div class="form-page">
-
   <div class="page-header">
-
     <div>
       <h1>{{ titulo }}</h1>
       <p>Ingresa la información del cliente.</p>
     </div>
 
-    <button
-      type="button"
-      class="btn-secondary"
-      (click)="cancelar()"
-      [disabled]="guardando">
+    <button type="button" class="btn-secondary" (click)="cancelar()" [disabled]="guardando">
       Cancelar
     </button>
-
   </div>
 
-  <form
-    [formGroup]="clienteForm"
-    (ngSubmit)="guardar()"
-    class="form-card">
-
+  <form [formGroup]="clienteForm" (ngSubmit)="guardar()" class="form-card">
     <!-- Identificación -->
     <section class="form-section">
-
       <div class="section-header">
-
-        <div class="section-icon">
-          👤
-        </div>
+        <div class="section-icon">👤</div>
 
         <div>
           <h2>Identificación</h2>
           <p>Información principal del cliente.</p>
         </div>
-
       </div>
 
       <div class="form-grid">
-
         <div class="form-group">
+          <label for="nombre"> Nombre del cliente </label>
 
-          <label for="nombre">
-            Nombre del cliente
-          </label>
+          <input id="nombre" type="text" formControlName="nombre" placeholder="Ej: IPACER S.A." />
 
-          <input
-            id="nombre"
-            type="text"
-            formControlName="nombre"
-            placeholder="Ej: IPACER S.A."
-          />
-
-          @if (
-            clienteForm.get('nombre')?.touched &&
-            clienteForm.get('nombre')?.hasError('required')
-          ) {
-            <span class="error-message">
-              El nombre es obligatorio.
-            </span>
+          @if ( clienteForm.get('nombre')?.touched &&
+          clienteForm.get('nombre')?.hasError('required') ) {
+          <span class="error-message"> El nombre es obligatorio. </span>
           }
-
         </div>
 
         <div class="form-group">
-
-          <label for="rut">
-            RUT
-          </label>
+          <label for="rut"> RUT </label>
 
           <input
             id="rut"
             type="text"
             formControlName="rut"
+            appRutFormat
             placeholder="Ej: 99.510.380-K"
+            maxlength="12"
+            autocomplete="off"
           />
 
-          @if (
-            clienteForm.get('rut')?.touched &&
-            clienteForm.get('rut')?.hasError('required')
+          @if ( clienteForm.get('rut')?.touched && clienteForm.get('rut')?.hasError('required') ) {
+          <span class="error-message"> El RUT es obligatorio. </span>
+          } @if ( clienteForm.get('rut')?.touched && clienteForm.get('rut')?.hasError('rutInvalido')
           ) {
-            <span class="error-message">
-              El RUT es obligatorio.
-            </span>
+          <span class="error-message"> Ingresa un RUT chileno válido. </span>
           }
-
         </div>
-
       </div>
-
     </section>
 
     <!-- Ubicación -->
     <section class="form-section">
-
       <div class="section-header">
-
-        <div class="section-icon">
-          📍
-        </div>
+        <div class="section-icon">📍</div>
 
         <div>
           <h2>Ubicación</h2>
           <p>Información de dirección del cliente.</p>
         </div>
-
       </div>
 
       <div class="form-grid">
-
         <div class="form-group form-group-full">
-
-          <label for="direccion">
-            Dirección
-          </label>
+          <label for="direccion"> Dirección </label>
 
           <input
             id="direccion"
@@ -123,95 +79,52 @@
             placeholder="Ej: Avenida Providencia 1234"
           />
 
-          @if (
-            clienteForm.get('direccion')?.touched &&
-            clienteForm.get('direccion')?.hasError('required')
-          ) {
-            <span class="error-message">
-              La dirección es obligatoria.
-            </span>
+          @if ( clienteForm.get('direccion')?.touched &&
+          clienteForm.get('direccion')?.hasError('required') ) {
+          <span class="error-message"> La dirección es obligatoria. </span>
           }
-
         </div>
 
         <div class="form-group">
+          <label for="comuna"> Comuna </label>
 
-          <label for="comuna">
-            Comuna
-          </label>
+          <input id="comuna" type="text" formControlName="comuna" placeholder="Ej: Providencia" />
 
-          <input
-            id="comuna"
-            type="text"
-            formControlName="comuna"
-            placeholder="Ej: Providencia"
-          />
-
-          @if (
-            clienteForm.get('comuna')?.touched &&
-            clienteForm.get('comuna')?.hasError('required')
-          ) {
-            <span class="error-message">
-              La comuna es obligatoria.
-            </span>
+          @if ( clienteForm.get('comuna')?.touched &&
+          clienteForm.get('comuna')?.hasError('required') ) {
+          <span class="error-message"> La comuna es obligatoria. </span>
           }
-
         </div>
 
         <div class="form-group">
+          <label for="ciudad"> Ciudad </label>
 
-          <label for="ciudad">
-            Ciudad
-          </label>
+          <input id="ciudad" type="text" formControlName="ciudad" placeholder="Ej: Santiago" />
 
-          <input
-            id="ciudad"
-            type="text"
-            formControlName="ciudad"
-            placeholder="Ej: Santiago"
-          />
-
-          @if (
-            clienteForm.get('ciudad')?.touched &&
-            clienteForm.get('ciudad')?.hasError('required')
-          ) {
-            <span class="error-message">
-              La ciudad es obligatoria.
-            </span>
+          @if ( clienteForm.get('ciudad')?.touched &&
+          clienteForm.get('ciudad')?.hasError('required') ) {
+          <span class="error-message"> La ciudad es obligatoria. </span>
           }
-
         </div>
-
       </div>
-
     </section>
 
     <!-- Información comercial -->
     <section class="form-section">
-
       <div class="section-header">
-
-        <div class="section-icon">
-          💼
-        </div>
+        <div class="section-icon">💼</div>
 
         <div>
           <h2>Información comercial</h2>
           <p>Datos relacionados con la operación del cliente.</p>
         </div>
-
       </div>
 
       <div class="form-grid">
-
         <div class="form-group">
-
-          <label for="tarifa">
-            Tarifa
-          </label>
+          <label for="tarifa"> Tarifa </label>
 
           <div class="input-with-prefix">
-
             <span>$</span>
 
             <input
@@ -222,34 +135,19 @@
               step="1"
               placeholder="0"
             />
-
           </div>
 
-          @if (
-            clienteForm.get('tarifa')?.touched &&
-            clienteForm.get('tarifa')?.hasError('required')
-          ) {
-            <span class="error-message">
-              La tarifa es obligatoria.
-            </span>
+          @if ( clienteForm.get('tarifa')?.touched &&
+          clienteForm.get('tarifa')?.hasError('required') ) {
+          <span class="error-message"> La tarifa es obligatoria. </span>
+          } @if ( clienteForm.get('tarifa')?.touched && clienteForm.get('tarifa')?.hasError('min') )
+          {
+          <span class="error-message"> La tarifa no puede ser negativa. </span>
           }
-
-          @if (
-            clienteForm.get('tarifa')?.touched &&
-            clienteForm.get('tarifa')?.hasError('min')
-          ) {
-            <span class="error-message">
-              La tarifa no puede ser negativa.
-            </span>
-          }
-
         </div>
 
         <div class="form-group">
-
-          <label for="tipoCarga">
-            Tipo de carga
-          </label>
+          <label for="tipoCarga"> Tipo de carga </label>
 
           <input
             id="tipoCarga"
@@ -258,65 +156,41 @@
             placeholder="Ej: Carga general"
           />
 
-          @if (
-            clienteForm.get('tipoCarga')?.touched &&
-            clienteForm.get('tipoCarga')?.hasError('required')
-          ) {
-            <span class="error-message">
-              El tipo de carga es obligatorio.
-            </span>
+          @if ( clienteForm.get('tipoCarga')?.touched &&
+          clienteForm.get('tipoCarga')?.hasError('required') ) {
+          <span class="error-message"> El tipo de carga es obligatorio. </span>
           }
-
         </div>
-
       </div>
 
       <div class="status-row">
-
         <div>
           <strong>Cliente activo</strong>
 
-          <p>
-            Permite utilizar este cliente para nuevos viajes.
-          </p>
+          <p>Permite utilizar este cliente para nuevos viajes.</p>
         </div>
 
         <label class="switch">
-
-          <input
-            type="checkbox"
-            formControlName="activo"
-          />
+          <input type="checkbox" formControlName="activo" />
 
           <span class="slider"></span>
-
         </label>
-
       </div>
-
     </section>
 
     <!-- Observaciones -->
     <section class="form-section">
-
       <div class="section-header">
-
-        <div class="section-icon">
-          📝
-        </div>
+        <div class="section-icon">📝</div>
 
         <div>
           <h2>Observaciones</h2>
           <p>Información adicional del cliente.</p>
         </div>
-
       </div>
 
       <div class="form-group form-group-full">
-
-        <label for="observaciones">
-          Observaciones
-        </label>
+        <label for="observaciones"> Observaciones </label>
 
         <textarea
           id="observaciones"
@@ -324,115 +198,64 @@
           rows="5"
           placeholder="Ingresa cualquier información adicional..."
         ></textarea>
-
       </div>
-
     </section>
 
     <!-- Acciones -->
     <div class="form-actions">
-
-      <button
-        type="button"
-        class="btn-secondary"
-        (click)="cancelar()"
-        [disabled]="guardando">
+      <button type="button" class="btn-secondary" (click)="cancelar()" [disabled]="guardando">
         Cancelar
       </button>
 
-      <button
-        type="submit"
-        class="btn-primary"
-        [disabled]="guardando">
-
-        @if (guardando) {
-          Guardando...
-        } @else {
-          Guardar cliente
-        }
-
+      <button type="submit" class="btn-primary" [disabled]="guardando">
+        @if (guardando) { Guardando... } @else { Guardar cliente }
       </button>
-
     </div>
-
   </form>
-
 </div>
-
 
 <!-- Modal de error -->
 @if (modalErrorVisible) {
 
-  <div
-    class="modal-backdrop"
-    (click)="cerrarModalError()">
+<div class="modal-backdrop" (click)="cerrarModalError()">
+  <div class="modal" role="alertdialog" aria-modal="true" (click)="$event.stopPropagation()">
+    <div class="modal-icon error">!</div>
 
-    <div
-      class="modal"
-      role="alertdialog"
-      aria-modal="true"
-      (click)="$event.stopPropagation()">
+    <h2>
+      {{ modalErrorTitulo }}
+    </h2>
 
-      <div class="modal-icon error">
-        !
-      </div>
+    <p>
+      {{ modalErrorMensaje }}
+    </p>
 
-      <h2>
-        {{ modalErrorTitulo }}
-      </h2>
-
-      <p>
-        {{ modalErrorMensaje }}
-      </p>
-
-      <button
-        type="button"
-        class="btn-primary modal-button"
-        (click)="cerrarModalError()">
-        Aceptar
-      </button>
-
-    </div>
-
+    <button type="button" class="btn-primary modal-button" (click)="cerrarModalError()">
+      Aceptar
+    </button>
   </div>
+</div>
 
 }
-
 
 <!-- Modal de éxito -->
 @if (modalExitoVisible) {
 
-  <div
-    class="modal-backdrop"
-    (click)="cerrarModalExito()">
+<div class="modal-backdrop" (click)="cerrarModalExito()">
+  <div class="modal" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
+    <div class="modal-icon success">✓</div>
 
-    <div
-      class="modal"
-      role="dialog"
-      aria-modal="true"
-      (click)="$event.stopPropagation()">
+    <h2>
+      {{ modalExitoTitulo }}
+    </h2>
 
-      <div class="modal-icon success">
-        ✓
-      </div>
+    <p>
+      {{ modalExitoMensaje }}
+    </p>
 
-      <h2>
-        {{ modalExitoTitulo }}
-      </h2>
-
-      <p>
-        {{ modalExitoMensaje }}
-      </p>
-
-      <button
-        type="button"
-        class="btn-primary modal-button"
-        (click)="cerrarModalExito()">
-        Aceptar
-      </button>
-
-    </div>
-
+    <button type="button" class="btn-primary modal-button" (click)="cerrarModalExito()">
+      Aceptar
+    </button>
   </div>
+</div>
 
 }

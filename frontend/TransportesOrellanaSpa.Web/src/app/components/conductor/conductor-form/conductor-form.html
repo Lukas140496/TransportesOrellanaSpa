@@ -1,47 +1,30 @@
 <div class="form-page">
-
   <div class="page-header">
-
     <div>
       <h1>Agregar Conductor</h1>
       <p>Ingresa la información del conductor.</p>
     </div>
 
-    <button
-      type="button"
-      class="btn-secondary"
-      (click)="volver()"
-      [disabled]="guardando">
+    <button type="button" class="btn-secondary" (click)="volver()" [disabled]="guardando">
       Cancelar
     </button>
-
   </div>
 
-  <form
-    class="form-card"
-    (ngSubmit)="guardar()">
-
+  <form class="form-card" (ngSubmit)="guardar()">
     <!-- INFORMACIÓN PERSONAL -->
     <section class="form-section">
-
       <div class="section-header">
-
         <div class="section-icon">👤</div>
 
         <div>
           <h2>Información personal</h2>
           <p>Datos personales del conductor.</p>
         </div>
-
       </div>
 
       <div class="form-grid">
-
         <div class="form-group">
-
-          <label for="rut">
-            RUT
-          </label>
+          <label for="rut"> RUT </label>
 
           <input
             id="rut"
@@ -50,24 +33,23 @@
             maxlength="12"
             placeholder="Ej: 19.374.867-8"
             [(ngModel)]="conductor.rut"
+            appRutFormat
             (blur)="campoTocado('rut')"
           />
 
-          @if (campoTieneError('rut')) {
+          @if ( campoTieneError('rut') ) {
 
-            <span class="error-message">
-              El RUT es obligatorio.
-            </span>
+          <span class="error-message"> El RUT es obligatorio. </span>
+
+          } @if ( campoTieneError('rutInvalido') ) {
+
+          <span class="error-message"> Ingresa un RUT chileno válido. </span>
 
           }
-
         </div>
 
         <div class="form-group">
-
-          <label for="nombres">
-            Nombres
-          </label>
+          <label for="nombres"> Nombres </label>
 
           <input
             id="nombres"
@@ -81,19 +63,13 @@
 
           @if (campoTieneError('nombres')) {
 
-            <span class="error-message">
-              Los nombres son obligatorios.
-            </span>
+          <span class="error-message"> Los nombres son obligatorios. </span>
 
           }
-
         </div>
 
         <div class="form-group">
-
-          <label for="apellidoPaterno">
-            Apellido paterno
-          </label>
+          <label for="apellidoPaterno"> Apellido paterno </label>
 
           <input
             id="apellidoPaterno"
@@ -107,19 +83,13 @@
 
           @if (campoTieneError('apellidoPaterno')) {
 
-            <span class="error-message">
-              El apellido paterno es obligatorio.
-            </span>
+          <span class="error-message"> El apellido paterno es obligatorio. </span>
 
           }
-
         </div>
 
         <div class="form-group">
-
-          <label for="apellidoMaterno">
-            Apellido materno
-          </label>
+          <label for="apellidoMaterno"> Apellido materno </label>
 
           <input
             id="apellidoMaterno"
@@ -133,19 +103,13 @@
 
           @if (campoTieneError('apellidoMaterno')) {
 
-            <span class="error-message">
-              El apellido materno es obligatorio.
-            </span>
+          <span class="error-message"> El apellido materno es obligatorio. </span>
 
           }
-
         </div>
 
         <div class="form-group">
-
-          <label for="fechaNacimiento">
-            Fecha de nacimiento
-          </label>
+          <label for="fechaNacimiento"> Fecha de nacimiento </label>
 
           <input
             id="fechaNacimiento"
@@ -158,55 +122,33 @@
 
           @if (campoTieneError('fechaNacimiento')) {
 
-            <span class="error-message">
-              La fecha de nacimiento es obligatoria.
-            </span>
+          <span class="error-message"> La fecha de nacimiento es obligatoria. </span>
 
           }
-
         </div>
 
         <div class="form-group">
+          <label for="edad"> Edad </label>
 
-          <label for="edad">
-            Edad
-          </label>
-
-          <input
-            id="edad"
-            type="number"
-            name="edad"
-            [ngModel]="conductor.edad"
-            readonly
-          />
-
+          <input id="edad" type="number" name="edad" [ngModel]="conductor.edad" readonly />
         </div>
-
       </div>
-
     </section>
 
     <!-- INFORMACIÓN LABORAL -->
     <section class="form-section">
-
       <div class="section-header">
-
         <div class="section-icon">💼</div>
 
         <div>
           <h2>Información laboral</h2>
           <p>Datos relacionados con el ingreso y contacto.</p>
         </div>
-
       </div>
 
       <div class="form-grid">
-
         <div class="form-group">
-
-          <label for="fechaIngreso">
-            Fecha de ingreso
-          </label>
+          <label for="fechaIngreso"> Fecha de ingreso </label>
 
           <input
             id="fechaIngreso"
@@ -218,19 +160,13 @@
 
           @if (campoTieneError('fechaIngreso')) {
 
-            <span class="error-message">
-              La fecha de ingreso es obligatoria.
-            </span>
+          <span class="error-message"> La fecha de ingreso es obligatoria. </span>
 
           }
-
         </div>
 
         <div class="form-group">
-
-          <label for="telefono">
-            Teléfono
-          </label>
+          <label for="telefono"> Teléfono </label>
 
           <input
             id="telefono"
@@ -244,107 +180,66 @@
 
           @if (campoTieneError('telefono')) {
 
-            <span class="error-message">
-              El teléfono es obligatorio.
-            </span>
+          <span class="error-message"> El teléfono es obligatorio. </span>
 
           }
-
         </div>
-
       </div>
-
     </section>
 
     <!-- LICENCIA -->
     <section class="form-section">
-
       <div class="section-header">
-
         <div class="section-icon">🪪</div>
 
         <div>
           <h2>Licencia de conducir</h2>
           <p>Información y estado de la licencia.</p>
         </div>
-
       </div>
 
       <div class="form-grid">
-
         <div class="form-group">
-
-          <label for="tipoLicencia">
-            Tipo de licencia
-          </label>
+          <label for="tipoLicencia"> Tipo de licencia </label>
 
           <select
             id="tipoLicencia"
             name="tipoLicencia"
             [(ngModel)]="conductor.tipoLicencia"
-            (blur)="campoTocado('tipoLicencia')">
+            (blur)="campoTocado('tipoLicencia')"
+          >
+            <option value="">Selecciona una licencia</option>
 
-            <option value="">
-              Selecciona una licencia
-            </option>
+            <option value="A1">A1</option>
 
-            <option value="A1">
-              A1
-            </option>
+            <option value="A2">A2</option>
 
-            <option value="A2">
-              A2
-            </option>
+            <option value="A3">A3</option>
 
-            <option value="A3">
-              A3
-            </option>
+            <option value="A4">A4</option>
 
-            <option value="A4">
-              A4
-            </option>
+            <option value="A5">A5</option>
 
-            <option value="A5">
-              A5
-            </option>
+            <option value="B">B</option>
 
-            <option value="B">
-              B
-            </option>
+            <option value="C">C</option>
 
-            <option value="C">
-              C
-            </option>
+            <option value="D">D</option>
 
-            <option value="D">
-              D
-            </option>
+            <option value="E">E</option>
 
-            <option value="E">
-              E
-            </option>
-
-            <option value="F">
-              F
-            </option>
-
+            <option value="F">F</option>
           </select>
 
           @if (campoTieneError('tipoLicencia')) {
 
-            <span class="error-message">
-              Debes seleccionar un tipo de licencia.
-            </span>
+          <span class="error-message"> Debes seleccionar un tipo de licencia. </span>
 
           }
-
         </div>
 
         <div class="form-group">
-
-          <label for="fechaControlLicencia">
-            Fecha de control de licencia
-          </label>
+          <label for="fechaControlLicencia"> Fecha de control de licencia </label>
 
           <input
             id="fechaControlLicencia"
@@ -356,184 +251,99 @@
 
           @if (campoTieneError('fechaControlLicencia')) {
 
-            <span class="error-message">
-              La fecha de control es obligatoria.
-            </span>
+          <span class="error-message"> La fecha de control es obligatoria. </span>
 
           }
-
         </div>
-
       </div>
 
       <div class="license-status">
-
         <label class="checkbox-label">
+          <input type="checkbox" name="licenciaAlDia" [(ngModel)]="conductor.licenciaAlDia" />
 
-          <input
-            type="checkbox"
-            name="licenciaAlDia"
-            [(ngModel)]="conductor.licenciaAlDia"
-          />
-
-          <span>
-            Licencia al día
-          </span>
-
+          <span> Licencia al día </span>
         </label>
 
-        <p>
-          Indica si la licencia de conducir se encuentra vigente y al día.
-        </p>
-
+        <p>Indica si la licencia de conducir se encuentra vigente y al día.</p>
       </div>
-
     </section>
 
     <!-- ACCIONES -->
     <div class="form-actions">
-
-      <button
-        type="button"
-        class="btn-secondary"
-        (click)="volver()"
-        [disabled]="guardando">
+      <button type="button" class="btn-secondary" (click)="volver()" [disabled]="guardando">
         Cancelar
       </button>
 
-      <button
-        type="submit"
-        class="btn-primary"
-        [disabled]="guardando">
-
-        @if (guardando) {
-
-          Guardando...
-
-        } @else {
-
-          Guardar conductor
-
-        }
-
+      <button type="submit" class="btn-primary" [disabled]="guardando">
+        @if (guardando) { Guardando... } @else { Guardar conductor }
       </button>
-
     </div>
-
   </form>
-
 </div>
 
 <!-- MODAL FORMULARIO INCOMPLETO -->
 @if (modalIncompletoVisible) {
 
-  <div
-    class="modal-backdrop"
-    (click)="cerrarModalIncompleto()">
+<div class="modal-backdrop" (click)="cerrarModalIncompleto()">
+  <div class="modal" role="alertdialog" aria-modal="true" (click)="$event.stopPropagation()">
+    <div class="modal-icon error">!</div>
 
-    <div
-      class="modal"
-      role="alertdialog"
-      aria-modal="true"
-      (click)="$event.stopPropagation()">
+    <h2>Formulario incompleto</h2>
 
-      <div class="modal-icon error">
-        !
-      </div>
+    <p>
+      Debes completar correctamente todos los campos obligatorios antes de guardar el conductor.
+    </p>
 
-      <h2>
-        Formulario incompleto
-      </h2>
-
-      <p>
-        Debes completar correctamente todos los campos obligatorios antes de guardar el conductor.
-      </p>
-
-      <button
-        type="button"
-        class="btn-primary modal-button"
-        (click)="cerrarModalIncompleto()">
-        Aceptar
-      </button>
-
-    </div>
-
+    <button type="button" class="btn-primary modal-button" (click)="cerrarModalIncompleto()">
+      Aceptar
+    </button>
   </div>
+</div>
 
 }
 
 <!-- MODAL DE ERROR -->
 @if (modalErrorVisible) {
 
-  <div
-    class="modal-backdrop"
-    (click)="cerrarModalError()">
+<div class="modal-backdrop" (click)="cerrarModalError()">
+  <div class="modal" role="alertdialog" aria-modal="true" (click)="$event.stopPropagation()">
+    <div class="modal-icon error">!</div>
 
-    <div
-      class="modal"
-      role="alertdialog"
-      aria-modal="true"
-      (click)="$event.stopPropagation()">
+    <h2>
+      {{ modalErrorTitulo }}
+    </h2>
 
-      <div class="modal-icon error">
-        !
-      </div>
+    <p>
+      {{ modalErrorMensaje }}
+    </p>
 
-      <h2>
-        {{ modalErrorTitulo }}
-      </h2>
-
-      <p>
-        {{ modalErrorMensaje }}
-      </p>
-
-      <button
-        type="button"
-        class="btn-primary modal-button"
-        (click)="cerrarModalError()">
-        Aceptar
-      </button>
-
-    </div>
-
+    <button type="button" class="btn-primary modal-button" (click)="cerrarModalError()">
+      Aceptar
+    </button>
   </div>
+</div>
 
 }
 
 <!-- MODAL DE ÉXITO -->
 @if (modalExitoVisible) {
 
-  <div
-    class="modal-backdrop"
-    (click)="cerrarModalExito()">
+<div class="modal-backdrop" (click)="cerrarModalExito()">
+  <div class="modal" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
+    <div class="modal-icon success">✓</div>
 
-    <div
-      class="modal"
-      role="dialog"
-      aria-modal="true"
-      (click)="$event.stopPropagation()">
+    <h2>
+      {{ modalExitoTitulo }}
+    </h2>
 
-      <div class="modal-icon success">
-        ✓
-      </div>
+    <p>
+      {{ modalExitoMensaje }}
+    </p>
 
-      <h2>
-        {{ modalExitoTitulo }}
-      </h2>
-
-      <p>
-        {{ modalExitoMensaje }}
-      </p>
-
-      <button
-        type="button"
-        class="btn-primary modal-button"
-        (click)="cerrarModalExito()">
-        Aceptar
-      </button>
-
-    </div>
-
+    <button type="button" class="btn-primary modal-button" (click)="cerrarModalExito()">
+      Aceptar
+    </button>
   </div>
+</div>
 
 }

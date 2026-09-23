@@ -4,11 +4,15 @@ import { Router } from '@angular/router';
 
 import { ApiService } from '../../../core/services/api.service';
 
+import { RutFormatDirective } from '../../../pipe/rut/rut-format.directive';
+import { validarRut } from '../../../pipe/rut/rut-format';
+
 @Component({
   selector: 'app-conductor-form',
   standalone: true,
   imports: [
-    FormsModule
+    FormsModule,
+    RutFormatDirective
   ],
   templateUrl: './conductor-form.html',
   styleUrl: './conductor-form.scss'
@@ -67,6 +71,12 @@ export class ConductorForm implements OnInit {
 
       case 'rut':
         return !this.conductor.rut.trim();
+
+      case 'rutInvalido':
+        return (
+          !!this.conductor.rut.trim() &&
+          !validarRut(this.conductor.rut)
+        );
 
       case 'nombres':
         return !this.conductor.nombres.trim();
@@ -169,6 +179,11 @@ export class ConductorForm implements OnInit {
       !this.conductor.tipoLicencia ||
       !this.conductor.fechaControlLicencia
     ) {
+      return false;
+    }
+
+    if (!validarRut(this.conductor.rut)) {
+      this.camposTocados['rutInvalido'] = true;
       return false;
     }
 

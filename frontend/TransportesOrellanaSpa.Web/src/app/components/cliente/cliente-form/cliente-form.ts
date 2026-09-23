@@ -12,13 +12,16 @@ import {
 } from '@angular/router';
 
 import { ClienteService } from '../../../core/services/cliente.service';
+import { RutFormatDirective } from '../../../pipe/rut/rut-format.directive';
+import { rutValidator } from '../../../pipe/rut/rut-validator';
 
 @Component({
   selector: 'app-cliente-form',
   standalone: true,
   imports: [
     CommonModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    RutFormatDirective
   ],
   templateUrl: './cliente-form.html',
   styleUrl: './cliente-form.scss',
@@ -32,7 +35,10 @@ export class ClienteForm {
 
   clienteForm: FormGroup = this.fb.group({
     nombre: ['', [Validators.required, Validators.maxLength(150)]],
-    rut: ['', [Validators.required, Validators.maxLength(20)]],
+    rut: ['', [
+      Validators.required,
+      rutValidator()
+    ]],
     direccion: ['', [Validators.required, Validators.maxLength(200)]],
     comuna: ['', [Validators.required, Validators.maxLength(100)]],
     ciudad: ['', [Validators.required, Validators.maxLength(100)]],
