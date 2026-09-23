@@ -13,5 +13,6 @@ export interface Conductor {
   tipoLicencia: string;
   fechaControlLicencia: string;
   licenciaAlDia: boolean;
+  activo: boolean;
   camionesHabituales: CamionResumen[];
 }

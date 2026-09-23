@@ -134,6 +134,10 @@
     </div>
 
 
+    <!-- =====================================================
+         FILTROS
+         ===================================================== -->
+
     <div class="filtros-card">
 
       <div class="busqueda">
@@ -165,21 +169,82 @@
 
       </div>
 
+
+      <div class="filtro-estado">
+
+        <span class="filtro-label">
+          Estado:
+        </span>
+
+
+        <button
+          type="button"
+          [class.active]="filtroEstado === 'todos'"
+          (click)="cambiarFiltroEstado('todos')">
+
+          Todos
+
+        </button>
+
+
+        <button
+          type="button"
+          [class.active]="filtroEstado === 'activos'"
+          (click)="cambiarFiltroEstado('activos')">
+
+          Activos
+
+        </button>
+
+
+        <button
+          type="button"
+          [class.active]="filtroEstado === 'inactivos'"
+          (click)="cambiarFiltroEstado('inactivos')">
+
+          Inactivos
+
+        </button>
+
+      </div>
+
+
+      @if (hayFiltrosAplicados()) {
+
+        <button
+          type="button"
+          class="btn-limpiar-filtros"
+          (click)="limpiarFiltros()">
+
+          Limpiar filtros
+
+        </button>
+
+      }
+
     </div>
 
+
+    <!-- =====================================================
+         RESULTADOS
+         ===================================================== -->
 
     <div class="resultado-info">
 
       <span>
 
         Mostrando
+
         <strong>
           {{ remolquesFiltrados.length }}
         </strong>
+
         de
+
         <strong>
           {{ remolques.length }}
         </strong>
+
         remolques
 
       </span>
@@ -420,15 +485,15 @@
         </h2>
 
         <p>
-          No hay remolques que coincidan con tu búsqueda.
+          No hay remolques que coincidan con los filtros seleccionados.
         </p>
 
         <button
           type="button"
           class="btn-restablecer"
-          (click)="limpiarBusqueda()">
+          (click)="limpiarFiltros()">
 
-          Limpiar búsqueda
+          Limpiar filtros
 
         </button>
 

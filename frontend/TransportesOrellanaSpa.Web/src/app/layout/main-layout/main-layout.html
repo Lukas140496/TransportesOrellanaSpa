@@ -32,15 +32,80 @@
     <nav class="menu">
       <!-- DASHBOARD -->
 
-      <a
-        routerLink="/"
-        routerLinkActive="active"
-        [routerLinkActiveOptions]="{ exact: true }"
-        (click)="cerrarMenu()"
-      >
-        <span class="icon">⌂</span>
-        <span>Dashboard</span>
-      </a>
+      <div class="menu-group">
+        <button
+          type="button"
+          class="menu-parent"
+          [class.open]="submenuAbierto === 'dashboard'"
+          (click)="toggleSubmenu('dashboard')"
+        >
+          <span class="menu-parent-content">
+            <span class="icon"> ⌂ </span>
+
+            <span> Dashboard </span>
+          </span>
+
+          <span class="submenu-arrow">
+            {{ submenuAbierto === 'dashboard' ? '⌃' : '⌵' }}
+          </span>
+        </button>
+
+        <div class="submenu" [class.open]="submenuAbierto === 'dashboard'">
+          <a
+            routerLink="/dashboard"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            (click)="cerrarMenu()"
+          >
+            <span> Resumen General </span>
+          </a>
+
+          <a
+            routerLink="/dashboard/produccion"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            (click)="cerrarMenu()"
+          >
+            <span> Resumen Producción </span>
+          </a>
+
+          <a
+            routerLink="/dashboard/operacion"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            (click)="cerrarMenu()"
+          >
+            <span> Resumen Operación </span>
+          </a>
+
+          <a
+            routerLink="/dashboard/gastos"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            (click)="cerrarMenu()"
+          >
+            <span> Resumen Gastos </span>
+          </a>
+
+          <a
+            routerLink="/dashboard/documentacion"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            (click)="cerrarMenu()"
+          >
+            <span> Resumen Documentación </span>
+          </a>
+
+          <a
+            routerLink="/dashboard/personal"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            (click)="cerrarMenu()"
+          >
+            <span> Resumen Personal </span>
+          </a>
+        </div>
+      </div>
 
       <!-- ========================= -->
       <!-- CLIENTES -->
@@ -264,18 +329,35 @@
             <span>Listado Conductores</span>
           </a>
 
-          <a routerLink="/conductores" (click)="cerrarMenu()">
+          <a
+            routerLink="/conductores/nuevo"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            (click)="cerrarMenu()"
+          >
             <span>Agregar Conductor</span>
           </a>
 
-          <a routerLink="/conductores" (click)="cerrarMenu()">
+          <a
+            routerLink="/conductores/modificar"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            (click)="cerrarMenu()"
+          >
             <span>Modificar Conductor</span>
           </a>
 
-          <a routerLink="/conductores" (click)="cerrarMenu()">
+          <a
+            routerLink="/conductores/desactivar"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            (click)="cerrarMenu()"
+          >
             <span>Desactivar Conductor</span>
           </a>
+
         </div>
+
       </div>
 
       <!-- ========================= -->
@@ -310,12 +392,31 @@
             <span>Listado Remolques</span>
           </a>
 
-          <a routerLink="/remolques" (click)="cerrarMenu()">
+          <a
+            routerLink="/remolques/nuevo"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            (click)="cerrarMenu()"
+          >
             <span>Agregar Remolque</span>
           </a>
 
-          <a routerLink="/remolques" (click)="cerrarMenu()">
+          <a
+            routerLink="/remolques/modificar"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            (click)="cerrarMenu()"
+          >
             <span>Modificar Remolque</span>
+          </a>
+
+          <a
+            routerLink="/remolques/desactivar"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            (click)="cerrarMenu()"
+          >
+            <span>Desactivar Remolque</span>
           </a>
 
           <a
@@ -327,9 +428,6 @@
             <span>Asignar Camión</span>
           </a>
 
-          <a routerLink="/remolques" (click)="cerrarMenu()">
-            <span>Desactivar Remolque</span>
-          </a>
         </div>
       </div>
 

@@ -2,6 +2,7 @@
   max-width: 1100px;
   margin: 0 auto;
   padding: 28px;
+  padding-top: 8px;
 }
 
 /* =========================
@@ -880,6 +881,54 @@
     text-overflow: ellipsis;
     white-space: nowrap;
   }
+}
+
+/* =========================
+   VALIDACIÓN FORMULARIO
+========================= */
+
+.error-message {
+  display: block;
+  margin-top: 5px;
+  color: #c53d3d;
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+/*
+ * El HTML aplica .campo-invalido al .form-group.
+ * Por eso el estado visual se aplica directamente
+ * a los controles contenidos dentro de ese grupo.
+ */
+
+.form-group.campo-invalido input {
+  border-color: #c53d3d;
+  background: #fffafa;
+}
+
+.form-group.campo-invalido input:hover {
+  border-color: #c53d3d;
+}
+
+.form-group.campo-invalido input:focus {
+  border-color: #c53d3d;
+  box-shadow: 0 0 0 3px rgba(197, 61, 61, 0.10);
+}
+
+/*
+ * Mantiene el estado rojo visible incluso si el
+ * navegador aplica estilos propios al input de fecha.
+ */
+
+.form-group.campo-invalido input[type='date'] {
+  border-color: #c53d3d;
+  background: #fffafa;
+}
+
+.form-group.campo-invalido input[type='number'] {
+  border-color: #c53d3d;
+  background: #fffafa;
 }
 
 /* =========================

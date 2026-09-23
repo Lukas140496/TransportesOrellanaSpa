@@ -43,6 +43,7 @@ export class CamionModificar implements OnInit {
 
   modalErrorTitulo = '';
   modalErrorMensaje = '';
+  mostrarErrores = false;
 
   ngOnInit(): void {
 
@@ -148,8 +149,25 @@ export class CamionModificar implements OnInit {
 
   seleccionarCamion(camion: Camion): void {
 
+    this.mostrarErrores = false;
+
     this.camionSeleccionado = {
-      ...camion
+      ...camion,
+
+      fechaRevisionTecnica:
+        this.convertirFechaParaInput(
+          camion.fechaRevisionTecnica
+        ),
+
+      fechaPermisoCirculacion:
+        this.convertirFechaParaInput(
+          camion.fechaPermisoCirculacion
+        ),
+
+      fechaSeguroObligatorio:
+        this.convertirFechaParaInput(
+          camion.fechaSeguroObligatorio
+        )
     };
 
     setTimeout(() => {
@@ -175,10 +193,225 @@ export class CamionModificar implements OnInit {
 
   }
 
+  formularioValido(): boolean {
+
+    if (!this.camionSeleccionado) {
+      return false;
+    }
+
+    const camion =
+      this.camionSeleccionado;
+
+    const anoValido =
+      camion.ano !== null &&
+      camion.ano !== undefined &&
+      camion.ano >= 1950 &&
+      camion.ano <= 2100;
+
+    return (
+      camion.marca.trim().length > 0 &&
+      camion.modelo.trim().length > 0 &&
+      anoValido &&
+      camion.tipo.trim().length > 0 &&
+      camion.color.trim().length > 0 &&
+      camion.capacidad.trim().length > 0 &&
+      camion.motor.trim().length > 0 &&
+      camion.caballos.trim().length > 0 &&
+      camion.cilindrada.trim().length > 0 &&
+      camion.transmision.trim().length > 0 &&
+      !!camion.fechaRevisionTecnica &&
+      !!camion.fechaPermisoCirculacion &&
+      !!camion.fechaSeguroObligatorio
+    );
+
+  }
+
+  convertirFechaParaInput(
+    fecha: string | null | undefined
+  ): string {
+
+    if (!fecha) {
+      return '';
+    }
+
+    return fecha.substring(0, 10);
+
+  }
+
+  campoTieneError(campo: string): boolean {
+
+    if (!this.mostrarErrores || !this.camionSeleccionado) {
+      return false;
+    }
+
+    const camion = this.camionSeleccionado;
+
+    switch (campo) {
+
+      case 'marca':
+        return !camion.marca.trim();
+
+      case 'modelo':
+        return !camion.modelo.trim();
+
+      case 'ano':
+        return (
+          camion.ano === null ||
+          camion.ano === undefined ||
+          camion.ano < 1950 ||
+          camion.ano > 2100
+        );
+
+      case 'tipo':
+        return !camion.tipo.trim();
+
+      case 'color':
+        return !camion.color.trim();
+
+      case 'capacidad':
+        return !camion.capacidad.trim();
+
+      case 'motor':
+        return !camion.motor.trim();
+
+      case 'caballos':
+        return !camion.caballos.trim();
+
+      case 'cilindrada':
+        return !camion.cilindrada.trim();
+
+      case 'transmision':
+        return !camion.transmision.trim();
+
+      case 'fechaRevisionTecnica':
+        return !camion.fechaRevisionTecnica;
+
+      case 'fechaPermisoCirculacion':
+        return !camion.fechaPermisoCirculacion;
+
+      case 'fechaSeguroObligatorio':
+        return !camion.fechaSeguroObligatorio;
+
+      default:
+        return false;
+
+    }
+
+  }
+
+  desplazarAlPrimerCampoInvalido(): void {
+
+    const campos = [
+      {
+        nombre: 'marca',
+        id: 'marca'
+      },
+      {
+        nombre: 'modelo',
+        id: 'modelo'
+      },
+      {
+        nombre: 'ano',
+        id: 'ano'
+      },
+      {
+        nombre: 'tipo',
+        id: 'tipo'
+      },
+      {
+        nombre: 'color',
+        id: 'color'
+      },
+      {
+        nombre: 'capacidad',
+        id: 'capacidad'
+      },
+      {
+        nombre: 'motor',
+        id: 'motor'
+      },
+      {
+        nombre: 'caballos',
+        id: 'caballos'
+      },
+      {
+        nombre: 'cilindrada',
+        id: 'cilindrada'
+      },
+      {
+        nombre: 'transmision',
+        id: 'transmision'
+      },
+      {
+        nombre: 'fechaRevisionTecnica',
+        id: 'revisionTecnica'
+      },
+      {
+        nombre: 'fechaPermisoCirculacion',
+        id: 'permisoCirculacion'
+      },
+      {
+        nombre: 'fechaSeguroObligatorio',
+        id: 'seguroObligatorio'
+      }
+    ];
+
+    const primerCampo =
+      campos.find(
+        campo =>
+          this.campoTieneError(campo.nombre)
+      );
+
+    if (!primerCampo) {
+      return;
+    }
+
+    setTimeout(() => {
+
+      const elemento =
+        document.getElementById(
+          primerCampo.id
+        ) as HTMLInputElement | null;
+
+      if (!elemento) {
+        return;
+      }
+
+      elemento.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
+      });
+
+      setTimeout(() => {
+
+        elemento.focus();
+
+      }, 250);
+
+    }, 150);
+
+  }
+
   guardarCambios(): void {
 
     if (!this.camionSeleccionado || this.guardando) {
       return;
+    }
+
+    this.mostrarErrores = true;
+
+    if (!this.formularioValido()) {
+
+      this.modalErrorTitulo =
+        'Formulario incompleto';
+
+      this.modalErrorMensaje =
+        'Debes completar correctamente todos los campos obligatorios antes de guardar los cambios.';
+
+      this.modalErrorVisible = true;
+
+      return;
+
     }
 
     this.error = '';
@@ -199,12 +432,38 @@ export class CamionModificar implements OnInit {
       )
       .subscribe({
 
-        next: camionActualizado => {
+        next: () => {
 
           this.guardando = false;
 
+          /*
+           * El backend del PUT actualiza correctamente
+           * el camión, pero responde 204 No Content.
+           *
+           * Por lo tanto, no debemos intentar leer
+           * propiedades de una respuesta que viene null.
+           *
+           * El objeto "camion" ya contiene los valores
+           * que acabamos de guardar.
+           */
+
           this.camionSeleccionado = {
-            ...camionActualizado
+            ...camion,
+
+            fechaRevisionTecnica:
+              this.convertirFechaParaInput(
+                camion.fechaRevisionTecnica
+              ),
+
+            fechaPermisoCirculacion:
+              this.convertirFechaParaInput(
+                camion.fechaPermisoCirculacion
+              ),
+
+            fechaSeguroObligatorio:
+              this.convertirFechaParaInput(
+                camion.fechaSeguroObligatorio
+              )
           };
 
           this.modalExitoVisible = true;
@@ -274,6 +533,8 @@ export class CamionModificar implements OnInit {
   cerrarModalError(): void {
 
     this.modalErrorVisible = false;
+
+    this.desplazarAlPrimerCampoInvalido();
 
   }
 

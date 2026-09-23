@@ -30,6 +30,7 @@ export class ViajeForm implements OnInit {
 
   cargando = true;
   guardando = false;
+  remolqueObligatorio = false;
 
   error = '';
 
@@ -115,7 +116,9 @@ export class ViajeForm implements OnInit {
 
     this.api.getCamiones().subscribe({
       next: camiones => {
-        this.camiones = camiones;
+        this.camiones = camiones.filter(
+          camion => camion.activo
+        );
         camionesCargados = true;
         comprobarCarga();
       },
@@ -135,7 +138,10 @@ export class ViajeForm implements OnInit {
 
     this.api.getConductores().subscribe({
       next: conductores => {
-        this.conductores = conductores;
+        this.conductores = conductores.filter(
+          conductor => conductor.activo
+        );
+    
         conductoresCargados = true;
         comprobarCarga();
       },
@@ -155,7 +161,9 @@ export class ViajeForm implements OnInit {
 
     this.api.getRemolques().subscribe({
       next: remolques => {
-        this.remolques = remolques;
+        this.remolques = remolques.filter(
+          remolque => remolque.activa
+        );
         remolquesCargados = true;
         comprobarCarga();
       },
@@ -206,7 +214,8 @@ export class ViajeForm implements OnInit {
         return this.viaje.conductorId <= 0;
 
       case 'remolqueId':
-        return this.viaje.remolqueId <= 0;
+        return this.remolqueObligatorio &&
+          this.viaje.remolqueId <= 0;
 
       case 'origen':
         return !this.viaje.origen.trim();
@@ -255,7 +264,6 @@ export class ViajeForm implements OnInit {
       'clienteId',
       'camionId',
       'conductorId',
-      'remolqueId',
       'origen',
       'destino',
       'comunaOrigen',
@@ -277,7 +285,7 @@ export class ViajeForm implements OnInit {
       this.viaje.clienteId <= 0 ||
       this.viaje.camionId <= 0 ||
       this.viaje.conductorId <= 0 ||
-      this.viaje.remolqueId <= 0 ||
+      (this.remolqueObligatorio && this.viaje.remolqueId <= 0) ||
       !this.viaje.origen.trim() ||
       !this.viaje.destino.trim() ||
       !this.viaje.comunaOrigen.trim() ||
@@ -356,8 +364,7 @@ export class ViajeForm implements OnInit {
       conductorId:
         this.viaje.conductorId,
 
-      remolqueId:
-        this.viaje.remolqueId,
+      remolqueId: this.viaje.remolqueId,
 
       origen:
         this.viaje.origen.trim(),
@@ -493,6 +500,46 @@ export class ViajeForm implements OnInit {
       '/viajes'
     ]);
 
+  }
+
+  cambioCamion(camionId: number): void {
+    const camion = this.camiones.find(
+      c => c.id === Number(camionId)
+    );
+  
+    if (!camion) {
+      this.remolqueObligatorio = false;
+      this.viaje.remolqueId = 0;
+      this.viaje.conductorId = 0;
+      return;
+    }
+  
+    const capacidad = parseFloat(
+      camion.capacidad.replace(',', '.')
+    );
+  
+    this.remolqueObligatorio = capacidad > 20;
+  
+    if (this.remolqueObligatorio) {
+      this.viaje.remolqueId =
+        camion.remolques?.[0]?.id ?? 0;
+    } else {
+      this.viaje.remolqueId = 9;
+    }
+  
+    const conductorHabitual =
+      camion.conductoresHabituales?.[0];
+  
+    if (conductorHabitual) {
+      const conductor = this.conductores.find(
+        c => c.rut === conductorHabitual.rut
+      );
+  
+      this.viaje.conductorId =
+        conductor?.id ?? 0;
+    } else {
+      this.viaje.conductorId = 0;
+    }
   }
 
 }

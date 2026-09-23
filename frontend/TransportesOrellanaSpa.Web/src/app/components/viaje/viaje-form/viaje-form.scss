@@ -2,6 +2,7 @@
   max-width: 1100px;
   margin: 0 auto;
   padding: 28px;
+  padding-top: 8px;
 }
 
 /* =========================
@@ -178,9 +179,42 @@
 
 .error-message {
   margin-top: 6px;
+
   color: #d14343;
+
   font-size: 12px;
+  font-weight: 500;
   line-height: 1.4;
+}
+
+/*
+ * Cuando aparece el mensaje de error dentro del form-group,
+ * se marca automáticamente el control correspondiente.
+ *
+ * No es necesario modificar cada input del HTML.
+ */
+
+.form-group:has(.error-message) {
+
+  input,
+  select,
+  textarea {
+    border-color: #d14343;
+    background: #fffafa;
+  }
+
+  input:hover,
+  select:hover,
+  textarea:hover {
+    border-color: #d14343;
+  }
+
+  input:focus,
+  select:focus,
+  textarea:focus {
+    border-color: #d14343;
+    box-shadow: 0 0 0 3px rgba(209, 67, 67, 0.10);
+  }
 }
 
 /* =========================
@@ -411,6 +445,11 @@
 .modal-button {
   min-width: 110px;
   margin-top: 24px;
+}
+
+select:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
 /* =========================

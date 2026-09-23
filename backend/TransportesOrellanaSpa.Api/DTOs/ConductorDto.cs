@@ -14,6 +14,7 @@ public class ConductorDto
     public string TipoLicencia { get; set; } = string.Empty;
     public DateTime FechaControlLicencia { get; set; }
     public bool LicenciaAlDia { get; set; }
+    public bool Activo { get; set; }
 
     // Lista de camiones asignados
     public List<CamionResumenDto> CamionesHabituales { get; set; } = new();

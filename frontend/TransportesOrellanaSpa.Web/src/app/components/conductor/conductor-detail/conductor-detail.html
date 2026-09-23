@@ -48,14 +48,37 @@
 
       <div class="cabecera-acciones">
 
-        @if (conductor.licenciaAlDia) {
-          <span class="estado-badge activo">
-            ● Licencia al día
-          </span>
+        @if (conductor.activo) {
+
+          @if (conductor.licenciaAlDia) {
+
+            <span class="estado-badge activo">
+              ● Licencia al día
+            </span>
+
+          } @else {
+
+            <span class="estado-badge vencido">
+              ● Licencia vencida
+            </span>
+
+          }
+
         } @else {
-          <span class="estado-badge vencido">
-            ● Licencia vencida
+
+          <span class="estado-badge inactivo">
+            ● Conductor inactivo
           </span>
+
+          <button
+            type="button"
+            class="btn-activar"
+            (click)="abrirModalActivar()">
+
+            Activar conductor
+
+          </button>
+
         }
 
         <button
@@ -273,3 +296,151 @@
   }
 
 </section>
+
+
+<!-- MODAL ACTIVAR -->
+
+@if (modalActivarVisible) {
+
+  <div class="modal-overlay">
+
+    <div class="modal">
+
+      <div class="modal-icon warning">
+        !
+      </div>
+
+      <h2>Activar conductor</h2>
+
+      <p>
+
+        ¿Estás seguro de que deseas activar a
+
+        <strong>
+          {{ conductor?.nombres }}
+          {{ conductor?.apellidoPaterno }}
+        </strong>?
+
+      </p>
+
+      <span class="modal-warning">
+        El conductor volverá a estar disponible entre los conductores activos.
+      </span>
+
+      <div class="modal-actions">
+
+        <button
+          type="button"
+          class="btn-secondary"
+          [disabled]="activando"
+          (click)="cerrarModalActivar()">
+
+          Cancelar
+
+        </button>
+
+        <button
+          type="button"
+          class="btn-activar"
+          [disabled]="activando"
+          (click)="confirmarActivacion()">
+
+          @if (activando) {
+
+            <span class="spinner"></span>
+
+            Activando...
+
+          } @else {
+
+            Activar conductor
+
+          }
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+}
+
+
+<!-- MODAL ÉXITO -->
+
+@if (modalExitoVisible) {
+
+  <div class="modal-overlay">
+
+    <div class="modal">
+
+      <div class="modal-icon success">
+        ✓
+      </div>
+
+      <h2>Conductor activado</h2>
+
+      <p>
+        El conductor fue activado correctamente.
+      </p>
+
+      <div class="modal-actions">
+
+        <button
+          type="button"
+          class="btn-primary"
+          (click)="cerrarModalExito()">
+
+          Aceptar
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+}
+
+
+<!-- MODAL ERROR -->
+
+@if (modalErrorVisible) {
+
+  <div class="modal-overlay">
+
+    <div class="modal">
+
+      <div class="modal-icon error">
+        !
+      </div>
+
+      <h2>
+        {{ modalErrorTitulo }}
+      </h2>
+
+      <p>
+        {{ modalErrorMensaje }}
+      </p>
+
+      <div class="modal-actions">
+
+        <button
+          type="button"
+          class="btn-primary"
+          (click)="cerrarModalError()">
+
+          Aceptar
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+}

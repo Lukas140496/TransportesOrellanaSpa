@@ -18,6 +18,7 @@ public class Conductor
     public string TipoLicencia { get; set; } = string.Empty;
     public DateTime FechaControlLicencia { get; set; }
     public bool LicenciaAlDia { get; set; }
+    public bool Activo { get; set; } = true;
 
     // NUEVO: Colección plural limpia que ya tenías (Conectará con ConductoresHabituales)
     public virtual ICollection<Camion> CamionesHabituales { get; set; } = new List<Camion>();

@@ -10,7 +10,11 @@
       <p>Ingresa la información del nuevo camión.</p>
     </div>
 
-    <button type="button" class="btn-cancelar-header" (click)="cancelar()" [disabled]="guardando">
+    <button
+      type="button"
+      class="btn-cancelar-header"
+      (click)="cancelar()"
+      [disabled]="guardando">
       Cancelar
     </button>
   </div>
@@ -20,24 +24,35 @@
   <!-- ========================= -->
 
   <div class="form-card">
+
     <!-- ========================= -->
     <!-- INFORMACIÓN BÁSICA -->
     <!-- ========================= -->
 
     <section class="form-section">
+
       <div class="section-header">
-        <div class="section-icon">🚛</div>
+
+        <div class="section-icon">
+          🚛
+        </div>
 
         <div>
           <h2>Información básica</h2>
 
           <p>Identificación general del camión.</p>
         </div>
+
       </div>
 
       <div class="form-grid">
+
+        <!-- PATENTE -->
         <div class="form-group">
-          <label for="patente"> Patente </label>
+
+          <label for="patente">
+            Patente
+          </label>
 
           <input
             id="patente"
@@ -48,13 +63,21 @@
             maxlength="10"
             autocomplete="off"
             [disabled]="guardando"
+            [class.campo-invalido]="campoInvalido('patente')"
           />
 
-          <span class="field-hint"> La patente se guardará en mayúsculas. </span>
+          <span class="field-hint">
+            La patente se guardará en mayúsculas.
+          </span>
+
         </div>
 
+        <!-- MARCA -->
         <div class="form-group">
-          <label for="marca"> Marca </label>
+
+          <label for="marca">
+            Marca
+          </label>
 
           <input
             id="marca"
@@ -63,11 +86,17 @@
             name="marca"
             placeholder="Ej: Freightliner"
             [disabled]="guardando"
+            [class.campo-invalido]="campoInvalido('marca')"
           />
+
         </div>
 
+        <!-- MODELO -->
         <div class="form-group">
-          <label for="modelo"> Modelo </label>
+
+          <label for="modelo">
+            Modelo
+          </label>
 
           <input
             id="modelo"
@@ -76,11 +105,17 @@
             name="modelo"
             placeholder="Ej: FLD 120"
             [disabled]="guardando"
+            [class.campo-invalido]="campoInvalido('modelo')"
           />
+
         </div>
 
+        <!-- AÑO -->
         <div class="form-group">
-          <label for="ano"> Año </label>
+
+          <label for="ano">
+            Año
+          </label>
 
           <input
             id="ano"
@@ -91,11 +126,17 @@
             max="2100"
             placeholder="Ej: 2003"
             [disabled]="guardando"
+            [class.campo-invalido]="campoInvalido('ano')"
           />
+
         </div>
 
+        <!-- TIPO -->
         <div class="form-group">
-          <label for="tipo"> Tipo </label>
+
+          <label for="tipo">
+            Tipo
+          </label>
 
           <input
             id="tipo"
@@ -104,11 +145,17 @@
             name="tipo"
             placeholder="Ej: Tracto Camión"
             [disabled]="guardando"
+            [class.campo-invalido]="campoInvalido('tipo')"
           />
+
         </div>
 
+        <!-- COLOR -->
         <div class="form-group">
-          <label for="color"> Color </label>
+
+          <label for="color">
+            Color
+          </label>
 
           <input
             id="color"
@@ -117,29 +164,44 @@
             name="color"
             placeholder="Ej: Azul"
             [disabled]="guardando"
+            [class.campo-invalido]="campoInvalido('color')"
           />
+
         </div>
+
       </div>
+
     </section>
+
 
     <!-- ========================= -->
     <!-- CARACTERÍSTICAS -->
     <!-- ========================= -->
 
     <section class="form-section">
+
       <div class="section-header">
-        <div class="section-icon">⚙️</div>
+
+        <div class="section-icon">
+          ⚙️
+        </div>
 
         <div>
           <h2>Características del vehículo</h2>
 
           <p>Información técnica y mecánica del camión.</p>
         </div>
+
       </div>
 
       <div class="form-grid">
+
+        <!-- CAPACIDAD -->
         <div class="form-group">
-          <label for="capacidad"> Capacidad </label>
+
+          <label for="capacidad">
+            Capacidad
+          </label>
 
           <input
             id="capacidad"
@@ -148,11 +210,17 @@
             name="capacidad"
             placeholder="Ej: 30 toneladas"
             [disabled]="guardando"
+            [class.campo-invalido]="campoInvalido('capacidad')"
           />
+
         </div>
 
+        <!-- MOTOR -->
         <div class="form-group">
-          <label for="motor"> Motor </label>
+
+          <label for="motor">
+            Motor
+          </label>
 
           <input
             id="motor"
@@ -161,11 +229,17 @@
             name="motor"
             placeholder="Ej: Detroit Series 60"
             [disabled]="guardando"
+            [class.campo-invalido]="campoInvalido('motor')"
           />
+
         </div>
 
+        <!-- CABALLOS -->
         <div class="form-group">
-          <label for="caballos"> Caballos </label>
+
+          <label for="caballos">
+            Caballos
+          </label>
 
           <input
             id="caballos"
@@ -174,11 +248,17 @@
             name="caballos"
             placeholder="Ej: 430 HP"
             [disabled]="guardando"
+            [class.campo-invalido]="campoInvalido('caballos')"
           />
+
         </div>
 
+        <!-- CILINDRADA -->
         <div class="form-group">
-          <label for="cilindrada"> Cilindrada </label>
+
+          <label for="cilindrada">
+            Cilindrada
+          </label>
 
           <input
             id="cilindrada"
@@ -187,11 +267,17 @@
             name="cilindrada"
             placeholder="Ej: 14.0 L"
             [disabled]="guardando"
+            [class.campo-invalido]="campoInvalido('cilindrada')"
           />
+
         </div>
 
+        <!-- TRANSMISIÓN -->
         <div class="form-group">
-          <label for="transmision"> Transmisión </label>
+
+          <label for="transmision">
+            Transmisión
+          </label>
 
           <input
             id="transmision"
@@ -200,29 +286,44 @@
             name="transmision"
             placeholder="Ej: Fuller 18 velocidades"
             [disabled]="guardando"
+            [class.campo-invalido]="campoInvalido('transmision')"
           />
+
         </div>
+
       </div>
+
     </section>
+
 
     <!-- ========================= -->
     <!-- DOCUMENTACIÓN -->
     <!-- ========================= -->
 
     <section class="form-section">
+
       <div class="section-header">
-        <div class="section-icon">📄</div>
+
+        <div class="section-icon">
+          📄
+        </div>
 
         <div>
           <h2>Documentación</h2>
 
           <p>Fechas de vencimiento de la documentación.</p>
         </div>
+
       </div>
 
       <div class="form-grid">
+
+        <!-- REVISIÓN TÉCNICA -->
         <div class="form-group">
-          <label for="revisionTecnica"> Revisión técnica </label>
+
+          <label for="revisionTecnica">
+            Revisión técnica
+          </label>
 
           <input
             id="revisionTecnica"
@@ -230,11 +331,17 @@
             [(ngModel)]="camion.fechaRevisionTecnica"
             name="fechaRevisionTecnica"
             [disabled]="guardando"
+            [class.campo-invalido]="campoInvalido('fechaRevisionTecnica')"
           />
+
         </div>
 
+        <!-- PERMISO DE CIRCULACIÓN -->
         <div class="form-group">
-          <label for="permisoCirculacion"> Permiso de circulación </label>
+
+          <label for="permisoCirculacion">
+            Permiso de circulación
+          </label>
 
           <input
             id="permisoCirculacion"
@@ -242,11 +349,17 @@
             [(ngModel)]="camion.fechaPermisoCirculacion"
             name="fechaPermisoCirculacion"
             [disabled]="guardando"
+            [class.campo-invalido]="campoInvalido('fechaPermisoCirculacion')"
           />
+
         </div>
 
+        <!-- SOAP -->
         <div class="form-group">
-          <label for="seguroObligatorio"> Seguro obligatorio (SOAP) </label>
+
+          <label for="seguroObligatorio">
+            Seguro obligatorio (SOAP)
+          </label>
 
           <input
             id="seguroObligatorio"
@@ -254,28 +367,41 @@
             [(ngModel)]="camion.fechaSeguroObligatorio"
             name="fechaSeguroObligatorio"
             [disabled]="guardando"
+            [class.campo-invalido]="campoInvalido('fechaSeguroObligatorio')"
           />
+
         </div>
+
       </div>
+
     </section>
+
 
     <!-- ========================= -->
     <!-- ESTADO DOCUMENTAL -->
     <!-- ========================= -->
 
     <section class="form-section">
+
       <div class="section-header">
-        <div class="section-icon">✓</div>
+
+        <div class="section-icon">
+          ✓
+        </div>
 
         <div>
           <h2>Estado documental</h2>
 
           <p>Indica si cada documento se encuentra vigente.</p>
         </div>
+
       </div>
 
       <div class="status-grid">
+
+        <!-- REVISIÓN -->
         <label class="status-option">
+
           <input
             type="checkbox"
             [(ngModel)]="camion.revisionAlDia"
@@ -284,13 +410,22 @@
           />
 
           <span class="status-content">
-            <strong> Revisión técnica </strong>
 
-            <small> Se encuentra al día </small>
+            <strong>
+              Revisión técnica
+            </strong>
+
+            <small>
+              Se encuentra al día
+            </small>
+
           </span>
+
         </label>
 
+        <!-- PERMISO -->
         <label class="status-option">
+
           <input
             type="checkbox"
             [(ngModel)]="camion.permisoAlDia"
@@ -299,13 +434,22 @@
           />
 
           <span class="status-content">
-            <strong> Permiso de circulación </strong>
 
-            <small> Se encuentra al día </small>
+            <strong>
+              Permiso de circulación
+            </strong>
+
+            <small>
+              Se encuentra al día
+            </small>
+
           </span>
+
         </label>
 
+        <!-- SOAP -->
         <label class="status-option">
+
           <input
             type="checkbox"
             [(ngModel)]="camion.seguroAlDia"
@@ -314,30 +458,62 @@
           />
 
           <span class="status-content">
-            <strong> Seguro obligatorio </strong>
 
-            <small> Se encuentra al día </small>
+            <strong>
+              Seguro obligatorio
+            </strong>
+
+            <small>
+              Se encuentra al día
+            </small>
+
           </span>
+
         </label>
+
       </div>
+
     </section>
+
 
     <!-- ========================= -->
     <!-- ACCIONES -->
     <!-- ========================= -->
 
     <div class="form-actions">
-      <button type="button" class="btn-secondary" (click)="cancelar()" [disabled]="guardando">
+
+      <button
+        type="button"
+        class="btn-secondary"
+        (click)="cancelar()"
+        [disabled]="guardando">
         Cancelar
       </button>
 
-      <button type="button" class="btn-primary" (click)="guardarCamion()" [disabled]="guardando">
+      <button
+        type="button"
+        class="btn-primary"
+        (click)="guardarCamion()"
+        [disabled]="guardando">
+
         @if (guardando) {
-        <span class="spinner"></span>
-        Guardando... } @else { Guardar camión }
+
+          <span class="spinner"></span>
+
+          Guardando...
+
+        } @else {
+
+          Guardar camión
+
+        }
+
       </button>
+
     </div>
+
   </div>
+
 
   <!-- ========================= -->
   <!-- MODAL ÉXITO -->
@@ -345,38 +521,114 @@
 
   @if (modalExitoVisible) {
 
-  <div class="modal-overlay">
-    <div class="modal">
-      <div class="modal-icon success">✓</div>
+    <div class="modal-overlay">
 
-      <h2>Camión creado correctamente</h2>
+      <div class="modal">
 
-      <p>El camión fue agregado correctamente a la flota.</p>
-
-      <div class="camion-confirmacion">
-        <div class="camion-dato">
-          <span>Marca</span>
-          <strong>{{ camion.marca }}</strong>
+        <div class="modal-icon success">
+          ✓
         </div>
 
-        <div class="camion-dato">
-          <span>Modelo</span>
-          <strong>{{ camion.modelo }}</strong>
+        <h2>
+          Camión creado correctamente
+        </h2>
+
+        <p>
+          El camión fue agregado correctamente a la flota.
+        </p>
+
+        <div class="camion-confirmacion">
+
+          <div class="camion-dato">
+
+            <span>
+              Marca
+            </span>
+
+            <strong>
+              {{ camion.marca }}
+            </strong>
+
+          </div>
+
+          <div class="camion-dato">
+
+            <span>
+              Modelo
+            </span>
+
+            <strong>
+              {{ camion.modelo }}
+            </strong>
+
+          </div>
+
+          <div class="camion-dato">
+
+            <span>
+              Patente
+            </span>
+
+            <strong>
+              {{ camion.patente }}
+            </strong>
+
+          </div>
+
         </div>
 
-        <div class="camion-dato">
-          <span>Patente</span>
-          <strong>{{ camion.patente }}</strong>
-        </div>
+        <button
+          type="button"
+          class="btn-primary modal-button"
+          (click)="cerrarModalExito()">
+          Ir al listado
+        </button>
+
       </div>
 
-      <button type="button" class="btn-primary modal-button" (click)="cerrarModalExito()">
-        Ir al listado
-      </button>
     </div>
-  </div>
 
   }
+
+
+  <!-- ========================= -->
+  <!-- MODAL FORMULARIO INCOMPLETO -->
+  <!-- ========================= -->
+
+  @if (modalIncompletoVisible) {
+
+    <div class="modal-overlay">
+
+      <div
+        class="modal"
+        role="alertdialog"
+        aria-modal="true">
+
+        <div class="modal-icon error">
+          !
+        </div>
+
+        <h2>
+          Formulario incompleto
+        </h2>
+
+        <p>
+          Debes completar todos los campos obligatorios antes de guardar el camión.
+        </p>
+
+        <button
+          type="button"
+          class="btn-primary modal-button"
+          (click)="cerrarModalIncompleto()">
+          Aceptar
+        </button>
+
+      </div>
+
+    </div>
+
+  }
+
 
   <!-- ========================= -->
   <!-- MODAL ERROR -->
@@ -384,23 +636,33 @@
 
   @if (modalErrorVisible) {
 
-  <div class="modal-overlay">
-    <div class="modal">
-      <div class="modal-icon error">!</div>
+    <div class="modal-overlay">
 
-      <h2>
-        {{ modalErrorTitulo }}
-      </h2>
+      <div class="modal">
 
-      <p>
-        {{ modalErrorMensaje }}
-      </p>
+        <div class="modal-icon error">
+          !
+        </div>
 
-      <button type="button" class="btn-primary modal-button" (click)="cerrarModalError()">
-        Entendido
-      </button>
+        <h2>
+          {{ modalErrorTitulo }}
+        </h2>
+
+        <p>
+          {{ modalErrorMensaje }}
+        </p>
+
+        <button
+          type="button"
+          class="btn-primary modal-button"
+          (click)="cerrarModalError()">
+          Entendido
+        </button>
+
+      </div>
+
     </div>
-  </div>
 
   }
+
 </div>

@@ -1,0 +1,356 @@
+<div class="page-container">
+
+  <div class="page-header">
+
+    <div>
+      <h1>Desactivar Conductor</h1>
+
+      <p>
+        Selecciona un conductor activo para desactivarlo.
+      </p>
+    </div>
+
+  </div>
+
+  <div class="content-card">
+
+    <div class="card-header">
+
+      <div>
+        <h2>Conductores activos</h2>
+
+        <span>
+          {{ conductoresFiltrados.length }}
+          conductor(es) encontrado(s)
+        </span>
+      </div>
+
+      <div class="search-box">
+
+        <span class="search-icon">⌕</span>
+
+        <input
+          type="text"
+          placeholder="Buscar por RUT, nombre o teléfono..."
+          [(ngModel)]="busqueda"
+          (input)="filtrarConductores()"
+        />
+
+      </div>
+
+    </div>
+
+    @if (cargando) {
+
+      <div class="loading-state">
+
+        <div class="spinner"></div>
+
+        <p>Cargando conductores...</p>
+
+      </div>
+
+    } @else if (conductoresFiltrados.length === 0) {
+
+      <div class="empty-state">
+
+        <div class="empty-icon">👤</div>
+
+        <h3>No hay conductores disponibles</h3>
+
+        <p>
+          No existen conductores activos que coincidan con la búsqueda.
+        </p>
+
+      </div>
+
+    } @else {
+
+      <div class="table-container">
+
+        <table>
+
+          <thead>
+
+            <tr>
+
+              <th>Conductor</th>
+
+              <th>RUT</th>
+
+              <th>Teléfono</th>
+
+              <th>Licencia</th>
+
+              <th>Control licencia</th>
+
+              <th>Camiones</th>
+
+              <th>Acción</th>
+
+            </tr>
+
+          </thead>
+
+          <tbody>
+
+            @for (
+              conductor of conductoresFiltrados;
+              track conductor.id
+            ) {
+
+              <tr
+                [class.selected]="
+                  conductorSeleccionado?.id === conductor.id
+                "
+                (click)="seleccionarConductor(conductor)"
+              >
+
+                <td>
+
+                  <div class="conductor-info">
+
+                    <div class="conductor-avatar">
+
+                      {{
+                        conductor.nombres.charAt(0)
+                        + conductor.apellidoPaterno.charAt(0)
+                      }}
+
+                    </div>
+
+                    <div>
+
+                      <strong>
+                        {{ conductor.nombres }}
+                        {{ conductor.apellidoPaterno }}
+                        {{ conductor.apellidoMaterno }}
+                      </strong>
+
+                      <span>
+                        {{ conductor.edad }} años
+                      </span>
+
+                    </div>
+
+                  </div>
+
+                </td>
+
+                <td>
+                  {{ conductor.rut }}
+                </td>
+
+                <td>
+                  {{ conductor.telefono }}
+                </td>
+
+                <td>
+
+                  <span
+                    class="licencia-badge"
+                    [class.revisar]="!conductor.licenciaAlDia"
+                  >
+
+                    @if (conductor.licenciaAlDia) {
+                      Al día
+                    } @else {
+                      Revisar
+                    }
+
+                  </span>
+
+                </td>
+
+                <td>
+
+                  {{
+                    conductor.fechaControlLicencia
+                      | date:'dd/MM/yyyy'
+                  }}
+
+                </td>
+
+                <td>
+
+                  <span class="camiones-count">
+
+                    {{ conductor.camionesHabituales.length }}
+
+                  </span>
+
+                </td>
+
+                <td>
+
+                    <button
+                    type="button"
+                    class="btn-desactivar"
+                    (click)="
+                      seleccionarConductor(conductor);
+                      abrirModalDesactivar();
+                      $event.stopPropagation()
+                    "
+                  >
+                    Desactivar
+                  </button>
+
+                </td>
+
+              </tr>
+
+            }
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    }
+
+  </div>
+
+</div>
+
+
+@if (modalDesactivarVisible) {
+
+  <div class="modal-overlay">
+
+    <div class="modal">
+
+      <div class="modal-icon warning">
+        !
+      </div>
+
+      <h2>Desactivar conductor</h2>
+
+      <p>
+
+        ¿Estás seguro de que deseas desactivar a
+
+        <strong>
+          {{ conductorSeleccionado?.nombres }}
+          {{ conductorSeleccionado?.apellidoPaterno }}
+        </strong>?
+
+      </p>
+
+      <span class="modal-warning">
+
+        El conductor dejará de aparecer entre los conductores activos.
+
+      </span>
+
+      <div class="modal-actions">
+
+        <button
+          type="button"
+          class="btn-secondary"
+          [disabled]="desactivando"
+          (click)="cerrarModalDesactivar()"
+        >
+          Cancelar
+        </button>
+
+        <button
+          type="button"
+          class="btn-desactivar"
+          [disabled]="desactivando"
+          (click)="confirmarDesactivacion()"
+        >
+
+          @if (desactivando) {
+
+            <span class="spinner"></span>
+
+            Desactivando...
+
+          } @else {
+
+            Desactivar conductor
+
+          }
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+}
+
+
+@if (modalExitoVisible) {
+
+  <div class="modal-overlay">
+
+    <div class="modal">
+
+      <div class="modal-icon success">
+        ✓
+      </div>
+
+      <h2>Conductor desactivado</h2>
+
+      <p>
+        El conductor fue desactivado correctamente.
+      </p>
+
+      <div class="modal-actions">
+
+        <button
+          type="button"
+          class="btn-primary"
+          (click)="cerrarModalExito()"
+        >
+          Aceptar
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+}
+
+
+@if (modalErrorVisible) {
+
+  <div class="modal-overlay">
+
+    <div class="modal">
+
+      <div class="modal-icon error">
+        !
+      </div>
+
+      <h2>
+        {{ modalErrorTitulo }}
+      </h2>
+
+      <p>
+        {{ modalErrorMensaje }}
+      </p>
+
+      <div class="modal-actions">
+
+        <button
+          type="button"
+          class="btn-primary"
+          (click)="cerrarModalError()"
+        >
+          Aceptar
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+}

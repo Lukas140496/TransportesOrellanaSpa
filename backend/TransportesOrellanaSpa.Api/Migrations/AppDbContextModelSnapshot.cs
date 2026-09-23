@@ -175,6 +175,9 @@ namespace TransportesOrellanaSpa.Api.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<bool>("Activo")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("ApellidoMaterno")
                         .IsRequired()
                         .HasColumnType("text");
@@ -187,13 +190,13 @@ namespace TransportesOrellanaSpa.Api.Migrations
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("FechaControlLicencia")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("date");
 
                     b.Property<DateTime>("FechaIngreso")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("date");
 
                     b.Property<DateTime>("FechaNacimiento")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("date");
 
                     b.Property<bool>("LicenciaAlDia")
                         .HasColumnType("boolean");

@@ -647,22 +647,105 @@
 /* TABLET */
 /* ========================= */
 
-@media (max-width: 800px) {
+@media (min-width: 601px) and (max-width: 1024px) {
+
+  /* ========================= */
+  /* SIDEBAR */
+  /* ========================= */
 
   .sidebar {
     width: 210px;
+
+    height: 100dvh;
+    min-height: 0;
+
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
   }
+
+
+  /* ========================= */
+  /* LOGO */
+  /* ========================= */
+
+  .logo {
+    flex-shrink: 0;
+  }
+
+  .logo-text span {
+    display: none;
+  }
+
+
+  /* ========================= */
+  /* MENÚ */
+  /* ========================= */
+
+  .menu {
+    flex: 1;
+
+    min-height: 0;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    padding-bottom: 16px;
+
+    box-sizing: border-box;
+  }
+
+
+  /* ========================= */
+  /* FOOTER SIDEBAR */
+  /* ========================= */
+
+  .sidebar-footer {
+    position: static;
+
+    width: 100%;
+
+    margin-top: 0;
+
+    padding-top: 10px;
+    padding-bottom: 4px;
+
+    background: #0f2747;
+
+    flex-shrink: 0;
+
+    box-sizing: border-box;
+
+    z-index: 5;
+  }
+
+  .sidebar-footer button {
+    text-align: left;
+
+    font-size: 13px;
+
+    width: 100%;
+  }
+
+
+  /* ========================= */
+  /* TOPBAR */
+  /* ========================= */
 
   .topbar {
     padding: 0 20px;
   }
 
+
+  /* ========================= */
+  /* CONTENIDO */
+  /* ========================= */
+
   .page-content {
     padding: 20px;
-  }
-
-  .logo-text span {
-    display: none;
   }
 
 }

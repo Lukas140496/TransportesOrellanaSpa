@@ -26,6 +26,8 @@ export class RemolqueList implements OnInit {
 
   busqueda = '';
 
+  filtroEstado: 'todos' | 'activos' | 'inactivos' = 'todos';
+
   ngOnInit(): void {
 
     this.api.getRemolques().subscribe({
@@ -62,17 +64,14 @@ export class RemolqueList implements OnInit {
         .trim()
         .toLowerCase();
 
-    if (!texto) {
-      return this.remolques;
-    }
-
     return this.remolques.filter(remolque => {
 
       const patenteCamion =
         remolque.camionHabitual?.patente
           ?.toLowerCase() ?? '';
 
-      return (
+      const coincideBusqueda =
+        !texto ||
         remolque.patente
           .toLowerCase()
           .includes(texto) ||
@@ -89,8 +88,22 @@ export class RemolqueList implements OnInit {
           .toLowerCase()
           .includes(texto) ||
 
-        patenteCamion.includes(texto)
-      );
+        patenteCamion.includes(texto);
+
+      const coincideEstado =
+        this.filtroEstado === 'todos' ||
+
+        (
+          this.filtroEstado === 'activos' &&
+          remolque.activa
+        ) ||
+
+        (
+          this.filtroEstado === 'inactivos' &&
+          !remolque.activa
+        );
+
+      return coincideBusqueda && coincideEstado;
 
     });
 
@@ -120,6 +133,14 @@ export class RemolqueList implements OnInit {
 
   }
 
+  cambiarFiltroEstado(
+    filtro: 'todos' | 'activos' | 'inactivos'
+  ): void {
+
+    this.filtroEstado = filtro;
+
+  }
+
   limpiarBusqueda(): void {
 
     this.busqueda = '';
@@ -129,6 +150,22 @@ export class RemolqueList implements OnInit {
   hayBusqueda(): boolean {
 
     return this.busqueda.trim().length > 0;
+
+  }
+
+  hayFiltrosAplicados(): boolean {
+
+    return (
+      this.busqueda.trim().length > 0 ||
+      this.filtroEstado !== 'todos'
+    );
+
+  }
+
+  limpiarFiltros(): void {
+
+    this.busqueda = '';
+    this.filtroEstado = 'todos';
 
   }
 

@@ -30,6 +30,12 @@ import { ViajeEliminar } from './components/viaje/viaje-eliminar/viaje-eliminar'
 import { CamionForm } from './components/camion/camion-form/camion-form';
 import { CamionModificar } from './components/camion/camion-modificar/camion-modificar';
 import { CamionDesactivar } from './components/camion/camion-desactivar/camion-desactivar';
+import { RemolqueForm } from './components/remolque/remolque-form/remolque-form';
+import { ConductorForm } from './components/conductor/conductor-form/conductor-form';
+import { ConductorModificar } from './components/conductor/conductor-modificar/conductor-modificar';
+import { ConductorDesactivar } from './components/conductor/conductor-desactivar/conductor-desactivar';
+import { RemolqueModificar } from './components/remolque/remolque-modificar/remolque-modificar';
+import { RemolqueDesactivar } from './components/remolque/remolque-desactivar/remolque-desactivar';
 
 import { Pagos } from './components/pagos/pagos';
 
@@ -43,11 +49,67 @@ export const routes: Routes = [
     children: [
 
       // =========================
-      // DASHBOARD
+      // REDIRECCIÓN INICIAL
       // =========================
 
       {
         path: '',
+        pathMatch: 'full',
+        redirectTo: 'dashboard'
+      },
+
+
+      // =========================
+      // DASHBOARD
+      // =========================
+
+      {
+        path: 'dashboard',
+        component: Dashboard
+      },
+
+      // =========================
+      // DASHBOARD - PRODUCCIÓN
+      // =========================
+
+      {
+        path: 'dashboard/produccion',
+        component: Dashboard
+      },
+
+      // =========================
+      // DASHBOARD - OPERACIÓN
+      // =========================
+
+      {
+        path: 'dashboard/operacion',
+        component: Dashboard
+      },
+
+      // =========================
+      // DASHBOARD - GASTOS
+      // =========================
+
+      {
+        path: 'dashboard/gastos',
+        component: Dashboard
+      },
+
+      // =========================
+      // DASHBOARD - DOCUMENTACIÓN
+      // =========================
+
+      {
+        path: 'dashboard/documentacion',
+        component: Dashboard
+      },
+
+      // =========================
+      // DASHBOARD - PERSONAL
+      // =========================
+
+      {
+        path: 'dashboard/personal',
         component: Dashboard
       },
 
@@ -107,6 +169,21 @@ export const routes: Routes = [
       },
 
       {
+        path: 'conductores/nuevo',
+        component: ConductorForm
+      },
+
+      {
+        path: 'conductores/modificar',
+        component: ConductorModificar
+      },
+
+      {
+        path: 'conductores/desactivar',
+        component: ConductorDesactivar
+      },
+
+      {
         path: 'conductores/:rut',
         component: ConductorDetail
       },
@@ -119,6 +196,21 @@ export const routes: Routes = [
       {
         path: 'remolques',
         component: RemolqueList
+      },
+
+      {
+        path: 'remolques/nuevo',
+        component: RemolqueForm
+      },
+
+      {
+        path: 'remolques/modificar',
+        component: RemolqueModificar
+      },
+
+      {
+        path: 'remolques/desactivar',
+        component: RemolqueDesactivar
       },
 
       {

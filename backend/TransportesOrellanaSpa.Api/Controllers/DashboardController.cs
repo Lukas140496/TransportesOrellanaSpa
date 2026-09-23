@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TransportesOrellanaSpa.Api.Data;
 using TransportesOrellanaSpa.Api.DTOs;
+using TransportesOrellanaSpa.Api.Enums;
 
 namespace TransportesOrellanaSpa.Api.Controllers;
 
@@ -265,6 +266,7 @@ public class DashboardController : ControllerBase
         }
     }
 
+
     // =========================================================
     // GET: api/dashboard/produccion-por-cliente
     // =========================================================
@@ -316,6 +318,11 @@ public class DashboardController : ControllerBase
         }
     }
 
+
+    // =========================================================
+    // GET: api/dashboard/costo-combustible-por-camion
+    // =========================================================
+
     [HttpGet("costo-combustible-por-camion")]
     public async Task<ActionResult<IEnumerable<DashboardCostoCombustibleCamionDto>>>
         ObtenerCostoCombustiblePorCamion(
@@ -359,6 +366,119 @@ public class DashboardController : ControllerBase
                 .ToListAsync();
 
             return Ok(costos);
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+
+    // =========================================================
+    // GET: api/dashboard/kilometros-por-camion
+    // =========================================================
+
+    [HttpGet("kilometros-por-camion")]
+    public async Task<ActionResult<IEnumerable<DashboardKilometrosCamionDto>>>
+        ObtenerKilometrosPorCamion(
+            [FromQuery] int? year,
+            [FromQuery] int? month)
+    {
+        try
+        {
+            var (inicioMes, inicioMesSiguiente) =
+                ObtenerRangoPeriodo(year, month);
+
+            var kilometros = await _context.Viajes
+                .Where(v =>
+                    v.Fecha >= inicioMes &&
+                    v.Fecha < inicioMesSiguiente
+                )
+                .GroupBy(v => new
+                {
+                    v.CamionId,
+                    v.Camion.Patente
+                })
+                .Select(grupo => new DashboardKilometrosCamionDto
+                {
+                    CamionId = grupo.Key.CamionId,
+
+                    Patente = grupo.Key.Patente,
+
+                    Viajes = grupo.Count(),
+
+                    Kilometros = grupo.Sum(
+                        v => v.Kilometros ?? 0
+                    )
+                })
+                .OrderByDescending(
+                    x => x.Kilometros
+                )
+                .ToListAsync();
+
+            return Ok(kilometros);
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+
+    // =========================================================
+    // GET: api/dashboard/estado-pagos
+    // =========================================================
+
+    [HttpGet("estado-pagos")]
+    public async Task<ActionResult<DashboardEstadoPagosDto>>
+        ObtenerEstadoPagos(
+            [FromQuery] int? year,
+            [FromQuery] int? month)
+    {
+        try
+        {
+            var (inicioMes, inicioMesSiguiente) =
+                ObtenerRangoPeriodo(year, month);
+
+            // ===================================
+            // VIAJES PAGADOS
+            //
+            // Se utiliza FechaPago porque queremos
+            // saber cuántos viajes del período
+            // seleccionado ya fueron pagados.
+            // ===================================
+
+            var viajesPagados = await _context.Viajes
+                .CountAsync(v =>
+                    v.EstadoPago == EstadoPago.Pagado &&
+                    v.Fecha >= inicioMes &&
+                    v.Fecha < inicioMesSiguiente
+                );
+
+            // ===================================
+            // VIAJES PENDIENTES
+            //
+            // Se utiliza Fecha porque queremos
+            // saber cuántos viajes del período
+            // todavía están pendientes de pago.
+            // ===================================
+
+            var viajesPendientesPago = await _context.Viajes
+                .CountAsync(v =>
+                    v.EstadoPago == EstadoPago.Pendiente &&
+                    v.Fecha >= inicioMes &&
+                    v.Fecha < inicioMesSiguiente
+                );
+
+            var resultado = new DashboardEstadoPagosDto
+            {
+                ViajesPagados = viajesPagados,
+
+                ViajesPendientesPago =
+                    viajesPendientesPago
+            };
+
+            return Ok(resultado);
         }
         catch (ArgumentException ex)
         {

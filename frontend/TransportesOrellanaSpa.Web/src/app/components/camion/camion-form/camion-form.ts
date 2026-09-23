@@ -25,9 +25,12 @@ export class CamionForm {
 
   modalExitoVisible = false;
   modalErrorVisible = false;
+  modalIncompletoVisible = false;
 
   modalErrorTitulo = '';
   modalErrorMensaje = '';
+
+  camposTocados: Record<string, boolean> = {};
 
   camion: CrearCamion = {
     patente: '',
@@ -57,13 +60,27 @@ export class CamionForm {
 
     this.error = '';
 
+    /*
+     * Validamos antes de intentar guardar.
+     */
+    if (!this.formularioValido()) {
+
+      this.marcarCamposInvalidos();
+
+      this.modalIncompletoVisible = true;
+
+      return;
+    }
+
     this.guardando = true;
 
     const camion: CrearCamion = {
       ...this.camion,
+
       patente: this.camion.patente
         .trim()
         .toUpperCase(),
+
       marca: this.camion.marca.trim(),
       modelo: this.camion.modelo.trim(),
       tipo: this.camion.tipo.trim(),
@@ -115,6 +132,100 @@ export class CamionForm {
       }
 
     });
+
+  }
+
+  /*
+   * Valida los campos obligatorios antes de enviar
+   * la información al backend.
+   */
+  private formularioValido(): boolean {
+
+    return (
+
+      this.camion.patente.trim() !== '' &&
+
+      this.camion.marca.trim() !== '' &&
+
+      this.camion.modelo.trim() !== '' &&
+
+      !!this.camion.ano &&
+
+      this.camion.tipo.trim() !== '' &&
+
+      this.camion.color.trim() !== '' &&
+
+      this.camion.capacidad.trim() !== '' &&
+
+      this.camion.motor.trim() !== '' &&
+
+      this.camion.caballos.trim() !== '' &&
+
+      this.camion.cilindrada.trim() !== '' &&
+
+      this.camion.transmision.trim() !== '' &&
+
+      this.camion.fechaRevisionTecnica !== '' &&
+
+      this.camion.fechaPermisoCirculacion !== '' &&
+
+      this.camion.fechaSeguroObligatorio !== ''
+
+    );
+
+  }
+
+  /*
+   * Marca los campos obligatorios que estén vacíos.
+   */
+  private marcarCamposInvalidos(): void {
+
+    this.camposTocados = {
+
+      patente: this.camion.patente.trim() === '',
+
+      marca: this.camion.marca.trim() === '',
+
+      modelo: this.camion.modelo.trim() === '',
+
+      ano: !this.camion.ano,
+
+      tipo: this.camion.tipo.trim() === '',
+
+      color: this.camion.color.trim() === '',
+
+      capacidad: this.camion.capacidad.trim() === '',
+
+      motor: this.camion.motor.trim() === '',
+
+      caballos: this.camion.caballos.trim() === '',
+
+      cilindrada: this.camion.cilindrada.trim() === '',
+
+      transmision: this.camion.transmision.trim() === '',
+
+      fechaRevisionTecnica:
+        this.camion.fechaRevisionTecnica === '',
+
+      fechaPermisoCirculacion:
+        this.camion.fechaPermisoCirculacion === '',
+
+      fechaSeguroObligatorio:
+        this.camion.fechaSeguroObligatorio === ''
+
+    };
+
+  }
+
+  campoInvalido(nombre: string): boolean {
+
+    return this.camposTocados[nombre] === true;
+
+  }
+
+  cerrarModalIncompleto(): void {
+
+    this.modalIncompletoVisible = false;
 
   }
 

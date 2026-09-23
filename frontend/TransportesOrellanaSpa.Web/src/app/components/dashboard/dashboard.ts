@@ -7,6 +7,8 @@ import { DashboardProduccionConductor } from '../../core/models/dashboard-produc
 import { DashboardResumen } from '../../core/models/dashboard-resumen';
 import { DashboardProduccionCliente } from '../../core/models/dashboard-produccion-cliente';
 import { DashboardCostoCombustibleCamion } from '../../core/models/dashboard-costo-combustible-camion';
+import { DashboardKilometrosCamion } from '../../core/models/dashboard-kilometros-camion';
+import { DashboardEstadoPagos } from '../../core/models/dashboard-estado-pagos';
 
 interface PeriodoDashboard {
   year: number;
@@ -33,6 +35,13 @@ export class Dashboard implements OnInit {
   produccionClientes: DashboardProduccionCliente[] = [];
 
   costoCombustibleCamiones: DashboardCostoCombustibleCamion[] = [];
+
+  kilometrosCamiones: DashboardKilometrosCamion[] = [];
+
+  estadoPagos: DashboardEstadoPagos = {
+    viajesPagados: 0,
+    viajesPendientesPago: 0
+  };
 
   // Carga inicial del dashboard
   cargando = true;
@@ -168,6 +177,10 @@ export class Dashboard implements OnInit {
 
     let costoCombustibleCargado = false;
 
+    let kilometrosCamionesCargados = false;
+
+    let estadoPagosCargado = false;
+
 
     const finalizarTransicion = (): void => {
 
@@ -176,7 +189,9 @@ export class Dashboard implements OnInit {
         camionesCargados &&
         conductoresCargados &&
         clientesCargados &&
-        costoCombustibleCargado
+        costoCombustibleCargado &&
+        kilometrosCamionesCargados &&
+        estadoPagosCargado
       ) {
 
         if (cargaInicial) {
@@ -336,6 +351,63 @@ export class Dashboard implements OnInit {
         finalizarTransicion();
       }
     });
+
+    this.api.getKilometrosPorCamion(
+      year,
+      month
+    ).subscribe({
+
+      next: kilometros => {
+
+        this.kilometrosCamiones =
+          kilometros;
+
+        kilometrosCamionesCargados = true;
+
+        finalizarTransicion();
+      },
+
+      error: error => {
+
+        console.error(
+          'ERROR KILÓMETROS CAMIONES:',
+          error
+        );
+
+        kilometrosCamionesCargados = true;
+
+        finalizarTransicion();
+      }
+    });
+
+
+    this.api.getEstadoPagosDashboard(
+      year,
+      month
+    ).subscribe({
+
+      next: estadoPagos => {
+
+        this.estadoPagos =
+          estadoPagos;
+
+        estadoPagosCargado = true;
+
+        finalizarTransicion();
+      },
+
+      error: error => {
+
+        console.error(
+          'ERROR ESTADO PAGOS:',
+          error
+        );
+
+        estadoPagosCargado = true;
+
+        finalizarTransicion();
+      }
+    });
   }
 
 
@@ -453,6 +525,29 @@ export class Dashboard implements OnInit {
   
     return (
       costo / costoMaximo
+    ) * 100;
+  }
+
+  obtenerPorcentajeKilometrosCamion(
+    kilometros: number
+  ): number {
+
+    if (!this.kilometrosCamiones.length) {
+      return 0;
+    }
+
+    const kilometrosMaximos = Math.max(
+      ...this.kilometrosCamiones.map(
+        camion => camion.kilometros
+      )
+    );
+
+    if (kilometrosMaximos === 0) {
+      return 0;
+    }
+
+    return (
+      kilometros / kilometrosMaximos
     ) * 100;
   }
 }

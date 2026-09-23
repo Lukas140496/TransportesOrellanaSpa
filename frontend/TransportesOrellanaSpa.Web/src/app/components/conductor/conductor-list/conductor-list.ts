@@ -28,6 +28,8 @@ export class ConductorList implements OnInit {
 
   busqueda = '';
 
+  filtroEstado: 'todos' | 'activos' | 'inactivos' = 'todos';
+
   ngOnInit(): void {
 
     this.api.getConductores().subscribe({
@@ -64,11 +66,35 @@ export class ConductorList implements OnInit {
         .trim()
         .toLowerCase();
 
-    if (!texto) {
-      return this.conductores;
-    }
-
     return this.conductores.filter(conductor => {
+
+      // =====================================================
+      // FILTRO POR ESTADO
+      // =====================================================
+
+      const coincideEstado =
+        this.filtroEstado === 'todos' ||
+        (
+          this.filtroEstado === 'activos' &&
+          conductor.activo
+        ) ||
+        (
+          this.filtroEstado === 'inactivos' &&
+          !conductor.activo
+        );
+
+      if (!coincideEstado) {
+        return false;
+      }
+
+
+      // =====================================================
+      // FILTRO DE BÚSQUEDA
+      // =====================================================
+
+      if (!texto) {
+        return true;
+      }
 
       const nombreCompleto = [
         conductor.nombres,
@@ -100,6 +126,22 @@ export class ConductorList implements OnInit {
 
   }
 
+  get cantidadActivos(): number {
+
+    return this.conductores.filter(
+      conductor => conductor.activo
+    ).length;
+
+  }
+
+  get cantidadInactivos(): number {
+
+    return this.conductores.filter(
+      conductor => !conductor.activo
+    ).length;
+
+  }
+
   get licenciasAlDia(): number {
 
     return this.conductores.filter(
@@ -116,15 +158,33 @@ export class ConductorList implements OnInit {
 
   }
 
+  cambiarFiltroEstado(
+    filtro: 'todos' | 'activos' | 'inactivos'
+  ): void {
+
+    this.filtroEstado = filtro;
+
+  }
+
   limpiarBusqueda(): void {
 
     this.busqueda = '';
 
   }
 
-  hayBusqueda(): boolean {
+  limpiarFiltros(): void {
 
-    return this.busqueda.trim().length > 0;
+    this.busqueda = '';
+    this.filtroEstado = 'todos';
+
+  }
+
+  hayFiltrosAplicados(): boolean {
+
+    return (
+      this.busqueda.trim().length > 0 ||
+      this.filtroEstado !== 'todos'
+    );
 
   }
 

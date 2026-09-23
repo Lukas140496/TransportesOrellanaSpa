@@ -197,37 +197,38 @@
             <label for="camion">
               Camión
             </label>
-
+          
             <select
               id="camion"
               name="camionId"
               [(ngModel)]="viaje.camionId"
+              (ngModelChange)="cambioCamion($event)"
               (blur)="campoTocado('camionId')">
-
+          
               <option [ngValue]="0">
                 Selecciona un camión
               </option>
-
+          
               @for (camion of camiones; track camion.id) {
-
+          
                 <option [ngValue]="camion.id">
                   {{ camion.patente }}
-                  — {{ camion.marca }}
+                  - {{ camion.marca }}
                   {{ camion.modelo }}
                 </option>
-
+          
               }
-
+          
             </select>
-
+          
             @if (campoTieneError('camionId')) {
-
+          
               <span class="error-message">
                 Debes seleccionar un camión.
               </span>
-
+          
             }
-
+          
           </div>
 
           <div class="form-group">
@@ -278,6 +279,7 @@
               id="remolque"
               name="remolqueId"
               [(ngModel)]="viaje.remolqueId"
+              [disabled]="!remolqueObligatorio"
               (blur)="campoTocado('remolqueId')">
 
               <option [ngValue]="0">
@@ -288,7 +290,7 @@
 
                 <option [ngValue]="remolque.id">
                   {{ remolque.patente }}
-                  — {{ remolque.marca }}
+                  - {{ remolque.marca }}
                   {{ remolque.modelo }}
                 </option>
 

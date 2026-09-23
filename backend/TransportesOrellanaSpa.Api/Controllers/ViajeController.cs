@@ -317,7 +317,8 @@ public class ViajeController : ControllerBase
         [FromQuery] string? guia,
         [FromQuery] DateTime? fechaDesde,
         [FromQuery] DateTime? fechaHasta,
-        [FromQuery] int? clienteId)
+        [FromQuery] int? clienteId,
+        [FromQuery] EstadoPago? estadoPago)
     {
         // =========================
         // CONSULTA BASE
@@ -376,6 +377,16 @@ public class ViajeController : ControllerBase
         {
             query = query.Where(v =>
                 v.ClienteId == clienteId.Value);
+        }
+
+        // =========================
+        // FILTRO POR ESTADO DE PAGO
+        // =========================
+
+        if (estadoPago.HasValue)
+        {
+            query = query.Where(v =>
+                v.EstadoPago == estadoPago.Value);
         }
 
         // =========================

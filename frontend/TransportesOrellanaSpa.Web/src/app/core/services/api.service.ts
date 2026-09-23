@@ -18,6 +18,8 @@ import { DashboardProduccionCliente } from '../models/dashboard-produccion-clien
 import { DashboardCostoCombustibleCamion } from '../models/dashboard-costo-combustible-camion';
 import { ActualizarViaje } from '../models/actualizar-viaje';
 import { CrearCamion } from '../models/crear-camion';
+import { DashboardKilometrosCamion } from '../models/dashboard-kilometros-camion';
+import { DashboardEstadoPagos } from '../models/dashboard-estado-pagos';
 
 @Injectable({
   providedIn: 'root'
@@ -164,6 +166,55 @@ export class ApiService {
     );
   }
 
+  crearConductor(conductor: {
+    rut: string;
+    nombres: string;
+    apellidoPaterno: string;
+    apellidoMaterno: string;
+    fechaNacimiento: string;
+    edad: number;
+    fechaIngreso: string;
+    telefono: string;
+    tipoLicencia: string;
+    fechaControlLicencia: string;
+    licenciaAlDia: boolean;
+  }): Observable<Conductor> {
+    return this.http.post<Conductor>(
+      `${this.apiUrl}/conductor`,
+      conductor
+    );
+  }
+
+  actualizarConductor(
+    rut: string,
+    conductor: Conductor
+  ): Observable<void> {
+  
+    return this.http.put<void>(
+      `${this.apiUrl}/conductor/${rut}`,
+      conductor
+    );
+  
+  }
+
+  activarConductor(
+    rut: string
+  ): Observable<any> {
+    return this.http.patch<any>(
+      `${this.apiUrl}/conductor/${rut}/activar`,
+      {}
+    );
+  }
+
+  desactivarConductor(
+    rut: string
+  ): Observable<any> {
+    return this.http.patch<any>(
+      `${this.apiUrl}/conductor/${rut}/desactivar`,
+      {}
+    );
+  }
+
   // =========================
   // REMOLQUES
   // =========================
@@ -177,6 +228,58 @@ export class ApiService {
   getRemolqueByPatente(patente: string): Observable<Remolque> {
     return this.http.get<Remolque>(
       `${this.apiUrl}/remolque/${patente}`
+    );
+  }
+
+  crearRemolque(remolque: {
+    patente: string;
+    marca: string;
+    modelo: string;
+    ano: number;
+    tipo: string;
+    capacidadToneladas: number;
+    activa: boolean;
+    camionHabitualId: number | null;
+  }): Observable<Remolque> {
+    return this.http.post<Remolque>(
+      `${this.apiUrl}/remolque`,
+      remolque
+    );
+  }
+
+  actualizarRemolque(
+    patente: string,
+    remolque: {
+      marca: string;
+      modelo: string;
+      ano: number;
+      tipo: string;
+      capacidadToneladas: number;
+      activa: boolean;
+      camionHabitualId: number | null;
+    }
+  ): Observable<Remolque> {
+    return this.http.put<Remolque>(
+      `${this.apiUrl}/remolque/${patente}`,
+      remolque
+    );
+  }
+
+  desactivarRemolque(
+    patente: string
+  ): Observable<Remolque> {
+    return this.http.patch<Remolque>(
+      `${this.apiUrl}/remolque/${patente}/desactivar`,
+      {}
+    );
+  }
+
+  activarRemolque(
+    patente: string
+  ): Observable<Remolque> {
+    return this.http.patch<Remolque>(
+      `${this.apiUrl}/remolque/${patente}/activar`,
+      {}
     );
   }
 
@@ -269,27 +372,32 @@ export class ApiService {
     guia?: string,
     fechaDesde?: string,
     fechaHasta?: string,
-    clienteId?: number
+    clienteId?: number,
+    estadoPago?: string
   ): Observable<Viaje[]> {
-
+  
     const params: Record<string, string> = {};
-
+  
     if (guia?.trim()) {
       params['guia'] = guia.trim();
     }
-
+  
     if (fechaDesde) {
       params['fechaDesde'] = fechaDesde;
     }
-
+  
     if (fechaHasta) {
       params['fechaHasta'] = fechaHasta;
     }
-
+  
     if (clienteId !== undefined) {
       params['clienteId'] = clienteId.toString();
     }
-
+  
+    if (estadoPago) {
+      params['estadoPago'] = estadoPago;
+    }
+  
     return this.http.get<Viaje[]>(
       `${this.apiUrl}/viaje`,
       {
@@ -493,6 +601,53 @@ export class ApiService {
 
     return this.http.get<DashboardCostoCombustibleCamion[]>(
       `${this.apiUrl}/dashboard/costo-combustible-por-camion`,
+      {
+        params
+      }
+    );
+  }
+
+  getKilometrosPorCamion(
+    year?: number,
+    month?: number
+  ): Observable<DashboardKilometrosCamion[]> {
+
+    const params: Record<string, string> = {};
+
+    if (year !== undefined) {
+      params['year'] = year.toString();
+    }
+
+    if (month !== undefined) {
+      params['month'] = month.toString();
+    }
+
+    return this.http.get<DashboardKilometrosCamion[]>(
+      `${this.apiUrl}/dashboard/kilometros-por-camion`,
+      {
+        params
+      }
+    );
+  }
+
+
+  getEstadoPagosDashboard(
+    year?: number,
+    month?: number
+  ): Observable<DashboardEstadoPagos> {
+
+    const params: Record<string, string> = {};
+
+    if (year !== undefined) {
+      params['year'] = year.toString();
+    }
+
+    if (month !== undefined) {
+      params['month'] = month.toString();
+    }
+
+    return this.http.get<DashboardEstadoPagos>(
+      `${this.apiUrl}/dashboard/estado-pagos`,
       {
         params
       }

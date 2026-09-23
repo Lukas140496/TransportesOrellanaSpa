@@ -93,6 +93,21 @@ public class AppDbContext : DbContext
             .HasColumnType("date");
 
         // =========================
+        // CONDUCTOR - FECHAS
+        // =========================
+        modelBuilder.Entity<Conductor>()
+            .Property(c => c.FechaNacimiento)
+            .HasColumnType("date");
+
+        modelBuilder.Entity<Conductor>()
+            .Property(c => c.FechaIngreso)
+            .HasColumnType("date");
+
+        modelBuilder.Entity<Conductor>()
+            .Property(c => c.FechaControlLicencia)
+            .HasColumnType("date");
+
+        // =========================
         // VIAJE - COMBUSTIBLE
         // =========================
         modelBuilder.Entity<Viaje>()

@@ -2,6 +2,7 @@
   max-width: 1100px;
   margin: 0 auto;
   padding: 28px;
+  padding-top: 8px;
 }
 
 // =========================
@@ -408,6 +409,18 @@
 .modal-button {
   min-width: 110px;
   margin-top: 24px;
+}
+
+.form-group input.ng-touched.ng-invalid,
+.form-group select.ng-touched.ng-invalid {
+  border-color: #c53d3d;
+  background: #fffafa;
+}
+
+.form-group input.ng-touched.ng-invalid:focus,
+.form-group select.ng-touched.ng-invalid:focus {
+  border-color: #c53d3d;
+  box-shadow: 0 0 0 3px rgba(197, 61, 61, 0.10);
 }
 
 @keyframes modal-appear {
