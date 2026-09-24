@@ -287,10 +287,18 @@
 .camion-estado {
   padding: 3px 7px;
   border-radius: 5px;
-  background: #eef5ef;
-  color: #39704a;
   font-size: 10px;
   font-weight: 600;
+}
+
+.camion-estado.estado-ok {
+  background: #eef5ef;
+  color: #39704a;
+}
+
+.camion-estado.estado-alerta {
+  background: #fbecec;
+  color: #a33a3a;
 }
 
 .camion-detalle {
