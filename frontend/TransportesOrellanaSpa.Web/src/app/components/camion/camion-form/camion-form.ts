@@ -30,6 +30,15 @@ export class CamionForm {
   modalErrorTitulo = '';
   modalErrorMensaje = '';
 
+  // Modal de cambios sin guardar
+  modalSalirVisible = false;
+
+  // Indica si el usuario modificó el formulario
+  formularioModificado = false;
+
+  // Resuelve la navegación cuando el guard está esperando
+  private resolverSalida: ((salir: boolean) => void) | null = null;
+
   camposTocados: Record<string, boolean> = {};
 
   camion: CrearCamion = {
@@ -51,6 +60,41 @@ export class CamionForm {
     permisoAlDia: true,
     seguroAlDia: true
   };
+
+  /**
+   * Se ejecuta cuando el usuario modifica cualquier campo.
+   */
+  marcarFormularioModificado(): void {
+
+    if (!this.guardando) {
+      this.formularioModificado = true;
+    }
+
+  }
+
+  /**
+   * Controla si Angular puede abandonar el formulario.
+   * Lo utiliza unsavedChangesGuard.
+   */
+  puedeSalir(): boolean | Promise<boolean> {
+
+    if (this.guardando) {
+      return false;
+    }
+
+    if (!this.formularioModificado) {
+      return true;
+    }
+
+    this.modalSalirVisible = true;
+
+    return new Promise<boolean>((resolve) => {
+
+      this.resolverSalida = resolve;
+
+    });
+
+  }
 
   guardarCamion(): void {
 
@@ -97,6 +141,9 @@ export class CamionForm {
       next: () => {
 
         this.guardando = false;
+
+        // El formulario ya fue guardado correctamente
+        this.formularioModificado = false;
 
         this.modalExitoVisible = true;
 
@@ -234,9 +281,47 @@ export class CamionForm {
     if (this.guardando) {
       return;
     }
-
+  
+    if (this.formularioModificado) {
+      this.modalSalirVisible = true;
+      return;
+    }
+  
     this.router.navigate(['/camiones']);
+  }
 
+  seguirEditando(): void {
+
+    this.modalSalirVisible = false;
+
+    // Si el modal fue abierto por el guard,
+    // cancelamos la navegación.
+    if (this.resolverSalida) {
+
+      this.resolverSalida(false);
+      this.resolverSalida = null;
+
+    }
+
+  }
+
+  salirSinGuardar(): void {
+
+    this.modalSalirVisible = false;
+  
+    if (this.resolverSalida) {
+  
+      this.formularioModificado = false;
+  
+      this.resolverSalida(true);
+      this.resolverSalida = null;
+  
+      return;
+    }
+  
+    this.formularioModificado = false;
+  
+    this.router.navigate(['/camiones']);
   }
 
   cerrarModalExito(): void {

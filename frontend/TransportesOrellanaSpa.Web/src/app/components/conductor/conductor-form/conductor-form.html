@@ -34,6 +34,7 @@
             placeholder="Ej: 19.374.867-8"
             [(ngModel)]="conductor.rut"
             appRutFormat
+            (ngModelChange)="marcarFormularioModificado()"
             (blur)="campoTocado('rut')"
           />
 
@@ -58,6 +59,7 @@
             maxlength="100"
             placeholder="Ej: Juan Carlos"
             [(ngModel)]="conductor.nombres"
+            (ngModelChange)="marcarFormularioModificado()"
             (blur)="campoTocado('nombres')"
           />
 
@@ -78,6 +80,7 @@
             maxlength="100"
             placeholder="Ej: González"
             [(ngModel)]="conductor.apellidoPaterno"
+            (ngModelChange)="marcarFormularioModificado()"
             (blur)="campoTocado('apellidoPaterno')"
           />
 
@@ -98,6 +101,7 @@
             maxlength="100"
             placeholder="Ej: Pérez"
             [(ngModel)]="conductor.apellidoMaterno"
+            (ngModelChange)="marcarFormularioModificado()"
             (blur)="campoTocado('apellidoMaterno')"
           />
 
@@ -116,7 +120,7 @@
             type="date"
             name="fechaNacimiento"
             [(ngModel)]="conductor.fechaNacimiento"
-            (ngModelChange)="calcularEdad()"
+            (ngModelChange)="calcularEdad(); marcarFormularioModificado()"
             (blur)="campoTocado('fechaNacimiento')"
           />
 
@@ -155,6 +159,7 @@
             type="date"
             name="fechaIngreso"
             [(ngModel)]="conductor.fechaIngreso"
+            (ngModelChange)="marcarFormularioModificado()"
             (blur)="campoTocado('fechaIngreso')"
           />
 
@@ -175,6 +180,7 @@
             maxlength="30"
             placeholder="Ej: +56 9 1234 5678"
             [(ngModel)]="conductor.telefono"
+            (ngModelChange)="marcarFormularioModificado()"
             (blur)="campoTocado('telefono')"
           />
 
@@ -206,6 +212,7 @@
             id="tipoLicencia"
             name="tipoLicencia"
             [(ngModel)]="conductor.tipoLicencia"
+            (ngModelChange)="marcarFormularioModificado()"
             (blur)="campoTocado('tipoLicencia')"
           >
             <option value="">Selecciona una licencia</option>
@@ -246,6 +253,7 @@
             type="date"
             name="fechaControlLicencia"
             [(ngModel)]="conductor.fechaControlLicencia"
+            (ngModelChange)="marcarFormularioModificado()"
             (blur)="campoTocado('fechaControlLicencia')"
           />
 
@@ -259,7 +267,12 @@
 
       <div class="license-status">
         <label class="checkbox-label">
-          <input type="checkbox" name="licenciaAlDia" [(ngModel)]="conductor.licenciaAlDia" />
+          <input
+            type="checkbox"
+            name="licenciaAlDia"
+            [(ngModel)]="conductor.licenciaAlDia"
+            (ngModelChange)="marcarFormularioModificado()"
+          />
 
           <span> Licencia al día </span>
         </label>
@@ -344,6 +357,55 @@
       Aceptar
     </button>
   </div>
+</div>
+
+}
+
+<!-- MODAL CAMBIOS SIN GUARDAR -->
+@if (modalSalirVisible) {
+
+<div
+  class="modal-backdrop"
+  (click)="seguirEditando()">
+
+  <div
+    class="modal"
+    role="alertdialog"
+    aria-modal="true"
+    (click)="$event.stopPropagation()">
+
+    <div class="modal-icon error">
+      !
+    </div>
+
+    <h2>
+      ¿Salir del formulario?
+    </h2>
+
+    <p>
+      Tienes cambios sin guardar. Si sales ahora, perderás la información ingresada.
+    </p>
+
+    <div class="modal-actions">
+
+      <button
+        type="button"
+        class="btn-secondary modal-button"
+        (click)="seguirEditando()">
+        Seguir editando
+      </button>
+
+      <button
+        type="button"
+        class="btn-primary modal-button"
+        (click)="salirSinGuardar()">
+        Salir sin guardar
+      </button>
+
+    </div>
+
+  </div>
+
 </div>
 
 }

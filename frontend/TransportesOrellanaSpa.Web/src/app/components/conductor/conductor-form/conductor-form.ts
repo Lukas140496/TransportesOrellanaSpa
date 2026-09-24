@@ -36,6 +36,15 @@ export class ConductorForm implements OnInit {
   modalExitoTitulo = '';
   modalExitoMensaje = '';
 
+  // Modal de cambios sin guardar
+  modalSalirVisible = false;
+
+  // Indica si el usuario modificó el formulario
+  formularioModificado = false;
+
+  // Resuelve la navegación cuando el guard está esperando
+  private resolverSalida: ((salir: boolean) => void) | null = null;
+
   camposTocados: Record<string, boolean> = {};
 
   conductor = {
@@ -196,6 +205,62 @@ export class ConductorForm implements OnInit {
 
   }
 
+  marcarFormularioModificado(): void {
+
+    if (!this.guardando) {
+      this.formularioModificado = true;
+    }
+  
+  }
+  
+  puedeSalir(): boolean | Promise<boolean> {
+  
+    if (this.guardando) {
+      return false;
+    }
+  
+    if (!this.formularioModificado) {
+      return true;
+    }
+  
+    this.modalSalirVisible = true;
+  
+    return new Promise<boolean>((resolve) => {
+      this.resolverSalida = resolve;
+    });
+  
+  }
+  
+  seguirEditando(): void {
+  
+    this.modalSalirVisible = false;
+  
+    if (this.resolverSalida) {
+      this.resolverSalida(false);
+      this.resolverSalida = null;
+    }
+  
+  }
+  
+  salirSinGuardar(): void {
+
+    this.modalSalirVisible = false;
+  
+    if (this.resolverSalida) {
+  
+      this.formularioModificado = false;
+  
+      this.resolverSalida(true);
+      this.resolverSalida = null;
+  
+      return;
+    }
+  
+    this.formularioModificado = false;
+  
+    this.router.navigate(['/conductores']);
+  }
+
   guardar(): void {
 
     if (this.guardando) {
@@ -255,6 +320,8 @@ export class ConductorForm implements OnInit {
       next: resultado => {
 
         this.guardando = false;
+
+        this.formularioModificado = false;
 
         this.modalExitoTitulo =
           'Conductor creado correctamente';
@@ -326,11 +393,16 @@ export class ConductorForm implements OnInit {
     if (this.guardando) {
       return;
     }
-
+  
+    if (this.formularioModificado) {
+      this.modalSalirVisible = true;
+      return;
+    }
+  
     this.router.navigate([
       '/conductores'
     ]);
-
+  
   }
 
 }

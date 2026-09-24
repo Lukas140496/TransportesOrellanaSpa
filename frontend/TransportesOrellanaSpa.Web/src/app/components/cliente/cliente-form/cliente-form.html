@@ -214,6 +214,55 @@
   </form>
 </div>
 
+<!-- Modal de cambios sin guardar -->
+@if (modalSalirVisible) {
+
+<div
+  class="modal-backdrop"
+  (click)="cerrarModalSalir()">
+
+  <div
+    class="modal"
+    role="alertdialog"
+    aria-modal="true"
+    (click)="$event.stopPropagation()">
+
+    <div class="modal-icon error">
+      !
+    </div>
+
+    <h2>
+      ¿Salir del formulario?
+    </h2>
+
+    <p>
+      Tienes cambios sin guardar. Si sales ahora, perderás la información ingresada.
+    </p>
+
+    <div class="modal-actions">
+
+      <button
+        type="button"
+        class="btn-secondary modal-button"
+        (click)="cerrarModalSalir()">
+        Seguir editando
+      </button>
+
+      <button
+        type="button"
+        class="btn-primary modal-button"
+        (click)="salirSinGuardar()">
+        Salir sin guardar
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+}
+
 <!-- Modal de error -->
 @if (modalErrorVisible) {
 

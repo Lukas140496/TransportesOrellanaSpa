@@ -59,6 +59,7 @@
               placeholder="Ej: GD-000123"
               maxlength="50"
               [(ngModel)]="viaje.numeroGuiaDespacho"
+              (ngModelChange)="marcarFormularioModificado()"
               (blur)="campoTocado('numeroGuiaDespacho')"
             />
 
@@ -83,6 +84,7 @@
               type="date"
               name="fecha"
               [(ngModel)]="viaje.fecha"
+              (ngModelChange)="marcarFormularioModificado()"
               (blur)="campoTocado('fecha')"
             />
 
@@ -106,6 +108,7 @@
               id="estado"
               name="estado"
               [(ngModel)]="viaje.estado"
+              (ngModelChange)="marcarFormularioModificado()"
               (blur)="campoTocado('estado')">
 
               <option value="Completado">
@@ -166,6 +169,7 @@
               id="cliente"
               name="clienteId"
               [(ngModel)]="viaje.clienteId"
+              (ngModelChange)="marcarFormularioModificado()"
               (blur)="campoTocado('clienteId')">
 
               <option [ngValue]="0">
@@ -197,38 +201,38 @@
             <label for="camion">
               Camión
             </label>
-          
+
             <select
               id="camion"
               name="camionId"
               [(ngModel)]="viaje.camionId"
               (ngModelChange)="cambioCamion($event)"
               (blur)="campoTocado('camionId')">
-          
+
               <option [ngValue]="0">
                 Selecciona un camión
               </option>
-          
+
               @for (camion of camiones; track camion.id) {
-          
+
                 <option [ngValue]="camion.id">
                   {{ camion.patente }}
                   - {{ camion.marca }}
                   {{ camion.modelo }}
                 </option>
-          
+
               }
-          
+
             </select>
-          
+
             @if (campoTieneError('camionId')) {
-          
+
               <span class="error-message">
                 Debes seleccionar un camión.
               </span>
-          
+
             }
-          
+
           </div>
 
           <div class="form-group">
@@ -241,6 +245,7 @@
               id="conductor"
               name="conductorId"
               [(ngModel)]="viaje.conductorId"
+              (ngModelChange)="marcarFormularioModificado()"
               (blur)="campoTocado('conductorId')">
 
               <option [ngValue]="0">
@@ -280,6 +285,7 @@
               name="remolqueId"
               [(ngModel)]="viaje.remolqueId"
               [disabled]="!remolqueObligatorio"
+              (ngModelChange)="marcarFormularioModificado()"
               (blur)="campoTocado('remolqueId')">
 
               <option [ngValue]="0">
@@ -341,6 +347,7 @@
               maxlength="200"
               placeholder="Ej: Centro de distribución"
               [(ngModel)]="viaje.origen"
+              (ngModelChange)="marcarFormularioModificado()"
               (blur)="campoTocado('origen')"
             />
 
@@ -367,6 +374,7 @@
               maxlength="200"
               placeholder="Ej: Bodega cliente"
               [(ngModel)]="viaje.destino"
+              (ngModelChange)="marcarFormularioModificado()"
               (blur)="campoTocado('destino')"
             />
 
@@ -393,6 +401,7 @@
               maxlength="100"
               placeholder="Ej: Quilicura"
               [(ngModel)]="viaje.comunaOrigen"
+              (ngModelChange)="marcarFormularioModificado()"
               (blur)="campoTocado('comunaOrigen')"
             />
 
@@ -419,6 +428,7 @@
               maxlength="100"
               placeholder="Ej: Rancagua"
               [(ngModel)]="viaje.comunaDestino"
+              (ngModelChange)="marcarFormularioModificado()"
               (blur)="campoTocado('comunaDestino')"
             />
 
@@ -446,6 +456,7 @@
               step="0.1"
               placeholder="Ej: 85.5"
               [(ngModel)]="viaje.kilometros"
+              (ngModelChange)="marcarFormularioModificado()"
               (blur)="campoTocado('kilometros')"
             />
 
@@ -472,6 +483,7 @@
               maxlength="100"
               placeholder="Ej: Carga general"
               [(ngModel)]="viaje.tipoCarga"
+              (ngModelChange)="marcarFormularioModificado()"
               (blur)="campoTocado('tipoCarga')"
             />
 
@@ -519,6 +531,7 @@
               step="0.01"
               placeholder="Ej: 54.10"
               [(ngModel)]="viaje.litrosCombustible"
+              (ngModelChange)="marcarFormularioModificado()"
               (blur)="campoTocado('litrosCombustible')"
             />
 
@@ -550,6 +563,7 @@
                 step="1"
                 placeholder="0"
                 [(ngModel)]="viaje.costoCombustible"
+                (ngModelChange)="marcarFormularioModificado()"
                 (blur)="campoTocado('costoCombustible')"
               />
 
@@ -583,6 +597,7 @@
                 step="1"
                 placeholder="0"
                 [(ngModel)]="viaje.tarifa"
+                (ngModelChange)="marcarFormularioModificado()"
                 (blur)="campoTocado('tarifa')"
               />
 
@@ -629,6 +644,7 @@
             maxlength="500"
             placeholder="Ingresa cualquier información adicional..."
             [(ngModel)]="viaje.observaciones"
+            (ngModelChange)="marcarFormularioModificado()"
             (blur)="campoTocado('observaciones')"
           ></textarea>
 
@@ -749,6 +765,55 @@
         (click)="cerrarModalExito()">
         Aceptar
       </button>
+
+    </div>
+
+  </div>
+
+}
+
+<!-- MODAL CAMBIOS SIN GUARDAR -->
+@if (modalSalirVisible) {
+
+  <div
+    class="modal-backdrop"
+    (click)="seguirEditando()">
+
+    <div
+      class="modal"
+      role="alertdialog"
+      aria-modal="true"
+      (click)="$event.stopPropagation()">
+
+      <div class="modal-icon error">
+        !
+      </div>
+
+      <h2>
+        ¿Salir del formulario?
+      </h2>
+
+      <p>
+        Tienes cambios sin guardar. Si sales ahora, perderás la información ingresada.
+      </p>
+
+      <div class="modal-actions">
+
+        <button
+          type="button"
+          class="btn-secondary modal-button"
+          (click)="seguirEditando()">
+          Seguir editando
+        </button>
+
+        <button
+          type="button"
+          class="btn-primary modal-button"
+          (click)="salirSinGuardar()">
+          Salir sin guardar
+        </button>
+
+      </div>
 
     </div>
 

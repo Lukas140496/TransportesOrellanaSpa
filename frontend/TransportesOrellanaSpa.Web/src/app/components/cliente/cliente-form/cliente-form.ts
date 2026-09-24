@@ -63,6 +63,12 @@ export class ClienteForm {
   modalExitoTitulo = '';
   modalExitoMensaje = '';
 
+  // Modal de cambios sin guardar
+  modalSalirVisible = false;
+
+  // Resuelve la navegación cuando el guard está esperando
+  private resolverSalida: ((salir: boolean) => void) | null = null;
+
   get modoEdicion(): boolean {
     return this.clienteId !== null;
   }
@@ -117,6 +123,9 @@ export class ClienteForm {
           observaciones: cliente.observaciones
         });
 
+        // Los datos cargados desde la base no cuentan como cambios
+        this.clienteForm.markAsPristine();
+
         this.cargando = false;
 
       },
@@ -140,7 +149,80 @@ export class ClienteForm {
     });
   }
 
+  /**
+   * Controla si Angular puede abandonar el formulario.
+   * Lo utiliza unsavedChangesGuard.
+   */
+  puedeSalir(): boolean | Promise<boolean> {
+
+    if (this.guardando) {
+      return false;
+    }
+
+    // Si no hay cambios, puede salir directamente
+    if (!this.clienteForm.dirty) {
+      return true;
+    }
+
+    // Hay cambios sin guardar: mostrar modal
+    this.modalSalirVisible = true;
+
+    return new Promise<boolean>((resolve) => {
+
+      this.resolverSalida = resolve;
+
+    });
+
+  }
+
   cancelar(): void {
+
+    if (this.guardando) {
+      return;
+    }
+
+    if (this.clienteForm.dirty) {
+
+      this.modalSalirVisible = true;
+
+      return;
+    }
+
+    this.router.navigate(['/clientes']);
+
+  }
+
+  seguirEditando(): void {
+
+    this.modalSalirVisible = false;
+
+    // Si el modal fue abierto por el guard,
+    // cancelamos la navegación.
+    if (this.resolverSalida) {
+
+      this.resolverSalida(false);
+      this.resolverSalida = null;
+
+    }
+
+  }
+
+  salirSinGuardar(): void {
+
+    this.modalSalirVisible = false;
+  
+    if (this.resolverSalida) {
+  
+      this.clienteForm.markAsPristine();
+  
+      this.resolverSalida(true);
+      this.resolverSalida = null;
+  
+      return;
+    }
+  
+    this.clienteForm.markAsPristine();
+  
     this.router.navigate(['/clientes']);
   }
 
@@ -187,6 +269,9 @@ export class ClienteForm {
             );
 
             this.guardando = false;
+
+            // Ya no existen cambios pendientes
+            this.clienteForm.markAsPristine();
 
             this.mostrarExito(
               'Cliente actualizado correctamente',
@@ -239,6 +324,9 @@ export class ClienteForm {
 
         this.guardando = false;
 
+        // Ya no existen cambios pendientes
+        this.clienteForm.markAsPristine();
+
         this.mostrarExito(
           'Cliente creado correctamente',
           `El cliente ${resultado.nombre} fue registrado exitosamente.`
@@ -285,6 +373,12 @@ export class ClienteForm {
     this.modalErrorTitulo = titulo;
     this.modalErrorMensaje = mensaje;
     this.modalErrorVisible = true;
+
+  }
+
+  cerrarModalSalir(): void {
+
+    this.modalSalirVisible = false;
 
   }
 

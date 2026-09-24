@@ -39,6 +39,8 @@ import { RemolqueDesactivar } from './components/remolque/remolque-desactivar/re
 
 import { Pagos } from './components/pagos/pagos';
 
+import { unsavedChangesGuard } from './core/guards/unsaved-changes.guard';
+
 
 export const routes: Routes = [
 
@@ -125,7 +127,8 @@ export const routes: Routes = [
 
       {
         path: 'camiones/nuevo',
-        component: CamionForm
+        component: CamionForm,
+        canDeactivate: [unsavedChangesGuard]
       },
 
       {
@@ -170,7 +173,8 @@ export const routes: Routes = [
 
       {
         path: 'conductores/nuevo',
-        component: ConductorForm
+        component: ConductorForm,
+        canDeactivate: [unsavedChangesGuard]
       },
 
       {
@@ -200,7 +204,8 @@ export const routes: Routes = [
 
       {
         path: 'remolques/nuevo',
-        component: RemolqueForm
+        component: RemolqueForm,
+        canDeactivate: [unsavedChangesGuard]
       },
 
       {
@@ -235,7 +240,8 @@ export const routes: Routes = [
 
       {
         path: 'clientes/nuevo',
-        component: ClienteForm
+        component: ClienteForm,
+        canDeactivate: [unsavedChangesGuard]
       },
 
       {
@@ -250,7 +256,8 @@ export const routes: Routes = [
 
       {
         path: 'clientes/:id/editar',
-        component: ClienteForm
+        component: ClienteForm,
+        canDeactivate: [unsavedChangesGuard]
       },
 
       {
@@ -270,7 +277,8 @@ export const routes: Routes = [
 
       {
         path: 'viajes/nuevo',
-        component: ViajeForm
+        component: ViajeForm,
+        canDeactivate: [unsavedChangesGuard]
       },
 
       {

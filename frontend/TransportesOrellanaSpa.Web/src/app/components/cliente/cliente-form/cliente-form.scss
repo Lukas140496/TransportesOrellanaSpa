@@ -435,6 +435,23 @@
   }
 }
 
+.modal-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+@media (max-width: 480px) {
+  .modal-actions {
+    flex-direction: column;
+  }
+
+  .modal-actions .modal-button {
+    width: 100%;
+  }
+}
+
 // =========================
 // RESPONSIVE
 // =========================

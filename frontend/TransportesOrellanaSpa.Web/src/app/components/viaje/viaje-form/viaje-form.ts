@@ -34,6 +34,11 @@ export class ViajeForm implements OnInit {
 
   error = '';
 
+  modalSalirVisible = false;
+  formularioModificado = false;
+
+  private resolverSalida: ((salir: boolean) => void) | null = null;
+
   viaje = {
     numeroGuiaDespacho: '',
     fecha: '',
@@ -141,7 +146,7 @@ export class ViajeForm implements OnInit {
         this.conductores = conductores.filter(
           conductor => conductor.activo
         );
-    
+
         conductoresCargados = true;
         comprobarCarga();
       },
@@ -326,6 +331,56 @@ export class ViajeForm implements OnInit {
     return true;
   }
 
+  marcarFormularioModificado(): void {
+    if (!this.guardando) {
+      this.formularioModificado = true;
+    }
+  }
+  
+  puedeSalir(): boolean | Promise<boolean> {
+    if (this.guardando) {
+      return false;
+    }
+  
+    if (!this.formularioModificado) {
+      return true;
+    }
+  
+    this.modalSalirVisible = true;
+  
+    return new Promise<boolean>((resolve) => {
+      this.resolverSalida = resolve;
+    });
+  }
+  
+  seguirEditando(): void {
+    this.modalSalirVisible = false;
+  
+    if (this.resolverSalida) {
+      this.resolverSalida(false);
+      this.resolverSalida = null;
+    }
+  }
+  
+  salirSinGuardar(): void {
+
+    this.modalSalirVisible = false;
+  
+    if (this.resolverSalida) {
+  
+      this.formularioModificado = false;
+  
+      this.resolverSalida(true);
+      this.resolverSalida = null;
+  
+      return;
+    }
+  
+    this.formularioModificado = false;
+  
+    this.router.navigate(['/viajes']);
+  }
+
   guardar(): void {
 
     if (this.guardando || this.cargando) {
@@ -413,6 +468,8 @@ export class ViajeForm implements OnInit {
 
         this.guardando = false;
 
+        this.formularioModificado = false;
+
         this.mostrarExito(
           'Viaje creado correctamente',
           `El viaje con guía ${resultado.numeroGuiaDespacho} fue registrado exitosamente.`
@@ -457,11 +514,16 @@ export class ViajeForm implements OnInit {
     if (this.guardando) {
       return;
     }
-
+  
+    if (this.formularioModificado) {
+      this.modalSalirVisible = true;
+      return;
+    }
+  
     this.router.navigate([
       '/viajes'
     ]);
-
+  
   }
 
   private mostrarError(
@@ -503,6 +565,8 @@ export class ViajeForm implements OnInit {
   }
 
   cambioCamion(camionId: number): void {
+    this.marcarFormularioModificado();
+  
     const camion = this.camiones.find(
       c => c.id === Number(camionId)
     );

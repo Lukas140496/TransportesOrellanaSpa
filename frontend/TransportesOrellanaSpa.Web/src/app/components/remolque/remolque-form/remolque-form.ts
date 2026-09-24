@@ -40,6 +40,10 @@ export class RemolqueForm implements OnInit {
 
   mensajeError = '';
 
+  modalSalirVisible = false;
+
+  private resolverSalida: ((salir: boolean) => void) | null = null;
+
   remolqueCreado = {
     patente: '',
     marca: '',
@@ -135,6 +139,52 @@ export class RemolqueForm implements OnInit {
     });
   }
 
+  puedeSalir(): boolean | Promise<boolean> {
+
+    if (this.guardando) {
+      return false;
+    }
+  
+    if (!this.formulario.dirty) {
+      return true;
+    }
+  
+    this.modalSalirVisible = true;
+  
+    return new Promise<boolean>((resolve) => {
+      this.resolverSalida = resolve;
+    });
+  }
+  
+  seguirEditando(): void {
+  
+    this.modalSalirVisible = false;
+  
+    if (this.resolverSalida) {
+      this.resolverSalida(false);
+      this.resolverSalida = null;
+    }
+  }
+  
+  salirSinGuardar(): void {
+
+    this.modalSalirVisible = false;
+  
+    if (this.resolverSalida) {
+  
+      this.formulario.markAsPristine();
+  
+      this.resolverSalida(true);
+      this.resolverSalida = null;
+  
+      return;
+    }
+  
+    this.formulario.markAsPristine();
+  
+    this.router.navigate(['/remolques']);
+  }
+
   guardar(): void {
 
     if (this.formulario.invalid) {
@@ -163,8 +213,8 @@ export class RemolqueForm implements OnInit {
       activa: Boolean(valor.activa),
       camionHabitualId:
         valor.camionHabitualId === null ||
-        valor.camionHabitualId === '' ||
-        valor.camionHabitualId === undefined
+          valor.camionHabitualId === '' ||
+          valor.camionHabitualId === undefined
           ? null
           : Number(valor.camionHabitualId)
     };
@@ -174,6 +224,8 @@ export class RemolqueForm implements OnInit {
       next: (resultado) => {
 
         this.guardando = false;
+
+        this.formulario.markAsPristine();
 
         this.remolqueCreado = {
           patente: resultado.patente,
@@ -211,6 +263,16 @@ export class RemolqueForm implements OnInit {
   }
 
   cancelar(): void {
+
+    if (this.guardando) {
+      return;
+    }
+  
+    if (this.formulario.dirty) {
+      this.modalSalirVisible = true;
+      return;
+    }
+  
     this.router.navigate(['/remolques']);
   }
 

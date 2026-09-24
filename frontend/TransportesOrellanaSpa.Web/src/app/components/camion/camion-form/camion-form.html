@@ -58,6 +58,7 @@
             id="patente"
             type="text"
             [(ngModel)]="camion.patente"
+            (ngModelChange)="marcarFormularioModificado()"
             name="patente"
             placeholder="Ej: AB1234"
             maxlength="10"
@@ -83,6 +84,7 @@
             id="marca"
             type="text"
             [(ngModel)]="camion.marca"
+            (ngModelChange)="marcarFormularioModificado()"
             name="marca"
             placeholder="Ej: Freightliner"
             [disabled]="guardando"
@@ -102,6 +104,7 @@
             id="modelo"
             type="text"
             [(ngModel)]="camion.modelo"
+            (ngModelChange)="marcarFormularioModificado()"
             name="modelo"
             placeholder="Ej: FLD 120"
             [disabled]="guardando"
@@ -121,6 +124,7 @@
             id="ano"
             type="number"
             [(ngModel)]="camion.ano"
+            (ngModelChange)="marcarFormularioModificado()"
             name="ano"
             min="1950"
             max="2100"
@@ -142,6 +146,7 @@
             id="tipo"
             type="text"
             [(ngModel)]="camion.tipo"
+            (ngModelChange)="marcarFormularioModificado()"
             name="tipo"
             placeholder="Ej: Tracto Camión"
             [disabled]="guardando"
@@ -161,6 +166,7 @@
             id="color"
             type="text"
             [(ngModel)]="camion.color"
+            (ngModelChange)="marcarFormularioModificado()"
             name="color"
             placeholder="Ej: Azul"
             [disabled]="guardando"
@@ -207,6 +213,7 @@
             id="capacidad"
             type="text"
             [(ngModel)]="camion.capacidad"
+            (ngModelChange)="marcarFormularioModificado()"
             name="capacidad"
             placeholder="Ej: 30 toneladas"
             [disabled]="guardando"
@@ -226,6 +233,7 @@
             id="motor"
             type="text"
             [(ngModel)]="camion.motor"
+            (ngModelChange)="marcarFormularioModificado()"
             name="motor"
             placeholder="Ej: Detroit Series 60"
             [disabled]="guardando"
@@ -245,6 +253,7 @@
             id="caballos"
             type="text"
             [(ngModel)]="camion.caballos"
+            (ngModelChange)="marcarFormularioModificado()"
             name="caballos"
             placeholder="Ej: 430 HP"
             [disabled]="guardando"
@@ -264,6 +273,7 @@
             id="cilindrada"
             type="text"
             [(ngModel)]="camion.cilindrada"
+            (ngModelChange)="marcarFormularioModificado()"
             name="cilindrada"
             placeholder="Ej: 14.0 L"
             [disabled]="guardando"
@@ -283,6 +293,7 @@
             id="transmision"
             type="text"
             [(ngModel)]="camion.transmision"
+            (ngModelChange)="marcarFormularioModificado()"
             name="transmision"
             placeholder="Ej: Fuller 18 velocidades"
             [disabled]="guardando"
@@ -329,6 +340,7 @@
             id="revisionTecnica"
             type="date"
             [(ngModel)]="camion.fechaRevisionTecnica"
+            (ngModelChange)="marcarFormularioModificado()"
             name="fechaRevisionTecnica"
             [disabled]="guardando"
             [class.campo-invalido]="campoInvalido('fechaRevisionTecnica')"
@@ -347,6 +359,7 @@
             id="permisoCirculacion"
             type="date"
             [(ngModel)]="camion.fechaPermisoCirculacion"
+            (ngModelChange)="marcarFormularioModificado()"
             name="fechaPermisoCirculacion"
             [disabled]="guardando"
             [class.campo-invalido]="campoInvalido('fechaPermisoCirculacion')"
@@ -365,6 +378,7 @@
             id="seguroObligatorio"
             type="date"
             [(ngModel)]="camion.fechaSeguroObligatorio"
+            (ngModelChange)="marcarFormularioModificado()"
             name="fechaSeguroObligatorio"
             [disabled]="guardando"
             [class.campo-invalido]="campoInvalido('fechaSeguroObligatorio')"
@@ -405,6 +419,7 @@
           <input
             type="checkbox"
             [(ngModel)]="camion.revisionAlDia"
+            (ngModelChange)="marcarFormularioModificado()"
             name="revisionAlDia"
             [disabled]="guardando"
           />
@@ -429,6 +444,7 @@
           <input
             type="checkbox"
             [(ngModel)]="camion.permisoAlDia"
+            (ngModelChange)="marcarFormularioModificado()"
             name="permisoAlDia"
             [disabled]="guardando"
           />
@@ -453,6 +469,7 @@
           <input
             type="checkbox"
             [(ngModel)]="camion.seguroAlDia"
+            (ngModelChange)="marcarFormularioModificado()"
             name="seguroAlDia"
             [disabled]="guardando"
           />
@@ -658,6 +675,59 @@
           (click)="cerrarModalError()">
           Entendido
         </button>
+
+      </div>
+
+    </div>
+
+  }
+
+
+  <!-- ========================= -->
+  <!-- MODAL CAMBIOS SIN GUARDAR -->
+  <!-- ========================= -->
+
+  @if (modalSalirVisible) {
+
+    <div
+      class="modal-backdrop"
+      (click)="seguirEditando()">
+
+      <div
+        class="modal"
+        role="alertdialog"
+        aria-modal="true"
+        (click)="$event.stopPropagation()">
+
+        <div class="modal-icon error">
+          !
+        </div>
+
+        <h2>
+          ¿Salir del formulario?
+        </h2>
+
+        <p>
+          Tienes cambios sin guardar. Si sales ahora, perderás la información ingresada.
+        </p>
+
+        <div class="modal-actions">
+
+          <button
+            type="button"
+            class="btn-secondary modal-button"
+            (click)="seguirEditando()">
+            Seguir editando
+          </button>
+
+          <button
+            type="button"
+            class="btn-primary modal-button"
+            (click)="salirSinGuardar()">
+            Salir sin guardar
+          </button>
+
+        </div>
 
       </div>
 

@@ -557,6 +557,46 @@
 }
 
 // =========================
+// MODAL CAMBIOS SIN GUARDAR
+// =========================
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+
+  z-index: 2000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+  box-sizing: border-box;
+
+  background: rgba(15, 23, 42, 0.42);
+  backdrop-filter: blur(2px);
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+@media (max-width: 480px) {
+
+  .modal-actions {
+    flex-direction: column;
+  }
+
+  .modal-actions .modal-button {
+    width: 100%;
+  }
+
+}
+
+// =========================
 // CONFIRMACIÓN DE CAMIÓN
 // =========================
 
