@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using TransportesOrellanaSpa.Api.Authorization;
 using TransportesOrellanaSpa.Api.Data;
 using TransportesOrellanaSpa.Api.DTOs;
 using TransportesOrellanaSpa.Api.Models;
@@ -18,6 +19,7 @@ public class RemolqueController : ControllerBase
     }
 
     // GET: api/remolque
+    [RequirePermission("REMOLQUES_VER")]
     [HttpGet]
     public async Task<ActionResult<IEnumerable<RemolqueDto>>> GetAll()
     {
@@ -51,6 +53,7 @@ public class RemolqueController : ControllerBase
     }
 
     // GET: api/remolque/ABC123
+    [RequirePermission("REMOLQUES_VER")]
     [HttpGet("{patente}")]
     public async Task<ActionResult<RemolqueDto>> GetByPatente(string patente)
     {
@@ -92,6 +95,7 @@ public class RemolqueController : ControllerBase
     }
 
     // POST: api/remolque
+    [RequirePermission("REMOLQUES_CREAR")]
     [HttpPost]
     public async Task<ActionResult<RemolqueDto>> Create(
         CrearRemolqueDto dto)
@@ -156,6 +160,7 @@ public class RemolqueController : ControllerBase
     }
 
     // PUT: api/remolque/ABC123
+    [RequirePermission("REMOLQUES_EDITAR")]
     [HttpPut("{patente}")]
     public async Task<ActionResult<RemolqueDto>> Update(
         string patente,
@@ -224,6 +229,7 @@ public class RemolqueController : ControllerBase
     }
 
     // PATCH: api/remolque/ABC123/desactivar
+    [RequirePermission("REMOLQUES_EDITAR")]
     [HttpPatch("{patente}/desactivar")]
     public async Task<ActionResult<RemolqueDto>> Desactivar(
         string patente)
@@ -280,6 +286,7 @@ public class RemolqueController : ControllerBase
     }
 
     // PATCH: api/remolque/ABC123/activar
+    [RequirePermission("REMOLQUES_EDITAR")]
     [HttpPatch("{patente}/activar")]
     public async Task<ActionResult<RemolqueDto>> Activar(
         string patente)
@@ -336,6 +343,7 @@ public class RemolqueController : ControllerBase
     }
 
     // PUT: api/remolque/ABC123/camion-habitual
+    [RequirePermission("REMOLQUES_EDITAR")]
     [HttpPut("{patente}/camion-habitual")]
     public async Task<IActionResult> AsignarCamionHabitual(
         string patente,
@@ -376,6 +384,7 @@ public class RemolqueController : ControllerBase
     }
 
     // DELETE: api/remolque/ABC123/camion-habitual
+    [RequirePermission("REMOLQUES_EDITAR")]
     [HttpDelete("{patente}/camion-habitual")]
     public async Task<IActionResult> DesasignarCamionHabitual(
         string patente)
@@ -403,6 +412,7 @@ public class RemolqueController : ControllerBase
     }
 
     // DELETE: api/remolque/ABC123
+    [RequirePermission("REMOLQUES_ELIMINAR")]
     [HttpDelete("{patente}")]
     public async Task<IActionResult> Delete(string patente)
     {

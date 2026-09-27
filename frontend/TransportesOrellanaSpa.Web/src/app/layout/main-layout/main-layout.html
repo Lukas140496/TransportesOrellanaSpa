@@ -355,9 +355,7 @@
           >
             <span>Desactivar Conductor</span>
           </a>
-
         </div>
-
       </div>
 
       <!-- ========================= -->
@@ -427,7 +425,6 @@
           >
             <span>Asignar Camión</span>
           </a>
-
         </div>
       </div>
 
@@ -453,7 +450,7 @@
     <div class="sidebar-footer">
       <button type="button">⚙ Configuración</button>
 
-      <button type="button">⇥ Cerrar sesión</button>
+      <button type="button" (click)="cerrarSesion()">⇥ Cerrar sesión</button>
     </div>
   </aside>
 
@@ -498,4 +495,81 @@
       <router-outlet></router-outlet>
     </section>
   </main>
+
+  @if (modalCerrarSesionVisible) {
+  <div class="modal-overlay" (click)="cancelarCerrarSesion()">
+    <div
+      class="modal-cerrar-sesion"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="tituloCerrarSesion"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="modal-icono">⇥</div>
+
+      <div class="modal-contenido">
+        <h2 id="tituloCerrarSesion">Cerrar sesión</h2>
+
+        <p>¿Estás seguro de que deseas cerrar tu sesión?</p>
+      </div>
+
+      <div class="modal-acciones">
+        <button type="button" class="btn-cancelar" (click)="cancelarCerrarSesion()">
+          Cancelar
+        </button>
+
+        <button type="button" class="btn-confirmar" (click)="confirmarCerrarSesion()">
+          Cerrar sesión
+        </button>
+      </div>
+    </div>
+  </div>
+  }
 </div>
+
+@if (sesionExpiradaVisible) {
+  <div
+    class="sesion-expirada-overlay"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="tituloSesionExpirada"
+  >
+
+    <div class="sesion-expirada-modal">
+
+      <div class="sesion-expirada-icono">
+        !
+      </div>
+
+      <div class="sesion-expirada-contenido">
+
+        <h2 id="tituloSesionExpirada">
+          Sesión expirada
+        </h2>
+
+        <p>
+          Tu sesión ha expirado por seguridad.
+        </p>
+
+        <span>
+          Vuelve a iniciar sesión para continuar utilizando Flota360.
+        </span>
+
+      </div>
+
+      <div class="sesion-expirada-acciones">
+
+        <button
+          type="button"
+          class="sesion-expirada-boton"
+          (click)="confirmarSesionExpirada()"
+        >
+          Entendido
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+}

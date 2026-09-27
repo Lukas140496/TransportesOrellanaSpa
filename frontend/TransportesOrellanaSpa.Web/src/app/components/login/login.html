@@ -1,0 +1,78 @@
+<div class="login-container">
+  <div class="login-card">
+    <div class="login-header">
+      <h1>Flota360</h1>
+
+      <span class="login-brand"> by Transportes Orellana SpA </span>
+
+      <p>Iniciar sesión</p>
+    </div>
+
+    <form (ngSubmit)="iniciarSesion()">
+      <div class="campo">
+        <label for="email"> Correo electrónico </label>
+
+        <input
+          id="email"
+          name="email"
+          type="email"
+          [(ngModel)]="email"
+          autocomplete="username"
+          placeholder="Ingresa tu correo"
+          [disabled]="cargando"
+        />
+      </div>
+
+      <div class="campo">
+        <label for="password"> Contraseña </label>
+
+        <div class="password-container">
+          <input
+            id="password"
+            name="password"
+            [type]="mostrarPassword ? 'text' : 'password'"
+            [(ngModel)]="password"
+            autocomplete="current-password"
+            placeholder="Ingresa tu contraseña"
+            [disabled]="cargando"
+          />
+
+          <button
+            type="button"
+            class="password-toggle"
+            (click)="alternarPassword()"
+            [disabled]="cargando"
+            [attr.aria-label]="mostrarPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+          >
+            @if (mostrarPassword) {
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" />
+
+              <circle cx="12" cy="12" r="2.8" />
+            </svg>
+            } @else {
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M3 3l18 18" />
+
+              <path d="M10.6 6.2A10.8 10.8 0 0 1 12 6c6 0 9.5 6 9.5 6a18 18 0 0 1-3.1 3.8" />
+
+              <path d="M6.1 6.8C3.8 8.4 2.5 12 2.5 12s3.5 6 9.5 6c1.4 0 2.7-.3 3.8-.8" />
+            </svg>
+            }
+          </button>
+        </div>
+      </div>
+
+      @if (error) {
+      <div class="mensaje-error">
+        {{ error }}
+      </div>
+      }
+
+      <button type="submit" [disabled]="cargando">
+        @if (cargando) { Ingresando... } @else { Ingresar }
+      </button>
+    </form>
+  </div>
+</div>
+

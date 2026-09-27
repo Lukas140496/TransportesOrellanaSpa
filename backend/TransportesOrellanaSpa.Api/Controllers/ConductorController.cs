@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using TransportesOrellanaSpa.Api.Data;
 using TransportesOrellanaSpa.Api.DTOs;
 using TransportesOrellanaSpa.Api.Models;
+using TransportesOrellanaSpa.Api.Authorization;
 
 namespace TransportesOrellanaSpa.Api.Controllers;
 
@@ -18,6 +19,7 @@ public class ConductorController : ControllerBase
     }
 
     // GET: api/conductor
+    [RequirePermission("CONDUCTORES_VER")]
     [HttpGet]
     public async Task<ActionResult<IEnumerable<ConductorDto>>> GetAll()
     {
@@ -39,7 +41,6 @@ public class ConductorController : ControllerBase
                 LicenciaAlDia = c.LicenciaAlDia,
                 Activo = c.Activo,
 
-                // Proyectamos la lista completa de camiones asignados
                 CamionesHabituales = c.CamionesHabituales
                     .Select(cam => new CamionResumenDto
                     {
@@ -56,6 +57,7 @@ public class ConductorController : ControllerBase
     }
 
     // GET: api/conductor/19.374.867-8
+    [RequirePermission("CONDUCTORES_VER")]
     [HttpGet("{rut}")]
     public async Task<ActionResult<ConductorDto>> GetByRut(string rut)
     {
@@ -103,6 +105,7 @@ public class ConductorController : ControllerBase
     }
 
     // POST: api/conductor
+    [RequirePermission("CONDUCTORES_CREAR")]
     [HttpPost]
     public async Task<ActionResult<ConductorDto>> Create(
         CrearConductorDto dto)
@@ -132,8 +135,6 @@ public class ConductorController : ControllerBase
             TipoLicencia = dto.TipoLicencia,
             FechaControlLicencia = dto.FechaControlLicencia,
             LicenciaAlDia = dto.LicenciaAlDia,
-
-            // Todo conductor nuevo nace activo
             Activo = true
         };
 
@@ -141,8 +142,6 @@ public class ConductorController : ControllerBase
 
         await _context.SaveChangesAsync();
 
-        // Busca el registro creado para retornar
-        // la estructura DTO limpia
         var resultado = await _context.Conductores
             .AsNoTracking()
             .Where(c => c.Id == conductor.Id)
@@ -161,7 +160,6 @@ public class ConductorController : ControllerBase
                 FechaControlLicencia = c.FechaControlLicencia,
                 LicenciaAlDia = c.LicenciaAlDia,
                 Activo = c.Activo,
-
                 CamionesHabituales =
                     new List<CamionResumenDto>()
             })
@@ -175,6 +173,7 @@ public class ConductorController : ControllerBase
     }
 
     // PUT: api/conductor/12.345.678-9
+    [RequirePermission("CONDUCTORES_EDITAR")]
     [HttpPut("{rut}")]
     public async Task<IActionResult> Update(
         string rut,
@@ -277,17 +276,13 @@ public class ConductorController : ControllerBase
         conductorExistente.LicenciaAlDia =
             dto.LicenciaAlDia;
 
-        // Importante:
-        // Update NO modifica Activo.
-        // El estado se controla mediante los endpoints
-        // de activar/desactivar.
-
         await _context.SaveChangesAsync();
 
         return NoContent();
     }
 
     // PATCH: api/conductor/12.345.678-9/desactivar
+    [RequirePermission("CONDUCTORES_EDITAR")]
     [HttpPatch("{rut}/desactivar")]
     public async Task<IActionResult> Desactivar(string rut)
     {
@@ -320,6 +315,8 @@ public class ConductorController : ControllerBase
         });
     }
 
+    // PATCH: api/conductor/12.345.678-9/activar
+    [RequirePermission("CONDUCTORES_EDITAR")]
     [HttpPatch("{rut}/activar")]
     public async Task<IActionResult> Activar(string rut)
     {
@@ -350,6 +347,7 @@ public class ConductorController : ControllerBase
     }
 
     // PUT: api/conductor/19.374.867-8/camion-habitual
+    [RequirePermission("CONDUCTORES_EDITAR")]
     [HttpPut("{rut}/camion-habitual")]
     public async Task<IActionResult> AsignarCamionHabitual(
         string rut,
@@ -362,8 +360,6 @@ public class ConductorController : ControllerBase
                 .Trim()
                 .ToUpperInvariant();
 
-        // 1. Buscamos al conductor por su RUT,
-        // incluyendo la colección de camiones
         var conductor = await _context.Conductores
             .Include(c => c.CamionesHabituales)
             .FirstOrDefaultAsync(c => c.Rut == rut);
@@ -375,7 +371,6 @@ public class ConductorController : ControllerBase
             );
         }
 
-        // 2. Buscamos el camión por patente
         var camion = await _context.Camiones
             .FirstOrDefaultAsync(
                 c => c.Patente == patente
@@ -388,7 +383,6 @@ public class ConductorController : ControllerBase
             );
         }
 
-        // 3. Guardamos la relación Muchos a Muchos
         if (!conductor.CamionesHabituales
             .Any(cam => cam.Id == camion.Id))
         {
@@ -397,7 +391,6 @@ public class ConductorController : ControllerBase
             await _context.SaveChangesAsync();
         }
 
-        // 4. Retornamos el perfil actualizado
         var conductorDto = new ConductorDto
         {
             Id = conductor.Id,
@@ -439,6 +432,7 @@ public class ConductorController : ControllerBase
     }
 
     // PUT: api/conductor/25.522.461-8/desasignar-camion/VZ9625
+    [RequirePermission("CONDUCTORES_EDITAR")]
     [HttpPut("{rut}/desasignar-camion/{patente}")]
     public async Task<IActionResult> DesasignarCamionHabitual(
         string rut,
@@ -451,8 +445,6 @@ public class ConductorController : ControllerBase
                 .Trim()
                 .ToUpperInvariant();
 
-        // 1. Buscamos el conductor incluyendo
-        // su lista actual de camiones
         var conductor = await _context.Conductores
             .Include(c => c.CamionesHabituales)
             .FirstOrDefaultAsync(c => c.Rut == rut);
@@ -464,7 +456,6 @@ public class ConductorController : ControllerBase
             );
         }
 
-        // 2. Buscamos el camión asociado
         var camionAsociado =
             conductor.CamionesHabituales
                 .FirstOrDefault(
@@ -479,13 +470,11 @@ public class ConductorController : ControllerBase
             );
         }
 
-        // 3. Removemos solamente esta relación
         conductor.CamionesHabituales
             .Remove(camionAsociado);
 
         await _context.SaveChangesAsync();
 
-        // 4. Construimos el DTO actualizado
         var conductorDto = new ConductorDto
         {
             Id = conductor.Id,
@@ -527,6 +516,7 @@ public class ConductorController : ControllerBase
     }
 
     // DELETE: api/conductor/12.345.678-9
+    [RequirePermission("CONDUCTORES_ELIMINAR")]
     [HttpDelete("{rut}")]
     public async Task<IActionResult> Delete(string rut)
     {

@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using TransportesOrellanaSpa.Api.Data;
 using TransportesOrellanaSpa.Api.DTOs;
 using TransportesOrellanaSpa.Api.Models;
+using TransportesOrellanaSpa.Api.Authorization;
 
 namespace TransportesOrellanaSpa.Api.Controllers;
 
@@ -18,6 +19,7 @@ public class CamionController : ControllerBase
     }
 
     // GET: api/camion
+    [RequirePermission("CAMIONES_VER")]
     [HttpGet]
     public async Task<ActionResult<IEnumerable<CamionDto>>> GetAll()
     {
@@ -43,7 +45,6 @@ public class CamionController : ControllerBase
                 RevisionAlDia = c.RevisionAlDia,
                 PermisoAlDia = c.PermisoAlDia,
                 SeguroAlDia = c.SeguroAlDia,
-
                 Activo = c.Activo,
 
                 ConductoresHabituales = c.ConductoresHabituales
@@ -75,6 +76,7 @@ public class CamionController : ControllerBase
     }
 
     // GET: api/camion/VJ8427
+    [RequirePermission("CAMIONES_VER")]
     [HttpGet("{patente}")]
     public async Task<ActionResult<CamionDto>> GetByPatente(string patente)
     {
@@ -103,7 +105,6 @@ public class CamionController : ControllerBase
                 RevisionAlDia = c.RevisionAlDia,
                 PermisoAlDia = c.PermisoAlDia,
                 SeguroAlDia = c.SeguroAlDia,
-
                 Activo = c.Activo,
 
                 ConductoresHabituales = c.ConductoresHabituales
@@ -140,6 +141,7 @@ public class CamionController : ControllerBase
     }
 
     // POST: api/camion
+    [RequirePermission("CAMIONES_CREAR")]
     [HttpPost]
     public async Task<ActionResult<CamionDto>> Create(CrearCamionDto dto)
     {
@@ -203,7 +205,6 @@ public class CamionController : ControllerBase
                 RevisionAlDia = c.RevisionAlDia,
                 PermisoAlDia = c.PermisoAlDia,
                 SeguroAlDia = c.SeguroAlDia,
-
                 Activo = c.Activo,
 
                 ConductoresHabituales = c.ConductoresHabituales
@@ -226,6 +227,7 @@ public class CamionController : ControllerBase
     }
 
     // PUT: api/camion/VJ8427
+    [RequirePermission("CAMIONES_EDITAR")]
     [HttpPut("{patente}")]
     public async Task<IActionResult> Update(
         string patente,
@@ -264,6 +266,7 @@ public class CamionController : ControllerBase
     }
 
     // PATCH: api/camion/VJ8427/desactivar
+    [RequirePermission("CAMIONES_EDITAR")]
     [HttpPatch("{patente}/desactivar")]
     public async Task<ActionResult<CamionDto>> Desactivar(
         string patente)
@@ -312,7 +315,6 @@ public class CamionController : ControllerBase
                 RevisionAlDia = c.RevisionAlDia,
                 PermisoAlDia = c.PermisoAlDia,
                 SeguroAlDia = c.SeguroAlDia,
-
                 Activo = c.Activo,
 
                 ConductoresHabituales = c.ConductoresHabituales
@@ -344,6 +346,7 @@ public class CamionController : ControllerBase
     }
 
     // PATCH: api/camion/VJ8427/activar
+    [RequirePermission("CAMIONES_EDITAR")]
     [HttpPatch("{patente}/activar")]
     public async Task<ActionResult<CamionDto>> Activar(
         string patente)
@@ -392,7 +395,6 @@ public class CamionController : ControllerBase
                 RevisionAlDia = c.RevisionAlDia,
                 PermisoAlDia = c.PermisoAlDia,
                 SeguroAlDia = c.SeguroAlDia,
-
                 Activo = c.Activo,
 
                 ConductoresHabituales = c.ConductoresHabituales
@@ -424,6 +426,7 @@ public class CamionController : ControllerBase
     }
 
     // PUT: api/camion/VJ8427/conductor-habitual
+    [RequirePermission("CAMIONES_EDITAR")]
     [HttpPut("{patente}/conductor-habitual")]
     public async Task<IActionResult> AsignarConductorHabitual(
         string patente,
@@ -432,7 +435,6 @@ public class CamionController : ControllerBase
         patente = patente.Trim().ToUpperInvariant();
         var rut = dto.Rut.Trim();
 
-        // 1. Buscamos el camión incluyendo sus remolques para la respuesta final
         var camion = await _context.Camiones
             .Include(c => c.ConductoresHabituales)
             .Include(c => c.Remolques)
@@ -444,7 +446,6 @@ public class CamionController : ControllerBase
                 $"No existe un camión con la patente {patente}.");
         }
 
-        // 2. Buscamos solo el ID y los datos básicos del conductor
         var conductor = await _context.Conductores
             .FirstOrDefaultAsync(c => c.Rut == rut);
 
@@ -454,7 +455,6 @@ public class CamionController : ControllerBase
                 $"No existe un conductor con el RUT {rut}.");
         }
 
-        // 3. Realizamos la asignación física
         if (!camion.ConductoresHabituales
             .Any(cond => cond.Id == conductor.Id))
         {
@@ -462,7 +462,6 @@ public class CamionController : ControllerBase
             await _context.SaveChangesAsync();
         }
 
-        // 4. Construimos el DTO de salida del Camión
         var camionDto = new CamionDto
         {
             Id = camion.Id,
@@ -483,7 +482,6 @@ public class CamionController : ControllerBase
             RevisionAlDia = camion.RevisionAlDia,
             PermisoAlDia = camion.PermisoAlDia,
             SeguroAlDia = camion.SeguroAlDia,
-
             Activo = camion.Activo,
 
             ConductoresHabituales = camion.ConductoresHabituales
@@ -510,7 +508,6 @@ public class CamionController : ControllerBase
                 .ToList()
         };
 
-        // 5. Retornamos la respuesta consistente
         return Ok(new
         {
             Mensaje = "Conductor habitual asignado correctamente al camión",
@@ -519,6 +516,7 @@ public class CamionController : ControllerBase
     }
 
     // PUT: api/camion/VJ8427/remolque-habitual
+    [RequirePermission("CAMIONES_EDITAR")]
     [HttpPut("{patente}/remolque-habitual")]
     public async Task<IActionResult> AsignarRemolqueHabitual(
         string patente,
@@ -559,6 +557,7 @@ public class CamionController : ControllerBase
     }
 
     // DELETE: api/camion/VJ8427/conductor-habitual/RUT
+    [RequirePermission("CAMIONES_EDITAR")]
     [HttpDelete("{patente}/conductor-habitual/{rut}")]
     public async Task<IActionResult> DesasignarConductorHabitual(
         string patente,
@@ -599,6 +598,7 @@ public class CamionController : ControllerBase
     }
 
     // DELETE: api/camion/VJ8427/remolque-habitual
+    [RequirePermission("CAMIONES_EDITAR")]
     [HttpDelete("{patente}/remolque-habitual")]
     public async Task<IActionResult> DesasignarRemolqueHabitual(
         string patente)
@@ -630,6 +630,7 @@ public class CamionController : ControllerBase
     }
 
     // DELETE: api/camion/VJ8427
+    [RequirePermission("CAMIONES_ELIMINAR")]
     [HttpDelete("{patente}")]
     public async Task<IActionResult> Delete(string patente)
     {

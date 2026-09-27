@@ -3,10 +3,13 @@ using Microsoft.EntityFrameworkCore;
 using TransportesOrellanaSpa.Api.Data;
 using TransportesOrellanaSpa.Api.DTOs;
 using TransportesOrellanaSpa.Api.Models;
+using Microsoft.AspNetCore.Authorization;
+using TransportesOrellanaSpa.Api.Authorization;
 
 namespace TransportesOrellanaSpa.Api.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("api/[controller]")]
 public class ClienteController : ControllerBase
 {
@@ -21,6 +24,7 @@ public class ClienteController : ControllerBase
     // POST: api/cliente
     // =========================
 
+    [RequirePermission("CLIENTES_CREAR")]
     [HttpPost]
     public async Task<ActionResult<ClienteDto>> Create(CrearClienteDto dto)
     {
@@ -96,6 +100,7 @@ public class ClienteController : ControllerBase
     // GET: api/cliente
     // =========================
 
+    [RequirePermission("CLIENTES_VER")]
     [HttpGet]
     public async Task<ActionResult<IEnumerable<ClienteDto>>> GetAll()
     {
@@ -124,6 +129,7 @@ public class ClienteController : ControllerBase
     // GET: api/cliente/{id}
     // =========================
 
+    [RequirePermission("CLIENTES_VER")]
     [HttpGet("{id}")]
     public async Task<ActionResult<ClienteDto>> GetById(int id)
     {
@@ -157,6 +163,7 @@ public class ClienteController : ControllerBase
     // PUT: api/cliente/{id}
     // =========================
 
+    [RequirePermission("CLIENTES_EDITAR")]
     [HttpPut("{id}")]
     public async Task<ActionResult<ClienteDto>> Update(
         int id,
@@ -228,6 +235,7 @@ public class ClienteController : ControllerBase
     // PUT: api/cliente/{id}/desactivar
     // =========================
 
+    [RequirePermission("CLIENTES_EDITAR")]
     [HttpPut("{id}/desactivar")]
     public async Task<ActionResult<ClienteDto>> Desactivar(int id)
     {
@@ -269,6 +277,7 @@ public class ClienteController : ControllerBase
     // PUT: api/cliente/{id}/activar
     // =========================
 
+    [RequirePermission("CLIENTES_EDITAR")]
     [HttpPut("{id}/activar")]
     public async Task<ActionResult<ClienteDto>> Activar(int id)
     {

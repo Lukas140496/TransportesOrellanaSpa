@@ -443,39 +443,58 @@ public class DashboardController : ControllerBase
             // ===================================
             // VIAJES PAGADOS
             //
-            // Se utiliza FechaPago porque queremos
-            // saber cuántos viajes del período
-            // seleccionado ya fueron pagados.
+            // Se consideran los viajes cuya
+            // Fecha pertenece al período seleccionado
+            // y cuyo estado de pago es Pagado.
             // ===================================
 
-            var viajesPagados = await _context.Viajes
-                .CountAsync(v =>
+            var viajesPagadosQuery = _context.Viajes
+                .Where(v =>
                     v.EstadoPago == EstadoPago.Pagado &&
                     v.Fecha >= inicioMes &&
                     v.Fecha < inicioMesSiguiente
                 );
 
+            var viajesPagados =
+                await viajesPagadosQuery.CountAsync();
+
+            var montoPagado =
+                await viajesPagadosQuery
+                    .SumAsync(v => v.Tarifa);
+
             // ===================================
             // VIAJES PENDIENTES
             //
-            // Se utiliza Fecha porque queremos
-            // saber cuántos viajes del período
-            // todavía están pendientes de pago.
+            // Se consideran los viajes cuya
+            // Fecha pertenece al período seleccionado
+            // y cuyo estado de pago es Pendiente.
             // ===================================
 
-            var viajesPendientesPago = await _context.Viajes
-                .CountAsync(v =>
+            var viajesPendientesPagoQuery = _context.Viajes
+                .Where(v =>
                     v.EstadoPago == EstadoPago.Pendiente &&
                     v.Fecha >= inicioMes &&
                     v.Fecha < inicioMesSiguiente
                 );
 
+            var viajesPendientesPago =
+                await viajesPendientesPagoQuery.CountAsync();
+
+            var montoPendientePago =
+                await viajesPendientesPagoQuery
+                    .SumAsync(v => v.Tarifa);
+
             var resultado = new DashboardEstadoPagosDto
             {
                 ViajesPagados = viajesPagados,
 
+                MontoPagado = montoPagado,
+
                 ViajesPendientesPago =
-                    viajesPendientesPago
+                    viajesPendientesPago,
+
+                MontoPendientePago =
+                    montoPendientePago
             };
 
             return Ok(resultado);

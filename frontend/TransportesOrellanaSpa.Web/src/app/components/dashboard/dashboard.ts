@@ -40,7 +40,9 @@ export class Dashboard implements OnInit {
 
   estadoPagos: DashboardEstadoPagos = {
     viajesPagados: 0,
-    viajesPendientesPago: 0
+    montoPagado: 0,
+    viajesPendientesPago: 0,
+    montoPendientePago: 0
   };
 
   // Carga inicial del dashboard

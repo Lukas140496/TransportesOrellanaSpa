@@ -1,5 +1,7 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using TransportesOrellanaSpa.Api.Authorization;
 using TransportesOrellanaSpa.Api.Data;
 using TransportesOrellanaSpa.Api.DTOs;
 using TransportesOrellanaSpa.Api.Models;
@@ -8,6 +10,7 @@ using TransportesOrellanaSpa.Api.Enums;
 namespace TransportesOrellanaSpa.Api.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("api/[controller]")]
 public class ViajeController : ControllerBase
 {
@@ -40,6 +43,7 @@ public class ViajeController : ControllerBase
     // =========================
 
     [HttpPost]
+    [RequirePermission("VIAJES_CREAR")]
     public async Task<ActionResult<ViajeDto>> Create(CrearViajeDto dto)
     {
         // =========================
@@ -313,6 +317,7 @@ public class ViajeController : ControllerBase
     // =========================
 
     [HttpGet]
+    [RequirePermission("VIAJES_VER")]
     public async Task<ActionResult<IEnumerable<ViajeDto>>> GetAll(
         [FromQuery] string? guia,
         [FromQuery] DateTime? fechaDesde,
@@ -512,6 +517,7 @@ public class ViajeController : ControllerBase
     // =========================
 
     [HttpGet("{id}")]
+    [RequirePermission("VIAJES_VER")]
     public async Task<ActionResult<ViajeDto>> GetById(int id)
     {
         var viaje = await _context.Viajes
@@ -636,6 +642,7 @@ public class ViajeController : ControllerBase
 
     // ELIMINAR VIAJE
     [HttpDelete("{id}")]
+    [RequirePermission("VIAJES_ELIMINAR")]
     public async Task<IActionResult> Delete(int id)
     {
         var viaje = await _context.Viajes
@@ -665,6 +672,7 @@ public class ViajeController : ControllerBase
     // =========================
 
     [HttpPut("{id}")]
+    [RequirePermission("VIAJES_EDITAR")]
     public async Task<ActionResult<ViajeDto>> Update(
         int id,
         ActualizarViajeDto dto)
@@ -947,6 +955,7 @@ public class ViajeController : ControllerBase
     // =========================
 
     [HttpPatch("{id}/completar")]
+    [RequirePermission("VIAJES_EDITAR")]
     public async Task<ActionResult<ViajeDto>> Completar(int id)
     {
         // =========================
@@ -1111,6 +1120,7 @@ public class ViajeController : ControllerBase
     // =========================
 
     [HttpPatch("{id}/pagar")]
+    [RequirePermission("VIAJES_EDITAR")]
     public async Task<ActionResult<ViajeDto>> Pagar(int id)
     {
         var viaje = await _context.Viajes
@@ -1197,6 +1207,7 @@ public class ViajeController : ControllerBase
     /// Marca múltiples viajes como pagados utilizando sus números de guía.
     /// </summary>
     [HttpPatch("pagar-masivo")]
+    [RequirePermission("VIAJES_EDITAR")]
     public async Task<ActionResult> PagarMasivo(
         [FromBody] PagarViajesMasivoDto dto)
     {
@@ -1285,6 +1296,7 @@ public class ViajeController : ControllerBase
     /// Permite filtrar opcionalmente por cliente.
     /// </summary>
     [HttpGet("pendientes-pago")]
+    [RequirePermission("VIAJES_VER")]
     public async Task<ActionResult<IEnumerable<ViajeDto>>> ObtenerPendientesPago(
         [FromQuery] int? clienteId)
     {

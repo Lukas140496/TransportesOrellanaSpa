@@ -16,6 +16,16 @@ public class AppDbContext : DbContext
     public DbSet<Cliente> Clientes { get; set; }
     public DbSet<Viaje> Viajes { get; set; }
 
+    // =========================
+    // AUTENTICACIÓN Y PERMISOS
+    // =========================
+    public DbSet<Usuario> Usuarios { get; set; }
+    public DbSet<Rol> Roles { get; set; }
+    public DbSet<Modulo> Modulos { get; set; }
+    public DbSet<Permiso> Permisos { get; set; }
+    public DbSet<UsuarioRol> UsuariosRoles { get; set; }
+    public DbSet<RolPermiso> RolesPermisos { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -27,9 +37,15 @@ public class AppDbContext : DbContext
             .HasMany(c => c.ConductoresHabituales)
             .WithMany(c => c.CamionesHabituales)
             .UsingEntity<Dictionary<string, object>>(
-                "CamionConductor", // Nombre de la tabla intermedia en Postgres
-                j => j.HasOne<Conductor>().WithMany().HasForeignKey("ConductorId").OnDelete(DeleteBehavior.Cascade),
-                j => j.HasOne<Camion>().WithMany().HasForeignKey("CamionId").OnDelete(DeleteBehavior.Cascade)
+                "CamionConductor",
+                j => j.HasOne<Conductor>()
+                    .WithMany()
+                    .HasForeignKey("ConductorId")
+                    .OnDelete(DeleteBehavior.Cascade),
+                j => j.HasOne<Camion>()
+                    .WithMany()
+                    .HasForeignKey("CamionId")
+                    .OnDelete(DeleteBehavior.Cascade)
             );
 
         // =========================
@@ -76,6 +92,59 @@ public class AppDbContext : DbContext
             .WithMany(r => r.Viajes)
             .HasForeignKey(v => v.RemolqueId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        // =========================
+        // USUARIO - ROL
+        // =========================
+        modelBuilder.Entity<UsuarioRol>()
+            .HasKey(ur => new
+            {
+                ur.UsuarioId,
+                ur.RolId
+            });
+
+        modelBuilder.Entity<UsuarioRol>()
+            .HasOne(ur => ur.Usuario)
+            .WithMany(u => u.UsuariosRoles)
+            .HasForeignKey(ur => ur.UsuarioId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<UsuarioRol>()
+            .HasOne(ur => ur.Rol)
+            .WithMany(r => r.UsuariosRoles)
+            .HasForeignKey(ur => ur.RolId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // =========================
+        // ROL - PERMISO
+        // =========================
+        modelBuilder.Entity<RolPermiso>()
+            .HasKey(rp => new
+            {
+                rp.RolId,
+                rp.PermisoId
+            });
+
+        modelBuilder.Entity<RolPermiso>()
+            .HasOne(rp => rp.Rol)
+            .WithMany(r => r.RolesPermisos)
+            .HasForeignKey(rp => rp.RolId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<RolPermiso>()
+            .HasOne(rp => rp.Permiso)
+            .WithMany(p => p.RolesPermisos)
+            .HasForeignKey(rp => rp.PermisoId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // =========================
+        // PERMISO - MODULO
+        // =========================
+        modelBuilder.Entity<Permiso>()
+            .HasOne(p => p.Modulo)
+            .WithMany(m => m.Permisos)
+            .HasForeignKey(p => p.ModuloId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         // =========================
         // CAMIÓN - FECHAS
@@ -130,7 +199,7 @@ public class AppDbContext : DbContext
             .HasConversion<string>();
 
         // =========================
-        // ÍNDICES
+        // ÍNDICES EXISTENTES
         // =========================
         modelBuilder.Entity<Camion>()
             .HasIndex(c => c.Patente)
@@ -150,6 +219,35 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<Viaje>()
             .HasIndex(v => v.NumeroGuiaDespacho)
+            .IsUnique();
+
+        // =========================
+        // ÍNDICES AUTENTICACIÓN
+        // =========================
+
+        // RUT único por usuario
+        modelBuilder.Entity<Usuario>()
+            .HasIndex(u => u.Rut)
+            .IsUnique();
+
+        // Email único para iniciar sesión
+        modelBuilder.Entity<Usuario>()
+            .HasIndex(u => u.Email)
+            .IsUnique();
+
+        // Nombre de rol único
+        modelBuilder.Entity<Rol>()
+            .HasIndex(r => r.Nombre)
+            .IsUnique();
+
+        // Código de módulo único
+        modelBuilder.Entity<Modulo>()
+            .HasIndex(m => m.Codigo)
+            .IsUnique();
+
+        // Código de permiso único
+        modelBuilder.Entity<Permiso>()
+            .HasIndex(p => p.Codigo)
             .IsUnique();
     }
 }

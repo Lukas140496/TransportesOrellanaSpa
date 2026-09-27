@@ -1,6 +1,12 @@
 using Microsoft.EntityFrameworkCore;
 using TransportesOrellanaSpa.Api.Data;
+using TransportesOrellanaSpa.Api.Services;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.AspNetCore.Authorization;
+using TransportesOrellanaSpa.Api.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -46,10 +52,84 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString));
 
 // =========================
+// SERVICIOS DE AUTENTICACIÓN
+// =========================
+
+builder.Services.AddScoped<PasswordService>();
+builder.Services.AddScoped<AutenticacionService>();
+builder.Services.AddScoped<JwtService>();
+
+builder.Services.AddScoped<IAuthorizationHandler, PermissionHandler>();
+
+builder.Services.AddSingleton<
+    IAuthorizationPolicyProvider,
+    PermissionPolicyProvider
+>();
+
+var jwtSection = builder.Configuration.GetSection("Jwt");
+
+var jwtKey = jwtSection["Key"]
+    ?? throw new InvalidOperationException(
+        "La configuración 'Jwt:Key' no está definida."
+    );
+
+var jwtIssuer = jwtSection["Issuer"]
+    ?? throw new InvalidOperationException(
+        "La configuración 'Jwt:Issuer' no está definida."
+    );
+
+var jwtAudience = jwtSection["Audience"]
+    ?? throw new InvalidOperationException(
+        "La configuración 'Jwt:Audience' no está definida."
+    );
+
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(jwtKey)
+            ),
+
+            ValidateIssuer = true,
+            ValidIssuer = jwtIssuer,
+
+            ValidateAudience = true,
+            ValidAudience = jwtAudience,
+
+            ValidateLifetime = true,
+
+            ClockSkew = TimeSpan.Zero
+        };
+    });
+
+// =========================
 // APP
 // =========================
 
 var app = builder.Build();
+
+// =========================
+// SEED INICIAL
+// =========================
+
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider
+        .GetRequiredService<AppDbContext>();
+
+    var passwordService = scope.ServiceProvider
+        .GetRequiredService<PasswordService>();
+
+    await DataSeeder.SeedAsync(
+        context,
+        passwordService,
+        builder.Configuration
+    );
+}
 
 // =========================
 // HTTP REQUEST PIPELINE
@@ -63,6 +143,8 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseCors("Frontend");
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

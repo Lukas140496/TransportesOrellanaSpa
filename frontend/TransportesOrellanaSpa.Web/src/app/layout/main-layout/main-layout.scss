@@ -2,12 +2,24 @@
 /* LAYOUT PRINCIPAL */
 /* ========================= */
 
+:host {
+  position: fixed;
+  inset: 0;
+
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  overflow: hidden;
+}
+
 .app-layout {
   display: flex;
 
   width: 100%;
-  height: 100vh;
-  min-height: 100vh;
+  height: 100%;
+  min-height: 0;
 
   overflow: hidden;
 
@@ -21,8 +33,8 @@
 
 .sidebar {
   width: 250px;
-  height: 100vh;
-  min-height: 100vh;
+  height: 100%;
+  min-height: 0;
 
   display: flex;
   flex-direction: column;
@@ -468,7 +480,7 @@
   min-width: 0;
   min-height: 0;
 
-  height: 100vh;
+  height: 100%;
 
   display: flex;
   flex-direction: column;
@@ -642,12 +654,388 @@
   display: none;
 }
 
+/* =========================================================
+   MODAL CERRAR SESIÓN
+   ========================================================= */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+
+  z-index: 9999;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+
+  background: rgba(15, 23, 42, 0.48);
+
+  backdrop-filter: blur(2px);
+
+  animation: modalOverlayEntrada 0.18s ease-out;
+}
+
+.modal-cerrar-sesion {
+  width: 100%;
+  max-width: 420px;
+
+  padding: 30px;
+
+  background: #ffffff;
+
+  border: 1px solid rgba(23, 43, 77, 0.08);
+  border-radius: 14px;
+
+  box-shadow:
+    0 24px 50px rgba(15, 23, 42, 0.18),
+    0 8px 20px rgba(15, 23, 42, 0.08);
+
+  box-sizing: border-box;
+
+  animation: modalEntrada 0.22s ease-out;
+}
+
+.modal-icono {
+  width: 44px;
+  height: 44px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: 18px;
+
+  border-radius: 50%;
+
+  background: #eef2f7;
+
+  color: #172b4d;
+
+  font-size: 21px;
+  font-weight: 600;
+}
+
+.modal-contenido {
+  h2 {
+    margin: 0 0 8px;
+
+    color: #172b4d;
+
+    font-size: 23px;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+
+  p {
+    margin: 0;
+
+    color: #6b7280;
+
+    font-size: 14px;
+    line-height: 1.5;
+  }
+}
+
+.modal-acciones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+
+  margin-top: 28px;
+
+  button {
+    min-width: 110px;
+    min-height: 42px;
+
+    padding: 10px 16px;
+
+    border-radius: 8px;
+
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+      background-color 0.2s ease,
+      border-color 0.2s ease,
+      color 0.2s ease,
+      box-shadow 0.2s ease,
+      transform 0.15s ease;
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+
+  .btn-cancelar {
+    border: 1px solid #d5d9dc;
+
+    background: #ffffff;
+
+    color: #4b5563;
+
+    &:hover {
+      border-color: #b8c0c4;
+
+      background: #f7f8f8;
+
+      color: #172b4d;
+    }
+
+    &:focus-visible {
+      outline: none;
+
+      box-shadow:
+        0 0 0 3px rgba(23, 43, 77, 0.10);
+    }
+  }
+
+  .btn-confirmar {
+    border: 1px solid #172b4d;
+
+    background: #172b4d;
+
+    color: #ffffff;
+
+    box-shadow:
+      0 3px 8px rgba(23, 43, 77, 0.16);
+
+    &:hover {
+      border-color: #10213b;
+
+      background: #10213b;
+
+      box-shadow:
+        0 5px 12px rgba(23, 43, 77, 0.22);
+
+      transform: translateY(-1px);
+    }
+
+    &:focus-visible {
+      outline: none;
+
+      box-shadow:
+        0 0 0 3px rgba(23, 43, 77, 0.16),
+        0 4px 10px rgba(23, 43, 77, 0.18);
+    }
+  }
+}
+
+/* =========================================================
+   ANIMACIONES MODAL
+   ========================================================= */
+
+@keyframes modalOverlayEntrada {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modalEntrada {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
 
 /* ========================= */
-/* TABLET */
+/* SESIÓN EXPIRADA */
 /* ========================= */
 
-@media (min-width: 601px) and (max-width: 1024px) {
+.sesion-expirada-overlay {
+  position: fixed;
+  inset: 0;
+
+  z-index: 1000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+
+  background: rgba(15, 39, 71, 0.48);
+
+  box-sizing: border-box;
+}
+
+.sesion-expirada-modal {
+  width: 100%;
+  max-width: 410px;
+
+  padding: 30px;
+
+  border: 1px solid #e7ebf1;
+  border-radius: 18px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 20px 50px rgba(15, 39, 71, 0.20);
+
+  box-sizing: border-box;
+
+  text-align: center;
+}
+
+.sesion-expirada-icono {
+  width: 48px;
+  height: 48px;
+
+  margin: 0 auto 18px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #fff3e8;
+  color: #c9782c;
+
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.sesion-expirada-contenido h2 {
+  margin: 0;
+
+  color: #172b4d;
+
+  font-size: 20px;
+  line-height: 1.3;
+
+  font-weight: 700;
+}
+
+.sesion-expirada-contenido p {
+  margin: 10px 0 0;
+
+  color: #52657c;
+
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.sesion-expirada-contenido span {
+  display: block;
+
+  margin-top: 6px;
+
+  color: #8a96a6;
+
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.sesion-expirada-acciones {
+  display: flex;
+  justify-content: center;
+
+  margin-top: 24px;
+}
+
+.sesion-expirada-boton {
+  min-width: 130px;
+
+  padding: 11px 20px;
+
+  border: 0;
+  border-radius: 9px;
+
+  background: #172b4d;
+  color: #ffffff;
+
+  font-size: 13px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.sesion-expirada-boton:hover {
+  background: #0f2747;
+  transform: translateY(-1px);
+}
+
+.sesion-expirada-boton:active {
+  transform: translateY(0);
+}
+
+@media (max-width: 480px) {
+  .modal-cerrar-sesion {
+    padding: 24px;
+
+    border-radius: 12px;
+  }
+
+  .modal-acciones {
+    flex-direction: column-reverse;
+
+    button {
+      width: 100%;
+    }
+  }
+
+  .sesion-expirada-overlay {
+    padding: 16px;
+  }
+
+  .sesion-expirada-modal {
+    padding: 26px 22px;
+    border-radius: 16px;
+  }
+
+  .sesion-expirada-icono {
+    width: 44px;
+    height: 44px;
+    margin-bottom: 16px;
+  }
+
+  .sesion-expirada-contenido h2 {
+    font-size: 18px;
+  }
+
+  .sesion-expirada-contenido p {
+    font-size: 13px;
+  }
+}
+
+
+/* ========================= */
+/* TABLET HORIZONTAL */
+/* ========================= */
+
+@media (min-width: 601px) and (max-width: 1024px) and (orientation: landscape) {
+
+  /* ========================= */
+  /* LAYOUT */
+  /* ========================= */
+
+  .app-layout {
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+
+    overflow: hidden;
+  }
+
 
   /* ========================= */
   /* SIDEBAR */
@@ -656,7 +1044,7 @@
   .sidebar {
     width: 210px;
 
-    height: 100dvh;
+    height: 100%;
     min-height: 0;
 
     box-sizing: border-box;
@@ -732,6 +1120,15 @@
 
 
   /* ========================= */
+  /* HAMBURGUESA */
+  /* ========================= */
+
+  .menu-toggle {
+    display: none;
+  }
+
+
+  /* ========================= */
   /* TOPBAR */
   /* ========================= */
 
@@ -744,29 +1141,32 @@
   /* CONTENIDO */
   /* ========================= */
 
+  .main-content {
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+  }
+
   .page-content {
     padding: 20px;
   }
 
 }
 
-
 /* ========================= */
-/* MÓVIL */
+/* TABLET VERTICAL */
 /* ========================= */
 
-@media (max-width: 600px) {
+@media (min-width: 601px) and (max-width: 1024px) and (orientation: portrait) {
 
   /* ========================= */
   /* LAYOUT */
   /* ========================= */
 
   .app-layout {
-    height: 100vh;
-    height: 100dvh;
-
-    min-height: 100vh;
-    min-height: 100dvh;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
 
     overflow: hidden;
   }
@@ -784,11 +1184,8 @@
 
     width: 270px;
 
-    height: 100vh;
-    height: 100dvh;
-
-    min-height: 100vh;
-    min-height: 100dvh;
+    height: 100%;
+    min-height: 0;
 
     padding: 24px 16px;
 
@@ -980,9 +1377,269 @@
   /* ========================= */
 
   .main-content {
-    height: 100vh;
-    height: 100dvh;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+  }
 
+  .page-content {
+    padding: 16px;
+  }
+
+
+  /* ========================= */
+  /* USUARIO */
+  /* ========================= */
+
+  .user-info {
+    display: none;
+  }
+
+
+  /* ========================= */
+  /* OVERLAY */
+  /* ========================= */
+
+  .sidebar-overlay {
+    display: block;
+
+    position: fixed;
+
+    inset: 0;
+
+    background: rgba(0, 0, 0, 0.45);
+
+    z-index: 90;
+  }
+
+}
+
+/* ========================= */
+/* MÓVIL */
+/* ========================= */
+
+@media (max-width: 600px) {
+
+  /* ========================= */
+  /* LAYOUT */
+  /* ========================= */
+
+  .app-layout {
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+
+    overflow: hidden;
+  }
+
+
+  /* ========================= */
+  /* SIDEBAR */
+  /* ========================= */
+
+  .sidebar {
+    position: fixed;
+
+    top: 0;
+    left: 0;
+
+    width: 270px;
+
+    height: 100%;
+    min-height: 0;
+
+    padding: 24px 16px;
+
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: column;
+
+    transform: translateX(-100%);
+
+    box-shadow: 8px 0 30px rgba(0, 0, 0, 0.18);
+
+    overflow: hidden;
+
+    transition:
+      transform 0.25s ease;
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+
+  /* ========================= */
+  /* LOGO */
+  /* ========================= */
+
+  .logo {
+    justify-content: flex-start;
+
+    padding: 8px 10px 30px;
+
+    flex-shrink: 0;
+  }
+
+  .logo-text {
+    display: flex;
+  }
+
+  .logo-text span {
+    display: block;
+  }
+
+
+  /* ========================= */
+  /* MENÚ */
+  /* ========================= */
+
+  .menu {
+    flex: 1;
+
+    min-height: 0;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    padding-bottom: 110px;
+
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
+  }
+
+  .menu::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  .menu::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .menu::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.18);
+
+    border-radius: 10px;
+  }
+
+
+  /* ========================= */
+  /* ENLACES PRINCIPALES */
+  /* ========================= */
+
+  .menu > a {
+    justify-content: flex-start;
+
+    padding: 12px 14px;
+  }
+
+
+  /* ========================= */
+  /* BOTONES PADRE */
+  /* ========================= */
+
+  .menu-parent {
+    justify-content: space-between;
+
+    padding: 12px 14px;
+  }
+
+
+  /* ========================= */
+  /* SUBMENÚS */
+  /* ========================= */
+
+  .submenu a {
+    padding-left: 47px;
+  }
+
+  .submenu a:hover {
+    padding-left: 50px;
+  }
+
+
+  /* ========================= */
+  /* FOOTER SIDEBAR */
+  /* ========================= */
+
+  .sidebar-footer {
+    position: absolute;
+
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+
+    margin-top: 0;
+
+    padding-top: 10px;
+
+    background: #0f2747;
+
+    z-index: 5;
+
+    flex-shrink: 0;
+  }
+
+  .sidebar-footer button {
+    text-align: left;
+
+    font-size: 13px;
+  }
+
+  .sidebar-footer button:first-child::before,
+  .sidebar-footer button:last-child::before {
+    content: none;
+  }
+
+
+  /* ========================= */
+  /* HAMBURGUESA */
+  /* ========================= */
+
+  .menu-toggle {
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+  }
+
+
+  /* ========================= */
+  /* TOPBAR */
+  /* ========================= */
+
+  .topbar {
+    height: 64px;
+    min-height: 64px;
+
+    padding: 0 16px;
+
+    background: #0f2747;
+
+    border-bottom: none;
+  }
+
+  .topbar-title {
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  .menu-toggle {
+    color: white;
+  }
+
+  .menu-toggle:hover {
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+
+  /* ========================= */
+  /* CONTENIDO */
+  /* ========================= */
+
+  .main-content {
+    width: 100%;
+    height: 100%;
     min-height: 0;
   }
 

@@ -20,6 +20,8 @@ import { ActualizarViaje } from '../models/actualizar-viaje';
 import { CrearCamion } from '../models/crear-camion';
 import { DashboardKilometrosCamion } from '../models/dashboard-kilometros-camion';
 import { DashboardEstadoPagos } from '../models/dashboard-estado-pagos';
+import { LoginRequest } from '../models/auth/login-request';
+import { LoginResponse } from '../models/auth/login-response';
 
 @Injectable({
   providedIn: 'root'
@@ -29,6 +31,17 @@ export class ApiService {
   private readonly http = inject(HttpClient);
 
   private readonly apiUrl = environment.apiUrl;
+
+  // =========================
+  // AUTENTICACIÓN
+  // =========================
+
+  login(request: LoginRequest): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(
+      `${this.apiUrl}/auth/login`,
+      request
+    );
+  }
 
   // =========================
   // CAMIONES

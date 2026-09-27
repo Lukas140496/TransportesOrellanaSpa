@@ -40,273 +40,290 @@ import { RemolqueDesactivar } from './components/remolque/remolque-desactivar/re
 import { Pagos } from './components/pagos/pagos';
 
 import { unsavedChangesGuard } from './core/guards/unsaved-changes.guard';
+import { authGuard } from './core/guards/auth.guard';
+import { Login } from './components/login/login';
 
 
 export const routes: Routes = [
 
-  {
-    path: '',
-    component: MainLayout,
+    // =========================
+    // LOGIN
+    // =========================
 
-    children: [
+    {
+        path: 'login',
+        component: Login
+    },
 
-      // =========================
-      // REDIRECCIÓN INICIAL
-      // =========================
 
-      {
+    // =========================
+    // REDIRECCIÓN INICIAL
+    // =========================
+
+    {
         path: '',
         pathMatch: 'full',
-        redirectTo: 'dashboard'
-      },
+        redirectTo: 'login'
+    },
 
 
-      // =========================
-      // DASHBOARD
-      // =========================
+    // =========================
+    // APLICACIÓN
+    // =========================
 
-      {
-        path: 'dashboard',
-        component: Dashboard
-      },
+    {
+        path: '',
+        component: MainLayout,
+        canActivate: [authGuard],
 
-      // =========================
-      // DASHBOARD - PRODUCCIÓN
-      // =========================
+        children: [
 
-      {
-        path: 'dashboard/produccion',
-        component: Dashboard
-      },
+            // =========================
+            // DASHBOARD
+            // =========================
 
-      // =========================
-      // DASHBOARD - OPERACIÓN
-      // =========================
+            {
+                path: 'dashboard',
+                component: Dashboard
+            },
 
-      {
-        path: 'dashboard/operacion',
-        component: Dashboard
-      },
+            // =========================
+            // DASHBOARD - PRODUCCIÓN
+            // =========================
 
-      // =========================
-      // DASHBOARD - GASTOS
-      // =========================
+            {
+                path: 'dashboard/produccion',
+                component: Dashboard
+            },
 
-      {
-        path: 'dashboard/gastos',
-        component: Dashboard
-      },
+            // =========================
+            // DASHBOARD - OPERACIÓN
+            // =========================
 
-      // =========================
-      // DASHBOARD - DOCUMENTACIÓN
-      // =========================
+            {
+                path: 'dashboard/operacion',
+                component: Dashboard
+            },
 
-      {
-        path: 'dashboard/documentacion',
-        component: Dashboard
-      },
+            // =========================
+            // DASHBOARD - GASTOS
+            // =========================
 
-      // =========================
-      // DASHBOARD - PERSONAL
-      // =========================
+            {
+                path: 'dashboard/gastos',
+                component: Dashboard
+            },
 
-      {
-        path: 'dashboard/personal',
-        component: Dashboard
-      },
+            // =========================
+            // DASHBOARD - DOCUMENTACIÓN
+            // =========================
 
+            {
+                path: 'dashboard/documentacion',
+                component: Dashboard
+            },
 
-      // =========================
-      // CAMIONES
-      // =========================
+            // =========================
+            // DASHBOARD - PERSONAL
+            // =========================
 
-      {
-        path: 'camiones',
-        component: CamionList
-      },
-
-      {
-        path: 'camiones/nuevo',
-        component: CamionForm,
-        canDeactivate: [unsavedChangesGuard]
-      },
-
-      {
-        path: 'camiones/modificar',
-        component: CamionModificar
-      },
-
-      {
-        path: 'camiones/modificar/:patente',
-        component: CamionModificar
-      },
-
-      {
-        path: 'camiones/asignar-remolque',
-        component: CamionAsignarRemolque
-      },
-
-      {
-        path: 'camiones/asignar-conductor',
-        component: CamionAsignarConductor
-      },
-
-      {
-        path: 'camiones/desactivar',
-        component: CamionDesactivar
-      },
-
-      {
-        path: 'camiones/:patente',
-        component: CamionDetail
-      },
+            {
+                path: 'dashboard/personal',
+                component: Dashboard
+            },
 
 
-      // =========================
-      // CONDUCTORES
-      // =========================
+            // =========================
+            // CAMIONES
+            // =========================
 
-      {
-        path: 'conductores',
-        component: ConductorList
-      },
+            {
+                path: 'camiones',
+                component: CamionList
+            },
 
-      {
-        path: 'conductores/nuevo',
-        component: ConductorForm,
-        canDeactivate: [unsavedChangesGuard]
-      },
+            {
+                path: 'camiones/nuevo',
+                component: CamionForm,
+                canDeactivate: [unsavedChangesGuard]
+            },
 
-      {
-        path: 'conductores/modificar',
-        component: ConductorModificar
-      },
+            {
+                path: 'camiones/modificar',
+                component: CamionModificar
+            },
 
-      {
-        path: 'conductores/desactivar',
-        component: ConductorDesactivar
-      },
+            {
+                path: 'camiones/modificar/:patente',
+                component: CamionModificar
+            },
 
-      {
-        path: 'conductores/:rut',
-        component: ConductorDetail
-      },
+            {
+                path: 'camiones/asignar-remolque',
+                component: CamionAsignarRemolque
+            },
 
+            {
+                path: 'camiones/asignar-conductor',
+                component: CamionAsignarConductor
+            },
 
-      // =========================
-      // REMOLQUES
-      // =========================
+            {
+                path: 'camiones/desactivar',
+                component: CamionDesactivar
+            },
 
-      {
-        path: 'remolques',
-        component: RemolqueList
-      },
-
-      {
-        path: 'remolques/nuevo',
-        component: RemolqueForm,
-        canDeactivate: [unsavedChangesGuard]
-      },
-
-      {
-        path: 'remolques/modificar',
-        component: RemolqueModificar
-      },
-
-      {
-        path: 'remolques/desactivar',
-        component: RemolqueDesactivar
-      },
-
-      {
-        path: 'remolques/asignar-camion',
-        component: RemolqueAsignarCamion
-      },
-
-      {
-        path: 'remolques/:patente',
-        component: RemolqueDetail
-      },
+            {
+                path: 'camiones/:patente',
+                component: CamionDetail
+            },
 
 
-      // =========================
-      // CLIENTES
-      // =========================
+            // =========================
+            // CONDUCTORES
+            // =========================
 
-      {
-        path: 'clientes',
-        component: ClienteList
-      },
+            {
+                path: 'conductores',
+                component: ConductorList
+            },
 
-      {
-        path: 'clientes/nuevo',
-        component: ClienteForm,
-        canDeactivate: [unsavedChangesGuard]
-      },
+            {
+                path: 'conductores/nuevo',
+                component: ConductorForm,
+                canDeactivate: [unsavedChangesGuard]
+            },
 
-      {
-        path: 'clientes/modificar',
-        component: ClienteModificar
-      },
+            {
+                path: 'conductores/modificar',
+                component: ConductorModificar
+            },
 
-      {
-        path: 'clientes/desactivar',
-        component: ClienteDesactivar
-      },
+            {
+                path: 'conductores/desactivar',
+                component: ConductorDesactivar
+            },
 
-      {
-        path: 'clientes/:id/editar',
-        component: ClienteForm,
-        canDeactivate: [unsavedChangesGuard]
-      },
-
-      {
-        path: 'clientes/:id',
-        component: ClienteDetail
-      },
+            {
+                path: 'conductores/:rut',
+                component: ConductorDetail
+            },
 
 
-      // =========================
-      // VIAJES
-      // =========================
+            // =========================
+            // REMOLQUES
+            // =========================
 
-      {
-        path: 'viajes',
-        component: ViajeList
-      },
+            {
+                path: 'remolques',
+                component: RemolqueList
+            },
 
-      {
-        path: 'viajes/nuevo',
-        component: ViajeForm,
-        canDeactivate: [unsavedChangesGuard]
-      },
+            {
+                path: 'remolques/nuevo',
+                component: RemolqueForm,
+                canDeactivate: [unsavedChangesGuard]
+            },
 
-      {
-        path: 'viajes/modificar',
-        component: ViajeModificar
-      },
+            {
+                path: 'remolques/modificar',
+                component: RemolqueModificar
+            },
 
-      {
-        path: 'viajes/eliminar',
-        component: ViajeEliminar
-      },
+            {
+                path: 'remolques/desactivar',
+                component: RemolqueDesactivar
+            },
 
-      {
-        path: 'viajes/:id',
-        component: ViajeDetail
-      },
+            {
+                path: 'remolques/asignar-camion',
+                component: RemolqueAsignarCamion
+            },
+
+            {
+                path: 'remolques/:patente',
+                component: RemolqueDetail
+            },
 
 
-      // =========================
-      // PAGOS
-      // =========================
+            // =========================
+            // CLIENTES
+            // =========================
 
-      {
-        path: 'pagos',
-        component: Pagos
-      }
+            {
+                path: 'clientes',
+                component: ClienteList
+            },
 
-    ]
-  }
+            {
+                path: 'clientes/nuevo',
+                component: ClienteForm,
+                canDeactivate: [unsavedChangesGuard]
+            },
+
+            {
+                path: 'clientes/modificar',
+                component: ClienteModificar
+            },
+
+            {
+                path: 'clientes/desactivar',
+                component: ClienteDesactivar
+            },
+
+            {
+                path: 'clientes/:id/editar',
+                component: ClienteForm,
+                canDeactivate: [unsavedChangesGuard]
+            },
+
+            {
+                path: 'clientes/:id',
+                component: ClienteDetail
+            },
+
+
+            // =========================
+            // VIAJES
+            // =========================
+
+            {
+                path: 'viajes',
+                component: ViajeList
+            },
+
+            {
+                path: 'viajes/nuevo',
+                component: ViajeForm,
+                canDeactivate: [unsavedChangesGuard]
+            },
+
+            {
+                path: 'viajes/modificar',
+                component: ViajeModificar
+            },
+
+            {
+                path: 'viajes/eliminar',
+                component: ViajeEliminar
+            },
+
+            {
+                path: 'viajes/:id',
+                component: ViajeDetail
+            },
+
+
+            // =========================
+            // PAGOS
+            // =========================
+
+            {
+                path: 'pagos',
+                component: Pagos
+            }
+
+        ]
+    }
 
 ];

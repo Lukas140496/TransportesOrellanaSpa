@@ -651,49 +651,131 @@
       <!-- ========================= -->
 
       <div class="card metric-card payment-status">
-        <div class="metric-icon">✓</div>
 
         <div class="metric-content">
-          <span class="card-label">Viajes pagados</span>
-
-          @if (cargando) {
-
-          <div class="skeleton-value small"></div>
-
-          } @else {
-
-          <strong class="metric-value">
-            {{ estadoPagos.viajesPagados }}
-          </strong>
-
-          }
-
-          <span class="metric-description"> Pagados durante el período </span>
-
-          <div class="payment-divider"></div>
-
-          <div class="payment-status-label pending-label">
-            <span class="payment-status-icon pending-icon">✕</span>
-          
-            <span class="card-label">
-              Pendientes por pagar
-            </span>
+      
+          <!-- ========================= -->
+          <!-- PAGADOS -->
+          <!-- ========================= -->
+      
+          <div class="payment-row">
+      
+            <div class="payment-info">
+      
+              <div class="payment-status-label">
+                <span class="payment-status-icon">✓</span>
+      
+                <span class="card-label">
+                  Viajes pagados
+                </span>
+              </div>
+      
+              @if (cargando) {
+      
+              <div class="skeleton-value small"></div>
+      
+              } @else {
+      
+              <strong class="metric-value">
+                {{ estadoPagos.viajesPagados }}
+              </strong>
+      
+              }
+      
+              <span class="metric-description">
+                Pagados durante el período
+              </span>
+      
+            </div>
+      
+            <div class="payment-amount">
+      
+              <span class="payment-amount-label">
+                Monto pagado
+              </span>
+      
+              @if (cargando) {
+      
+              <div class="skeleton-value small"></div>
+      
+              } @else {
+      
+              <strong>
+                {{ formatoMoneda(estadoPagos.montoPagado) }}
+              </strong>
+      
+              }
+      
+            </div>
+      
           </div>
-
-          @if (cargando) {
-
-          <div class="skeleton-value small"></div>
-
-          } @else {
-
-          <strong class="metric-value pending-value">
-            {{ estadoPagos.viajesPendientesPago }}
-          </strong>
-
-          }
-
-          <span class="metric-description"> Viajes pendientes de pago </span>
+      
+      
+          <div class="payment-divider"></div>
+      
+      
+          <!-- ========================= -->
+          <!-- PENDIENTES -->
+          <!-- ========================= -->
+      
+          <div class="payment-row">
+      
+            <div class="payment-info">
+      
+              <div class="payment-status-label pending-label">
+      
+                <span class="payment-status-icon pending-icon">
+                  ✕
+                </span>
+      
+                <span class="card-label">
+                  Pendientes por pagar
+                </span>
+      
+              </div>
+      
+              @if (cargando) {
+      
+              <div class="skeleton-value small"></div>
+      
+              } @else {
+      
+              <strong class="metric-value pending-value">
+                {{ estadoPagos.viajesPendientesPago }}
+              </strong>
+      
+              }
+      
+              <span class="metric-description">
+                Viajes pendientes de pago
+              </span>
+      
+            </div>
+      
+            <div class="payment-amount pending-amount">
+      
+              <span class="payment-amount-label">
+                Monto pendiente
+              </span>
+      
+              @if (cargando) {
+      
+              <div class="skeleton-value small"></div>
+      
+              } @else {
+      
+              <strong>
+                {{ formatoMoneda(estadoPagos.montoPendientePago) }}
+              </strong>
+      
+              }
+      
+            </div>
+      
+          </div>
+      
         </div>
+      
       </div>
     </section>
 
