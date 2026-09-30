@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
 
 import {
+    Router,
     RouterLink,
     RouterLinkActive,
     RouterOutlet
@@ -22,6 +23,7 @@ import { AuthService } from '../../core/services/auth.service';
 export class MainLayout {
 
     private readonly authService = inject(AuthService);
+    private readonly router = inject(Router);
 
     modalCerrarSesionVisible = false;
     menuAbierto = false;
@@ -35,6 +37,42 @@ export class MainLayout {
         });
 
     }
+
+    // =========================
+    // USUARIO ACTUAL
+    // =========================
+
+    get nombreUsuario(): string {
+        return this.authService.getUsuario()?.nombreCompleto ?? '';
+    }
+
+    get rolUsuario(): string {
+        return this.authService.getUsuario()?.roles?.[0] ?? '';
+    }
+
+    get inicialesUsuario(): string {
+        const usuario = this.authService.getUsuario();
+
+        if (!usuario) {
+            return '';
+        }
+
+        const nombres = usuario.nombres
+            ?.trim()
+            .split(/\s+/)
+            .filter(Boolean) ?? [];
+
+        const apellidoPaterno = usuario.apellidoPaterno?.trim() ?? '';
+
+        const primeraInicial = nombres[0]?.charAt(0) ?? '';
+        const apellidoInicial = apellidoPaterno.charAt(0);
+
+        return `${primeraInicial}${apellidoInicial}`.toUpperCase();
+    }
+
+    // =========================
+    // MENÚ
+    // =========================
 
     toggleMenu(): void {
         this.menuAbierto = !this.menuAbierto;
@@ -51,6 +89,14 @@ export class MainLayout {
                 : menu;
     }
 
+    irAMiPerfil(): void {
+        this.router.navigate(['/mi-perfil']);
+    }
+
+    // =========================
+    // CERRAR SESIÓN
+    // =========================
+
     cerrarSesion(): void {
         this.modalCerrarSesionVisible = true;
     }
@@ -63,6 +109,10 @@ export class MainLayout {
         this.modalCerrarSesionVisible = false;
         this.authService.logout();
     }
+
+    // =========================
+    // SESIÓN EXPIRADA
+    // =========================
 
     confirmarSesionExpirada(): void {
         this.sesionExpiradaVisible = false;

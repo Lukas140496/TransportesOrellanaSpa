@@ -165,4 +165,12 @@ export class CamionList implements OnInit {
 
   }
 
+  nuevoCamion(): void {
+
+    this.router.navigate([
+      '/camiones/nuevo'
+    ]);
+
+  }
+
 }

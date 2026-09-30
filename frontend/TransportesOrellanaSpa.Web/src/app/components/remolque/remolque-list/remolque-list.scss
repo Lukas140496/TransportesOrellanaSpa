@@ -10,16 +10,12 @@
 
 }
 
-/* =========================
-
-   HEADER
-
-   ========================= */
-
 .page-header {
-
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
   margin-bottom: 26px;
-
 }
 
 .header-content {
@@ -74,6 +70,43 @@
 
   font-size: 14px;
 
+}
+
+/* =====================================================
+   BOTÓN NUEVO
+   ===================================================== */
+.btn-nuevo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 42px;
+  padding: 0 16px;
+  border: 1px solid #183b68;
+  border-radius: 8px;
+  background: #183b68;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.15s ease;
+}
+
+.btn-nuevo:hover {
+  background: #2674dc;
+  border-color: #2674dc;
+  box-shadow: 0 4px 10px rgba(47, 128, 237, 0.2);
+  transform: translateY(-1px);
+}
+
+.btn-icon {
+  font-size: 19px;
+  font-weight: 400;
+  line-height: 1;
 }
 
 /* =========================
@@ -1214,16 +1247,37 @@ tbody tr:last-child td {
 
   }
 
+  .page-header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    width: 100%;
+  }
+
+  .header-content {
+    order: 1;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+    
+    > div {
+      text-align: left;
+    }
+  }
+
   .page-header h1 {
-
     font-size: 24px;
-
+    margin: 0 0 4px;
+    text-align: left;
   }
 
   .page-header p {
-
+    font-size: 13px;
+    text-align: left;
     line-height: 1.45;
-
   }
 
   .header-icon {
@@ -1232,6 +1286,14 @@ tbody tr:last-child td {
 
     height: 46px;
 
+  }
+
+  .btn-nuevo {
+    order: 2;
+    justify-content: center;
+    width: 100%;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
   }
 
   .filtros-card {

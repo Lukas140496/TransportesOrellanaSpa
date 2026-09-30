@@ -197,4 +197,12 @@ export class ConductorList implements OnInit {
 
   }
 
+  nuevoConductor(): void {
+
+    this.router.navigate([
+      '/conductores/nuevo'
+    ]);
+
+  }
+
 }

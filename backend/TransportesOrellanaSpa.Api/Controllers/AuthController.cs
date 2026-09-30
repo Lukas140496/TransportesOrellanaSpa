@@ -55,12 +55,22 @@ public class AuthController : ControllerBase
             .Distinct()
             .ToList();
 
+        var nombreCompleto =
+    $"{usuario.Nombres} {usuario.ApellidoPaterno} {usuario.ApellidoMaterno}"
+        .Trim();
+
         var response = new LoginResponse
         {
             Token = token,
             ExpiraEn = expiraEn,
             UsuarioId = usuario.Id,
-            Nombre = usuario.Nombre,
+
+            Nombres = usuario.Nombres,
+            ApellidoPaterno = usuario.ApellidoPaterno,
+            ApellidoMaterno = usuario.ApellidoMaterno,
+
+            NombreCompleto = nombreCompleto,
+
             Email = usuario.Email,
             Roles = roles
         };

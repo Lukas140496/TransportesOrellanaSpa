@@ -44,6 +44,7 @@ export class ViajeList implements OnInit {
   fechaHasta = '';
   clienteId: number | null = null;
   estadoPago = '';
+  filtrosAbiertos = false;
 
   private guiaTimeout: ReturnType<typeof setTimeout> | null = null;
 
@@ -54,6 +55,14 @@ export class ViajeList implements OnInit {
   ngOnInit(): void {
     this.cargarClientes();
     this.cargarViajes();
+  }
+
+  nuevoViaje(): void {
+
+    this.router.navigate([
+      '/viajes/nuevo'
+    ]);
+
   }
 
   // =========================
@@ -247,6 +256,10 @@ export class ViajeList implements OnInit {
 
     this.cargarViajes();
 
+  }
+
+  toggleFiltros(): void {
+    this.filtrosAbiertos = !this.filtrosAbiertos;
   }
 
   // =========================

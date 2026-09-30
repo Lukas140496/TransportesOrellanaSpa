@@ -5,6 +5,7 @@ import { Observable, tap, Subject } from 'rxjs';
 import { ApiService } from './api.service';
 import { LoginRequest } from '../models/auth/login-request';
 import { LoginResponse } from '../models/auth/login-response';
+import { UsuarioPerfil } from '../models/usuario-perfil';
 
 @Injectable({
     providedIn: 'root'
@@ -36,12 +37,37 @@ export class AuthService {
                     this.userKey,
                     JSON.stringify({
                         usuarioId: response.usuarioId,
-                        nombre: response.nombre,
+                        nombres: response.nombres,
+                        apellidoPaterno: response.apellidoPaterno,
+                        apellidoMaterno: response.apellidoMaterno,
+                        nombreCompleto: response.nombreCompleto,
                         email: response.email,
                         roles: response.roles,
                         expiraEn: response.expiraEn
                     })
                 );
+            })
+        );
+    }
+
+    actualizarUsuarioLocalmente(perfil: UsuarioPerfil): void {
+        const usuarioActual = this.getUsuario();
+    
+        if (!usuarioActual) {
+            return;
+        }
+    
+        localStorage.setItem(
+            this.userKey,
+            JSON.stringify({
+                ...usuarioActual,
+                usuarioId: perfil.usuarioId,
+                nombres: perfil.nombres,
+                apellidoPaterno: perfil.apellidoPaterno,
+                apellidoMaterno: perfil.apellidoMaterno,
+                nombreCompleto: perfil.nombreCompleto,
+                email: perfil.email,
+                roles: perfil.roles
             })
         );
     }
@@ -58,13 +84,13 @@ export class AuthService {
     manejarSesionExpirada(): void {
 
         if (this.sesionExpiradaEnProceso) {
-          return;
+            return;
         }
-      
+
         this.sesionExpiradaEnProceso = true;
-      
+
         this.sesionExpiradaSubject.next();
-      }
+    }
 
     getToken(): string | null {
         return localStorage.getItem(this.tokenKey);

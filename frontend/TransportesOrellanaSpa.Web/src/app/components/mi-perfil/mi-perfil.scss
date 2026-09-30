@@ -1,0 +1,346 @@
+.mi-perfil {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+
+// =========================
+// ENCABEZADO
+// =========================
+
+.pagina-header {
+  margin-bottom: 24px;
+
+  h1 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 600;
+    color: #222;
+  }
+
+  p {
+    margin: 6px 0 0;
+    font-size: 13px;
+    color: #777;
+  }
+}
+
+
+// =========================
+// CABECERA PERFIL
+// =========================
+
+.perfil-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  padding: 20px;
+  margin-bottom: 24px;
+
+  background: #fff;
+  border: 1px solid #e5e5e5;
+  border-radius: 10px;
+}
+
+.avatar {
+  width: 56px;
+  height: 56px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+
+  background: #dcecff;
+  color: #2467b8;
+
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.perfil-identidad {
+  flex: 1;
+
+  h2 {
+    margin: 0 0 6px;
+
+    font-size: 18px;
+    font-weight: 600;
+    color: #222;
+  }
+}
+
+.rol {
+  display: inline-block;
+
+  padding: 4px 8px;
+
+  border-radius: 5px;
+
+  background: #f1f1f1;
+  color: #666;
+
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.perfil-acciones {
+  display: flex;
+  gap: 8px;
+
+  button {
+    padding: 8px 12px;
+
+    border: 1px solid #ddd;
+    border-radius: 6px;
+
+    background: #f7f7f7;
+    color: #999;
+
+    font-size: 12px;
+
+    cursor: not-allowed;
+  }
+}
+
+
+// =========================
+// SECCIONES
+// =========================
+
+.seccion {
+  padding: 20px;
+  margin-bottom: 20px;
+
+  background: #fff;
+  border: 1px solid #e5e5e5;
+  border-radius: 10px;
+
+  h3 {
+    margin: 0 0 18px;
+
+    font-size: 15px;
+    font-weight: 600;
+    color: #333;
+  }
+}
+
+
+// =========================
+// DATOS
+// =========================
+
+.datos-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.dato {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+
+  min-height: 58px;
+  padding: 12px 14px;
+
+  background: #fafafa;
+  border: 1px solid #eeeeee;
+  border-radius: 7px;
+
+  .etiqueta {
+    font-size: 11px;
+    color: #888;
+  }
+
+  strong {
+    font-size: 13px;
+    font-weight: 600;
+    color: #333;
+  }
+}
+
+.dato-completo {
+  grid-column: 1 / -1;
+}
+
+
+// =========================
+// ESTADO
+// =========================
+
+.estado {
+  display: inline-flex;
+  align-items: center;
+
+  width: fit-content;
+
+  padding: 4px 8px;
+
+  border-radius: 5px;
+
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.estado-activo {
+  background: #eef5ef;
+  color: #39704a;
+}
+
+.estado-inactivo {
+  background: #fbecec;
+  color: #a33a3a;
+}
+
+
+// =========================
+// CARGA / ERROR
+// =========================
+
+.estado-carga,
+.estado-error {
+  padding: 30px;
+
+  text-align: center;
+
+  background: #fff;
+  border: 1px solid #e5e5e5;
+  border-radius: 10px;
+
+  font-size: 13px;
+}
+
+.estado-carga {
+  color: #777;
+}
+
+.estado-error {
+  color: #a33a3a;
+}
+
+.mensaje-exito {
+  padding: 12px 14px;
+  margin-bottom: 16px;
+  background: #eef5ef;
+  border: 1px solid #d9e9dc;
+  border-radius: 7px;
+  color: #39704a;
+  font-size: 13px;
+}
+
+.perfil-acciones {
+
+  .btn-primario {
+    border: 1px solid #183b68;
+    background: #183b68;
+    color: #fff;
+    cursor: pointer;
+  }
+
+  .btn-primario:hover:not(:disabled) {
+    background: #122f54;
+    border-color: #122f54;
+  }
+
+  .btn-primario:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .btn-secundario {
+    border: 1px solid #ddd;
+    background: #fff;
+    color: #555;
+    cursor: pointer;
+  }
+
+  .btn-secundario:hover:not(:disabled) {
+    background: #f7f7f7;
+  }
+
+  .btn-secundario:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.campo-editable {
+
+  input {
+    width: 100%;
+    min-height: 36px;
+    padding: 8px 10px;
+    border: 1px solid #d8d8d8;
+    border-radius: 6px;
+    background: #fff;
+    color: #333;
+    font-family: inherit;
+    font-size: 13px;
+    outline: none;
+    transition:
+      border-color 0.15s ease,
+      box-shadow 0.15s ease;
+  }
+
+  input:focus {
+    border-color: #39704a;
+    box-shadow: 0 0 0 2px rgba(57, 112, 74, 0.08);
+  }
+}
+
+.campo-bloqueado {
+
+  strong {
+    color: #777;
+  }
+
+  small {
+    font-size: 10px;
+    color: #aaa;
+  }
+}
+
+
+// =========================
+// RESPONSIVE
+// =========================
+
+@media (max-width: 700px) {
+
+  .mi-perfil {
+    padding: 16px;
+  }
+
+  .perfil-header {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .perfil-identidad {
+    min-width: 0;
+  }
+
+  .perfil-acciones {
+    width: 100%;
+    margin-top: 4px;
+
+    button {
+      flex: 1;
+    }
+  }
+
+  .datos-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dato-completo {
+    grid-column: auto;
+  }
+}

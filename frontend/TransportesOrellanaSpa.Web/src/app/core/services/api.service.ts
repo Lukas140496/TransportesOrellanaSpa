@@ -22,6 +22,8 @@ import { DashboardKilometrosCamion } from '../models/dashboard-kilometros-camion
 import { DashboardEstadoPagos } from '../models/dashboard-estado-pagos';
 import { LoginRequest } from '../models/auth/login-request';
 import { LoginResponse } from '../models/auth/login-response';
+import { UsuarioPerfil } from '../models/usuario-perfil';
+import { ActualizarMiPerfil } from '../models/actualizar-mi-perfil';
 
 @Injectable({
   providedIn: 'root'
@@ -40,6 +42,21 @@ export class ApiService {
     return this.http.post<LoginResponse>(
       `${this.apiUrl}/auth/login`,
       request
+    );
+  }
+
+  getMiPerfil(): Observable<UsuarioPerfil> {
+    return this.http.get<UsuarioPerfil>(
+      `${this.apiUrl}/usuarios/me`
+    );
+  }
+
+  actualizarMiPerfil(
+    datos: ActualizarMiPerfil
+  ): Observable<{ mensaje: string }> {
+    return this.http.put<{ mensaje: string }>(
+      `${this.apiUrl}/usuarios/me`,
+      datos
     );
   }
 

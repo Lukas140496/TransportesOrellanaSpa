@@ -1,0 +1,284 @@
+<div class="mi-perfil">
+
+  <div class="pagina-header">
+    <div>
+      <h1>Mi perfil</h1>
+      <p>Información de tu cuenta y datos personales.</p>
+    </div>
+  </div>
+
+  @if (cargando) {
+
+    <div class="estado-carga">
+      Cargando información del perfil...
+    </div>
+
+  } @else if (error && !perfil) {
+
+    <div class="estado-error">
+      {{ error }}
+    </div>
+
+  } @else if (perfil) {
+
+    <!-- ========================= -->
+    <!-- MENSAJES -->
+    <!-- ========================= -->
+
+    @if (mensajeExito) {
+      <div class="mensaje-exito">
+        {{ mensajeExito }}
+      </div>
+    }
+
+    @if (error) {
+      <div class="estado-error">
+        {{ error }}
+      </div>
+    }
+
+
+    <!-- ========================= -->
+    <!-- CABECERA DEL PERFIL -->
+    <!-- ========================= -->
+
+    <section class="perfil-header">
+
+      <div class="avatar">
+        {{ iniciales }}
+      </div>
+
+      <div class="perfil-identidad">
+
+        <h2>
+          {{ perfil.nombreCompleto }}
+        </h2>
+
+        <span class="rol">
+          {{ rolPrincipal }}
+        </span>
+
+      </div>
+
+      <div class="perfil-acciones">
+
+        @if (!editando) {
+
+          <button
+            type="button"
+            class="btn-primario"
+            (click)="iniciarEdicion()"
+          >
+            Editar perfil
+          </button>
+
+          <button
+            type="button"
+            disabled
+          >
+            Cambiar contraseña
+          </button>
+
+        } @else {
+
+          <button
+            type="button"
+            class="btn-secundario"
+            [disabled]="guardando"
+            (click)="cancelarEdicion()"
+          >
+            Cancelar
+          </button>
+
+          <button
+            type="button"
+            class="btn-primario"
+            [disabled]="guardando"
+            (click)="guardarCambios()"
+          >
+            {{ guardando ? 'Guardando...' : 'Guardar cambios' }}
+          </button>
+
+        }
+
+      </div>
+
+    </section>
+
+
+    <!-- ========================= -->
+    <!-- DATOS PERSONALES -->
+    <!-- ========================= -->
+
+    <section class="seccion">
+
+      <h3>Datos personales</h3>
+
+      @if (!editando) {
+
+        <div class="datos-grid">
+
+          <div class="dato">
+            <span class="etiqueta">Nombres</span>
+            <strong>{{ perfil.nombres }}</strong>
+          </div>
+
+          <div class="dato">
+            <span class="etiqueta">Apellido paterno</span>
+            <strong>{{ perfil.apellidoPaterno }}</strong>
+          </div>
+
+          <div class="dato">
+            <span class="etiqueta">Apellido materno</span>
+            <strong>{{ perfil.apellidoMaterno }}</strong>
+          </div>
+
+          <div class="dato">
+            <span class="etiqueta">RUT</span>
+            <strong>{{ perfil.rut }}</strong>
+          </div>
+
+          <div class="dato dato-completo">
+            <span class="etiqueta">Correo electrónico</span>
+            <strong>{{ perfil.email }}</strong>
+          </div>
+
+        </div>
+
+      } @else {
+
+        <div class="datos-grid">
+
+          <div class="dato campo-editable">
+            <label
+              class="etiqueta"
+              for="nombres"
+            >
+              Nombres
+            </label>
+
+            <input
+              id="nombres"
+              type="text"
+              name="nombres"
+              [(ngModel)]="datosEditados.nombres"
+              (ngModelChange)="marcarFormularioModificado()"
+              autocomplete="given-name"
+            />
+          </div>
+
+
+          <div class="dato campo-editable">
+            <label
+              class="etiqueta"
+              for="apellidoPaterno"
+            >
+              Apellido paterno
+            </label>
+
+            <input
+              id="apellidoPaterno"
+              type="text"
+              name="apellidoPaterno"
+              [(ngModel)]="datosEditados.apellidoPaterno"
+              (ngModelChange)="marcarFormularioModificado()"
+              autocomplete="family-name"
+            />
+          </div>
+
+
+          <div class="dato campo-editable">
+            <label
+              class="etiqueta"
+              for="apellidoMaterno"
+            >
+              Apellido materno
+            </label>
+
+            <input
+              id="apellidoMaterno"
+              type="text"
+              name="apellidoMaterno"
+              [(ngModel)]="datosEditados.apellidoMaterno"
+              (ngModelChange)="marcarFormularioModificado()"
+            />
+          </div>
+
+
+          <div class="dato campo-bloqueado">
+            <span class="etiqueta">RUT</span>
+            <strong>{{ perfil.rut }}</strong>
+            <small>No se puede modificar</small>
+          </div>
+
+
+          <div class="dato dato-completo campo-editable">
+            <label
+              class="etiqueta"
+              for="email"
+            >
+              Correo electrónico
+            </label>
+
+            <input
+              id="email"
+              type="email"
+              name="email"
+              [(ngModel)]="datosEditados.email"
+              (ngModelChange)="marcarFormularioModificado()"
+              autocomplete="email"
+            />
+          </div>
+
+        </div>
+
+      }
+
+    </section>
+
+
+    <!-- ========================= -->
+    <!-- INFORMACIÓN DE CUENTA -->
+    <!-- ========================= -->
+
+    <section class="seccion">
+
+      <h3>Información de cuenta</h3>
+
+      <div class="datos-grid">
+
+        <div class="dato">
+          <span class="etiqueta">Rol</span>
+          <strong>{{ rolPrincipal }}</strong>
+        </div>
+
+        <div class="dato">
+          <span class="etiqueta">Fecha de creación</span>
+          <strong>{{ fechaCreacionFormateada }}</strong>
+        </div>
+
+        <div class="dato">
+          <span class="etiqueta">Último acceso</span>
+          <strong>{{ ultimoAccesoFormateado }}</strong>
+        </div>
+
+        <div class="dato">
+          <span class="etiqueta">Estado</span>
+
+          <span
+            class="estado"
+            [class.estado-activo]="perfil.activo"
+            [class.estado-inactivo]="!perfil.activo"
+          >
+            {{ perfil.activo ? 'Activo' : 'Inactivo' }}
+          </span>
+
+        </div>
+
+      </div>
+
+    </section>
+
+  }
+
+</div>

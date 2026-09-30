@@ -1,459 +1,281 @@
 <section class="cliente-list">
-
   <div class="page-header">
-
     <div class="header-content">
+      <!-- 1. El icono queda libre aquí afuera -->
+      <div class="header-icon">👥</div>
 
-      <div class="header-icon">
-        👥
-      </div>
-
+      <!-- 2. Este div SÓLO debe envolver al h1 y al p -->
       <div>
         <h1>Clientes</h1>
-
-        <p>
-          Administra los clientes registrados en Transportes Orellana SpA.
-        </p>
+        <p>Administra los clientes registrados en Transportes Orellana SpA.</p>
       </div>
-
     </div>
 
-    <button
-      type="button"
-      class="btn-nuevo"
-      (click)="nuevoCliente()">
-
+    <button type="button" class="btn-nuevo" (click)="nuevoCliente()">
       <span class="btn-icon">+</span>
-
-      Nuevo cliente
-
+      Nuevo Cliente
     </button>
-
   </div>
-
 
   @if (cargando) {
 
-    <div class="estado-container">
+  <div class="estado-container">
+    <div class="loading-spinner"></div>
 
-      <div class="loading-spinner"></div>
+    <p>Cargando clientes...</p>
+  </div>
+
+  } @if (error) {
+
+  <div class="error-container">
+    <div class="error-icon">!</div>
+
+    <div>
+      <strong> No fue posible cargar los clientes </strong>
 
       <p>
-        Cargando clientes...
+        {{ error }}
       </p>
-
     </div>
+  </div>
 
-  }
+  } @if (!cargando && !error) {
 
-
-  @if (error) {
-
-    <div class="error-container">
-
-      <div class="error-icon">
-        !
-      </div>
+  <div class="resumen">
+    <div class="resumen-card">
+      <div class="resumen-icon total">👥</div>
 
       <div>
-        <strong>
-          No fue posible cargar los clientes
-        </strong>
+        <span> Total clientes </span>
 
-        <p>
-          {{ error }}
-        </p>
-      </div>
-
-    </div>
-
-  }
-
-
-  @if (!cargando && !error) {
-
-    <div class="resumen">
-
-      <div class="resumen-card">
-
-        <div class="resumen-icon total">
-          👥
-        </div>
-
-        <div>
-
-          <span>
-            Total clientes
-          </span>
-
-          <strong>
-            {{ clientes.length }}
-          </strong>
-
-        </div>
-
-      </div>
-
-
-      <div class="resumen-card">
-
-        <div class="resumen-icon activo">
-          ✓
-        </div>
-
-        <div>
-
-          <span>
-            Clientes activos
-          </span>
-
-          <strong>
-            {{ cantidadActivos }}
-          </strong>
-
-        </div>
-
-      </div>
-
-
-      <div class="resumen-card">
-
-        <div class="resumen-icon inactivo">
-          !
-        </div>
-
-        <div>
-
-          <span>
-            Clientes inactivos
-          </span>
-
-          <strong>
-            {{ cantidadInactivos }}
-          </strong>
-
-        </div>
-
-      </div>
-
-    </div>
-
-
-    <div class="filtros-card">
-
-      <div class="busqueda">
-
-        <span class="search-icon">
-          ⌕
-        </span>
-
-        <input
-          type="text"
-          [(ngModel)]="busqueda"
-          placeholder="Buscar por nombre, RUT, comuna, ciudad o tipo de carga..."
-          aria-label="Buscar clientes"
-        />
-
-        @if (busqueda) {
-
-          <button
-            type="button"
-            class="btn-limpiar-busqueda"
-            (click)="busqueda = ''"
-            aria-label="Limpiar búsqueda">
-
-            ×
-
-          </button>
-
-        }
-
-      </div>
-
-
-      <div class="filtro-estado">
-
-        <span class="filtro-label">
-          Estado:
-        </span>
-
-
-        <button
-          type="button"
-          [class.active]="filtroEstado === 'todos'"
-          (click)="cambiarFiltroEstado('todos')">
-
-          Todos
-
-        </button>
-
-
-        <button
-          type="button"
-          [class.active]="filtroEstado === 'activos'"
-          (click)="cambiarFiltroEstado('activos')">
-
-          Activos
-
-        </button>
-
-
-        <button
-          type="button"
-          [class.active]="filtroEstado === 'inactivos'"
-          (click)="cambiarFiltroEstado('inactivos')">
-
-          Inactivos
-
-        </button>
-
-      </div>
-
-
-      @if (hayFiltrosAplicados()) {
-
-        <button
-          type="button"
-          class="btn-limpiar-filtros"
-          (click)="limpiarFiltros()">
-
-          Limpiar filtros
-
-        </button>
-
-      }
-
-    </div>
-
-
-    <div class="resultado-info">
-
-      <span>
-
-        Mostrando
-        <strong>
-          {{ clientesFiltrados.length }}
-        </strong>
-        de
         <strong>
           {{ clientes.length }}
         </strong>
-        clientes
-
-      </span>
-
+      </div>
     </div>
 
+    <div class="resumen-card">
+      <div class="resumen-icon activo">✓</div>
+
+      <div>
+        <span> Clientes activos </span>
+
+        <strong>
+          {{ cantidadActivos }}
+        </strong>
+      </div>
+    </div>
+
+    <div class="resumen-card">
+      <div class="resumen-icon inactivo">!</div>
+
+      <div>
+        <span> Clientes inactivos </span>
+
+        <strong>
+          {{ cantidadInactivos }}
+        </strong>
+      </div>
+    </div>
+  </div>
+
+  <div class="filtros-card">
+    <div class="busqueda">
+      <span class="search-icon"> ⌕ </span>
+
+      <input
+        type="text"
+        [(ngModel)]="busqueda"
+        placeholder="Buscar por nombre, RUT, comuna, ciudad o tipo de carga..."
+        aria-label="Buscar clientes"
+      />
+
+      @if (busqueda) {
+
+      <button
+        type="button"
+        class="btn-limpiar-busqueda"
+        (click)="busqueda = ''"
+        aria-label="Limpiar búsqueda"
+      >
+        ×
+      </button>
+
+      }
+    </div>
+
+    <div class="filtro-estado">
+      <span class="filtro-label"> Estado: </span>
+
+      <button
+        type="button"
+        [class.active]="filtroEstado === 'todos'"
+        (click)="cambiarFiltroEstado('todos')"
+      >
+        Todos
+      </button>
+
+      <button
+        type="button"
+        [class.active]="filtroEstado === 'activos'"
+        (click)="cambiarFiltroEstado('activos')"
+      >
+        Activos
+      </button>
+
+      <button
+        type="button"
+        [class.active]="filtroEstado === 'inactivos'"
+        (click)="cambiarFiltroEstado('inactivos')"
+      >
+        Inactivos
+      </button>
+    </div>
+
+    @if (hayFiltrosAplicados()) {
+
+    <button type="button" class="btn-limpiar-filtros" (click)="limpiarFiltros()">
+      Limpiar filtros
+    </button>
+
+    }
+  </div>
+
+  <div class="resultado-info">
+    <span>
+      Mostrando
+      <strong>
+        {{ clientesFiltrados.length }}
+      </strong>
+      de
+      <strong>
+        {{ clientes.length }}
+      </strong>
+      clientes
+    </span>
+  </div>
+
+  @if (clientesFiltrados.length > 0) {
 
-    @if (clientesFiltrados.length > 0) {
+  <div class="tabla-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Cliente</th>
 
-      <div class="tabla-container">
+          <th>RUT</th>
 
-        <table>
+          <th>Ubicación</th>
 
-          <thead>
+          <th>Tarifa</th>
 
-            <tr>
+          <th>Tipo de carga</th>
 
-              <th>
-                Cliente
-              </th>
+          <th>Estado</th>
 
-              <th>
-                RUT
-              </th>
+          <th class="columna-acciones">Acción</th>
+        </tr>
+      </thead>
 
-              <th>
-                Ubicación
-              </th>
+      <tbody>
+        @for ( cliente of clientesFiltrados; track cliente.id ) {
 
-              <th>
-                Tarifa
-              </th>
+        <tr>
+          <td>
+            <div class="cliente-info">
+              <div class="cliente-avatar">
+                {{ cliente.nombre.charAt(0).toUpperCase() }}
+              </div>
 
-              <th>
-                Tipo de carga
-              </th>
+              <div>
+                <strong>
+                  {{ cliente.nombre }}
+                </strong>
 
-              <th>
-                Estado
-              </th>
+                @if (cliente.observaciones) {
 
-              <th class="columna-acciones">
-                Acción
-              </th>
+                <span class="cliente-observacion">
+                  {{ cliente.observaciones }}
+                </span>
 
-            </tr>
+                }
+              </div>
+            </div>
+          </td>
 
-          </thead>
+          <td>
+            <span class="rut">
+              {{ cliente.rut }}
+            </span>
+          </td>
 
+          <td>
+            <div class="ubicacion">
+              <strong>
+                {{ cliente.comuna }}
+              </strong>
 
-          <tbody>
+              <span>
+                {{ cliente.ciudad }}
+              </span>
+            </div>
+          </td>
 
-            @for (
-              cliente of clientesFiltrados;
-              track cliente.id
-            ) {
+          <td>
+            <span class="tarifa"> ${{ cliente.tarifa | number : '1.0-0' }} </span>
+          </td>
 
-              <tr>
+          <td>
+            <span class="tipo-carga">
+              {{ cliente.tipoCarga }}
+            </span>
+          </td>
 
-                <td>
+          <td>
+            @if (cliente.activo) {
 
-                  <div class="cliente-info">
+            <span class="badge activo">
+              <span class="badge-dot"></span>
 
-                    <div class="cliente-avatar">
+              Activo
+            </span>
 
-                      {{ cliente.nombre.charAt(0).toUpperCase() }}
+            } @else {
 
-                    </div>
+            <span class="badge inactivo">
+              <span class="badge-dot"></span>
 
-                    <div>
-
-                      <strong>
-                        {{ cliente.nombre }}
-                      </strong>
-
-                      @if (cliente.observaciones) {
-
-                        <span class="cliente-observacion">
-                          {{ cliente.observaciones }}
-                        </span>
-
-                      }
-
-                    </div>
-
-                  </div>
-
-                </td>
-
-
-                <td>
-
-                  <span class="rut">
-                    {{ cliente.rut }}
-                  </span>
-
-                </td>
-
-
-                <td>
-
-                  <div class="ubicacion">
-
-                    <strong>
-                      {{ cliente.comuna }}
-                    </strong>
-
-                    <span>
-                      {{ cliente.ciudad }}
-                    </span>
-
-                  </div>
-
-                </td>
-
-
-                <td>
-
-                  <span class="tarifa">
-                    ${{ cliente.tarifa | number:'1.0-0' }}
-                  </span>
-
-                </td>
-
-
-                <td>
-
-                  <span class="tipo-carga">
-                    {{ cliente.tipoCarga }}
-                  </span>
-
-                </td>
-
-
-                <td>
-
-                  @if (cliente.activo) {
-
-                    <span class="badge activo">
-
-                      <span class="badge-dot"></span>
-
-                      Activo
-
-                    </span>
-
-                  } @else {
-
-                    <span class="badge inactivo">
-
-                      <span class="badge-dot"></span>
-
-                      Inactivo
-
-                    </span>
-
-                  }
-
-                </td>
-
-
-                <td class="columna-acciones">
-
-                  <button
-                    type="button"
-                    class="btn-detalle"
-                    (click)="verDetalle(cliente.id)">
-
-                    Ver detalle
-
-                  </button>
-
-                </td>
-
-              </tr>
+              Inactivo
+            </span>
 
             }
+          </td>
 
-          </tbody>
+          <td class="columna-acciones">
+            <button type="button" class="btn-detalle" (click)="verDetalle(cliente.id)">
+              Ver detalle
+            </button>
+          </td>
+        </tr>
 
-        </table>
+        }
+      </tbody>
+    </table>
+  </div>
 
-      </div>
+  } @if (clientesFiltrados.length === 0) {
 
-    }
+  <div class="sin-resultados">
+    <div class="sin-resultados-icon">⌕</div>
 
+    <h2>No encontramos clientes</h2>
 
-    @if (clientesFiltrados.length === 0) {
+    <p>No hay clientes que coincidan con los filtros seleccionados.</p>
 
-      <div class="sin-resultados">
+    <button type="button" class="btn-restablecer" (click)="limpiarFiltros()">
+      Limpiar filtros
+    </button>
+  </div>
 
-        <div class="sin-resultados-icon">
-          ⌕
-        </div>
-
-        <h2>
-          No encontramos clientes
-        </h2>
-
-        <p>
-          No hay clientes que coincidan con los filtros seleccionados.
-        </p>
-
-        <button
-          type="button"
-          class="btn-restablecer"
-          (click)="limpiarFiltros()">
-
-          Limpiar filtros
-
-        </button>
-
-      </div>
-
-    }
-
-  }
-
+  } }
 </section>

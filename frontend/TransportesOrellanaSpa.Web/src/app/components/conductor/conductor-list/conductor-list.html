@@ -5,10 +5,14 @@
 
       <div>
         <h1>Conductores</h1>
-
         <p>Administra los conductores registrados en Transportes Orellana SpA.</p>
       </div>
     </div>
+
+    <button type="button" class="btn-nuevo" (click)="nuevoConductor()">
+      <span class="btn-icon">+</span>
+      Nuevo Conductor
+    </button>
   </div>
 
   @if (cargando) {

@@ -50,7 +50,10 @@ public class JwtService
         var claims = new List<Claim>
         {
             new(JwtRegisteredClaimNames.Sub, usuario.Id.ToString()),
-            new(ClaimTypes.Name, usuario.Nombre),
+            new(
+                ClaimTypes.Name,
+                $"{usuario.Nombres} {usuario.ApellidoPaterno} {usuario.ApellidoMaterno}".Trim()
+            ),
             new(ClaimTypes.Email, usuario.Email)
         };
 

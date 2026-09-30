@@ -178,4 +178,12 @@ export class RemolqueList implements OnInit {
 
   }
 
+  nuevoRemolque(): void {
+
+    this.router.navigate([
+      '/remolques/nuevo'
+    ]);
+
+  }
+
 }

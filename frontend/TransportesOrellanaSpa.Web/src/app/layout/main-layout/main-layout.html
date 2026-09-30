@@ -476,14 +476,23 @@
 
       <!-- USUARIO -->
 
-      <div class="user">
+      <div
+        class="user"
+        role="button"
+        tabindex="0"
+        (click)="irAMiPerfil()"
+        (keydown.enter)="irAMiPerfil()"
+        (keydown.space)="irAMiPerfil()"
+      >
         <div class="user-info">
-          <strong>Lukas Orellana</strong>
+          <strong>{{ nombreUsuario }}</strong>
 
-          <span> Administrador </span>
+          <span>{{ rolUsuario }}</span>
         </div>
 
-        <div class="avatar">LO</div>
+        <div class="avatar">
+          {{ inicialesUsuario }}
+        </div>
       </div>
     </header>
 
@@ -528,48 +537,28 @@
 </div>
 
 @if (sesionExpiradaVisible) {
-  <div
-    class="sesion-expirada-overlay"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="tituloSesionExpirada"
-  >
+<div
+  class="sesion-expirada-overlay"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="tituloSesionExpirada"
+>
+  <div class="sesion-expirada-modal">
+    <div class="sesion-expirada-icono">!</div>
 
-    <div class="sesion-expirada-modal">
+    <div class="sesion-expirada-contenido">
+      <h2 id="tituloSesionExpirada">Sesión expirada</h2>
 
-      <div class="sesion-expirada-icono">
-        !
-      </div>
+      <p>Tu sesión ha expirado por seguridad.</p>
 
-      <div class="sesion-expirada-contenido">
-
-        <h2 id="tituloSesionExpirada">
-          Sesión expirada
-        </h2>
-
-        <p>
-          Tu sesión ha expirado por seguridad.
-        </p>
-
-        <span>
-          Vuelve a iniciar sesión para continuar utilizando Flota360.
-        </span>
-
-      </div>
-
-      <div class="sesion-expirada-acciones">
-
-        <button
-          type="button"
-          class="sesion-expirada-boton"
-          (click)="confirmarSesionExpirada()"
-        >
-          Entendido
-        </button>
-
-      </div>
-
+      <span> Vuelve a iniciar sesión para continuar utilizando Flota360. </span>
     </div>
 
+    <div class="sesion-expirada-acciones">
+      <button type="button" class="sesion-expirada-boton" (click)="confirmarSesionExpirada()">
+        Entendido
+      </button>
+    </div>
   </div>
+</div>
 }

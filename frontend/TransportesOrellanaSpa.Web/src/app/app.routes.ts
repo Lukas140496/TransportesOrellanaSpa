@@ -42,7 +42,7 @@ import { Pagos } from './components/pagos/pagos';
 import { unsavedChangesGuard } from './core/guards/unsaved-changes.guard';
 import { authGuard } from './core/guards/auth.guard';
 import { Login } from './components/login/login';
-
+import { MiPerfil } from './components/mi-perfil/mi-perfil';
 
 export const routes: Routes = [
 
@@ -130,6 +130,15 @@ export const routes: Routes = [
             {
                 path: 'dashboard/personal',
                 component: Dashboard
+            },
+
+            // =========================
+            // MI PERFIL
+            // =========================
+
+            {
+                path: 'mi-perfil',
+                component: MiPerfil
             },
 
 

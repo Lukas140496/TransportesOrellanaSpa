@@ -922,22 +922,46 @@ tbody tr:hover {
     padding: 20px 16px;
   }
 
+  // =====================================================
+  // HEADER RESPONSIVO
+  // =====================================================
   .page-header {
-    align-items: stretch;
+    display: flex;
     flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    width: 100%;
   }
 
   .header-content {
-    align-items: flex-start;
+    order: 1;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+    
+    > div {
+      text-align: left;
+    }
   }
 
   .page-header h1 {
     font-size: 24px;
+    margin: 0 0 4px;
+    text-align: left;
+  }
+
+  .page-header p {
+    font-size: 13px;
+    text-align: left;
   }
 
   .btn-nuevo {
+    order: 2;
     justify-content: center;
     width: 100%;
+    margin-left: 0 !important;
   }
 
   .filtros-card {
@@ -956,7 +980,6 @@ tbody tr:hover {
   td {
     padding: 13px 14px;
   }
-
 }
 
 
@@ -969,6 +992,7 @@ tbody tr:hover {
   .header-icon {
     width: 42px;
     height: 42px;
+    margin-bottom: 10px;
   }
 
   .page-header h1 {

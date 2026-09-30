@@ -1,20 +1,29 @@
 <section class="viaje-list">
-  <!-- =========================
-       ENCABEZADO
-       ========================= -->
-
   <div class="header">
-    <div>
-      <h1>Viajes</h1>
-      <p>Listado de viajes registrados en el sistema.</p>
+    <div class="header-content">
+      <div class="header-icon">↗</div>
+      <div>
+        <h1>Viajes</h1>
+        <p>Listado de viajes registrados en el sistema.</p>
+      </div>
     </div>
+
+    <button type="button" class="btn-nuevo" (click)="nuevoViaje()">
+      <span class="btn-icon">+</span>
+      Nuevo Servicio
+    </button>
   </div>
 
   <!-- =========================
-       FILTROS
-       ========================= -->
+    FILTROS
+    ========================= -->
+
+  <!-- =========================
+     FILTROS
+     ========================= -->
 
   <div class="filtros-card">
+    <!-- DESKTOP -->
     <div class="filtros-header">
       <div>
         <h2>Buscar viajes</h2>
@@ -27,11 +36,33 @@
       </div>
     </div>
 
-    <div class="filtros-grid">
-      <!-- GUÍA -->
+    <!-- TABLET / MÓVIL -->
+    <button
+      type="button"
+      class="filtros-toggle"
+      (click)="toggleFiltros()"
+      [attr.aria-expanded]="filtrosAbiertos"
+    >
+      <div class="filtros-toggle-info">
+        <span class="filtros-icon"> ⌕ </span>
 
+        <div>
+          <h2>Buscar viajes</h2>
+
+          <p>Filtra los viajes por guía, fecha, cliente o pago.</p>
+        </div>
+      </div>
+
+      <span class="filtros-flecha">
+        {{ filtrosAbiertos ? '⌃' : '⌵' }}
+      </span>
+    </button>
+
+    <!-- CAMPOS -->
+    <div class="filtros-grid" [class.filtros-abiertos]="filtrosAbiertos">
+      <!-- GUÍA -->
       <div class="campo">
-        <label for="guia"> Número de guía </label>
+        <label for="guia">Número de guía</label>
 
         <input
           id="guia"
@@ -44,9 +75,8 @@
       </div>
 
       <!-- FECHA DESDE -->
-
       <div class="campo">
-        <label for="fechaDesde"> Fecha desde </label>
+        <label for="fechaDesde">Fecha desde</label>
 
         <input
           id="fechaDesde"
@@ -57,9 +87,8 @@
       </div>
 
       <!-- FECHA HASTA -->
-
       <div class="campo">
-        <label for="fechaHasta"> Fecha hasta </label>
+        <label for="fechaHasta">Fecha hasta</label>
 
         <input
           id="fechaHasta"
@@ -70,35 +99,36 @@
       </div>
 
       <!-- CLIENTE -->
-
       <div class="campo">
-        <label for="cliente"> Cliente </label>
+        <label for="cliente">Cliente</label>
 
         <select id="cliente" [(ngModel)]="clienteId" (ngModelChange)="onClienteChange()">
           <option [ngValue]="null">Todos los clientes</option>
 
           @for (cliente of clientes; track cliente.id) {
-
           <option [ngValue]="cliente.id">
             {{ cliente.nombre }}
           </option>
-
           }
         </select>
       </div>
 
       <!-- ESTADO DE PAGO -->
-
       <div class="campo">
-        <label for="estadoPago"> Estado de pago </label>
+        <label for="estadoPago">Estado de pago</label>
 
         <select id="estadoPago" [(ngModel)]="estadoPago" (ngModelChange)="onEstadoPagoChange()">
           <option value="">Todos los pagos</option>
-
           <option value="Pagado">Pagados</option>
-
           <option value="Pendiente">Pendientes de pago</option>
         </select>
+      </div>
+
+      <!-- LIMPIAR EN TABLET / MÓVIL -->
+      <div class="filtros-acciones filtros-acciones-responsive">
+        <button type="button" class="btn-limpiar" (click)="limpiarFiltros()">
+          Limpiar filtros
+        </button>
       </div>
     </div>
   </div>
@@ -313,47 +343,39 @@
 
   @if (totalPaginas > 1) {
 
-    <div class="paginacion">
-  
-      <div class="paginacion-info">
-        Mostrando
-        <strong>{{ indiceInicio }}–{{ indiceFin }}</strong>
-        de
-        <strong>{{ viajes.length }}</strong>
-        viajes
-      </div>
-  
-      <div class="paginacion-controles">
-  
-        <button
-          type="button"
-          class="btn-paginacion"
-          [disabled]="paginaActual === 1"
-          (click)="paginaAnterior()"
-        >
-          ← Anterior
-        </button>
-  
-        <span class="pagina-info">
-          Página {{ paginaActual }} de {{ totalPaginas }}
-        </span>
-  
-        <button
-          type="button"
-          class="btn-paginacion"
-          [disabled]="paginaActual === totalPaginas"
-          (click)="paginaSiguiente()"
-        >
-          Siguiente →
-        </button>
-  
-      </div>
-  
+  <div class="paginacion">
+    <div class="paginacion-info">
+      Mostrando
+      <strong>{{ indiceInicio }}–{{ indiceFin }}</strong>
+      de
+      <strong>{{ viajes.length }}</strong>
+      viajes
     </div>
-  
-    }
 
-  } @else {
+    <div class="paginacion-controles">
+      <button
+        type="button"
+        class="btn-paginacion"
+        [disabled]="paginaActual === 1"
+        (click)="paginaAnterior()"
+      >
+        ← Anterior
+      </button>
+
+      <span class="pagina-info"> Página {{ paginaActual }} de {{ totalPaginas }} </span>
+
+      <button
+        type="button"
+        class="btn-paginacion"
+        [disabled]="paginaActual === totalPaginas"
+        (click)="paginaSiguiente()"
+      >
+        Siguiente →
+      </button>
+    </div>
+  </div>
+
+  } } @else {
 
   <div class="sin-resultados">
     <div class="sin-resultados-icon">⌕</div>

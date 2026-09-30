@@ -226,12 +226,16 @@ public static class DataSeeder
                 .GetSection("AdministradorInicial");
 
         var rut = administradorInicial["Rut"];
-        var nombre = administradorInicial["Nombre"];
+        var nombres = administradorInicial["Nombres"];
+        var apellidoPaterno = administradorInicial["ApellidoPaterno"];
+        var apellidoMaterno = administradorInicial["ApellidoMaterno"];
         var email = administradorInicial["Email"];
         var password = administradorInicial["Password"];
 
         if (string.IsNullOrWhiteSpace(rut) ||
-            string.IsNullOrWhiteSpace(nombre) ||
+            string.IsNullOrWhiteSpace(nombres) ||
+            string.IsNullOrWhiteSpace(apellidoPaterno) ||
+            string.IsNullOrWhiteSpace(apellidoMaterno) ||
             string.IsNullOrWhiteSpace(email) ||
             string.IsNullOrWhiteSpace(password))
         {
@@ -252,7 +256,9 @@ public static class DataSeeder
             usuarioAdministrador = new Usuario
             {
                 Rut = rut.Trim().ToUpper(),
-                Nombre = nombre.Trim(),
+                Nombres = nombres.Trim(),
+                ApellidoPaterno = apellidoPaterno.Trim(),
+                ApellidoMaterno = apellidoMaterno.Trim(),
                 Email = emailNormalizado,
                 PasswordHash = passwordService.HashPassword(
                     new Usuario(),
