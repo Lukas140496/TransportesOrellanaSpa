@@ -209,6 +209,11 @@ export const routes: Routes = [
             },
 
             {
+                path: 'conductores/modificar/:rut',
+                component: ConductorModificar
+            },
+
+            {
                 path: 'conductores/desactivar',
                 component: ConductorDesactivar
             },
@@ -236,6 +241,11 @@ export const routes: Routes = [
 
             {
                 path: 'remolques/modificar',
+                component: RemolqueModificar
+            },
+
+            {
+                path: 'remolques/modificar/:patente',
                 component: RemolqueModificar
             },
 

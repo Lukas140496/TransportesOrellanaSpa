@@ -30,6 +30,8 @@ export class MiPerfil {
 
   formularioModificado = false;
 
+  penultimaConexion: string | null = null;
+
   datosEditados: ActualizarMiPerfil = {
     nombres: '',
     apellidoPaterno: '',
@@ -38,6 +40,9 @@ export class MiPerfil {
   };
 
   ngOnInit(): void {
+    this.penultimaConexion =
+      localStorage.getItem('penultima_conexion_local');
+  
     this.cargarPerfil();
   }
 
@@ -211,6 +216,23 @@ export class MiPerfil {
     }
 
     return new Date(this.perfil.ultimoAcceso).toLocaleString(
+      'es-CL',
+      {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      }
+    );
+  }
+
+  get penultimaConexionFormateada(): string {
+    if (!this.penultimaConexion) {
+      return 'Sin registro';
+    }
+  
+    return new Date(this.penultimaConexion).toLocaleString(
       'es-CL',
       {
         day: '2-digit',

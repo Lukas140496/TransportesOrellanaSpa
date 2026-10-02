@@ -25,49 +25,87 @@
   <!-- FILTROS -->
   <!-- ========================= -->
 
-  <div class="filter-card">
+  <!-- ========================= -->
+<!-- FILTROS -->
+<!-- ========================= -->
+
+<div class="filter-card">
 
     <div class="filter-group">
-
+  
       <label for="cliente">
         Cliente
       </label>
-
+  
       <select
         id="cliente"
         [(ngModel)]="clienteId"
         (ngModelChange)="cambiarCliente()">
-
+  
         <option [ngValue]="null">
           Todos los clientes
         </option>
-
+  
         @for (cliente of clientes; track cliente.id) {
-
+  
           <option [ngValue]="cliente.id">
             {{ cliente.nombre }}
           </option>
-
+  
         }
-
+  
       </select>
-
+  
     </div>
-
-
-    @if (clienteId !== null) {
-
+  
+  
+    <div class="filter-group">
+  
+      <label for="fechaDesde">
+        Fecha desde
+      </label>
+  
+      <input
+        id="fechaDesde"
+        type="date"
+        [(ngModel)]="fechaDesde"
+        (ngModelChange)="cambiarFecha()">
+  
+    </div>
+  
+  
+    <div class="filter-group">
+  
+      <label for="fechaHasta">
+        Fecha hasta
+      </label>
+  
+      <input
+        id="fechaHasta"
+        type="date"
+        [(ngModel)]="fechaHasta"
+        (ngModelChange)="cambiarFecha()">
+  
+    </div>
+  
+  
+    @if (
+      clienteId !== null ||
+      fechaDesde ||
+      fechaHasta
+    ) {
+  
       <button
         type="button"
         class="btn-limpiar"
         (click)="limpiarFiltro()">
-
+  
         Limpiar filtro
-
+  
       </button>
-
+  
     }
-
+  
   </div>
 
 

@@ -28,6 +28,21 @@ export class AuthService {
 
                 this.sesionExpiradaEnProceso = false;
 
+                const conexionAnterior =
+                    localStorage.getItem('ultima_conexion_local');
+
+                if (conexionAnterior) {
+                    localStorage.setItem(
+                        'penultima_conexion_local',
+                        conexionAnterior
+                    );
+                }
+
+                localStorage.setItem(
+                    'ultima_conexion_local',
+                    new Date().toISOString()
+                );
+
                 localStorage.setItem(
                     this.tokenKey,
                     response.token
@@ -52,11 +67,11 @@ export class AuthService {
 
     actualizarUsuarioLocalmente(perfil: UsuarioPerfil): void {
         const usuarioActual = this.getUsuario();
-    
+
         if (!usuarioActual) {
             return;
         }
-    
+
         localStorage.setItem(
             this.userKey,
             JSON.stringify({

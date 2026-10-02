@@ -424,6 +424,56 @@ public class DashboardController : ControllerBase
         }
     }
 
+    // =========================================================
+    // GET: api/dashboard/kilometros-por-conductor
+    // =========================================================
+
+    [HttpGet("kilometros-por-conductor")]
+    public async Task<ActionResult<IEnumerable<DashboardKilometrosConductorDto>>>
+        ObtenerKilometrosPorConductor(
+            [FromQuery] int? year,
+            [FromQuery] int? month)
+    {
+        try
+        {
+            var (inicioMes, inicioMesSiguiente) =
+                ObtenerRangoPeriodo(year, month);
+
+            var kilometros = await _context.Viajes
+                .Where(v =>
+                    v.Fecha >= inicioMes &&
+                    v.Fecha < inicioMesSiguiente
+                )
+                .GroupBy(v => new
+                {
+                    v.ConductorId,
+                    v.Conductor.Nombres
+                })
+                .Select(grupo => new DashboardKilometrosConductorDto
+                {
+                    ConductorId = grupo.Key.ConductorId,
+
+                    Nombre = grupo.Key.Nombres,
+
+                    Viajes = grupo.Count(),
+
+                    Kilometros = (decimal)grupo.Sum(
+                        v => v.Kilometros ?? 0
+                    )
+                })
+                .OrderByDescending(
+                    x => x.Kilometros
+                )
+                .ToListAsync();
+
+            return Ok(kilometros);
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
 
     // =========================================================
     // GET: api/dashboard/estado-pagos
@@ -495,6 +545,70 @@ public class DashboardController : ControllerBase
 
                 MontoPendientePago =
                     montoPendientePago
+            };
+
+            return Ok(resultado);
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    // =========================================================
+    // GET: api/dashboard/dias-habiles
+    // =========================================================
+
+    [HttpGet("dias-habiles")]
+    public async Task<ActionResult<DashboardDiasHabilesDto>>
+        ObtenerDiasHabiles(
+            [FromQuery] int? year,
+            [FromQuery] int? month)
+    {
+        try
+        {
+            var (inicioMes, inicioMesSiguiente) =
+                ObtenerRangoPeriodo(year, month);
+
+            var diasHabiles = 0;
+            var diasTrabajados = 0;
+
+            for (
+                var fecha = inicioMes.Date;
+                fecha < inicioMesSiguiente.Date;
+                fecha = fecha.AddDays(1)
+            )
+            {
+                // Lunes = 1 ... Domingo = 7
+                if (
+                    fecha.DayOfWeek == DayOfWeek.Saturday ||
+                    fecha.DayOfWeek == DayOfWeek.Sunday
+                )
+                {
+                    continue;
+                }
+
+                diasHabiles++;
+
+                var diaSiguiente = fecha.AddDays(1);
+
+                var trabajoEseDia = await _context.Viajes
+                    .AnyAsync(v =>
+                        v.Fecha >= fecha &&
+                        v.Fecha < diaSiguiente
+                    );
+
+                if (trabajoEseDia)
+                {
+                    diasTrabajados++;
+                }
+            }
+
+            var resultado = new DashboardDiasHabilesDto
+            {
+                DiasHabiles = diasHabiles,
+                DiasTrabajados = diasTrabajados,
+                DiasNoTrabajados = diasHabiles - diasTrabajados
             };
 
             return Ok(resultado);

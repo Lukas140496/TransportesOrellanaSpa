@@ -22,18 +22,22 @@ export class ConductorDetail implements OnInit {
   cargando = true;
   error = '';
 
-  activando = false;
-
-  modalActivarVisible = false;
+  modalEstadoVisible = false;
   modalExitoVisible = false;
   modalErrorVisible = false;
+
+  modalExitoTitulo = '';
+  modalExitoMensaje = '';
 
   modalErrorTitulo = '';
   modalErrorMensaje = '';
 
+  procesandoEstado = false;
+
   ngOnInit(): void {
 
-    const rut = this.route.snapshot.paramMap.get('rut');
+    const rut =
+      this.route.snapshot.paramMap.get('rut');
 
     if (!rut) {
       this.error = 'No se especificó un RUT.';
@@ -42,87 +46,160 @@ export class ConductorDetail implements OnInit {
     }
 
     this.api.getConductorByRut(rut).subscribe({
+
       next: conductor => {
+
         this.conductor = conductor;
         this.cargando = false;
-      },
-      error: error => {
-        console.error('Error al cargar conductor:', error);
 
-        this.error = 'No fue posible cargar la información del conductor.';
+      },
+
+      error: error => {
+
+        console.error(
+          'Error al cargar conductor:',
+          error
+        );
+
+        this.error =
+          'No fue posible cargar la información del conductor.';
+
         this.cargando = false;
+
       }
+
     });
 
   }
 
+  editarConductor(): void {
+
+    if (!this.conductor) {
+      return;
+    }
+  
+    this.router.navigate([
+      '/conductores/modificar',
+      this.conductor.rut
+    ]);
+  
+  }
+
   volver(): void {
-    this.router.navigate(['/conductores']);
-  }
 
-  abrirModalActivar(): void {
-
-    if (!this.conductor || this.conductor.activo) {
-      return;
-    }
-
-    this.modalActivarVisible = true;
+    this.router.navigate([
+      '/conductores'
+    ]);
 
   }
 
-  cerrarModalActivar(): void {
-
-    if (this.activando) {
-      return;
-    }
-
-    this.modalActivarVisible = false;
-
-  }
-
-  confirmarActivacion(): void {
+  abrirModalEstado(): void {
 
     if (
       !this.conductor ||
-      this.activando
+      this.procesandoEstado
     ) {
       return;
     }
 
-    this.activando = true;
+    this.modalEstadoVisible = true;
 
-    const rut = this.conductor.rut;
+  }
 
-    this.api.activarConductor(rut).subscribe({
+  cerrarModalEstado(): void {
 
-      next: () => {
+    if (this.procesandoEstado) {
+      return;
+    }
 
-        this.activando = false;
+    this.modalEstadoVisible = false;
 
-        this.modalActivarVisible = false;
+  }
+
+  confirmarCambioEstado(): void {
+
+    if (
+      !this.conductor ||
+      this.procesandoEstado
+    ) {
+      return;
+    }
+
+    this.procesandoEstado = true;
+
+    const estabaActivo =
+      this.conductor.activo;
+
+    const rut =
+      this.conductor.rut;
+
+    const operacion =
+      estabaActivo
+        ? this.api.desactivarConductor(rut)
+        : this.api.activarConductor(rut);
+
+    operacion.subscribe({
+
+      next: resultado => {
+
+        console.log(
+          estabaActivo
+            ? 'Conductor desactivado correctamente:'
+            : 'Conductor activado correctamente:',
+          resultado
+        );
+
+        this.procesandoEstado = false;
+
+        this.modalEstadoVisible = false;
 
         if (this.conductor) {
+
           this.conductor = {
             ...this.conductor,
-            activo: true
+            activo: !estabaActivo
           };
+
         }
 
-        this.modalExitoVisible = true;
+        if (estabaActivo) {
+
+          this.mostrarExito(
+            'Conductor desactivado',
+            `El conductor ${rut} fue desactivado correctamente y ya no podrá utilizarse para nuevos viajes.`
+          );
+
+        } else {
+
+          this.mostrarExito(
+            'Conductor activado',
+            `El conductor ${rut} fue activado correctamente y podrá utilizarse para nuevos viajes.`
+          );
+
+        }
 
       },
 
-      error: (error) => {
+      error: error => {
 
-        this.activando = false;
+        console.error(
+          'Error al cambiar estado del conductor:',
+          error
+        );
 
-        this.modalActivarVisible = false;
+        this.procesandoEstado = false;
+
+        this.modalEstadoVisible = false;
 
         if (error?.status === 409) {
 
           this.mostrarError(
-            'Conductor ya activo',
-            'El conductor seleccionado ya se encuentra activo.'
+            estabaActivo
+              ? 'Conductor ya desactivado'
+              : 'Conductor ya activo',
+            estabaActivo
+              ? 'El conductor seleccionado ya se encuentra inactivo.'
+              : 'El conductor seleccionado ya se encuentra activo.'
           );
 
           return;
@@ -141,13 +218,27 @@ export class ConductorDetail implements OnInit {
         }
 
         this.mostrarError(
-          'Error al activar',
-          'No fue posible activar el conductor. Inténtalo nuevamente.'
+          estabaActivo
+            ? 'No se pudo desactivar el conductor'
+            : 'No se pudo activar el conductor',
+          error?.error ||
+          'Ocurrió un error al intentar cambiar el estado del conductor.'
         );
 
       }
 
     });
+
+  }
+
+  private mostrarExito(
+    titulo: string,
+    mensaje: string
+  ): void {
+
+    this.modalExitoTitulo = titulo;
+    this.modalExitoMensaje = mensaje;
+    this.modalExitoVisible = true;
 
   }
 
@@ -157,7 +248,7 @@ export class ConductorDetail implements OnInit {
 
   }
 
-  mostrarError(
+  private mostrarError(
     titulo: string,
     mensaje: string
   ): void {

@@ -1,189 +1,734 @@
 .remolque-detail {
+
   max-width: 1200px;
+
   margin: 0 auto;
+
   padding: 2rem;
+
 }
 
+
+/* =========================
+   HEADER
+========================= */
+
 .header {
+
   display: flex;
+
   justify-content: space-between;
+
   align-items: flex-start;
+
   gap: 2rem;
+
   margin-bottom: 2rem;
+
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.btn-editar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 38px;
+  padding: 0 16px;
+  border: 1px solid #183b68;
+  border-radius: 8px;
+  background: #183b68;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.15s ease;
+}
+
+.btn-editar:hover {
+  background: #214b82;
+  border-color: #214b82;
+}
+
+.btn-editar:active {
+  transform: translateY(1px);
+}
+
+.header > div:first-child {
+  min-width: 0;
 }
 
 .eyebrow {
+
   display: block;
+
   margin-bottom: 0.5rem;
+
   font-size: 0.8rem;
+
   font-weight: 700;
+
   text-transform: uppercase;
+
   letter-spacing: 0.08em;
+
   opacity: 0.6;
+
 }
 
 .header h1 {
+
   margin: 0;
+
   font-size: 2.2rem;
+
 }
 
 .header p {
+
   margin: 0.5rem 0 0;
+
   font-size: 1rem;
+
   opacity: 0.7;
+
+}
+
+.header-acciones {
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: flex-end;
+
+  gap: 14px;
+
+}
+
+.header-estado {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: flex-end;
+
+}
+
+.header-botones {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: flex-end;
+
+  gap: 10px;
+
+  flex-wrap: wrap;
+
+}
+
+
+/* =========================
+   BOTONES
+========================= */
+
+.btn-volver,
+.btn-activar,
+.btn-secondary,
+.btn-primary,
+.btn-danger {
+
+  border-radius: 8px;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    opacity 0.2s ease;
+
 }
 
 .btn-volver {
+
   padding: 0.7rem 1.1rem;
+
   border: 1px solid #d5d5d5;
-  border-radius: 8px;
+
   background: white;
-  cursor: pointer;
-  font-weight: 600;
+
+  color: #374151;
+
+  font-size: 14px;
+
 }
 
 .btn-volver:hover {
+
   background: #f5f5f5;
+
+  transform: translateY(-1px);
+
 }
 
+.btn-activar {
+
+  min-height: 40px;
+
+  padding: 0 18px;
+
+  border: 1px solid #2f9e61;
+
+  background: #f1fbf5;
+
+  color: #27814c;
+
+  font-size: 12px;
+
+}
+
+.btn-activar:hover:not(:disabled) {
+
+  border-color: #27814c;
+
+  background: #e4f7eb;
+
+  color: #216d40;
+
+  transform: translateY(-1px);
+
+}
+
+.btn-activar:active:not(:disabled) {
+
+  background: #d5f0df;
+
+}
+
+.btn-danger {
+
+  min-height: 40px;
+
+  padding: 0 18px;
+
+  border: 1px solid #d14343;
+
+  background: #fff;
+
+  color: #b42323;
+
+  font-size: 12px;
+
+}
+
+.btn-danger:hover:not(:disabled) {
+
+  background: #fff1f1;
+
+  border-color: #b42323;
+
+  color: #9f1f1f;
+
+  transform: translateY(-1px);
+
+}
+
+.btn-danger:active:not(:disabled) {
+
+  background: #fde4e4;
+
+}
+
+.btn-secondary,
+.btn-primary {
+
+  min-width: 125px;
+
+  height: 40px;
+
+  padding: 0 18px;
+
+  font-size: 12px;
+
+}
+
+.btn-secondary {
+
+  border: 1px solid #d7dee7;
+
+  background: #ffffff;
+
+  color: #526273;
+
+}
+
+.btn-secondary:hover:not(:disabled) {
+
+  border-color: #b9c4d0;
+
+  background: #f7f9fb;
+
+}
+
+.btn-primary {
+
+  border: 1px solid #31577f;
+
+  background: #31577f;
+
+  color: #ffffff;
+
+}
+
+.btn-primary:hover:not(:disabled) {
+
+  background: #274968;
+
+}
+
+.btn-secondary:disabled,
+.btn-primary:disabled,
+.btn-danger:disabled,
+.btn-activar:disabled {
+
+  opacity: 0.6;
+
+  cursor: not-allowed;
+
+}
+
+
+/* =========================
+   GRID
+========================= */
+
 .grid {
+
   display: grid;
+
   grid-template-columns: repeat(2, minmax(0, 1fr));
+
   gap: 1.5rem;
+
 }
 
 .card {
+
   padding: 1.5rem;
+
   border: 1px solid #e3e3e3;
+
   border-radius: 14px;
+
   background: white;
+
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+
 }
 
 .card-header {
+
   margin-bottom: 1.5rem;
+
 }
 
 .card-header h2 {
+
   margin: 0;
+
   font-size: 1.1rem;
+
 }
 
 .datos {
+
   display: grid;
+
   grid-template-columns: repeat(2, minmax(0, 1fr));
+
   gap: 1.2rem;
+
 }
 
 .dato {
+
   display: flex;
+
   flex-direction: column;
+
   gap: 0.3rem;
+
 }
 
 .dato span {
+
   font-size: 0.8rem;
+
   opacity: 0.6;
+
 }
 
 .dato strong {
+
   font-size: 1rem;
+
 }
 
+
+/* =========================
+   ESTADO
+========================= */
+
 .estado-remolque {
+
   display: flex;
+
   flex-direction: column;
+
   align-items: flex-start;
+
   gap: 0.8rem;
+
 }
 
 .estado-remolque p,
 .sin-camion p,
 .camion-info p {
+
   margin: 0;
+
   font-size: 0.9rem;
+
   opacity: 0.65;
+
 }
 
 .badge {
+
   display: inline-flex;
+
   align-items: center;
+
   padding: 0.4rem 0.75rem;
+
   border-radius: 999px;
+
   font-size: 0.8rem;
+
   font-weight: 700;
+
 }
 
 .badge.activa {
+
   background: #dcfce7;
+
   color: #166534;
+
 }
 
 .badge.inactiva {
+
   background: #fee2e2;
+
   color: #991b1b;
+
 }
 
+
+/* =========================
+   CAMIÓN
+========================= */
+
 .camion-card {
+
   grid-column: 1 / -1;
+
 }
 
 .camion-info {
+
   display: flex;
+
   align-items: center;
+
   gap: 1rem;
+
 }
 
 .camion-patente {
+
   padding: 0.8rem 1rem;
+
   border-radius: 8px;
+
   background: #f1f1f1;
+
   font-weight: 800;
+
   letter-spacing: 0.05em;
+
 }
 
 .camion-info strong {
+
   display: block;
+
   margin-bottom: 0.3rem;
+
 }
 
 .sin-camion {
+
   display: flex;
+
   flex-direction: column;
+
   gap: 0.5rem;
+
 }
 
 .sin-camion span {
+
   font-weight: 700;
+
   opacity: 0.7;
+
 }
 
+
+/* =========================
+   ESTADOS DE CARGA / ERROR
+========================= */
+
 .estado {
+
   padding: 2rem;
+
   text-align: center;
+
 }
 
 .estado.error {
+
   color: #991b1b;
+
 }
 
 .estado button {
+
   margin-top: 1rem;
+
   padding: 0.7rem 1.1rem;
+
   border: none;
+
   border-radius: 8px;
+
   cursor: pointer;
+
   font-weight: 600;
+
 }
 
-@media (max-width: 768px) {
 
+/* =========================
+   MODALES
+========================= */
+
+.modal-overlay {
+
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 1000;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  padding: 20px;
+
+  box-sizing: border-box;
+
+  background: rgba(15, 39, 71, 0.42);
+
+}
+
+.modal {
+
+  width: 100%;
+
+  max-width: 430px;
+
+  padding: 28px;
+
+  box-sizing: border-box;
+
+  border-radius: 12px;
+
+  background: #ffffff;
+
+  box-shadow:
+    0 20px 60px rgba(15, 39, 71, 0.20);
+
+  text-align: center;
+
+}
+
+.modal-icon {
+
+  width: 48px;
+
+  height: 48px;
+
+  margin: 0 auto 16px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border-radius: 50%;
+
+  font-size: 22px;
+
+  font-weight: 700;
+
+}
+
+.modal-icon.warning {
+
+  background: #fff7e6;
+
+  color: #b76e00;
+
+}
+
+.modal-icon.activate {
+
+  background: #edf8f1;
+
+  color: #287a45;
+
+}
+
+.modal-icon.success {
+
+  background: #e9f7ef;
+
+  color: #27814c;
+
+}
+
+.modal-icon.error {
+
+  background: #fceaea;
+
+  color: #b23a3a;
+
+}
+
+.modal h2 {
+
+  margin: 0 0 10px;
+
+  color: #243b53;
+
+  font-size: 17px;
+
+  font-weight: 700;
+
+}
+
+.modal p {
+
+  margin: 0;
+
+  color: #617286;
+
+  font-size: 12px;
+
+  line-height: 1.6;
+
+}
+
+.modal-secondary-text {
+
+  margin-top: 10px !important;
+
+  font-size: 13px !important;
+
+  line-height: 1.5 !important;
+
+}
+
+.modal-actions {
+
+  display: flex;
+
+  justify-content: center;
+
+  gap: 10px;
+
+  margin-top: 24px;
+
+}
+
+.modal-actions button {
+
+  min-width: 120px;
+
+}
+
+.modal-actions .btn-activar,
+.modal-actions .btn-danger {
+
+  min-width: 155px;
+
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 768px) {
   .remolque-detail {
     padding: 1rem;
   }
 
   .header {
     flex-direction: column;
+  }
+
+  .header-actions {
+    width: 100%;
+  }
+
+  .header-actions .btn-editar,
+  .header-actions .btn-volver {
+    width: 100%;
   }
 
   .grid {
@@ -196,6 +741,41 @@
 
   .datos {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+
+  .header-botones {
+
+    flex-direction: column;
+
+  }
+
+  .header-botones .btn-activar,
+  .header-botones .btn-danger,
+  .header-botones .btn-volver {
+
+    width: 100%;
+
+  }
+
+  .modal {
+
+    padding: 24px 20px;
+
+  }
+
+  .modal-actions {
+
+    flex-direction: column-reverse;
+
+  }
+
+  .modal-actions button {
+
+    width: 100%;
+
   }
 
 }

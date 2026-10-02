@@ -117,8 +117,25 @@
 
 .cabecera-acciones {
   display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 14px;
+}
+
+.cabecera-estados {
+  display: flex;
   align-items: center;
-  gap: 1rem;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.cabecera-botones {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
 /* =========================
@@ -149,6 +166,11 @@
   color: #b23a3a;
 }
 
+.estado-badge.conductor-activo {
+  background: #dcfce7;
+  color: #166534;
+}
+
 /* =========================
    BOTONES
 ========================= */
@@ -156,7 +178,8 @@
 .btn-volver,
 .btn-activar,
 .btn-secondary,
-.btn-primary {
+.btn-primary,
+.btn-danger {
   border-radius: 8px;
 
   font-weight: 600;
@@ -274,9 +297,41 @@
 }
 
 .btn-secondary:disabled,
-.btn-primary:disabled {
+.btn-primary:disabled,
+.btn-danger:disabled,
+.btn-activar:disabled {
   opacity: 0.6;
+  cursor: not-allowed;
+}
 
+.btn-danger {
+  min-height: 40px;
+
+  padding: 0 18px;
+
+  border: 1px solid #d14343;
+
+  background: #fff;
+
+  color: #b42323;
+
+  font-size: 12px;
+}
+
+.btn-danger:hover:not(:disabled) {
+  background: #fff1f1;
+  border-color: #b42323;
+  color: #9f1f1f;
+
+  transform: translateY(-1px);
+}
+
+.btn-danger:active:not(:disabled) {
+  background: #fde4e4;
+}
+
+.btn-danger:disabled {
+  opacity: 0.6;
   cursor: not-allowed;
 }
 
@@ -299,11 +354,60 @@
 
 .bloque-titulo {
   display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 1rem;
+
+  margin-bottom: 1.5rem;
+}
+
+.bloque-titulo-info {
+  display: flex;
   align-items: center;
 
   gap: 0.9rem;
 
-  margin-bottom: 1.5rem;
+  min-width: 0;
+}
+
+.btn-editar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 7px;
+
+  min-height: 38px;
+
+  padding: 0 16px;
+
+  border: 1px solid #183b68;
+  border-radius: 8px;
+
+  background: #183b68;
+  color: #ffffff;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  flex-shrink: 0;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.15s ease;
+}
+
+.btn-editar:hover {
+  background: #214b82;
+  border-color: #214b82;
+}
+
+.btn-editar:active {
+  transform: translateY(1px);
 }
 
 .icono {
@@ -565,9 +669,19 @@
 }
 
 .modal-icon.warning {
-  background: #fff4df;
+  background: #fff7e6;
+  color: #b76e00;
+}
 
-  color: #b87900;
+.modal-icon.activate {
+  background: #edf8f1;
+  color: #287a45;
+}
+
+.modal-secondary-text {
+  margin-top: 10px !important;
+  font-size: 13px !important;
+  line-height: 1.5 !important;
 }
 
 .modal-icon.success {
@@ -654,10 +768,17 @@
 
   .cabecera-acciones {
     width: 100%;
-
+  
+    align-items: flex-start;
+  }
+  
+  .cabecera-estados {
+    justify-content: flex-start;
+  }
+  
+  .cabecera-botones {
+    width: 100%;
     justify-content: space-between;
-
-    flex-wrap: wrap;
   }
 
 }
@@ -686,12 +807,22 @@
 
   .cabecera-acciones {
     align-items: flex-start;
-
     flex-direction: column;
   }
-
-  .cabecera-acciones .btn-activar,
-  .cabecera-acciones .btn-volver {
+  
+  .cabecera-estados {
+    width: 100%;
+    justify-content: flex-start;
+  }
+  
+  .cabecera-botones {
+    width: 100%;
+    flex-direction: column;
+  }
+  
+  .cabecera-botones .btn-activar,
+  .cabecera-botones .btn-danger,
+  .cabecera-botones .btn-volver {
     width: 100%;
   }
 
@@ -704,6 +835,19 @@
   }
 
   .modal-actions button {
+    width: 100%;
+  }
+
+  .bloque-titulo {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  
+  .bloque-titulo-info {
+    width: 100%;
+  }
+  
+  .btn-editar {
     width: 100%;
   }
 

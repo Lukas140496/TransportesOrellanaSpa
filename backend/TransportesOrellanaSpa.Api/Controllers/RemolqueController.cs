@@ -25,6 +25,7 @@ public class RemolqueController : ControllerBase
     {
         var remolques = await _context.Remolques
             .AsNoTracking()
+            .Where(r => r.Patente != "NA")
             .Select(r => new RemolqueDto
             {
                 Id = r.Id,

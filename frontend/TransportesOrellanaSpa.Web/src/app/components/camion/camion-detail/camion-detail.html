@@ -47,29 +47,79 @@
 
       <div class="detail-actions">
 
-        @if (camion.revisionAlDia && camion.permisoAlDia && camion.seguroAlDia) {
+        <div class="detail-status">
       
-          <span class="estado-ok">
-            Documentación al día
-          </span>
+          @if (camion.revisionAlDia && camion.permisoAlDia && camion.seguroAlDia) {
       
-        } @else {
+            <span class="estado-ok">
+              Documentación al día
+            </span>
       
-          <span class="estado-warning">
-            Documentación pendiente
-          </span>
+          } @else {
       
-        }
+            <span class="estado-warning">
+              Documentación pendiente
+            </span>
       
-        <button
-          type="button"
-          class="btn-editar"
-          (click)="editarCamion()">
+          }
       
-          ✎
-          Editar camión
+          @if (camion.activo) {
       
-        </button>
+            <span class="badge ok">
+              Activo
+            </span>
+      
+          } @else {
+      
+            <span class="badge warning">
+              Inactivo
+            </span>
+      
+          }
+      
+        </div>
+      
+      
+        <div class="detail-buttons">
+      
+          <button
+            type="button"
+            class="btn-editar"
+            (click)="editarCamion()">
+      
+            ✎
+            Editar camión
+      
+          </button>
+      
+      
+          @if (camion.activo) {
+      
+            <button
+              type="button"
+              class="btn-danger"
+              (click)="mostrarConfirmacionEstado()"
+              [disabled]="procesandoEstado">
+      
+              Desactivar camión
+      
+            </button>
+      
+          } @else {
+      
+            <button
+              type="button"
+              class="btn-success"
+              (click)="mostrarConfirmacionEstado()"
+              [disabled]="procesandoEstado">
+      
+              Activar camión
+      
+            </button>
+      
+          }
+      
+        </div>
       
       </div>
 
@@ -374,3 +424,217 @@
   }
 
 </section>
+
+<!-- =========================
+     MODAL DE CONFIRMACIÓN
+     ========================= -->
+
+@if (modalConfirmacionVisible && camion) {
+
+  <div
+    class="modal-backdrop"
+    (click)="cerrarModalConfirmacion()">
+
+    <div
+      class="modal"
+      role="alertdialog"
+      aria-modal="true"
+      (click)="$event.stopPropagation()">
+
+      <div
+        class="modal-icon"
+        [class.warning]="camion.activo"
+        [class.activate]="!camion.activo">
+
+        @if (camion.activo) {
+          !
+        } @else {
+          ✓
+        }
+
+      </div>
+
+
+      <h2>
+
+        @if (camion.activo) {
+          ¿Desactivar camión?
+        } @else {
+          ¿Activar camión?
+        }
+
+      </h2>
+
+
+      <p>
+
+        Estás a punto de
+        @if (camion.activo) {
+          desactivar
+        } @else {
+          activar
+        }
+
+        el camión
+        <strong>{{ camion.patente }}</strong>.
+
+      </p>
+
+
+      <p class="modal-secondary-text">
+
+        @if (camion.activo) {
+
+          El camión no será eliminado y su historial se conservará.
+          No podrá utilizarse para nuevos viajes mientras esté inactivo.
+
+        } @else {
+
+          El camión volverá a estar disponible para nuevos viajes.
+          Su historial y todos sus datos se conservarán.
+
+        }
+
+      </p>
+
+
+      <div class="modal-actions">
+
+        <button
+          type="button"
+          class="btn-secondary"
+          [disabled]="procesandoEstado"
+          (click)="cerrarModalConfirmacion()">
+
+          Cancelar
+
+        </button>
+
+
+        @if (camion.activo) {
+
+          <button
+            type="button"
+            class="btn-danger"
+            [disabled]="procesandoEstado"
+            (click)="confirmarCambioEstado()">
+
+            @if (procesandoEstado) {
+              Desactivando...
+            } @else {
+              Sí, desactivar
+            }
+
+          </button>
+
+        } @else {
+
+          <button
+            type="button"
+            class="btn-success"
+            [disabled]="procesandoEstado"
+            (click)="confirmarCambioEstado()">
+
+            @if (procesandoEstado) {
+              Activando...
+            } @else {
+              Sí, activar
+            }
+
+          </button>
+
+        }
+
+      </div>
+
+    </div>
+
+  </div>
+
+}
+
+<!-- =========================
+     MODAL DE ERROR
+     ========================= -->
+
+@if (modalErrorVisible) {
+
+  <div
+    class="modal-backdrop"
+    (click)="cerrarModalError()">
+
+    <div
+      class="modal"
+      role="alertdialog"
+      aria-modal="true"
+      (click)="$event.stopPropagation()">
+
+      <div class="modal-icon error">
+        !
+      </div>
+
+      <h2>
+        {{ modalErrorTitulo }}
+      </h2>
+
+      <p>
+        {{ modalErrorMensaje }}
+      </p>
+
+      <button
+        type="button"
+        class="btn-primary modal-button"
+        (click)="cerrarModalError()">
+
+        Aceptar
+
+      </button>
+
+    </div>
+
+  </div>
+
+}
+
+<!-- =========================
+     MODAL DE ÉXITO
+     ========================= -->
+
+@if (modalExitoVisible) {
+
+  <div
+    class="modal-backdrop"
+    (click)="cerrarModalExito()">
+
+    <div
+      class="modal"
+      role="dialog"
+      aria-modal="true"
+      (click)="$event.stopPropagation()">
+
+      <div class="modal-icon success">
+        ✓
+      </div>
+
+      <h2>
+        {{ modalExitoTitulo }}
+      </h2>
+
+      <p>
+        {{ modalExitoMensaje }}
+      </p>
+
+      <button
+        type="button"
+        class="btn-primary modal-button"
+        (click)="cerrarModalExito()">
+
+        Aceptar
+
+      </button>
+
+    </div>
+
+  </div>
+
+}

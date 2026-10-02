@@ -1,184 +1,249 @@
 <section class="remolque-detail">
-
   @if (cargando) {
 
-    <div class="estado">
-      <p>Cargando información del remolque...</p>
+  <div class="estado">
+    <p>Cargando información del remolque...</p>
+  </div>
+
+  } @if (error) {
+
+  <div class="estado error">
+    <p>{{ error }}</p>
+
+    <button type="button" (click)="volver()">Volver a remolques</button>
+  </div>
+
+  } @if (!cargando && !error && remolque) {
+
+  <div class="header">
+    <div>
+      <span class="eyebrow">Detalle de remolque</span>
+
+      <h1>{{ remolque.patente }}</h1>
+
+      <p>{{ remolque.marca }} {{ remolque.modelo }}</p>
     </div>
 
-  }
+    <div class="header-actions">
+      <button type="button" class="btn-editar" (click)="editarRemolque()">✎ Editar remolque</button>
 
-  @if (error) {
-
-    <div class="estado error">
-      <p>{{ error }}</p>
-
-      <button
-        type="button"
-        (click)="volver()">
-        Volver a remolques
-      </button>
+      <button type="button" class="btn-volver" (click)="volver()">← Volver</button>
     </div>
+  </div>
 
-  }
+  <div class="grid">
+    <!-- Información general -->
 
-  @if (!cargando && !error && remolque) {
-
-    <div class="header">
-
-      <div>
-        <span class="eyebrow">Detalle de remolque</span>
-
-        <h1>{{ remolque.patente }}</h1>
-
-        <p>
-          {{ remolque.marca }} {{ remolque.modelo }}
-        </p>
+    <article class="card">
+      <div class="card-header">
+        <h2>Información general</h2>
       </div>
 
-      <button
-        type="button"
-        class="btn-volver"
-        (click)="volver()">
-        ← Volver
-      </button>
-
-    </div>
-
-
-    <div class="grid">
-
-
-      <!-- Información general -->
-
-      <article class="card">
-
-        <div class="card-header">
-          <h2>Información general</h2>
+      <div class="datos">
+        <div class="dato">
+          <span>Patente</span>
+          <strong>{{ remolque.patente }}</strong>
         </div>
 
-        <div class="datos">
-
-          <div class="dato">
-            <span>Patente</span>
-            <strong>{{ remolque.patente }}</strong>
-          </div>
-
-          <div class="dato">
-            <span>Marca</span>
-            <strong>{{ remolque.marca }}</strong>
-          </div>
-
-          <div class="dato">
-            <span>Modelo</span>
-            <strong>{{ remolque.modelo }}</strong>
-          </div>
-
-          <div class="dato">
-            <span>Año</span>
-            <strong>{{ remolque.ano }}</strong>
-          </div>
-
-          <div class="dato">
-            <span>Tipo</span>
-            <strong>{{ remolque.tipo }}</strong>
-          </div>
-
-          <div class="dato">
-            <span>Capacidad</span>
-            <strong>{{ remolque.capacidadToneladas }} toneladas</strong>
-          </div>
-
+        <div class="dato">
+          <span>Marca</span>
+          <strong>{{ remolque.marca }}</strong>
         </div>
 
-      </article>
-
-
-      <!-- Estado -->
-
-      <article class="card">
-
-        <div class="card-header">
-          <h2>Estado</h2>
+        <div class="dato">
+          <span>Modelo</span>
+          <strong>{{ remolque.modelo }}</strong>
         </div>
 
-        <div class="estado-remolque">
-
-          @if (remolque.activa) {
-
-            <span class="badge activa">
-              Activo
-            </span>
-
-            <p>
-              El remolque se encuentra actualmente activo
-              en el sistema.
-            </p>
-
-          } @else {
-
-            <span class="badge inactiva">
-              Inactivo
-            </span>
-
-            <p>
-              El remolque se encuentra actualmente inactivo.
-            </p>
-
-          }
-
+        <div class="dato">
+          <span>Año</span>
+          <strong>{{ remolque.ano }}</strong>
         </div>
 
-      </article>
-
-
-      <!-- Camión habitual -->
-
-      <article class="card camion-card">
-
-        <div class="card-header">
-          <h2>Camión habitual</h2>
+        <div class="dato">
+          <span>Tipo</span>
+          <strong>{{ remolque.tipo }}</strong>
         </div>
 
-        @if (remolque.camionHabitual) {
+        <div class="dato">
+          <span>Capacidad</span>
+          <strong>{{ remolque.capacidadToneladas }} toneladas</strong>
+        </div>
+      </div>
+    </article>
 
-          <div class="camion-info">
+    <!-- Estado -->
 
-            <div class="camion-patente">
-              {{ remolque.camionHabitual.patente }}
-            </div>
+    <article class="card">
+      <div class="card-header">
+        <h2>Estado</h2>
+      </div>
 
-            <div>
-              <strong>
-                {{ remolque.camionHabitual.marca }}
-                {{ remolque.camionHabitual.modelo }}
-              </strong>
+      <div class="estado-remolque">
+        @if (remolque.activa) {
 
-              <p>
-                Camión asignado habitualmente a este remolque.
-              </p>
-            </div>
+        <span class="badge activa"> Activo </span>
 
-          </div>
+        <p>El remolque se encuentra actualmente activo en el sistema.</p>
 
         } @else {
 
-          <div class="sin-camion">
+        <span class="badge inactiva"> Inactivo </span>
 
-            <span>Sin asignación</span>
-
-            <p>
-              Este remolque no tiene un camión habitual asignado.
-            </p>
-
-          </div>
+        <p>El remolque se encuentra actualmente inactivo.</p>
 
         }
+      </div>
+    </article>
 
-      </article>
+    <!-- Camión habitual -->
 
-    </div>
+    <article class="card camion-card">
+      <div class="card-header">
+        <h2>Camión habitual</h2>
+      </div>
+
+      @if (remolque.camionHabitual) {
+
+      <div class="camion-info">
+        <div class="camion-patente">
+          {{ remolque.camionHabitual.patente }}
+        </div>
+
+        <div>
+          <strong>
+            {{ remolque.camionHabitual.marca }}
+            {{ remolque.camionHabitual.modelo }}
+          </strong>
+
+          <p>Camión asignado habitualmente a este remolque.</p>
+        </div>
+      </div>
+
+      } @else {
+
+      <div class="sin-camion">
+        <span>Sin asignación</span>
+
+        <p>Este remolque no tiene un camión habitual asignado.</p>
+      </div>
+
+      }
+    </article>
+  </div>
 
   }
-
 </section>
+
+<!-- MODAL CONFIRMACIÓN ESTADO -->
+
+@if (modalEstadoVisible && remolque) {
+
+<div class="modal-overlay" (click)="cerrarModalEstado()">
+  <div class="modal" role="alertdialog" aria-modal="true" (click)="$event.stopPropagation()">
+    <div class="modal-icon" [class.warning]="remolque.activa" [class.activate]="!remolque.activa">
+      @if (remolque.activa) { ! } @else { ✓ }
+    </div>
+
+    <h2>@if (remolque.activa) { ¿Desactivar remolque? } @else { ¿Activar remolque? }</h2>
+
+    <p>
+      Estás a punto de @if (remolque.activa) { desactivar } @else { activar } el remolque
+
+      <strong>
+        {{ remolque.patente }} </strong
+      >.
+    </p>
+
+    <p class="modal-secondary-text">
+      @if (remolque.activa) { El remolque no será eliminado y su historial se conservará. No podrá
+      utilizarse para nuevos viajes mientras esté inactivo. } @else { El remolque volverá a estar
+      disponible para nuevos viajes. Su historial y todos sus datos se conservarán. }
+    </p>
+
+    <div class="modal-actions">
+      <button
+        type="button"
+        class="btn-secondary"
+        [disabled]="procesandoEstado"
+        (click)="cerrarModalEstado()"
+      >
+        Cancelar
+      </button>
+
+      @if (remolque.activa) {
+
+      <button
+        type="button"
+        class="btn-danger"
+        [disabled]="procesandoEstado"
+        (click)="confirmarCambioEstado()"
+      >
+        @if (procesandoEstado) { Desactivando... } @else { Sí, desactivar }
+      </button>
+
+      } @else {
+
+      <button
+        type="button"
+        class="btn-activar"
+        [disabled]="procesandoEstado"
+        (click)="confirmarCambioEstado()"
+      >
+        @if (procesandoEstado) { Activando... } @else { Sí, activar }
+      </button>
+
+      }
+    </div>
+  </div>
+</div>
+
+}
+
+<!-- MODAL ÉXITO -->
+
+@if (modalExitoVisible) {
+
+<div class="modal-overlay">
+  <div class="modal">
+    <div class="modal-icon success">✓</div>
+
+    <h2>
+      {{ modalExitoTitulo }}
+    </h2>
+
+    <p>
+      {{ modalExitoMensaje }}
+    </p>
+
+    <div class="modal-actions">
+      <button type="button" class="btn-primary" (click)="cerrarModalExito()">Aceptar</button>
+    </div>
+  </div>
+</div>
+
+}
+
+<!-- MODAL ERROR -->
+
+@if (modalErrorVisible) {
+
+<div class="modal-overlay">
+  <div class="modal">
+    <div class="modal-icon error">!</div>
+
+    <h2>
+      {{ modalErrorTitulo }}
+    </h2>
+
+    <p>
+      {{ modalErrorMensaje }}
+    </p>
+
+    <div class="modal-actions">
+      <button type="button" class="btn-primary" (click)="cerrarModalError()">Aceptar</button>
+    </div>
+  </div>
+</div>
+
+}

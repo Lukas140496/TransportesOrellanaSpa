@@ -13,7 +13,10 @@
       <h2>No fue posible cargar el conductor</h2>
       <p>{{ error }}</p>
 
-      <button type="button" class="btn-volver" (click)="volver()">
+      <button
+        type="button"
+        class="btn-volver"
+        (click)="volver()">
         ← Volver a conductores
       </button>
     </div>
@@ -31,7 +34,10 @@
         </div>
 
         <div>
-          <span class="etiqueta">CONDUCTOR</span>
+
+          <span class="etiqueta">
+            CONDUCTOR
+          </span>
 
           <h1>
             {{ conductor.nombres }}
@@ -42,51 +48,77 @@
           <p class="rut">
             RUT: {{ conductor.rut }}
           </p>
+
         </div>
 
       </div>
 
       <div class="cabecera-acciones">
 
-        @if (conductor.activo) {
+        <div class="cabecera-estados">
 
-          @if (conductor.licenciaAlDia) {
+          @if (conductor.activo) {
 
-            <span class="estado-badge activo">
-              ● Licencia al día
+            @if (conductor.licenciaAlDia) {
+
+              <span class="estado-badge activo">
+                ● Licencia al día
+              </span>
+
+            } @else {
+
+              <span class="estado-badge vencido">
+                ● Licencia vencida
+              </span>
+
+            }
+
+            <span class="estado-badge conductor-activo">
+              ● Activo
             </span>
 
           } @else {
 
-            <span class="estado-badge vencido">
-              ● Licencia vencida
+            <span class="estado-badge inactivo">
+              ● Inactivo
             </span>
 
           }
 
-        } @else {
+        </div>
 
-          <span class="estado-badge inactivo">
-            ● Conductor inactivo
-          </span>
+        <div class="cabecera-botones">
+
+          @if (conductor.activo) {
+
+            <button
+              type="button"
+              class="btn-danger"
+              [disabled]="procesandoEstado"
+              (click)="abrirModalEstado()">
+              Desactivar conductor
+            </button>
+
+          } @else {
+
+            <button
+              type="button"
+              class="btn-activar"
+              [disabled]="procesandoEstado"
+              (click)="abrirModalEstado()">
+              Activar conductor
+            </button>
+
+          }
 
           <button
             type="button"
-            class="btn-activar"
-            (click)="abrirModalActivar()">
-
-            Activar conductor
-
+            class="btn-volver"
+            (click)="volver()">
+            ← Volver
           </button>
 
-        }
-
-        <button
-          type="button"
-          class="btn-volver"
-          (click)="volver()">
-          ← Volver
-        </button>
+        </div>
 
       </div>
 
@@ -98,56 +130,131 @@
     <section class="bloque">
 
       <div class="bloque-titulo">
-        <span class="icono">👤</span>
 
-        <div>
-          <h2>Información personal</h2>
-          <p>Datos personales y de contacto del conductor.</p>
+        <div class="bloque-titulo-info">
+
+          <span class="icono">
+            👤
+          </span>
+
+          <div>
+
+            <h2>
+              Información personal
+            </h2>
+
+            <p>
+              Datos personales y de contacto del conductor.
+            </p>
+
+          </div>
+
         </div>
+
+        <button
+          type="button"
+          class="btn-editar"
+          (click)="editarConductor()">
+
+          ✎
+          Editar conductor
+
+        </button>
+
       </div>
+
 
       <div class="datos-grid">
 
         <div class="dato">
-          <span class="dato-label">Nombres</span>
-          <strong>{{ conductor.nombres }}</strong>
+
+          <span class="dato-label">
+            Nombres
+          </span>
+
+          <strong>
+            {{ conductor.nombres }}
+          </strong>
+
         </div>
 
+
         <div class="dato">
-          <span class="dato-label">Apellidos</span>
+
+          <span class="dato-label">
+            Apellidos
+          </span>
+
           <strong>
             {{ conductor.apellidoPaterno }}
             {{ conductor.apellidoMaterno }}
           </strong>
+
         </div>
 
-        <div class="dato">
-          <span class="dato-label">RUT</span>
-          <strong>{{ conductor.rut }}</strong>
-        </div>
 
         <div class="dato">
-          <span class="dato-label">Fecha de nacimiento</span>
+
+          <span class="dato-label">
+            RUT
+          </span>
+
+          <strong>
+            {{ conductor.rut }}
+          </strong>
+
+        </div>
+
+
+        <div class="dato">
+
+          <span class="dato-label">
+            Fecha de nacimiento
+          </span>
+
           <strong>
             {{ conductor.fechaNacimiento | date:'dd/MM/yyyy' }}
           </strong>
+
         </div>
 
-        <div class="dato">
-          <span class="dato-label">Edad</span>
-          <strong>{{ conductor.edad }} años</strong>
-        </div>
 
         <div class="dato">
-          <span class="dato-label">Teléfono</span>
-          <strong>{{ conductor.telefono }}</strong>
+
+          <span class="dato-label">
+            Edad
+          </span>
+
+          <strong>
+            {{ conductor.edad }} años
+          </strong>
+
         </div>
 
+
         <div class="dato">
-          <span class="dato-label">Fecha de ingreso</span>
+
+          <span class="dato-label">
+            Teléfono
+          </span>
+
+          <strong>
+            {{ conductor.telefono }}
+          </strong>
+
+        </div>
+
+
+        <div class="dato">
+
+          <span class="dato-label">
+            Fecha de ingreso
+          </span>
+
           <strong>
             {{ conductor.fechaIngreso | date:'dd/MM/yyyy' }}
           </strong>
+
         </div>
 
       </div>
@@ -160,25 +267,40 @@
     <section class="bloque">
 
       <div class="bloque-titulo">
-        <span class="icono">📄</span>
+
+        <span class="icono">
+          📄
+        </span>
 
         <div>
-          <h2>Licencia de conducir</h2>
-          <p>Información y estado de la licencia profesional.</p>
+
+          <h2>
+            Licencia de conducir
+          </h2>
+
+          <p>
+            Información y estado de la licencia profesional.
+          </p>
+
         </div>
+
       </div>
+
 
       <div class="licencia-card">
 
         <div class="licencia-principal">
 
-          <span class="dato-label">Tipo de licencia</span>
+          <span class="dato-label">
+            Tipo de licencia
+          </span>
 
           <strong class="licencia-tipo">
             {{ conductor.tipoLicencia }}
           </strong>
 
         </div>
+
 
         <div class="licencia-info">
 
@@ -191,6 +313,7 @@
           </strong>
 
         </div>
+
 
         <div class="licencia-estado">
 
@@ -224,14 +347,21 @@
     <section class="bloque">
 
       <div class="bloque-titulo">
-        <span class="icono">🚛</span>
+
+        <span class="icono">
+          🚛
+        </span>
 
         <div>
-          <h2>Camiones habituales</h2>
+
+          <h2>
+            Camiones habituales
+          </h2>
 
           <p>
             Camiones asociados actualmente a este conductor.
           </p>
+
         </div>
 
       </div>
@@ -278,13 +408,20 @@
 
         <div class="sin-camiones">
 
-          <span>🚛</span>
+          <span>
+            🚛
+          </span>
 
           <div>
-            <strong>Sin camiones asignados</strong>
+
+            <strong>
+              Sin camiones asignados
+            </strong>
+
             <p>
               Este conductor no tiene camiones habituales registrados.
             </p>
+
           </div>
 
         </div>
@@ -298,66 +435,128 @@
 </section>
 
 
-<!-- MODAL ACTIVAR -->
+<!-- MODAL CONFIRMACIÓN ESTADO -->
 
-@if (modalActivarVisible) {
+@if (modalEstadoVisible && conductor) {
 
-  <div class="modal-overlay">
+  <div
+    class="modal-overlay"
+    (click)="cerrarModalEstado()">
 
-    <div class="modal">
+    <div
+      class="modal"
+      role="alertdialog"
+      aria-modal="true"
+      (click)="$event.stopPropagation()">
 
-      <div class="modal-icon warning">
-        !
+      <div
+        class="modal-icon"
+        [class.warning]="conductor.activo"
+        [class.activate]="!conductor.activo">
+
+        @if (conductor.activo) {
+          !
+        } @else {
+          ✓
+        }
+
       </div>
 
-      <h2>Activar conductor</h2>
+
+      <h2>
+
+        @if (conductor.activo) {
+          ¿Desactivar conductor?
+        } @else {
+          ¿Activar conductor?
+        }
+
+      </h2>
+
 
       <p>
 
-        ¿Estás seguro de que deseas activar a
+        Estás a punto de
+
+        @if (conductor.activo) {
+          desactivar
+        } @else {
+          activar
+        }
+
+        al conductor
 
         <strong>
-          {{ conductor?.nombres }}
-          {{ conductor?.apellidoPaterno }}
-        </strong>?
+          {{ conductor.nombres }}
+          {{ conductor.apellidoPaterno }}
+        </strong>.
 
       </p>
 
-      <span class="modal-warning">
-        El conductor volverá a estar disponible entre los conductores activos.
-      </span>
+
+      <p class="modal-warning">
+
+        @if (conductor.activo) {
+
+          El conductor no será eliminado y su historial se conservará.
+          No podrá utilizarse para nuevos viajes mientras esté inactivo.
+
+        } @else {
+
+          El conductor volverá a estar disponible entre los conductores activos.
+          Su historial y todos sus datos se conservarán.
+
+        }
+
+      </p>
+
 
       <div class="modal-actions">
 
         <button
           type="button"
           class="btn-secondary"
-          [disabled]="activando"
-          (click)="cerrarModalActivar()">
+          [disabled]="procesandoEstado"
+          (click)="cerrarModalEstado()">
 
           Cancelar
 
         </button>
 
-        <button
-          type="button"
-          class="btn-activar"
-          [disabled]="activando"
-          (click)="confirmarActivacion()">
 
-          @if (activando) {
+        @if (conductor.activo) {
 
-            <span class="spinner"></span>
+          <button
+            type="button"
+            class="btn-danger"
+            [disabled]="procesandoEstado"
+            (click)="confirmarCambioEstado()">
 
-            Activando...
+            @if (procesandoEstado) {
+              Desactivando...
+            } @else {
+              Sí, desactivar
+            }
 
-          } @else {
+          </button>
 
-            Activar conductor
+        } @else {
 
-          }
+          <button
+            type="button"
+            class="btn-activar"
+            [disabled]="procesandoEstado"
+            (click)="confirmarCambioEstado()">
 
-        </button>
+            @if (procesandoEstado) {
+              Activando...
+            } @else {
+              Sí, activar
+            }
+
+          </button>
+
+        }
 
       </div>
 
@@ -380,10 +579,12 @@
         ✓
       </div>
 
-      <h2>Conductor activado</h2>
+      <h2>
+        {{ modalExitoTitulo }}
+      </h2>
 
       <p>
-        El conductor fue activado correctamente.
+        {{ modalExitoMensaje }}
       </p>
 
       <div class="modal-actions">

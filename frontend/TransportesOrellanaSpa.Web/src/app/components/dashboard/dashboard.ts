@@ -8,7 +8,9 @@ import { DashboardResumen } from '../../core/models/dashboard-resumen';
 import { DashboardProduccionCliente } from '../../core/models/dashboard-produccion-cliente';
 import { DashboardCostoCombustibleCamion } from '../../core/models/dashboard-costo-combustible-camion';
 import { DashboardKilometrosCamion } from '../../core/models/dashboard-kilometros-camion';
+import { DashboardKilometrosConductor } from '../../core/models/dashboard-kilometros-conductor';
 import { DashboardEstadoPagos } from '../../core/models/dashboard-estado-pagos';
+import { DashboardDiasHabiles } from '../../core/models/dashboard-dias-habiles';
 
 interface PeriodoDashboard {
   year: number;
@@ -37,6 +39,14 @@ export class Dashboard implements OnInit {
   costoCombustibleCamiones: DashboardCostoCombustibleCamion[] = [];
 
   kilometrosCamiones: DashboardKilometrosCamion[] = [];
+
+  kilometrosConductores: DashboardKilometrosConductor[] = [];
+
+  diasHabiles: DashboardDiasHabiles = {
+    diasHabiles: 0,
+    diasTrabajados: 0,
+    diasNoTrabajados: 0
+  };
 
   estadoPagos: DashboardEstadoPagos = {
     viajesPagados: 0,
@@ -181,6 +191,10 @@ export class Dashboard implements OnInit {
 
     let kilometrosCamionesCargados = false;
 
+    let kilometrosConductoresCargados = false;
+
+    let diasHabilesCargados = false;
+
     let estadoPagosCargado = false;
 
 
@@ -193,6 +207,8 @@ export class Dashboard implements OnInit {
         clientesCargados &&
         costoCombustibleCargado &&
         kilometrosCamionesCargados &&
+        kilometrosConductoresCargados &&
+        diasHabilesCargados &&
         estadoPagosCargado
       ) {
 
@@ -304,25 +320,25 @@ export class Dashboard implements OnInit {
       year,
       month
     ).subscribe({
-    
+
       next: produccion => {
-    
+
         this.produccionClientes = produccion;
-    
+
         clientesCargados = true;
-    
+
         finalizarTransicion();
       },
-    
+
       error: error => {
-    
+
         console.error(
           'ERROR PRODUCCIÓN CLIENTES:',
           error
         );
-    
+
         clientesCargados = true;
-    
+
         finalizarTransicion();
       }
     });
@@ -331,25 +347,25 @@ export class Dashboard implements OnInit {
       year,
       month
     ).subscribe({
-    
+
       next: costos => {
-    
+
         this.costoCombustibleCamiones = costos;
-    
+
         costoCombustibleCargado = true;
-    
+
         finalizarTransicion();
       },
-    
+
       error: error => {
-    
+
         console.error(
           'ERROR COSTO COMBUSTIBLE CAMIONES:',
           error
         );
-    
+
         costoCombustibleCargado = true;
-    
+
         finalizarTransicion();
       }
     });
@@ -378,6 +394,61 @@ export class Dashboard implements OnInit {
 
         kilometrosCamionesCargados = true;
 
+        finalizarTransicion();
+      }
+    });
+
+    this.api.getKilometrosPorConductor(
+      year,
+      month
+    ).subscribe({
+    
+      next: kilometros => {
+    
+        this.kilometrosConductores =
+          kilometros;
+    
+        kilometrosConductoresCargados = true;
+    
+        finalizarTransicion();
+      },
+    
+      error: error => {
+    
+        console.error(
+          'ERROR KILÓMETROS CONDUCTORES:',
+          error
+        );
+    
+        kilometrosConductoresCargados = true;
+    
+        finalizarTransicion();
+      }
+    });
+
+    this.api.getDiasHabiles(
+      year,
+      month
+    ).subscribe({
+    
+      next: dias => {
+    
+        this.diasHabiles = dias;
+    
+        diasHabilesCargados = true;
+    
+        finalizarTransicion();
+      },
+    
+      error: error => {
+    
+        console.error(
+          'ERROR DÍAS HÁBILES:',
+          error
+        );
+    
+        diasHabilesCargados = true;
+    
         finalizarTransicion();
       }
     });
@@ -487,21 +558,21 @@ export class Dashboard implements OnInit {
   obtenerPorcentajeCliente(
     produccion: number
   ): number {
-  
+
     if (!this.produccionClientes.length) {
       return 0;
     }
-  
+
     const produccionMaxima = Math.max(
       ...this.produccionClientes.map(
         cliente => cliente.produccion
       )
     );
-  
+
     if (produccionMaxima === 0) {
       return 0;
     }
-  
+
     return (
       produccion / produccionMaxima
     ) * 100;
@@ -510,21 +581,21 @@ export class Dashboard implements OnInit {
   obtenerPorcentajeCostoCombustible(
     costo: number
   ): number {
-  
+
     if (!this.costoCombustibleCamiones.length) {
       return 0;
     }
-  
+
     const costoMaximo = Math.max(
       ...this.costoCombustibleCamiones.map(
         camion => camion.costoCombustible
       )
     );
-  
+
     if (costoMaximo === 0) {
       return 0;
     }
-  
+
     return (
       costo / costoMaximo
     ) * 100;
@@ -551,5 +622,118 @@ export class Dashboard implements OnInit {
     return (
       kilometros / kilometrosMaximos
     ) * 100;
+  }
+
+  obtenerPorcentajeTotalKilometrosConductor(
+    kilometros: number
+  ): number {
+  
+    const total = this.kilometrosConductores.reduce(
+      (suma, conductor) => suma + conductor.kilometros,
+      0
+    );
+  
+    if (total === 0) {
+      return 0;
+    }
+  
+    return (kilometros / total) * 100;
+  }
+
+  obtenerPorcentajeProduccionCamion(
+    produccion: number
+  ): number {
+
+    const total = this.produccionCamiones.reduce(
+      (suma, camion) => suma + camion.produccion,
+      0
+    );
+
+    if (total === 0) {
+      return 0;
+    }
+
+    return (produccion / total) * 100;
+  }
+
+
+  obtenerPorcentajeProduccionConductor(
+    produccion: number
+  ): number {
+
+    const total = this.produccionConductores.reduce(
+      (suma, conductor) => suma + conductor.produccion,
+      0
+    );
+
+    if (total === 0) {
+      return 0;
+    }
+
+    return (produccion / total) * 100;
+  }
+
+
+  obtenerPorcentajeProduccionCliente(
+    produccion: number
+  ): number {
+
+    const total = this.produccionClientes.reduce(
+      (suma, cliente) => suma + cliente.produccion,
+      0
+    );
+
+    if (total === 0) {
+      return 0;
+    }
+
+    return (produccion / total) * 100;
+  }
+
+
+  obtenerPorcentajeTotalCostoCombustible(
+    costo: number
+  ): number {
+
+    const total = this.costoCombustibleCamiones.reduce(
+      (suma, camion) => suma + camion.costoCombustible,
+      0
+    );
+
+    if (total === 0) {
+      return 0;
+    }
+
+    return (costo / total) * 100;
+  }
+
+
+  obtenerPorcentajeTotalKilometrosCamion(
+    kilometros: number
+  ): number {
+
+    const total = this.kilometrosCamiones.reduce(
+      (suma, camion) => suma + camion.kilometros,
+      0
+    );
+
+    if (total === 0) {
+      return 0;
+    }
+
+    return (kilometros / total) * 100;
+  }
+
+  get diasDelMes(): number {
+
+    if (!this.periodoSeleccionado) {
+      return 0;
+    }
+
+    return new Date(
+      this.periodoSeleccionado.year,
+      this.periodoSeleccionado.month,
+      0
+    ).getDate();
   }
 }

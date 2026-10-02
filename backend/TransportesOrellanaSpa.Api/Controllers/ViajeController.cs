@@ -1298,7 +1298,9 @@ public class ViajeController : ControllerBase
     [HttpGet("pendientes-pago")]
     [RequirePermission("VIAJES_VER")]
     public async Task<ActionResult<IEnumerable<ViajeDto>>> ObtenerPendientesPago(
-        [FromQuery] int? clienteId)
+    [FromQuery] int? clienteId,
+    [FromQuery] DateTime? fechaDesde,
+    [FromQuery] DateTime? fechaHasta)
     {
         var query = _context.Viajes
             .AsNoTracking()
@@ -1306,10 +1308,42 @@ public class ViajeController : ControllerBase
                 v.EstadoPago == EstadoPago.Pendiente)
             .AsQueryable();
 
+        // =========================
+        // FILTRO POR CLIENTE
+        // =========================
+
         if (clienteId.HasValue)
         {
             query = query.Where(v =>
                 v.ClienteId == clienteId.Value);
+        }
+
+        // =========================
+        // FILTRO FECHA DESDE
+        // =========================
+
+        if (fechaDesde.HasValue)
+        {
+            var inicio = ConvertirFechaChileAUtc(
+                fechaDesde.Value.Date
+            );
+
+            query = query.Where(v =>
+                v.Fecha >= inicio);
+        }
+
+        // =========================
+        // FILTRO FECHA HASTA
+        // =========================
+
+        if (fechaHasta.HasValue)
+        {
+            var fin = ConvertirFechaChileAUtc(
+                fechaHasta.Value.Date.AddDays(1)
+            );
+
+            query = query.Where(v =>
+                v.Fecha < fin);
         }
 
         var viajes = await query
@@ -1365,7 +1399,7 @@ public class ViajeController : ControllerBase
                 EstadoPago = v.EstadoPago,
                 FechaPago = v.FechaPago
             })
-            .ToListAsync();
+                .ToListAsync();
 
         return Ok(viajes);
     }

@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MiPerfil } from './mi-perfil/mi-perfil';
+import { MiPerfil } from './mi-perfil';
 
 describe('MiPerfil', () => {
   let component: MiPerfil;

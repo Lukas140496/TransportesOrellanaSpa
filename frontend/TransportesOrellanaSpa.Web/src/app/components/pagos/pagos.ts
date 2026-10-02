@@ -29,6 +29,9 @@ export class Pagos implements OnInit {
 
   clienteId: number | null = null;
 
+  fechaDesde = '';
+  fechaHasta = '';
+
   viajesSeleccionados = new Set<number>();
 
   modalConfirmacionVisible = false;
@@ -65,7 +68,9 @@ export class Pagos implements OnInit {
     this.viajesSeleccionados.clear();
 
     this.api.getViajesPendientesPago(
-      this.clienteId ?? undefined
+      this.clienteId ?? undefined,
+      this.fechaDesde || undefined,
+      this.fechaHasta || undefined
     ).subscribe({
 
       next: viajes => {
@@ -97,12 +102,18 @@ export class Pagos implements OnInit {
     this.cargarViajesPendientes();
   }
 
+  cambiarFecha(): void {
+    this.cargarViajesPendientes();
+  }
+
   limpiarFiltro(): void {
 
     this.clienteId = null;
-
+    this.fechaDesde = '';
+    this.fechaHasta = '';
+  
     this.cargarViajesPendientes();
-
+  
   }
 
   estaSeleccionado(id: number): boolean {

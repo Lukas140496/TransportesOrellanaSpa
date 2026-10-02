@@ -10,29 +10,52 @@
       <h1>Mensuales</h1>
 
       <p>Resumen general de Transportes Orellana SpA</p>
+
+      <div class="periodo-resumen">
+        {{ periodoSeleccionado.nombre }}
+        ·
+        {{ resumen?.viajesMes ?? 0 }} viajes
+        ·
+        {{ formatoMoneda(resumen?.produccionMes ?? 0) }} producidos
+        ·
+        {{ formatoNumero(resumen?.kilometrosMes ?? 0) }} km recorridos
+      </div>
     </div>
 
     <div class="periodo">
       <span class="periodo-label"> Período </span>
 
-      <button type="button" class="periodo-selector" (click)="toggleSelector()">
+      <button
+        type="button"
+        class="periodo-selector"
+        (click)="toggleSelector()"
+      >
         <span class="periodo-value">
           {{ periodoSeleccionado.nombre }}
         </span>
 
-        <span class="periodo-arrow" [class.open]="selectorAbierto"> ▼ </span>
+        <span
+          class="periodo-arrow"
+          [class.open]="selectorAbierto"
+        >
+          ▼
+        </span>
       </button>
 
       @if (selectorAbierto) {
 
       <div class="periodo-dropdown">
-        @for ( periodo of periodos; track periodo.year + '-' + periodo.month ) {
+        @for (
+          periodo of periodos;
+          track periodo.year + '-' + periodo.month
+        ) {
 
         <button
           type="button"
           class="periodo-option"
           [class.selected]="
-            periodo.year === periodoSeleccionado.year && periodo.month === periodoSeleccionado.month
+            periodo.year === periodoSeleccionado.year &&
+            periodo.month === periodoSeleccionado.month
           "
           (click)="seleccionarPeriodo(periodo)"
         >
@@ -40,8 +63,10 @@
             {{ periodo.nombre }}
           </span>
 
-          @if ( periodo.year === periodoSeleccionado.year && periodo.month ===
-          periodoSeleccionado.month ) {
+          @if (
+            periodo.year === periodoSeleccionado.year &&
+            periodo.month === periodoSeleccionado.month
+          ) {
           <span class="check"> ✓ </span>
           }
         </button>
@@ -96,6 +121,7 @@
       </div>
 
       <div class="cards inventory-cards">
+
         <!-- CAMIONES -->
 
         <div class="card">
@@ -117,7 +143,9 @@
 
           }
 
-          <span class="card-description"> Vehículos registrados </span>
+          <span class="card-description">
+            Vehículos registrados
+          </span>
         </div>
 
         <!-- CONDUCTORES -->
@@ -141,7 +169,9 @@
 
           }
 
-          <span class="card-description"> Conductores registrados </span>
+          <span class="card-description">
+            Conductores registrados
+          </span>
         </div>
 
         <!-- REMOLQUES -->
@@ -165,7 +195,9 @@
 
           }
 
-          <span class="card-description"> Remolques registrados </span>
+          <span class="card-description">
+            Remolques registrados
+          </span>
         </div>
 
         <!-- CLIENTES -->
@@ -189,8 +221,11 @@
 
           }
 
-          <span class="card-description"> Clientes registrados </span>
+          <span class="card-description">
+            Clientes registrados
+          </span>
         </div>
+
       </div>
     </section>
 
@@ -203,11 +238,14 @@
         <div>
           <h2>Operación del mes</h2>
 
-          <span> Indicadores correspondientes al período seleccionado </span>
+          <span>
+            Indicadores correspondientes al período seleccionado
+          </span>
         </div>
       </div>
 
       <div class="cards operation-cards">
+
         <!-- VIAJES -->
 
         <div class="card metric-card">
@@ -228,7 +266,9 @@
 
             }
 
-            <span class="metric-description"> Viajes realizados </span>
+            <span class="metric-description">
+              Viajes realizados
+            </span>
           </div>
         </div>
 
@@ -252,7 +292,9 @@
 
             }
 
-            <span class="metric-description"> Ingresos por viajes </span>
+            <span class="metric-description">
+              Ingresos por viajes
+            </span>
           </div>
         </div>
 
@@ -276,7 +318,9 @@
 
             }
 
-            <span class="metric-description"> Litros utilizados </span>
+            <span class="metric-description">
+              Litros utilizados
+            </span>
           </div>
         </div>
 
@@ -286,7 +330,9 @@
           <div class="metric-icon">$</div>
 
           <div class="metric-content">
-            <span class="card-label"> Costo combustible </span>
+            <span class="card-label">
+              Costo combustible
+            </span>
 
             @if (cargando) {
 
@@ -300,7 +346,9 @@
 
             }
 
-            <span class="metric-description"> Gasto en combustible </span>
+            <span class="metric-description">
+              Gasto en combustible
+            </span>
           </div>
         </div>
 
@@ -324,9 +372,12 @@
 
             }
 
-            <span class="metric-description"> Distancia recorrida </span>
+            <span class="metric-description">
+              Distancia recorrida
+            </span>
           </div>
         </div>
+
       </div>
     </section>
 
@@ -335,6 +386,7 @@
     <!-- ========================= -->
 
     <section class="charts-grid">
+
       <!-- ========================= -->
       <!-- PRODUCCIÓN POR CAMIÓN -->
       <!-- ========================= -->
@@ -344,29 +396,47 @@
           <div>
             <h2>Producción por camión</h2>
 
-            <span> Rendimiento durante el período </span>
+            <span>
+              Rendimiento durante el período
+            </span>
           </div>
 
           <div class="chart-header-icon">🚛</div>
         </div>
 
-        @if (produccionCamiones.length === 0 && !cargando) {
+        @if (
+          produccionCamiones.length === 0 &&
+          !cargando
+        ) {
 
         <div class="empty-chart">
           <div class="empty-icon">—</div>
 
           <strong> Sin viajes en el período </strong>
 
-          <span> Cuando existan viajes registrados aparecerá aquí la producción por camión. </span>
+          <span>
+            Cuando existan viajes registrados aparecerá aquí la producción por camión.
+          </span>
         </div>
 
         } @else {
 
         <div class="bars">
-          @for ( camion of produccionCamiones; track camion.camionId ) {
 
-          <div class="bar-item">
+          @for (
+            camion of produccionCamiones;
+            track camion.camionId
+          ) {
+
+          <div
+            class="bar-item"
+            [class.bar-first]="
+              camion.produccion === produccionCamiones[0]?.produccion
+            "
+          >
+
             <div class="bar-info">
+
               <div class="bar-title">
                 <strong>
                   {{ camion.patente }}
@@ -380,21 +450,34 @@
 
               <strong class="bar-value">
                 {{ formatoMoneda(camion.produccion) }}
+
+                <span class="bar-percentage">
+                  {{
+                    obtenerPorcentajeProduccionCamion(camion.produccion)
+                      | number : '1.1-1'
+                  }}%
+                </span>
               </strong>
+
             </div>
 
             <div class="bar-track">
               <div
-                class="bar-fill"
-                [style.width.%]="obtenerPorcentajeCamion(camion.produccion)"
+                class="bar-fill production-bar"
+                [style.width.%]="
+                  obtenerPorcentajeProduccionCamion(camion.produccion)
+                "
               ></div>
             </div>
+
           </div>
 
           }
+
         </div>
 
         }
+
       </div>
 
       <!-- ========================= -->
@@ -406,13 +489,18 @@
           <div>
             <h2>Producción por conductor</h2>
 
-            <span> Producción generada durante el período </span>
+            <span>
+              Producción generada durante el período
+            </span>
           </div>
 
           <div class="chart-header-icon">👤</div>
         </div>
 
-        @if (produccionConductores.length === 0 && !cargando) {
+        @if (
+          produccionConductores.length === 0 &&
+          !cargando
+        ) {
 
         <div class="empty-chart">
           <div class="empty-icon">—</div>
@@ -427,10 +515,21 @@
         } @else {
 
         <div class="bars">
-          @for ( conductor of produccionConductores; track conductor.conductorId ) {
 
-          <div class="bar-item">
+          @for (
+            conductor of produccionConductores;
+            track conductor.conductorId
+          ) {
+
+          <div
+            class="bar-item"
+            [class.bar-first]="
+              conductor.produccion === produccionConductores[0]?.produccion
+            "
+          >
+
             <div class="bar-info">
+
               <div class="bar-title">
                 <strong>
                   {{ conductor.nombre }}
@@ -444,21 +543,34 @@
 
               <strong class="bar-value">
                 {{ formatoMoneda(conductor.produccion) }}
+
+                <span class="bar-percentage">
+                  {{
+                    obtenerPorcentajeProduccionConductor(conductor.produccion)
+                      | number : '1.1-1'
+                  }}%
+                </span>
               </strong>
+
             </div>
 
             <div class="bar-track">
               <div
-                class="bar-fill"
-                [style.width.%]="obtenerPorcentajeConductor(conductor.produccion)"
+                class="bar-fill production-bar"
+                [style.width.%]="
+                  obtenerPorcentajeProduccionConductor(conductor.produccion)
+                "
               ></div>
             </div>
+
           </div>
 
           }
+
         </div>
 
         }
+
       </div>
 
       <!-- ========================= -->
@@ -470,29 +582,47 @@
           <div>
             <h2>Producción por cliente</h2>
 
-            <span> Producción generada durante el período </span>
+            <span>
+              Producción generada durante el período
+            </span>
           </div>
 
           <div class="chart-header-icon">🏢</div>
         </div>
 
-        @if (produccionClientes.length === 0 && !cargando) {
+        @if (
+          produccionClientes.length === 0 &&
+          !cargando
+        ) {
 
         <div class="empty-chart">
           <div class="empty-icon">—</div>
 
           <strong> Sin viajes en el período </strong>
 
-          <span> Cuando existan viajes registrados aparecerá aquí la producción por cliente. </span>
+          <span>
+            Cuando existan viajes registrados aparecerá aquí la producción por cliente.
+          </span>
         </div>
 
         } @else {
 
         <div class="bars">
-          @for ( cliente of produccionClientes; track cliente.clienteId ) {
 
-          <div class="bar-item">
+          @for (
+            cliente of produccionClientes;
+            track cliente.clienteId
+          ) {
+
+          <div
+            class="bar-item"
+            [class.bar-first]="
+              cliente.produccion === produccionClientes[0]?.produccion
+            "
+          >
+
             <div class="bar-info">
+
               <div class="bar-title">
                 <strong>
                   {{ cliente.nombre }}
@@ -506,82 +636,34 @@
 
               <strong class="bar-value">
                 {{ formatoMoneda(cliente.produccion) }}
+
+                <span class="bar-percentage">
+                  {{
+                    obtenerPorcentajeProduccionCliente(cliente.produccion)
+                      | number : '1.1-1'
+                  }}%
+                </span>
               </strong>
+
             </div>
 
             <div class="bar-track">
               <div
-                class="bar-fill cliente"
-                [style.width.%]="obtenerPorcentajeCliente(cliente.produccion)"
+                class="bar-fill production-bar cliente"
+                [style.width.%]="
+                  obtenerPorcentajeProduccionCliente(cliente.produccion)
+                "
               ></div>
             </div>
+
           </div>
 
           }
+
         </div>
 
         }
-      </div>
 
-      <!-- ========================= -->
-      <!-- COSTO DE COMBUSTIBLE POR CAMIÓN -->
-      <!-- ========================= -->
-
-      <div class="chart-card">
-        <div class="chart-header">
-          <div>
-            <h2>Costo de combustible por camión</h2>
-
-            <span> Gasto en combustible durante el período </span>
-          </div>
-
-          <div class="chart-header-icon">⛽</div>
-        </div>
-
-        @if (costoCombustibleCamiones.length === 0 && !cargando) {
-
-        <div class="empty-chart">
-          <div class="empty-icon">—</div>
-
-          <strong> Sin viajes en el período </strong>
-
-          <span>
-            Cuando existan viajes registrados aparecerá aquí el costo de combustible por camión.
-          </span>
-        </div>
-
-        } @else {
-
-        <div class="bars">
-          @for ( camion of costoCombustibleCamiones; track camion.camionId ) {
-
-          <div class="bar-item">
-            <div class="bar-info">
-              <div class="bar-title">
-                <strong>
-                  {{ camion.patente }}
-                </strong>
-
-                <span> {{ camion.litrosCombustible | number : '1.0-2' }} L </span>
-              </div>
-
-              <strong class="bar-value">
-                {{ formatoMoneda(camion.costoCombustible) }}
-              </strong>
-            </div>
-
-            <div class="bar-track">
-              <div
-                class="bar-fill conductor"
-                [style.width.%]="obtenerPorcentajeCostoCombustible(camion.costoCombustible)"
-              ></div>
-            </div>
-          </div>
-
-          }
-        </div>
-
-        }
       </div>
 
       <!-- ========================= -->
@@ -593,13 +675,18 @@
           <div>
             <h2>Kilómetros recorridos por camión</h2>
 
-            <span> Distancia recorrida durante el período </span>
+            <span>
+              Distancia recorrida durante el período
+            </span>
           </div>
 
           <div class="chart-header-icon">KM</div>
         </div>
 
-        @if (kilometrosCamiones.length === 0 && !cargando) {
+        @if (
+          kilometrosCamiones.length === 0 &&
+          !cargando
+        ) {
 
         <div class="empty-chart">
           <div class="empty-icon">—</div>
@@ -614,10 +701,21 @@
         } @else {
 
         <div class="bars">
-          @for ( camion of kilometrosCamiones; track camion.camionId ) {
 
-          <div class="bar-item">
+          @for (
+            camion of kilometrosCamiones;
+            track camion.camionId
+          ) {
+
+          <div
+            class="bar-item"
+            [class.bar-first]="
+              camion.kilometros === kilometrosCamiones[0]?.kilometros
+            "
+          >
+
             <div class="bar-info">
+
               <div class="bar-title">
                 <strong>
                   {{ camion.patente }}
@@ -629,21 +727,258 @@
                 </span>
               </div>
 
-              <strong class="bar-value"> {{ formatoNumero(camion.kilometros) }} km </strong>
+              <strong class="bar-value">
+                {{ formatoNumero(camion.kilometros) }} km
+
+                <span class="bar-percentage">
+                  {{
+                    obtenerPorcentajeTotalKilometrosCamion(camion.kilometros)
+                      | number : '1.1-1'
+                  }}%
+                </span>
+              </strong>
+
             </div>
 
             <div class="bar-track">
               <div
-                class="bar-fill"
-                [style.width.%]="obtenerPorcentajeKilometrosCamion(camion.kilometros)"
+                class="bar-fill kilometers-bar"
+                [style.width.%]="
+                  obtenerPorcentajeTotalKilometrosCamion(camion.kilometros)
+                "
               ></div>
             </div>
+
           </div>
 
           }
+
         </div>
 
         }
+
+      </div>
+
+      <!-- ========================= -->
+      <!-- KILÓMETROS POR CONDUCTOR -->
+      <!-- ========================= -->
+
+      <div class="chart-card">
+        <div class="chart-header">
+          <div>
+            <h2>Kilómetros recorridos por conductor</h2>
+
+            <span>
+              Distancia recorrida durante el período
+            </span>
+          </div>
+
+          <div class="chart-header-icon">👤</div>
+        </div>
+
+        @if (
+          kilometrosConductores.length === 0 &&
+          !cargando
+        ) {
+
+        <div class="empty-chart">
+          <div class="empty-icon">—</div>
+
+          <strong> Sin viajes en el período </strong>
+
+          <span>
+            Cuando existan viajes registrados aparecerá aquí la distancia recorrida por conductor.
+          </span>
+        </div>
+
+        } @else {
+
+        <div class="bars">
+
+          @for (
+            conductor of kilometrosConductores;
+            track conductor.conductorId
+          ) {
+
+          <div
+            class="bar-item"
+            [class.bar-first]="
+              conductor.kilometros === kilometrosConductores[0]?.kilometros
+            "
+          >
+
+            <div class="bar-info">
+
+              <div class="bar-title">
+                <strong>
+                  {{ conductor.nombre }}
+                </strong>
+
+                <span>
+                  {{ conductor.viajes }}
+                  {{ conductor.viajes === 1 ? 'viaje' : 'viajes' }}
+                </span>
+              </div>
+
+              <strong class="bar-value">
+                {{ formatoNumero(conductor.kilometros) }} km
+
+                <span class="bar-percentage">
+                  {{
+                    obtenerPorcentajeTotalKilometrosConductor(conductor.kilometros)
+                      | number : '1.1-1'
+                  }}%
+                </span>
+              </strong>
+
+            </div>
+
+            <div class="bar-track">
+              <div
+                class="bar-fill kilometers-bar"
+                [style.width.%]="
+                  obtenerPorcentajeTotalKilometrosConductor(conductor.kilometros)
+                "
+              ></div>
+            </div>
+
+          </div>
+
+          }
+
+        </div>
+
+        }
+
+      </div>
+
+      <!-- ========================= -->
+      <!-- COSTO DE COMBUSTIBLE POR CAMIÓN -->
+      <!-- ========================= -->
+
+      <div class="chart-card">
+        <div class="chart-header">
+          <div>
+            <h2>Costo de combustible por camión</h2>
+
+            <span>
+              Gasto en combustible durante el período
+            </span>
+          </div>
+
+          <div class="chart-header-icon">⛽</div>
+        </div>
+
+        @if (
+          costoCombustibleCamiones.length === 0 &&
+          !cargando
+        ) {
+
+        <div class="empty-chart">
+          <div class="empty-icon">—</div>
+
+          <strong> Sin viajes en el período </strong>
+
+          <span>
+            Cuando existan viajes registrados aparecerá aquí el costo de combustible por camión.
+          </span>
+        </div>
+
+        } @else {
+
+        <div class="bars">
+
+          @for (
+            camion of costoCombustibleCamiones;
+            track camion.camionId
+          ) {
+
+          <div class="bar-item">
+
+            <div class="bar-info">
+
+              <div class="bar-title">
+                <strong>
+                  {{ camion.patente }}
+                </strong>
+
+                <span>
+                  {{ camion.litrosCombustible | number : '1.0-2' }} L
+                </span>
+              </div>
+
+              <strong class="bar-value">
+                {{ formatoMoneda(camion.costoCombustible) }}
+
+                <span class="bar-percentage">
+                  {{
+                    obtenerPorcentajeTotalCostoCombustible(camion.costoCombustible)
+                      | number : '1.1-1'
+                  }}%
+                </span>
+              </strong>
+
+            </div>
+
+            <div class="bar-track">
+              <div
+                class="bar-fill conductor"
+                [style.width.%]="
+                  obtenerPorcentajeTotalCostoCombustible(
+                    camion.costoCombustible
+                  )
+                "
+              ></div>
+            </div>
+
+          </div>
+
+          }
+
+        </div>
+
+        }
+
+      </div>
+
+      <!-- ========================= -->
+      <!-- DÍAS HÁBILES NO TRABAJADOS -->
+      <!-- ========================= -->
+
+      <div class="card metric-card work-days">
+
+        <div class="metric-icon">
+          Días
+        </div>
+
+        <div class="metric-content">
+
+          <span class="card-label">
+            Días no trabajados
+          </span>
+
+          @if (cargando) {
+
+          <div class="skeleton-value small"></div>
+
+          } @else {
+
+          <strong class="metric-value">
+            {{ diasHabiles.diasNoTrabajados }}
+          </strong>
+
+          }
+
+          <span class="metric-description work-days-summary">
+            {{ diasHabiles.diasHabiles }} hábiles
+            ·
+            {{ diasHabiles.diasTrabajados }} trabajados
+            ·
+            Mes de {{ diasDelMes }} días
+          </span>
+
+        </div>
+
       </div>
 
       <!-- ========================= -->
@@ -653,130 +988,129 @@
       <div class="card metric-card payment-status">
 
         <div class="metric-content">
-      
-          <!-- ========================= -->
+
           <!-- PAGADOS -->
-          <!-- ========================= -->
-      
+
           <div class="payment-row">
-      
+
             <div class="payment-info">
-      
+
               <div class="payment-status-label">
-                <span class="payment-status-icon">✓</span>
-      
+
+                <span class="payment-status-icon">
+                  ✓
+                </span>
+
                 <span class="card-label">
                   Viajes pagados
                 </span>
+
               </div>
-      
+
               @if (cargando) {
-      
+
               <div class="skeleton-value small"></div>
-      
+
               } @else {
-      
+
               <strong class="metric-value">
                 {{ estadoPagos.viajesPagados }}
               </strong>
-      
+
               }
-      
+
               <span class="metric-description">
                 Pagados durante el período
               </span>
-      
+
             </div>
-      
+
             <div class="payment-amount">
-      
+
               <span class="payment-amount-label">
                 Monto pagado
               </span>
-      
+
               @if (cargando) {
-      
+
               <div class="skeleton-value small"></div>
-      
+
               } @else {
-      
+
               <strong>
                 {{ formatoMoneda(estadoPagos.montoPagado) }}
               </strong>
-      
+
               }
-      
+
             </div>
-      
+
           </div>
-      
-      
+
           <div class="payment-divider"></div>
-      
-      
-          <!-- ========================= -->
+
           <!-- PENDIENTES -->
-          <!-- ========================= -->
-      
+
           <div class="payment-row">
-      
+
             <div class="payment-info">
-      
+
               <div class="payment-status-label pending-label">
-      
+
                 <span class="payment-status-icon pending-icon">
                   ✕
                 </span>
-      
+
                 <span class="card-label">
                   Pendientes por pagar
                 </span>
-      
+
               </div>
-      
+
               @if (cargando) {
-      
+
               <div class="skeleton-value small"></div>
-      
+
               } @else {
-      
+
               <strong class="metric-value pending-value">
                 {{ estadoPagos.viajesPendientesPago }}
               </strong>
-      
+
               }
-      
+
               <span class="metric-description">
                 Viajes pendientes de pago
               </span>
-      
+
             </div>
-      
+
             <div class="payment-amount pending-amount">
-      
+
               <span class="payment-amount-label">
                 Monto pendiente
               </span>
-      
+
               @if (cargando) {
-      
+
               <div class="skeleton-value small"></div>
-      
+
               } @else {
-      
+
               <strong>
                 {{ formatoMoneda(estadoPagos.montoPendientePago) }}
               </strong>
-      
+
               }
-      
+
             </div>
-      
+
           </div>
-      
+
         </div>
-      
+
       </div>
+
     </section>
 
     <!-- ========================= -->
@@ -784,9 +1118,12 @@
     <!-- ========================= -->
 
     <section class="summary-strip">
+
       <div
         class="summary-item document-alert"
-        [class.has-alert]="(resumen?.camionesRevisionVencida ?? 0) > 0"
+        [class.has-alert]="
+          (resumen?.camionesRevisionVencida ?? 0) > 0
+        "
       >
         <span> Revisión técnica </span>
 
@@ -794,14 +1131,18 @@
           {{ resumen?.camionesRevisionVencida ?? 0 }}
         </strong>
 
-        <small> camiones vencidos </small>
+        <small>
+          camiones vencidos
+        </small>
       </div>
 
       <div class="summary-divider"></div>
 
       <div
         class="summary-item document-alert"
-        [class.has-alert]="(resumen?.camionesPermisoVencido ?? 0) > 0"
+        [class.has-alert]="
+          (resumen?.camionesPermisoVencido ?? 0) > 0
+        "
       >
         <span> Permiso de circulación </span>
 
@@ -809,14 +1150,18 @@
           {{ resumen?.camionesPermisoVencido ?? 0 }}
         </strong>
 
-        <small> camiones vencidos </small>
+        <small>
+          camiones vencidos
+        </small>
       </div>
 
       <div class="summary-divider"></div>
 
       <div
         class="summary-item document-alert"
-        [class.has-alert]="(resumen?.camionesSeguroVencido ?? 0) > 0"
+        [class.has-alert]="
+          (resumen?.camionesSeguroVencido ?? 0) > 0
+        "
       >
         <span> Seguro obligatorio </span>
 
@@ -824,14 +1169,18 @@
           {{ resumen?.camionesSeguroVencido ?? 0 }}
         </strong>
 
-        <small> camiones vencidos </small>
+        <small>
+          camiones vencidos
+        </small>
       </div>
 
       <div class="summary-divider"></div>
 
       <div
         class="summary-item document-alert"
-        [class.has-alert]="(resumen?.camionesDocumentacionVencida ?? 0) > 0"
+        [class.has-alert]="
+          (resumen?.camionesDocumentacionVencida ?? 0) > 0
+        "
       >
         <span> Algún documento </span>
 
@@ -839,8 +1188,12 @@
           {{ resumen?.camionesDocumentacionVencida ?? 0 }}
         </strong>
 
-        <small> camiones afectados </small>
+        <small>
+          camiones afectados
+        </small>
       </div>
+
     </section>
+
   </div>
 </div>

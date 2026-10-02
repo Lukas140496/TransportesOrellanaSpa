@@ -93,7 +93,8 @@
 
 }
 
-.filter-group select {
+.filter-group select,
+.filter-group input[type='date'] {
 
   width: 100%;
 
@@ -115,11 +116,25 @@
 
   outline: none;
 
+}
+
+.filter-group select {
+
   cursor: pointer;
 
 }
 
-.filter-group select:focus {
+.filter-group input[type='date'] {
+
+  cursor: pointer;
+
+  appearance: none;
+  -webkit-appearance: none;
+
+}
+
+.filter-group select:focus,
+.filter-group input[type='date']:focus {
 
   border-color: #2f80ed;
 

@@ -24,6 +24,8 @@ import { LoginRequest } from '../models/auth/login-request';
 import { LoginResponse } from '../models/auth/login-response';
 import { UsuarioPerfil } from '../models/usuario-perfil';
 import { ActualizarMiPerfil } from '../models/actualizar-mi-perfil';
+import { DashboardKilometrosConductor } from '../models/dashboard-kilometros-conductor';
+import { DashboardDiasHabiles } from '../models/dashboard-dias-habiles';
 
 @Injectable({
   providedIn: 'root'
@@ -480,15 +482,25 @@ export class ApiService {
   }
 
   getViajesPendientesPago(
-    clienteId?: number
+    clienteId?: number,
+    fechaDesde?: string,
+    fechaHasta?: string
   ): Observable<Viaje[]> {
-
+  
     const params: Record<string, string> = {};
-
+  
     if (clienteId !== undefined) {
       params['clienteId'] = clienteId.toString();
     }
-
+  
+    if (fechaDesde) {
+      params['fechaDesde'] = fechaDesde;
+    }
+  
+    if (fechaHasta) {
+      params['fechaHasta'] = fechaHasta;
+    }
+  
     return this.http.get<Viaje[]>(
       `${this.apiUrl}/viaje/pendientes-pago`,
       {
@@ -680,6 +692,38 @@ export class ApiService {
       `${this.apiUrl}/dashboard/estado-pagos`,
       {
         params
+      }
+    );
+  }
+
+  getKilometrosPorConductor(
+    year: number,
+    month: number
+  ): Observable<DashboardKilometrosConductor[]> {
+  
+    return this.http.get<DashboardKilometrosConductor[]>(
+      `${this.apiUrl}/dashboard/kilometros-por-conductor`,
+      {
+        params: {
+          year: year.toString(),
+          month: month.toString()
+        }
+      }
+    );
+  }
+
+  getDiasHabiles(
+    year: number,
+    month: number
+  ): Observable<DashboardDiasHabiles> {
+  
+    return this.http.get<DashboardDiasHabiles>(
+      `${this.apiUrl}/dashboard/dias-habiles`,
+      {
+        params: {
+          year: year.toString(),
+          month: month.toString()
+        }
       }
     );
   }

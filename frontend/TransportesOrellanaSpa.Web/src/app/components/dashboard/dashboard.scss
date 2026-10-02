@@ -20,54 +20,34 @@
     filter 0.32s ease;
 }
 
-
-/* -------------------------------- */
-/* CARGA INICIAL                    */
-/* -------------------------------- */
-
 .dashboard-content.initial-loading {
   opacity: 1;
 }
 
-
-/* -------------------------------- */
-/* CAMBIO DE PERÍODO                */
-/* -------------------------------- */
-
 .dashboard-content.period-changing {
   opacity: 0.58;
-
   transform: translateY(3px);
-
   filter: blur(0.25px);
-
   pointer-events: none;
 }
 
 
 /* ========================= */
-/* TARJETAS */
+/* ACTUALIZACIÓN DE TARJETAS */
 /* ========================= */
 
 .dashboard-content .card,
 .dashboard-content .chart-card,
 .dashboard-content .summary-strip {
-
   transition:
     transform 0.32s ease,
     box-shadow 0.32s ease,
     opacity 0.32s ease;
 }
 
-
-/* -------------------------------- */
-/* PEQUEÑO EFECTO DE ACTUALIZACIÓN  */
-/* -------------------------------- */
-
 .dashboard-content.period-changing .card,
 .dashboard-content.period-changing .chart-card,
 .dashboard-content.period-changing .summary-strip {
-
   transform: translateY(2px);
 }
 
@@ -107,6 +87,17 @@
   font-size: 14px;
 }
 
+.periodo-resumen {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 12px;
+  color: #66778c;
+  font-size: 11px;
+  font-weight: 600;
+}
+
 
 /* ========================= */
 /* PERÍODO */
@@ -121,6 +112,15 @@
   background: #ffffff;
   box-shadow: 0 4px 16px rgba(24, 59, 104, 0.05);
   box-sizing: border-box;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.periodo:hover {
+  border-color: #d5dfeb;
+  box-shadow: 0 5px 18px rgba(24, 59, 104, 0.07);
 }
 
 .periodo-label {
@@ -145,6 +145,12 @@
   background: transparent;
   cursor: pointer;
   text-align: left;
+}
+
+.periodo-selector:focus-visible {
+  outline: 2px solid rgba(65, 124, 192, 0.25);
+  outline-offset: 2px;
+  border-radius: 6px;
 }
 
 .periodo-value {
@@ -198,6 +204,7 @@
   text-align: left;
   text-transform: capitalize;
   cursor: pointer;
+
   transition:
     background 0.18s ease,
     color 0.18s ease;
@@ -273,6 +280,7 @@
   background: #ffffff;
   box-shadow: 0 4px 18px rgba(24, 59, 104, 0.045);
   box-sizing: border-box;
+
   transition:
     transform 0.2s ease,
     box-shadow 0.2s ease,
@@ -370,6 +378,34 @@
   white-space: nowrap;
 }
 
+
+/* ========================= */
+/* PRODUCCIÓN DESTACADA */
+/* ========================= */
+
+.production {
+  border-color: #dce8f4;
+
+  box-shadow:
+    0 5px 20px rgba(24, 59, 104, 0.07),
+    inset 0 2px 0 #417cc0;
+}
+
+.production:hover {
+  box-shadow:
+    0 9px 26px rgba(24, 59, 104, 0.10),
+    inset 0 2px 0 #417cc0;
+}
+
+.production .metric-value {
+  color: #183b68;
+}
+
+
+/* ========================= */
+/* MÉTRICAS SECUNDARIAS */
+/* ========================= */
+
 .metric-description {
   display: block;
   margin-top: 5px;
@@ -397,6 +433,26 @@
   color: #625c8b;
 }
 
+.bar-percentage {
+  margin-left: 7px;
+  color: #718096;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.work-days .card-label {
+  font-size: 14px;
+}
+
+.work-days .metric-value {
+  font-size: 30px;
+}
+
+.work-days .metric-description {
+  font-size: 12px;
+  line-height: 1.2;
+}
+
 
 /* ========================= */
 /* ESTADO DE PAGOS */
@@ -413,16 +469,10 @@
   min-width: 0;
 }
 
-
-/* -------------------------------- */
-/* FILA DE PAGO */
-/* -------------------------------- */
-
 .payment-row {
   width: 100%;
   min-width: 0;
   padding-left: 5px;
-  padding-top: 10px;
 
   display: flex;
   align-items: center;
@@ -433,36 +483,18 @@
   box-sizing: border-box;
 }
 
-
-/* -------------------------------- */
-/* INFORMACIÓN DEL PAGO */
-/* -------------------------------- */
-
 .payment-info {
   min-width: 0;
   flex: 1 1 auto;
 }
 
-
-/* -------------------------------- */
-/* ETIQUETA DE ESTADO */
-/* -------------------------------- */
-
 .payment-status-label {
   display: flex;
   align-items: center;
-
   gap: 9px;
-
   min-width: 0;
-
   margin: 0;
 }
-
-
-/* -------------------------------- */
-/* ICONOS */
-/* -------------------------------- */
 
 .payment-status-icon {
   width: 24px;
@@ -495,11 +527,6 @@
   color: inherit;
 }
 
-
-/* -------------------------------- */
-/* VALORES */
-/* -------------------------------- */
-
 .payment-info .metric-value {
   margin-top: 10px;
 }
@@ -508,19 +535,9 @@
   color: #8a7336;
 }
 
-
-/* -------------------------------- */
-/* DESCRIPCIONES */
-/* -------------------------------- */
-
 .payment-info .metric-description {
   margin-top: 8px;
 }
-
-
-/* -------------------------------- */
-/* MONTOS */
-/* -------------------------------- */
 
 .payment-amount {
   flex: 0 0 auto;
@@ -568,11 +585,6 @@
   color: #a33a3a;
 }
 
-
-/* -------------------------------- */
-/* DIVISOR */
-/* -------------------------------- */
-
 .payment-divider {
   width: 100%;
   height: 1px;
@@ -601,6 +613,7 @@
   border-radius: 14px;
   background: #ffffff;
   box-shadow: 0 4px 18px rgba(24, 59, 104, 0.045);
+
   transition:
     opacity 0.3s ease,
     transform 0.3s ease;
@@ -655,6 +668,11 @@
 
 .bar-item {
   min-width: 0;
+
+  transition:
+    background 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
 }
 
 .bar-info {
@@ -667,9 +685,15 @@
 
 .bar-title {
   min-width: 0;
+  flex: 1 1 auto;
+
+  position: relative;
+
   display: flex;
   flex-direction: column;
   gap: 3px;
+
+  padding-right: 20px;
 }
 
 .bar-title strong {
@@ -699,18 +723,151 @@
   overflow: hidden;
   border-radius: 999px;
   background: #edf1f5;
+
+  box-shadow:
+    inset 0 1px 2px rgba(24, 59, 104, 0.04);
+
+  transition:
+    height 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .bar-fill {
   height: 100%;
   min-width: 3px;
   border-radius: inherit;
-  background: #417cc0;
-  transition: width 0.45s ease;
+
+  transition:
+    width 0.45s ease,
+    filter 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
+
+/* ========================= */
+/* COLORES DE LAS BARRAS */
+/* ========================= */
+
+/* PRODUCCIÓN */
+
+.production-bar {
+  background: #417cc0;
+
+  box-shadow:
+    0 1px 3px rgba(65, 124, 192, 0.18);
+}
+
+.production-bar.cliente {
+  background: #417cc0;
+}
+
+
+/* KILÓMETROS */
+
+.kilometers-bar {
+  background: #4c9a82;
+
+  box-shadow:
+    0 1px 3px rgba(76, 154, 130, 0.18);
+}
+
+
+/* COSTO DE COMBUSTIBLE */
+
 .bar-fill.conductor {
-  background: #e68123;
+  background: #dd8634;
+
+  box-shadow:
+    0 1px 3px rgba(221, 134, 52, 0.18);
+}
+
+/* ========================= */
+/* PRIMER LUGAR */
+/* ========================= */
+
+.bar-first {
+  position: relative;
+
+  padding: 9px 10px;
+  margin: -9px -10px;
+
+  border-radius: 9px;
+
+  background: #f8fbfe;
+
+  box-shadow:
+    inset 0 0 0 1px #edf3f8;
+}
+
+
+/* Nombre / patente */
+
+.bar-first .bar-title strong {
+  position: relative;
+
+  color: #183b68;
+  font-weight: 800;
+}
+
+
+/* Estrella alineada a la derecha del campo */
+
+.bar-first .bar-title strong::after {
+  content: '★';
+
+  display: inline-block;
+  margin-left: 3px;
+
+  color: #d49a32;
+  font-size: 10px;
+  line-height: 1;
+  vertical-align: 1px;
+}
+
+
+/* Valor */
+
+.bar-first .bar-value {
+  color: #183b68;
+  font-weight: 800;
+}
+
+
+/* Barra más intensa */
+
+.bar-first .bar-track {
+  height: 9px;
+
+  box-shadow:
+    inset 0 1px 2px rgba(24, 59, 104, 0.06);
+}
+
+
+/* Primer lugar - producción */
+
+.bar-first .production-bar {
+  background: #245f9e;
+
+  box-shadow:
+    0 2px 5px rgba(36, 95, 158, 0.30);
+}
+
+
+/* Primer lugar - kilómetros */
+
+.bar-first .kilometers-bar {
+  background: #2f8068;
+
+  box-shadow:
+    0 2px 5px rgba(47, 128, 104, 0.30);
+}
+
+
+/* Primer lugar - cualquier barra */
+
+.bar-first .bar-fill {
+  filter: saturate(1.08);
 }
 
 
@@ -773,11 +930,9 @@
     minmax(0, 1fr);
 
   align-items: stretch;
-
   gap: 0;
 
   margin-top: 4px;
-
   padding: 0;
 
   border: 1px solid #e7ebf1;
@@ -793,11 +948,6 @@
     opacity 0.3s ease,
     transform 0.3s ease;
 }
-
-
-/* ========================= */
-/* INDICADORES */
-/* ========================= */
 
 .summary-item {
   min-width: 0;
@@ -825,10 +975,8 @@
 
 .summary-item > span {
   color: #7f8b9b;
-
   font-size: 11px;
   font-weight: 700;
-
   line-height: 1.4;
 }
 
@@ -853,11 +1001,6 @@
   line-height: 1.4;
 }
 
-
-/* ========================= */
-/* DOCUMENTO VENCIDO */
-/* ========================= */
-
 .document-alert.has-alert {
   background: #fff8f7;
 }
@@ -873,11 +1016,6 @@
 .document-alert.has-alert > small {
   color: #b47a76;
 }
-
-
-/* ========================= */
-/* DOCUMENTO AL DÍA */
-/* ========================= */
 
 .document-alert:not(.has-alert) {
   background: #f8fcf9;
@@ -895,23 +1033,11 @@
   color: #91a89a;
 }
 
-
-/* ========================= */
-/* DIVISORES */
-/* ========================= */
-
 .summary-divider {
   width: 1px;
-
   margin: 20px 0;
-
   background: #e8ecf1;
 }
-
-
-/* ========================= */
-/* HOVER */
-/* ========================= */
 
 .document-alert.has-alert:hover {
   background: #fff2f0;
@@ -1037,7 +1163,6 @@
 
   .summary-item {
     min-height: 105px;
-
     border-bottom: 1px solid #e8ecf1;
   }
 
@@ -1063,6 +1188,11 @@
     font-size: 26px;
   }
 
+  .periodo-resumen {
+    font-size: 10px;
+    line-height: 1.6;
+  }
+
   .periodo {
     width: 100%;
     box-sizing: border-box;
@@ -1075,15 +1205,12 @@
 
   .summary-strip {
     grid-template-columns: 1fr;
-
     border-radius: 12px;
   }
 
   .summary-item {
     min-height: 96px;
-
     padding: 17px 20px;
-
     border-bottom: 1px solid #e8ecf1 !important;
   }
 
@@ -1094,7 +1221,6 @@
   .summary-item > strong {
     font-size: 27px;
   }
-
 
   /* ========================= */
   /* PAGOS - TABLET / MÓVIL */
@@ -1141,6 +1267,10 @@
     font-size: 11px;
   }
 
+  .bar-percentage {
+    margin-left: 5px;
+    font-size: 10px;
+  }
 
   /* ========================= */
   /* PAGOS - TELÉFONO */
