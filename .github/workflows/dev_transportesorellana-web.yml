@@ -1,0 +1,33 @@
+name: Deploy Angular app to Azure Web App - transportesorellana-web
+
+on:
+  push:
+    branches:
+      - Dev
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_5AE6054F1CFB4657A279523CA391A45A }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_EAD033F2B84B42619CD416F97E6B24E0 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_E97B140E1AE14D89884D432DE641E349 }}
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: 'transportesorellana-web'
+          slot-name: 'Production'
+          package: frontend/TransportesOrellanaSpa.Web/azure
