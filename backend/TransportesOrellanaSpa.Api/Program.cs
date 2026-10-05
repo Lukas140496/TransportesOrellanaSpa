@@ -35,7 +35,8 @@ builder.Services.AddCors(options =>
             .WithOrigins(
                 "http://localhost:4200",
                 "http://172.20.10.13:4200",
-                "http://localhost:8080"
+                "http://localhost:8080",
+                "https://transportesorellana-web-d8hfbucyh9fjffcj.chilecentral-01.azurewebsites.net"
             )
             .AllowAnyHeader()
             .AllowAnyMethod();
