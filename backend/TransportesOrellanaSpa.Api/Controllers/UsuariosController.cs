@@ -68,6 +68,144 @@ public class UsuariosController : ControllerBase
     }
 
     // =========================
+    // EDITAR USUARIO
+    // =========================
+
+    [HttpPut("{id:int}")]
+    [RequirePermission("USUARIOS_EDITAR")]
+    public async Task<IActionResult> EditarUsuario(
+        int id,
+        EditarUsuarioDto request)
+    {
+        var usuario = await _context.Usuarios
+            .FirstOrDefaultAsync(u => u.Id == id);
+
+        if (usuario == null)
+        {
+            return NotFound(new
+            {
+                mensaje = "Usuario no encontrado."
+            });
+        }
+
+        var rut = request.Rut?.Trim().ToUpperInvariant() ?? string.Empty;
+        var nombres = request.Nombres?.Trim() ?? string.Empty;
+        var apellidoPaterno = request.ApellidoPaterno?.Trim() ?? string.Empty;
+        var apellidoMaterno = request.ApellidoMaterno?.Trim() ?? string.Empty;
+        var email = request.Email?.Trim().ToLowerInvariant() ?? string.Empty;
+
+        // =========================
+        // VALIDACIONES
+        // =========================
+
+        if (string.IsNullOrWhiteSpace(rut) ||
+            string.IsNullOrWhiteSpace(nombres) ||
+            string.IsNullOrWhiteSpace(apellidoPaterno) ||
+            string.IsNullOrWhiteSpace(apellidoMaterno) ||
+            string.IsNullOrWhiteSpace(email))
+        {
+            return BadRequest(new
+            {
+                mensaje = "Todos los campos son obligatorios."
+            });
+        }
+
+        if (request.RolId <= 0)
+        {
+            return BadRequest(new
+            {
+                mensaje = "Debe seleccionar un rol."
+            });
+        }
+
+        // =========================
+        // VALIDAR EMAIL
+        // =========================
+
+        var emailExiste = await _context.Usuarios
+            .AnyAsync(u =>
+                u.Email == email &&
+                u.Id != id);
+
+        if (emailExiste)
+        {
+            return Conflict(new
+            {
+                mensaje = "El correo electrónico ya está registrado."
+            });
+        }
+
+        // =========================
+        // VALIDAR RUT
+        // =========================
+
+        var rutExiste = await _context.Usuarios
+            .AnyAsync(u =>
+                u.Rut == rut &&
+                u.Id != id);
+
+        if (rutExiste)
+        {
+            return Conflict(new
+            {
+                mensaje = "El RUT ya está registrado."
+            });
+        }
+
+        // =========================
+        // VALIDAR ROL
+        // =========================
+
+        var rol = await _context.Roles
+            .FirstOrDefaultAsync(r =>
+                r.Id == request.RolId &&
+                r.Activo);
+
+        if (rol == null)
+        {
+            return BadRequest(new
+            {
+                mensaje = "El rol seleccionado no existe o está inactivo."
+            });
+        }
+
+        // =========================
+        // ACTUALIZAR USUARIO
+        // =========================
+
+        usuario.Rut = rut;
+        usuario.Nombres = nombres;
+        usuario.ApellidoPaterno = apellidoPaterno;
+        usuario.ApellidoMaterno = apellidoMaterno;
+        usuario.Email = email;
+
+        await _context.SaveChangesAsync();
+
+        // =========================
+        // ACTUALIZAR ROL
+        // =========================
+
+        var rolesActuales = await _context.UsuariosRoles
+            .Where(ur => ur.UsuarioId == usuario.Id)
+            .ToListAsync();
+
+        _context.UsuariosRoles.RemoveRange(rolesActuales);
+
+        _context.UsuariosRoles.Add(new Models.UsuarioRol
+        {
+            UsuarioId = usuario.Id,
+            RolId = rol.Id
+        });
+
+        await _context.SaveChangesAsync();
+
+        return Ok(new
+        {
+            mensaje = "Usuario actualizado correctamente."
+        });
+    }
+
+    // =========================
     // MI PERFIL
     // =========================
 
