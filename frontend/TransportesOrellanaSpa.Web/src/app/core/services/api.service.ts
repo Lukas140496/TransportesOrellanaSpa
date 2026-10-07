@@ -29,6 +29,8 @@ import { DashboardDiasHabiles } from '../models/dashboard-dias-habiles';
 
 import { Gasto } from '../models/gasto';
 import { CrearGasto } from '../models/crear-gasto';
+import { GastoRemolque } from '../models/gasto-remolque';
+import { CrearGastoRemolque } from '../models/crear-gasto-remolque';
 
 @Injectable({
   providedIn: 'root'
@@ -371,6 +373,31 @@ export class ApiService {
   crearGasto(gasto: CrearGasto): Observable<Gasto> {
     return this.http.post<Gasto>(
       `${this.apiUrl}/gasto`,
+      gasto
+    );
+  }
+
+  // =========================
+  // GASTOS REMOLQUES
+  // =========================
+
+  getGastosRemolque(): Observable<GastoRemolque[]> {
+    return this.http.get<GastoRemolque[]>(
+      `${this.apiUrl}/gastoremolque`
+    );
+  }
+
+  getGastoRemolqueById(id: number): Observable<GastoRemolque> {
+    return this.http.get<GastoRemolque>(
+      `${this.apiUrl}/gastoremolque/${id}`
+    );
+  }
+
+  crearGastoRemolque(
+    gasto: CrearGastoRemolque
+  ): Observable<GastoRemolque> {
+    return this.http.post<GastoRemolque>(
+      `${this.apiUrl}/gastoremolque`,
       gasto
     );
   }

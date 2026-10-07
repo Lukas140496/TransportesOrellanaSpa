@@ -45,6 +45,7 @@ import { Login } from './components/login/login';
 import { MiPerfil } from './components/mi-perfil/mi-perfil';
 
 import { GastoList } from './components/gasto/gasto-list/gasto-list';
+import { GastoRemolqueComponent } from './components/gasto-remolque/gasto-remolque';
 
 export const routes: Routes = [
 
@@ -264,6 +265,11 @@ export const routes: Routes = [
             {
                 path: 'remolques/asignar-camion',
                 component: RemolqueAsignarCamion
+            },
+            
+            {
+                path: 'remolques/gastos',
+                component: GastoRemolqueComponent
             },
 
             {

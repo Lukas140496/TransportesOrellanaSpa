@@ -1,0 +1,657 @@
+<section class="gasto-remolque">
+
+  <!-- =====================================================
+       HEADER
+       ===================================================== -->
+
+  <div class="page-header">
+
+    <div class="header-content">
+
+      <div class="header-icon">
+        💰
+      </div>
+
+      <div>
+
+        <h1>Gastos de Remolques</h1>
+
+        <p>
+          Administra los gastos asociados a los remolques.
+        </p>
+
+      </div>
+
+    </div>
+
+    <button
+      type="button"
+      class="btn-nuevo"
+    >
+      <span class="btn-icon">+</span>
+      Nuevo Gasto
+    </button>
+
+  </div>
+
+
+  <!-- =====================================================
+       ESTADOS
+       ===================================================== -->
+
+  @if (cargando) {
+
+    <div class="estado-container">
+
+      <div class="loading-spinner"></div>
+
+      <p>
+        Cargando gastos...
+      </p>
+
+    </div>
+
+  }
+
+  @if (error) {
+
+    <div class="error-container">
+
+      <div class="error-icon">
+        !
+      </div>
+
+      <div>
+
+        <strong>
+          No fue posible cargar los gastos
+        </strong>
+
+        <p>
+          {{ error }}
+        </p>
+
+      </div>
+
+    </div>
+
+  }
+
+
+  @if (!cargando && !error) {
+
+
+    <!-- =====================================================
+         RESUMEN
+         ===================================================== -->
+
+    <div class="resumen">
+
+      <!-- TOTAL GASTOS -->
+
+      <div class="resumen-card">
+
+        <div class="resumen-icon total">
+          💰
+        </div>
+
+        <div>
+
+          <span>
+            Total gastos
+          </span>
+
+          <strong>
+            {{ cantidadTotal }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <!-- MONTO TOTAL -->
+
+      <div class="resumen-card">
+
+        <div class="resumen-icon total">
+          $
+        </div>
+
+        <div>
+
+          <span>
+            Monto total
+          </span>
+
+          <strong>
+            ${{ montoTotal | number : '1.0-0' }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <!-- CANTIDAD MANTENCIÓN -->
+
+      <div class="resumen-card">
+
+        <div class="resumen-icon combustible">
+          🔧
+        </div>
+
+        <div>
+
+          <span>
+            Gastos mantención
+          </span>
+
+          <strong>
+            {{ cantidadMantencion }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <!-- MONTO MANTENCIÓN -->
+
+      <div class="resumen-card">
+
+        <div class="resumen-icon combustible">
+          $
+        </div>
+
+        <div>
+
+          <span>
+            Monto mantención
+          </span>
+
+          <strong>
+            ${{ montoMantencion | number : '1.0-0' }}
+          </strong>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         FILTROS
+         ===================================================== -->
+
+    <div class="filtros-card">
+
+
+      <!-- BÚSQUEDA -->
+
+      <div class="filtro-busqueda">
+
+        <label for="busqueda">
+          Buscar
+        </label>
+
+        <div class="busqueda">
+
+          <span class="search-icon">
+            ⌕
+          </span>
+
+          <input
+            id="busqueda"
+            type="text"
+            [(ngModel)]="busqueda"
+            placeholder="Buscar por patente o descripción..."
+            aria-label="Buscar gastos de remolques"
+          />
+
+          @if (busqueda) {
+
+            <button
+              type="button"
+              class="btn-limpiar-busqueda"
+              (click)="limpiarBusqueda()"
+              aria-label="Limpiar búsqueda"
+            >
+              ×
+            </button>
+
+          }
+
+        </div>
+
+      </div>
+
+
+      <!-- FECHA DESDE -->
+
+      <div class="filtro-fecha">
+
+        <label for="fechaDesde">
+          Desde
+        </label>
+
+        <input
+          id="fechaDesde"
+          type="date"
+          [(ngModel)]="fechaDesde"
+        />
+
+      </div>
+
+
+      <!-- FECHA HASTA -->
+
+      <div class="filtro-fecha">
+
+        <label for="fechaHasta">
+          Hasta
+        </label>
+
+        <input
+          id="fechaHasta"
+          type="date"
+          [(ngModel)]="fechaHasta"
+        />
+
+      </div>
+
+
+      <!-- FILTRO TIPO -->
+
+      <div class="filtro-tipo">
+
+        <span class="filtro-label">
+          Tipo:
+        </span>
+
+
+        <button
+          type="button"
+          [class.active]="filtroTipo === 'todos'"
+          (click)="cambiarFiltroTipo('todos')"
+        >
+          Todos
+        </button>
+
+
+        <button
+          type="button"
+          [class.active]="filtroTipo === 'mantención'"
+          (click)="cambiarFiltroTipo('mantención')"
+        >
+          Mantención
+        </button>
+
+
+        <button
+          type="button"
+          [class.active]="filtroTipo === 'reparación'"
+          (click)="cambiarFiltroTipo('reparación')"
+        >
+          Reparación
+        </button>
+
+
+        <button
+          type="button"
+          [class.active]="filtroTipo === 'neumáticos'"
+          (click)="cambiarFiltroTipo('neumáticos')"
+        >
+          Neumáticos
+        </button>
+
+
+        <button
+          type="button"
+          [class.active]="filtroTipo === 'permisos'"
+          (click)="cambiarFiltroTipo('permisos')"
+        >
+          Permisos
+        </button>
+
+
+        <button
+          type="button"
+          [class.active]="filtroTipo === 'seguros'"
+          (click)="cambiarFiltroTipo('seguros')"
+        >
+          Seguros
+        </button>
+
+
+        <button
+          type="button"
+          [class.active]="filtroTipo === 'revision'"
+          (click)="cambiarFiltroTipo('revision')"
+        >
+          Revisión
+        </button>
+
+
+        <button
+          type="button"
+          [class.active]="filtroTipo === 'multas'"
+          (click)="cambiarFiltroTipo('multas')"
+        >
+          Multas
+        </button>
+
+
+        <button
+          type="button"
+          [class.active]="filtroTipo === 'lavado'"
+          (click)="cambiarFiltroTipo('lavado')"
+        >
+          Lavado
+        </button>
+
+
+        <button
+          type="button"
+          [class.active]="filtroTipo === 'otros'"
+          (click)="cambiarFiltroTipo('otros')"
+        >
+          Otros
+        </button>
+
+      </div>
+
+
+      <!-- LIMPIAR FILTROS -->
+
+      @if (hayFiltrosAplicados()) {
+
+        <button
+          type="button"
+          class="btn-limpiar-filtros"
+          (click)="limpiarFiltros()"
+        >
+          Limpiar filtros
+        </button>
+
+      }
+
+    </div>
+
+
+    <!-- =====================================================
+         RESULTADOS
+         ===================================================== -->
+
+    <div class="resultado-info">
+
+      <span>
+
+        Mostrando
+
+        <strong>
+          {{ gastosPaginados.length }}
+        </strong>
+
+        de
+
+        <strong>
+          {{ gastosFiltrados.length }}
+        </strong>
+
+        gastos
+
+      </span>
+
+    </div>
+
+
+    <!-- =====================================================
+         TABLA
+         ===================================================== -->
+
+    @if (gastosFiltrados.length > 0) {
+
+      <div class="tabla-container">
+
+        <table>
+
+          <thead>
+
+            <tr>
+
+              <th>
+                Fecha
+              </th>
+
+              <th>
+                Remolque
+              </th>
+
+              <th>
+                Tipo
+              </th>
+
+              <th>
+                Descripción
+              </th>
+
+              <th>
+                Monto
+              </th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            @for (
+              gasto of gastosPaginados;
+              track gasto.id
+            ) {
+
+              <tr>
+
+
+                <!-- FECHA -->
+
+                <td>
+
+                  {{ gasto.fecha | date : 'dd/MM/yyyy' }}
+
+                </td>
+
+
+                <!-- REMOLQUE -->
+
+                <td>
+
+                  <div class="camion-info">
+
+                    <div>
+
+                      <strong>
+                        {{ gasto.patenteRemolque }}
+                      </strong>
+
+                    </div>
+
+                  </div>
+
+                </td>
+
+
+                <!-- TIPO -->
+
+                <td>
+
+                  <span
+                    class="tipo-gasto"
+                    [class.mantencion]="gasto.tipoGasto === 'mantención'"
+                    [class.reparacion]="gasto.tipoGasto === 'reparación'"
+                  >
+
+                    {{ gasto.tipoGasto }}
+
+                  </span>
+
+                </td>
+
+
+                <!-- DESCRIPCIÓN -->
+
+                <td>
+
+                  <span class="dato-principal">
+
+                    {{ gasto.descripcion }}
+
+                  </span>
+
+
+                  @if (gasto.observaciones) {
+
+                    <span class="dato-secundario">
+
+                      {{ gasto.observaciones }}
+
+                    </span>
+
+                  }
+
+                </td>
+
+
+                <!-- MONTO -->
+
+                <td>
+
+                  <strong class="monto">
+
+                    ${{ gasto.monto | number : '1.0-0' }}
+
+                  </strong>
+
+                </td>
+
+              </tr>
+
+            }
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+
+      <!-- =====================================================
+           PAGINACIÓN
+           ===================================================== -->
+
+      @if (totalPaginas > 1) {
+
+        <div class="paginacion">
+
+
+          <div class="paginacion-info">
+
+            Mostrando
+
+            <strong>
+              {{ indiceInicio }}–{{ indiceFin }}
+            </strong>
+
+            de
+
+            <strong>
+              {{ gastosFiltrados.length }}
+            </strong>
+
+            gastos
+
+          </div>
+
+
+          <div class="paginacion-controles">
+
+            <button
+              type="button"
+              class="btn-paginacion"
+              [disabled]="paginaActual === 1"
+              (click)="paginaAnterior()"
+            >
+
+              ← Anterior
+
+            </button>
+
+
+            <span class="pagina-info">
+
+              Página
+              {{ paginaActual }}
+              de
+              {{ totalPaginas }}
+
+            </span>
+
+
+            <button
+              type="button"
+              class="btn-paginacion"
+              [disabled]="paginaActual === totalPaginas"
+              (click)="paginaSiguiente()"
+            >
+
+              Siguiente →
+
+            </button>
+
+          </div>
+
+        </div>
+
+      }
+
+    }
+
+
+    <!-- =====================================================
+         SIN RESULTADOS
+         ===================================================== -->
+
+    @if (gastosFiltrados.length === 0) {
+
+      <div class="sin-resultados">
+
+        <div class="sin-resultados-icon">
+          ⌕
+        </div>
+
+        <h2>
+          No encontramos gastos
+        </h2>
+
+        <p>
+          No hay gastos que coincidan con los filtros seleccionados.
+        </p>
+
+        <button
+          type="button"
+          class="btn-restablecer"
+          (click)="limpiarFiltros()"
+        >
+          Limpiar filtros
+        </button>
+
+      </div>
+
+    }
+
+  }
+
+</section>

@@ -434,6 +434,15 @@
           >
             <span>Asignar Camión</span>
           </a>
+
+          <a
+            routerLink="/remolques/gastos"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            (click)="cerrarMenu()"
+          >
+            <span>Gastos</span>
+          </a>
         </div>
       </div>
 

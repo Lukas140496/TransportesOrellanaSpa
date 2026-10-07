@@ -1,12 +1,8 @@
-.gasto-list {
+.gasto-remolque {
   max-width: 1400px;
-
   margin: 0 auto;
-
   padding: 15px;
-
   padding-top: 8px;
-
   color: #172b4d;
 }
 
@@ -16,63 +12,42 @@
 
 .page-header {
   display: flex;
-
   align-items: center;
-
   justify-content: space-between;
-
   gap: 24px;
-
   margin-bottom: 28px;
 }
 
 .header-content {
   display: flex;
-
   align-items: center;
-
   gap: 16px;
 }
 
 .header-icon {
   display: flex;
-
   align-items: center;
-
   justify-content: center;
-
   width: 48px;
-
   height: 48px;
-
   flex-shrink: 0;
-
   border: 1px solid #dce9f8;
-
   border-radius: 12px;
-
   background: #edf5ff;
-
   font-size: 21px;
 }
 
 .page-header h1 {
   margin: 0 0 5px;
-
   color: #172b4d;
-
   font-size: 28px;
-
   font-weight: 700;
-
   line-height: 1.2;
 }
 
 .page-header p {
   margin: 0;
-
   color: #6b778c;
-
   font-size: 14px;
 }
 
@@ -82,29 +57,17 @@
 
 .btn-nuevo {
   display: inline-flex;
-
   align-items: center;
-
   gap: 8px;
-
   height: 42px;
-
   padding: 0 16px;
-
   border: 1px solid #183b68;
-
   border-radius: 8px;
-
   background: #183b68;
-
   color: #fff;
-
   font-size: 13px;
-
   font-weight: 600;
-
   cursor: pointer;
-
   white-space: nowrap;
 
   transition:
@@ -115,20 +78,15 @@
 
   &:hover {
     background: #2674dc;
-
     border-color: #2674dc;
-
     box-shadow: 0 4px 10px rgba(47, 128, 237, 0.2);
-
     transform: translateY(-1px);
   }
 }
 
 .btn-icon {
   font-size: 19px;
-
   font-weight: 400;
-
   line-height: 1;
 }
 
@@ -138,85 +96,57 @@
 
 .resumen {
   display: grid;
-
   grid-template-columns: repeat(4, minmax(0, 1fr));
-
   gap: 16px;
-
   margin-bottom: 20px;
 }
 
 .resumen-card {
   display: flex;
-
   align-items: center;
-
   gap: 14px;
-
   min-height: 82px;
-
   padding: 16px 18px;
-
   border: 1px solid #e5eaf0;
-
   border-radius: 12px;
-
   background: #fff;
-
   box-shadow: 0 3px 14px rgba(15, 39, 71, 0.04);
 }
 
 .resumen-icon {
   display: flex;
-
   align-items: center;
-
   justify-content: center;
-
   width: 42px;
-
   height: 42px;
-
   flex-shrink: 0;
-
   border-radius: 10px;
-
   font-size: 18px;
-
   font-weight: 700;
 }
 
 .resumen-icon.total {
   background: #edf5ff;
-
   color: #2f80ed;
 }
 
 .resumen-icon.combustible {
   background: #fff7e8;
-
   color: #d97706;
 }
 
 .resumen-card span {
   display: block;
-
   margin-bottom: 4px;
-
   color: #7a869a;
-
   font-size: 12px;
-
   font-weight: 600;
 }
 
 .resumen-card strong {
   display: block;
-
   color: #172b4d;
-
   font-size: 21px;
-
   font-weight: 700;
 }
 
@@ -226,21 +156,13 @@
 
 .filtros-card {
   display: flex;
-
   align-items: flex-end;
-
   flex-wrap: wrap;
-
   gap: 14px;
-
   padding: 16px;
-
   border: 1px solid #e5eaf0;
-
   border-radius: 12px;
-
   background: #fff;
-
   box-shadow: 0 3px 14px rgba(15, 39, 71, 0.04);
 }
 
@@ -250,77 +172,49 @@
 
 .filtro-busqueda {
   display: flex;
-
   align-items: flex-start;
-
   flex-direction: column;
-
   gap: 5px;
-
   flex: 1 1 280px;
-
   min-width: 280px;
 }
 
 .filtro-busqueda label {
   height: 15px;
-
   color: #6b778c;
-
   font-size: 12px;
-
   font-weight: 600;
-
   line-height: 15px;
 }
 
 .busqueda {
   position: relative;
-
   display: flex;
-
   align-items: center;
-
   width: 100%;
-
   min-width: 0;
 }
 
 .search-icon {
   position: absolute;
-
   left: 13px;
-
   color: #7a869a;
-
   font-size: 21px;
-
   line-height: 1;
-
   pointer-events: none;
 }
 
 .busqueda input {
   width: 100%;
-
   height: 42px;
-
   box-sizing: border-box;
-
   padding: 0 40px;
-
   border: 1px solid #d8dee8;
-
   border-radius: 8px;
-
   background: #fff;
-
   color: #172b4d;
-
   font: inherit;
-
   font-size: 13px;
-
   outline: none;
 
   transition:
@@ -330,7 +224,6 @@
 
 .busqueda input:focus {
   border-color: #2f80ed;
-
   box-shadow: 0 0 0 3px rgba(47, 128, 237, 0.1);
 }
 
@@ -340,37 +233,23 @@
 
 .btn-limpiar-busqueda {
   position: absolute;
-
   right: 10px;
-
   display: flex;
-
   align-items: center;
-
   justify-content: center;
-
   width: 24px;
-
   height: 24px;
-
   border: 0;
-
   border-radius: 50%;
-
   background: #eef1f5;
-
   color: #6b778c;
-
   font-size: 17px;
-
   line-height: 1;
-
   cursor: pointer;
 }
 
 .btn-limpiar-busqueda:hover {
   background: #e2e7ee;
-
   color: #344563;
 }
 
@@ -380,49 +259,31 @@
 
 .filtro-fecha {
   display: flex;
-
   align-items: flex-start;
-
   flex-direction: column;
-
   gap: 5px;
-
   flex-shrink: 0;
 }
 
 .filtro-fecha label {
   height: 15px;
-
   color: #6b778c;
-
   font-size: 12px;
-
   font-weight: 600;
-
   line-height: 15px;
 }
 
 .filtro-fecha input {
   width: 145px;
-
   height: 42px;
-
   box-sizing: border-box;
-
   padding: 0 10px;
-
   border: 1px solid #d8dee8;
-
   border-radius: 8px;
-
   background: #fff;
-
   color: #172b4d;
-
   font: inherit;
-
   font-size: 13px;
-
   outline: none;
 
   transition:
@@ -432,7 +293,6 @@
 
 .filtro-fecha input:focus {
   border-color: #2f80ed;
-
   box-shadow: 0 0 0 3px rgba(47, 128, 237, 0.1);
 }
 
@@ -442,41 +302,27 @@
 
 .filtro-tipo {
   display: flex;
-
   align-items: center;
-
   gap: 8px;
-
   flex-shrink: 0;
 }
 
 .filtro-label {
   margin-right: 4px;
-
   color: #6b778c;
-
   font-size: 12px;
-
   font-weight: 600;
 }
 
 .filtro-tipo button {
   height: 34px;
-
   padding: 0 11px;
-
   border: 1px solid #d8dee8;
-
   border-radius: 7px;
-
   background: #fff;
-
   color: #6b778c;
-
   font-size: 12px;
-
   font-weight: 600;
-
   cursor: pointer;
 
   transition:
@@ -487,17 +333,13 @@
 
 .filtro-tipo button:hover {
   background: #f8fafc;
-
   border-color: #c5ccd7;
-
   color: #344563;
 }
 
 .filtro-tipo button.active {
   border-color: #2f80ed;
-
   background: #edf5ff;
-
   color: #2f80ed;
 }
 
@@ -507,23 +349,14 @@
 
 .btn-limpiar-filtros {
   height: 34px;
-
   padding: 0 12px;
-
   border: 1px solid #d8dee8;
-
   border-radius: 7px;
-
   background: #fff;
-
   color: #52606d;
-
   font-size: 12px;
-
   font-weight: 600;
-
   white-space: nowrap;
-
   cursor: pointer;
 
   transition:
@@ -534,9 +367,7 @@
 
 .btn-limpiar-filtros:hover {
   border-color: #b9d3f4;
-
   background: #edf5ff;
-
   color: #2f80ed;
 }
 
@@ -546,19 +377,14 @@
 
 .resultado-info {
   display: flex;
-
   justify-content: flex-end;
-
   margin: 14px 2px 10px;
-
   color: #7a869a;
-
   font-size: 12px;
 }
 
 .resultado-info strong {
   color: #344563;
-
   font-weight: 700;
 }
 
@@ -568,21 +394,15 @@
 
 .tabla-container {
   overflow-x: auto;
-
   border: 1px solid #e5eaf0;
-
   border-radius: 12px;
-
   background: #fff;
-
   box-shadow: 0 4px 18px rgba(15, 39, 71, 0.05);
 }
 
 table {
   width: 100%;
-
-  min-width: 1050px;
-
+  min-width: 850px;
   border-collapse: collapse;
 }
 
@@ -592,33 +412,21 @@ thead {
 
 th {
   height: 48px;
-
   padding: 0 18px;
-
   border-bottom: 1px solid #e5eaf0;
-
   color: #6b778c;
-
   font-size: 11px;
-
   font-weight: 700;
-
   text-align: left;
-
   text-transform: uppercase;
-
   letter-spacing: 0.35px;
 }
 
 td {
   padding: 15px 18px;
-
   border-bottom: 1px solid #edf0f4;
-
   color: #344563;
-
   font-size: 13px;
-
   vertical-align: middle;
 }
 
@@ -635,50 +443,21 @@ tbody tr:hover {
 }
 
 // =====================================================
-// CAMIÓN
+// REMOLQUE
 // =====================================================
 
 .camion-info {
   display: flex;
-
   align-items: center;
-
   gap: 11px;
-
   min-width: 140px;
-}
-
-.camion-avatar {
-  display: flex;
-
-  align-items: center;
-
-  justify-content: center;
-
-  width: 38px;
-
-  height: 38px;
-
-  flex-shrink: 0;
-
-  border-radius: 10px;
-
-  background: #edf5ff;
-
-  color: #2f80ed;
-
-  font-size: 17px;
 }
 
 .camion-info strong {
   display: block;
-
   color: #172b4d;
-
   font-size: 13px;
-
   font-weight: 700;
-
   letter-spacing: 0.2px;
 }
 
@@ -688,21 +467,15 @@ tbody tr:hover {
 
 .dato-principal {
   display: block;
-
   color: #344563;
-
   font-size: 13px;
-
   font-weight: 600;
 }
 
 .dato-secundario {
   display: block;
-
   margin-top: 4px;
-
   color: #8a94a6;
-
   font-size: 11px;
 }
 
@@ -712,88 +485,28 @@ tbody tr:hover {
 
 .tipo-gasto {
   display: inline-flex;
-
   align-items: center;
-
   padding: 5px 9px;
-
   border: 1px solid #e2e8f0;
-
   border-radius: 999px;
-
   background: #f8fafc;
-
   color: #52606d;
-
   font-size: 11px;
-
   font-weight: 700;
-
   white-space: nowrap;
-
   text-transform: capitalize;
-}
-
-.tipo-gasto.combustible {
-  border-color: #f5d9a6;
-
-  background: #fff7e8;
-
-  color: #b45309;
-}
-
-.tipo-gasto.peajes {
-  border-color: #d7e3f5;
-
-  background: #edf5ff;
-
-  color: #2f80ed;
 }
 
 .tipo-gasto.mantencion {
   border-color: #d8eadd;
-
   background: #edf8f1;
-
   color: #18794e;
 }
 
 .tipo-gasto.reparacion {
   border-color: #f1cccc;
-
   background: #fff0f0;
-
   color: #c53030;
-}
-
-// =====================================================
-// GUÍA
-// =====================================================
-
-.guia {
-  display: inline-flex;
-
-  align-items: center;
-
-  padding: 5px 9px;
-
-  border-radius: 6px;
-
-  background: #f8fafc;
-
-  color: #52606d;
-
-  font-size: 11px;
-
-  font-weight: 600;
-
-  white-space: nowrap;
-}
-
-.sin-guia {
-  color: #a5adba;
-
-  font-size: 14px;
 }
 
 // =====================================================
@@ -802,13 +515,9 @@ tbody tr:hover {
 
 .monto {
   display: inline-block;
-
   color: #172b4d;
-
   font-size: 13px;
-
   font-weight: 700;
-
   white-space: nowrap;
 }
 
@@ -818,81 +527,51 @@ tbody tr:hover {
 
 .sin-resultados {
   display: flex;
-
   align-items: center;
-
   flex-direction: column;
-
   padding: 60px 24px;
-
   border: 1px solid #e5eaf0;
-
   border-radius: 12px;
-
   background: #fff;
-
   text-align: center;
-
   box-shadow: 0 4px 18px rgba(15, 39, 71, 0.04);
 }
 
 .sin-resultados-icon {
   display: flex;
-
   align-items: center;
-
   justify-content: center;
-
   width: 54px;
-
   height: 54px;
-
   margin-bottom: 16px;
-
   border-radius: 50%;
-
   background: #f1f4f8;
-
   color: #7a869a;
-
   font-size: 24px;
 }
 
 .sin-resultados h2 {
   margin: 0 0 7px;
-
   color: #344563;
-
   font-size: 17px;
-
   font-weight: 700;
 }
 
 .sin-resultados p {
   margin: 0 0 20px;
-
   color: #7a869a;
-
   font-size: 13px;
 }
 
 .btn-restablecer {
   height: 38px;
-
   padding: 0 15px;
-
   border: 1px solid #d8dee8;
-
   border-radius: 7px;
-
   background: #fff;
-
   color: #344563;
-
   font-size: 12px;
-
   font-weight: 600;
-
   cursor: pointer;
 
   transition:
@@ -902,7 +581,6 @@ tbody tr:hover {
 
 .btn-restablecer:hover {
   background: #f8fafc;
-
   border-color: #c5ccd7;
 }
 
@@ -912,43 +590,28 @@ tbody tr:hover {
 
 .estado-container {
   display: flex;
-
   align-items: center;
-
   justify-content: center;
-
   flex-direction: column;
-
   min-height: 260px;
-
   border: 1px solid #e5eaf0;
-
   border-radius: 12px;
-
   background: #fff;
-
   box-shadow: 0 4px 18px rgba(15, 39, 71, 0.04);
 }
 
 .estado-container p {
   margin: 14px 0 0;
-
   color: #7a869a;
-
   font-size: 13px;
 }
 
 .loading-spinner {
   width: 28px;
-
   height: 28px;
-
   border: 3px solid #e5eaf0;
-
   border-top-color: #2f80ed;
-
   border-radius: 50%;
-
   animation: spin 0.8s linear infinite;
 }
 
@@ -964,59 +627,38 @@ tbody tr:hover {
 
 .error-container {
   display: flex;
-
   align-items: center;
-
   gap: 14px;
-
   padding: 18px;
-
   border: 1px solid #f1cccc;
-
   border-radius: 10px;
-
   background: #fff8f8;
-
   color: #7f1d1d;
 }
 
 .error-icon {
   display: flex;
-
   align-items: center;
-
   justify-content: center;
-
   width: 38px;
-
   height: 38px;
-
   flex-shrink: 0;
-
   border-radius: 50%;
-
   background: #fdecec;
-
   color: #c53030;
-
   font-size: 17px;
-
   font-weight: 700;
 }
 
 .error-container strong {
   display: block;
-
   margin-bottom: 4px;
-
   font-size: 13px;
 }
 
 .error-container p {
   margin: 0;
-
   color: #9b4a4a;
-
   font-size: 12px;
 }
 
@@ -1026,65 +668,43 @@ tbody tr:hover {
 
 .paginacion {
   display: flex;
-
   align-items: center;
-
   justify-content: space-between;
-
   gap: 20px;
-
   margin-top: 16px;
-
   padding: 14px 16px;
-
   border: 1px solid #e5eaf0;
-
   border-radius: 10px;
-
   background: #ffffff;
-
   box-shadow: 0 3px 14px rgba(15, 39, 71, 0.04);
 }
 
 .paginacion-info {
   color: #6b778c;
-
   font-size: 13px;
-
   white-space: nowrap;
 
   strong {
     color: #172b4d;
-
     font-weight: 700;
   }
 }
 
 .paginacion-controles {
   display: flex;
-
   align-items: center;
-
   gap: 10px;
 }
 
 .btn-paginacion {
   height: 36px;
-
   padding: 0 14px;
-
   border: 1px solid #d8dee8;
-
   border-radius: 7px;
-
   background: #ffffff;
-
   color: #52606d;
-
   font-size: 12px;
-
   font-weight: 600;
-
   cursor: pointer;
 
   transition:
@@ -1095,28 +715,21 @@ tbody tr:hover {
 
   &:hover:not(:disabled) {
     background: #f5f7fa;
-
     border-color: #bfc8d6;
-
     color: #172b4d;
   }
 
   &:disabled {
     opacity: 0.45;
-
     cursor: not-allowed;
   }
 }
 
 .pagina-info {
   min-width: 110px;
-
   color: #52606d;
-
   font-size: 13px;
-
   font-weight: 600;
-
   text-align: center;
 }
 
@@ -1125,11 +738,10 @@ tbody tr:hover {
 // =====================================================
 
 @media (max-width: 700px) {
+
   .paginacion {
     align-items: stretch;
-
     flex-direction: column;
-
     gap: 12px;
   }
 
@@ -1140,9 +752,11 @@ tbody tr:hover {
   .paginacion-controles {
     justify-content: center;
   }
+
 }
 
 @media (max-width: 480px) {
+
   .paginacion-controles {
     flex-wrap: wrap;
   }
@@ -1153,9 +767,9 @@ tbody tr:hover {
 
   .pagina-info {
     order: -1;
-
     flex-basis: 100%;
   }
+
 }
 
 // =====================================================
@@ -1208,11 +822,14 @@ tbody tr:hover {
 
 @media (max-width: 700px) {
 
-  .gasto-list {
+  .gasto-remolque {
     padding: 20px 16px;
   }
 
+  // =========================
   // HEADER
+  // =========================
+
   .page-header {
     display: flex;
     flex-direction: column;
@@ -1248,7 +865,10 @@ tbody tr:hover {
     margin-left: 0 !important;
   }
 
+  // =========================
   // FILTROS
+  // =========================
+
   .filtros-card {
     display: flex;
     flex-direction: column;
@@ -1269,6 +889,9 @@ tbody tr:hover {
     min-width: 0;
   }
 
+  // Las fechas quedan inmediatamente
+  // debajo de la búsqueda.
+
   .filtro-fecha {
     width: 100%;
     flex: none;
@@ -1278,7 +901,10 @@ tbody tr:hover {
     width: 100%;
   }
 
+  // =========================
   // TIPOS
+  // =========================
+
   .filtro-tipo {
     display: flex;
     align-items: center;
@@ -1316,7 +942,7 @@ tbody tr:hover {
 
 @media (max-width: 480px) {
 
-  .gasto-list {
+  .gasto-remolque {
     padding: 10px 7px;
   }
 
@@ -1341,7 +967,10 @@ tbody tr:hover {
     min-height: 70px;
   }
 
+  // =========================
   // FILTROS MÓVIL PEQUEÑO
+  // =========================
+
   .filtros-card {
     gap: 10px;
     padding: 12px;
