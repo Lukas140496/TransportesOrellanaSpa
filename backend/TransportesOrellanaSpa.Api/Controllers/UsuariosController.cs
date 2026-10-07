@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TransportesOrellanaSpa.Api.Data;
 using TransportesOrellanaSpa.Api.DTOs.Usuarios;
+using TransportesOrellanaSpa.Api.Authorization;
+using TransportesOrellanaSpa.Api.Services;
 
 namespace TransportesOrellanaSpa.Api.Controllers;
 
@@ -14,10 +16,14 @@ namespace TransportesOrellanaSpa.Api.Controllers;
 public class UsuariosController : ControllerBase
 {
     private readonly AppDbContext _context;
+    private readonly PasswordService _passwordService;
 
-    public UsuariosController(AppDbContext context)
+    public UsuariosController(
+        AppDbContext context,
+        PasswordService passwordService)
     {
         _context = context;
+        _passwordService = passwordService;
     }
 
     // =========================
@@ -87,6 +93,138 @@ public class UsuariosController : ControllerBase
         };
 
         return Ok(response);
+    }
+
+    // =========================
+    // CREAR USUARIO
+    // =========================
+
+    [HttpPost]
+    [RequirePermission("USUARIOS_CREAR")]
+    public async Task<IActionResult> CrearUsuario(
+        CrearUsuarioDto request)
+    {
+        var rut = request.Rut?.Trim().ToUpperInvariant() ?? string.Empty;
+        var nombres = request.Nombres?.Trim() ?? string.Empty;
+        var apellidoPaterno = request.ApellidoPaterno?.Trim() ?? string.Empty;
+        var apellidoMaterno = request.ApellidoMaterno?.Trim() ?? string.Empty;
+        var email = request.Email?.Trim().ToLowerInvariant() ?? string.Empty;
+        var password = request.Password ?? string.Empty;
+
+        // =========================
+        // VALIDACIONES
+        // =========================
+
+        if (string.IsNullOrWhiteSpace(rut) ||
+            string.IsNullOrWhiteSpace(nombres) ||
+            string.IsNullOrWhiteSpace(apellidoPaterno) ||
+            string.IsNullOrWhiteSpace(apellidoMaterno) ||
+            string.IsNullOrWhiteSpace(email) ||
+            string.IsNullOrWhiteSpace(password))
+        {
+            return BadRequest(new
+            {
+                mensaje = "Todos los campos son obligatorios."
+            });
+        }
+
+        if (request.RolId <= 0)
+        {
+            return BadRequest(new
+            {
+                mensaje = "Debe seleccionar un rol."
+            });
+        }
+
+        // =========================
+        // VALIDAR EMAIL
+        // =========================
+
+        var emailExiste = await _context.Usuarios
+            .AnyAsync(u => u.Email == email);
+
+        if (emailExiste)
+        {
+            return Conflict(new
+            {
+                mensaje = "El correo electrónico ya está registrado."
+            });
+        }
+
+        // =========================
+        // VALIDAR RUT
+        // =========================
+
+        var rutExiste = await _context.Usuarios
+            .AnyAsync(u => u.Rut == rut);
+
+        if (rutExiste)
+        {
+            return Conflict(new
+            {
+                mensaje = "El RUT ya está registrado."
+            });
+        }
+
+        // =========================
+        // VALIDAR ROL
+        // =========================
+
+        var rol = await _context.Roles
+            .FirstOrDefaultAsync(r =>
+                r.Id == request.RolId &&
+                r.Activo);
+
+        if (rol == null)
+        {
+            return BadRequest(new
+            {
+                mensaje = "El rol seleccionado no existe o está inactivo."
+            });
+        }
+
+        // =========================
+        // CREAR USUARIO
+        // =========================
+
+        var usuario = new Models.Usuario
+        {
+            Rut = rut,
+            Nombres = nombres,
+            ApellidoPaterno = apellidoPaterno,
+            ApellidoMaterno = apellidoMaterno,
+            Email = email,
+            PasswordHash = _passwordService.HashPassword(
+                new Models.Usuario(),
+                password),
+            Activo = true,
+            FechaCreacion = DateTime.UtcNow,
+            UltimoAcceso = null
+        };
+
+        _context.Usuarios.Add(usuario);
+
+        await _context.SaveChangesAsync();
+
+        // =========================
+        // ASIGNAR ROL
+        // =========================
+
+        var usuarioRol = new Models.UsuarioRol
+        {
+            UsuarioId = usuario.Id,
+            RolId = rol.Id
+        };
+
+        _context.UsuariosRoles.Add(usuarioRol);
+
+        await _context.SaveChangesAsync();
+
+        return StatusCode(201, new
+        {
+            mensaje = "Usuario creado correctamente.",
+            usuarioId = usuario.Id
+        });
     }
 
     // =========================
