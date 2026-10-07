@@ -31,7 +31,7 @@ public static class DataSeeder
         }
 
         var usuario = await context.Roles
-            .FirstOrDefaultAsync(r => r.Nombre == "Usuario");
+    .FirstOrDefaultAsync(r => r.Nombre == "Usuario");
 
         if (usuario == null)
         {
@@ -41,8 +41,37 @@ public static class DataSeeder
                 Descripcion = "Acceso general al sistema",
                 Activo = true
             };
-
             context.Roles.Add(usuario);
+        }
+
+        // ROL OPERADOR
+        var operador = await context.Roles
+            .FirstOrDefaultAsync(r => r.Nombre == "Operador");
+
+        if (operador == null)
+        {
+            operador = new Rol
+            {
+                Nombre = "Operador",
+                Descripcion = "Puede operar el sistema con permisos limitados",
+                Activo = true
+            };
+            context.Roles.Add(operador);
+        }
+
+        // ROL CONSULTA
+        var consulta = await context.Roles
+            .FirstOrDefaultAsync(r => r.Nombre == "Consulta");
+
+        if (consulta == null)
+        {
+            consulta = new Rol
+            {
+                Nombre = "Consulta",
+                Descripcion = "Acceso de solo lectura al sistema",
+                Activo = true
+            };
+            context.Roles.Add(consulta);
         }
 
         await context.SaveChangesAsync();
@@ -216,6 +245,74 @@ public static class DataSeeder
                 context.RolesPermisos.Add(new RolPermiso
                 {
                     RolId = usuario.Id,
+                    PermisoId = permiso.Id
+                });
+            }
+        }
+
+        await context.SaveChangesAsync();
+
+        // PERMISOS DEL OPERADOR
+        var permisosOperador = new HashSet<string>
+        {
+            "DASHBOARD_VER",
+
+            "CLIENTES_VER",
+            "CLIENTES_CREAR",
+            "CLIENTES_EDITAR",
+
+            "CONDUCTORES_VER",
+
+            "CAMIONES_VER",
+
+            "REMOLQUES_VER",
+
+            "GASTOS_VER",
+            "GASTOS_CREAR",
+
+            "VIAJES_VER",
+            "VIAJES_CREAR",
+            "VIAJES_EDITAR"
+        };
+
+        foreach (var permiso in permisos.Where(p => permisosOperador.Contains(p.Codigo)))
+        {
+            var existeRelacion = await context.RolesPermisos
+                .AnyAsync(rp => rp.RolId == operador.Id && rp.PermisoId == permiso.Id);
+
+            if (!existeRelacion)
+            {
+                context.RolesPermisos.Add(new RolPermiso
+                {
+                    RolId = operador.Id,
+                    PermisoId = permiso.Id
+                });
+            }
+        }
+
+        // PERMISOS DE CONSULTA
+        var permisosConsulta = new HashSet<string>
+        {
+            "DASHBOARD_VER",
+
+            "CLIENTES_VER",
+            "CONDUCTORES_VER",
+            "CAMIONES_VER",
+            "REMOLQUES_VER",
+            "GASTOS_VER",
+            "VIAJES_VER"
+        };
+
+        foreach (var permiso in permisos.Where(p => permisosConsulta.Contains(p.Codigo)))
+        {
+            var existeRelacion = await context.RolesPermisos
+                .AnyAsync(rp => rp.RolId == consulta.Id && rp.PermisoId == permiso.Id);
+
+            if (!existeRelacion)
+            {
+                context.RolesPermisos.Add(new RolPermiso
+                {
+                    RolId = consulta.Id,
                     PermisoId = permiso.Id
                 });
             }
