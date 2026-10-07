@@ -27,6 +27,47 @@ public class UsuariosController : ControllerBase
     }
 
     // =========================
+    // LISTAR USUARIOS
+    // =========================
+
+    [HttpGet]
+    [RequirePermission("USUARIOS_VER")]
+    public async Task<IActionResult> ObtenerUsuarios()
+    {
+        var usuarios = await _context.Usuarios
+            .Include(u => u.UsuariosRoles)
+                .ThenInclude(ur => ur.Rol)
+            .OrderBy(u => u.Nombres)
+            .ThenBy(u => u.ApellidoPaterno)
+            .ToListAsync();
+
+        var response = usuarios
+            .Select(usuario => new UsuarioListaDto
+            {
+                UsuarioId = usuario.Id,
+                Rut = usuario.Rut,
+                Nombres = usuario.Nombres,
+                ApellidoPaterno = usuario.ApellidoPaterno,
+                ApellidoMaterno = usuario.ApellidoMaterno,
+                NombreCompleto =
+                    $"{usuario.Nombres} {usuario.ApellidoPaterno} {usuario.ApellidoMaterno}"
+                        .Trim(),
+                Email = usuario.Email,
+                Roles = usuario.UsuariosRoles
+                    .Where(ur => ur.Rol.Activo)
+                    .Select(ur => ur.Rol.Nombre)
+                    .Distinct()
+                    .ToList(),
+                FechaCreacion = usuario.FechaCreacion,
+                UltimoAcceso = usuario.UltimoAcceso,
+                Activo = usuario.Activo
+            })
+            .ToList();
+
+        return Ok(response);
+    }
+
+    // =========================
     // MI PERFIL
     // =========================
 
