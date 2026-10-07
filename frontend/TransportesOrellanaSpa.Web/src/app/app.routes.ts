@@ -44,6 +44,8 @@ import { authGuard } from './core/guards/auth.guard';
 import { Login } from './components/login/login';
 import { MiPerfil } from './components/mi-perfil/mi-perfil';
 
+import { GastoList } from './components/gasto/gasto-list/gasto-list';
+
 export const routes: Routes = [
 
     // =========================
@@ -180,6 +182,11 @@ export const routes: Routes = [
             {
                 path: 'camiones/desactivar',
                 component: CamionDesactivar
+            },
+
+            { 
+                path: 'camiones/gastos', 
+                component: GastoList 
             },
 
             {

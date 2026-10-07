@@ -85,6 +85,12 @@ public static class DataSeeder
             },
             new
             {
+                Nombre = "Gastos",
+                Codigo = "GASTOS",
+                Descripcion = "Gestión de gastos"
+            },
+            new
+            {
                 Nombre = "Viajes",
                 Codigo = "VIAJES",
                 Descripcion = "Gestión de viajes"

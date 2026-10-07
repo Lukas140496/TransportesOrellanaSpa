@@ -15,6 +15,7 @@ public class AppDbContext : DbContext
     public DbSet<Remolque> Remolques { get; set; }
     public DbSet<Cliente> Clientes { get; set; }
     public DbSet<Viaje> Viajes { get; set; }
+    public DbSet<Gasto> Gastos { get; set; }
 
     // =========================
     // AUTENTICACIÓN Y PERMISOS
@@ -92,6 +93,38 @@ public class AppDbContext : DbContext
             .WithMany(r => r.Viajes)
             .HasForeignKey(v => v.RemolqueId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        // =========================
+        // GASTO - CAMIÓN
+        // =========================
+        modelBuilder.Entity<Gasto>()
+            .HasOne(g => g.Camion)
+            .WithMany(c => c.Gastos)
+            .HasForeignKey(g => g.CamionId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        // =========================
+        // GASTO - VIAJE
+        // =========================
+        modelBuilder.Entity<Gasto>()
+            .HasOne(g => g.Viaje)
+            .WithMany(v => v.Gastos)
+            .HasForeignKey(g => g.ViajeId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        // =========================
+        // GASTO - MONTO
+        // =========================
+        modelBuilder.Entity<Gasto>()
+            .Property(g => g.Monto)
+            .HasPrecision(12, 2);
+
+        // =========================
+        // GASTO - FECHA
+        // =========================
+        modelBuilder.Entity<Gasto>()
+            .Property(g => g.Fecha)
+            .HasColumnType("date");
 
         // =========================
         // USUARIO - ROL

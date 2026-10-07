@@ -287,6 +287,15 @@
           </a>
 
           <a
+            routerLink="/camiones/gastos"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            (click)="cerrarMenu()"
+          >
+            <span>Gastos</span>
+          </a>
+
+          <a
             routerLink="/camiones/desactivar"
             routerLinkActive="active"
             [routerLinkActiveOptions]="{ exact: true }"
@@ -450,7 +459,9 @@
     <div class="sidebar-footer">
       <button type="button">⚙ Configuración</button>
 
-      <button type="button" (click)="cerrarSesion()" style="font-weight: bold;">⇥ Cerrar sesión</button>
+      <button type="button" (click)="cerrarSesion()" style="font-weight: bold">
+        ⇥ Cerrar sesión
+      </button>
     </div>
   </aside>
 

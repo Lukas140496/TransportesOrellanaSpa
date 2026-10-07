@@ -187,8 +187,25 @@ public class ViajeController : ControllerBase
         };
 
         _context.Viajes.Add(viaje);
-
         await _context.SaveChangesAsync();
+
+        // Crear gasto automático de combustible
+        if (viaje.CostoCombustible > 0)
+        {
+            var gastoCombustible = new Gasto
+            {
+                CamionId = viaje.CamionId,
+                ViajeId = viaje.Id,
+                Fecha = viaje.Fecha,
+                TipoGasto = "combustible",
+                Descripcion = $"Combustible viaje Guía {viaje.NumeroGuiaDespacho}",
+                Monto = viaje.CostoCombustible
+            };
+
+            _context.Gastos.Add(gastoCombustible);
+
+            await _context.SaveChangesAsync();
+        }
 
         // =========================
         // OBTENER VIAJE CREADO
@@ -828,6 +845,45 @@ public class ViajeController : ControllerBase
 
         viaje.Estado =
             dto.Estado;
+
+        // =========================
+        // SINCRONIZAR GASTO DE COMBUSTIBLE
+        // =========================
+
+        var gastoCombustible = await _context.Gastos
+            .FirstOrDefaultAsync(g =>
+                g.ViajeId == viaje.Id &&
+                g.TipoGasto.ToLower() == "combustible");
+
+        if (viaje.CostoCombustible > 0 && gastoCombustible != null)
+        {
+            gastoCombustible.CamionId = viaje.CamionId;
+            gastoCombustible.Fecha = viaje.Fecha;
+            gastoCombustible.Monto = viaje.CostoCombustible;
+            gastoCombustible.Descripcion =
+                $"Combustible viaje Guía {viaje.NumeroGuiaDespacho}";
+        }
+
+        if (viaje.CostoCombustible <= 0 && gastoCombustible != null)
+        {
+            _context.Gastos.Remove(gastoCombustible);
+        }
+
+        if (viaje.CostoCombustible > 0 && gastoCombustible == null)
+        {
+            var nuevoGastoCombustible = new Gasto
+            {
+                CamionId = viaje.CamionId,
+                ViajeId = viaje.Id,
+                Fecha = viaje.Fecha,
+                TipoGasto = "combustible",
+                Descripcion =
+                    $"Combustible viaje Guía {viaje.NumeroGuiaDespacho}",
+                Monto = viaje.CostoCombustible
+            };
+
+            _context.Gastos.Add(nuevoGastoCombustible);
+        }
 
         await _context.SaveChangesAsync();
 

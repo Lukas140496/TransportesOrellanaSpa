@@ -27,6 +27,9 @@ import { ActualizarMiPerfil } from '../models/actualizar-mi-perfil';
 import { DashboardKilometrosConductor } from '../models/dashboard-kilometros-conductor';
 import { DashboardDiasHabiles } from '../models/dashboard-dias-habiles';
 
+import { Gasto } from '../models/gasto';
+import { CrearGasto } from '../models/crear-gasto';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -346,6 +349,29 @@ export class ApiService {
       remolque: string;
     }>(
       `${this.apiUrl}/remolque/${patenteRemolque}/camion-habitual`
+    );
+  }
+
+    // =========================
+  // GASTOS
+  // =========================
+
+  getGastos(): Observable<Gasto[]> {
+    return this.http.get<Gasto[]>(
+      `${this.apiUrl}/gasto`
+    );
+  }
+
+  getGastoById(id: number): Observable<Gasto> {
+    return this.http.get<Gasto>(
+      `${this.apiUrl}/gasto/${id}`
+    );
+  }
+
+  crearGasto(gasto: CrearGasto): Observable<Gasto> {
+    return this.http.post<Gasto>(
+      `${this.apiUrl}/gasto`,
+      gasto
     );
   }
 
