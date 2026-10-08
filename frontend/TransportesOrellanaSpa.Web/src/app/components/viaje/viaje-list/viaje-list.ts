@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { ApiService } from '../../../core/services/api.service';
 import { Cliente } from '../../../core/models/cliente';
 import { Viaje } from '../../../core/models/viaje';
+import { PermissionService } from '../../../core/services/permission.service';
 
 @Component({
   selector: 'app-viaje-list',
@@ -21,6 +22,7 @@ export class ViajeList implements OnInit {
 
   private readonly api = inject(ApiService);
   private readonly router = inject(Router);
+  readonly permissionService = inject(PermissionService);
 
   viajes: Viaje[] = [];
   clientes: Cliente[] = [];
@@ -52,7 +54,31 @@ export class ViajeList implements OnInit {
   // INICIALIZACIÓN
   // =========================
 
+  private establecerFechasPorDefecto(): void {
+
+    const hoy = new Date();
+  
+    const primerDiaMes = new Date(
+      hoy.getFullYear(),
+      hoy.getMonth(),
+      1
+    );
+  
+    const formatearFecha = (fecha: Date): string => {
+  
+      const año = fecha.getFullYear();
+      const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+      const dia = String(fecha.getDate()).padStart(2, '0');
+  
+      return `${año}-${mes}-${dia}`;
+    };
+  
+    this.fechaDesde = formatearFecha(primerDiaMes);
+    this.fechaHasta = formatearFecha(hoy);
+  }
+
   ngOnInit(): void {
+    this.establecerFechasPorDefecto();
     this.cargarClientes();
     this.cargarViajes();
   }
@@ -247,8 +273,7 @@ export class ViajeList implements OnInit {
     }
 
     this.guia = '';
-    this.fechaDesde = '';
-    this.fechaHasta = '';
+    this.establecerFechasPorDefecto();
     this.clienteId = null;
     this.estadoPago = '';
 

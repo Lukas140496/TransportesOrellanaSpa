@@ -3,8 +3,9 @@ import { FormsModule } from '@angular/forms';
 
 import { ApiService } from '../../core/services/api.service';
 import { AuthService } from '../../core/services/auth.service';
-import { UsuarioPerfil } from '../../core/models/usuario-perfil';
-import { ActualizarMiPerfil } from '../../core/models/actualizar-mi-perfil';
+import { UsuarioPerfil } from '../../core/models/usuario/usuario-perfil';
+import { ActualizarMiPerfil } from '../../core/models/usuario/actualizar-mi-perfil';
+import { CambiarMiPassword } from '../../core/models/usuario/cambiar-mi-password';
 
 @Component({
   selector: 'app-mi-perfil',
@@ -28,6 +29,18 @@ export class MiPerfil {
 
   editando = false;
 
+  cambiandoPassword = false;
+  guardandoPassword = false;
+
+  passwordError = '';
+  passwordExito = '';
+
+  datosPassword: CambiarMiPassword = {
+    passwordActual: '',
+    passwordNueva: '',
+    confirmarPasswordNueva: ''
+  };
+
   formularioModificado = false;
 
   penultimaConexion: string | null = null;
@@ -42,7 +55,7 @@ export class MiPerfil {
   ngOnInit(): void {
     this.penultimaConexion =
       localStorage.getItem('penultima_conexion_local');
-  
+
     this.cargarPerfil();
   }
 
@@ -86,6 +99,104 @@ export class MiPerfil {
     this.formularioModificado = false;
     this.error = '';
     this.mensajeExito = '';
+  }
+
+  iniciarCambioPassword(): void {
+    this.passwordError = '';
+    this.passwordExito = '';
+  
+    this.datosPassword = {
+      passwordActual: '',
+      passwordNueva: '',
+      confirmarPasswordNueva: ''
+    };
+  
+    this.cambiandoPassword = true;
+  }
+
+  cancelarCambioPassword(): void {
+    if (this.guardandoPassword) {
+      return;
+    }
+  
+    this.cambiandoPassword = false;
+    this.passwordError = '';
+    this.passwordExito = '';
+  
+    this.datosPassword = {
+      passwordActual: '',
+      passwordNueva: '',
+      confirmarPasswordNueva: ''
+    };
+  }
+
+  guardarPassword(): void {
+
+    if (this.guardandoPassword) {
+      return;
+    }
+  
+    this.passwordError = '';
+    this.passwordExito = '';
+  
+    const datos: CambiarMiPassword = {
+      passwordActual: this.datosPassword.passwordActual,
+      passwordNueva: this.datosPassword.passwordNueva,
+      confirmarPasswordNueva:
+        this.datosPassword.confirmarPasswordNueva
+    };
+  
+    if (!datos.passwordActual) {
+      this.passwordError =
+        'Debes ingresar tu contraseña actual.';
+      return;
+    }
+  
+    if (!datos.passwordNueva) {
+      this.passwordError =
+        'Debes ingresar una nueva contraseña.';
+      return;
+    }
+  
+    if (datos.passwordNueva.length < 6) {
+      this.passwordError =
+        'La nueva contraseña debe tener al menos 6 caracteres.';
+      return;
+    }
+  
+    if (
+      datos.passwordNueva !==
+      datos.confirmarPasswordNueva
+    ) {
+      this.passwordError =
+        'Las nuevas contraseñas no coinciden.';
+      return;
+    }
+  
+    this.guardandoPassword = true;
+  
+    this.apiService.cambiarMiPassword(datos).subscribe({
+      next: (respuesta) => {
+        this.guardandoPassword = false;
+      
+        this.passwordError = '';
+        this.passwordExito =
+          'Contraseña modificada correctamente. Serás redirigido al inicio de sesión para ingresar con tu nueva contraseña.';
+      
+        setTimeout(() => {
+          this.authService.logout();
+          window.location.href = '/login';
+        }, 5000);
+      },
+  
+      error: (error) => {
+        this.guardandoPassword = false;
+  
+        this.passwordError =
+          error.error?.mensaje ??
+          'No fue posible actualizar la contraseña.';
+      }
+    });
   }
 
   marcarFormularioModificado(): void {
@@ -231,7 +342,7 @@ export class MiPerfil {
     if (!this.penultimaConexion) {
       return 'Sin registro';
     }
-  
+
     return new Date(this.penultimaConexion).toLocaleString(
       'es-CL',
       {

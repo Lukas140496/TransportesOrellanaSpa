@@ -10,10 +10,18 @@
         </div>
       </div>
 
-      <button type="button" class="btn-nuevo" (click)="nuevoCamion()">
-        <span class="btn-icon">+</span>
-        Nuevo Camión
-      </button>
+      @if (permissionService.tienePermiso('CAMIONES_CREAR')) {
+
+        <button
+          type="button"
+          class="btn-nuevo"
+          (click)="nuevoCamion()"
+        >
+          <span class="btn-icon">+</span>
+          Nuevo Camión
+        </button>
+      
+      }
     </div>
 
     @if (cargando) {

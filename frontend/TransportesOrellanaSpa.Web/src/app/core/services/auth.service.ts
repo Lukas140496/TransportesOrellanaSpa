@@ -5,7 +5,8 @@ import { Observable, tap, Subject } from 'rxjs';
 import { ApiService } from './api.service';
 import { LoginRequest } from '../models/auth/login-request';
 import { LoginResponse } from '../models/auth/login-response';
-import { UsuarioPerfil } from '../models/usuario-perfil';
+import { UsuarioPerfil } from '../models/usuario/usuario-perfil';
+import { PermissionService } from './permission.service';
 
 @Injectable({
     providedIn: 'root'
@@ -14,6 +15,7 @@ export class AuthService {
 
     private readonly apiService = inject(ApiService);
     private readonly router = inject(Router);
+    private readonly permissionService = inject(PermissionService);
 
     private readonly tokenKey = 'auth_token';
     private readonly userKey = 'auth_user';
@@ -61,6 +63,12 @@ export class AuthService {
                         expiraEn: response.expiraEn
                     })
                 );
+
+                this.permissionService.cargarPermisos().subscribe({
+                    error: error => {
+                        console.error('Error al cargar permisos:', error);
+                    }
+                });
             })
         );
     }
@@ -127,5 +135,22 @@ export class AuthService {
 
     estaAutenticado(): boolean {
         return !!this.getToken();
+    }
+
+    cargarPermisosSesion(): Observable<string[]> {
+        if (!this.estaAutenticado()) {
+            return new Observable<string[]>(subscriber => {
+                subscriber.next([]);
+                subscriber.complete();
+            });
+        }
+    
+        return this.permissionService.cargarPermisos();
+    }
+
+    esAdministrador(): boolean {
+        const usuario = this.getUsuario();
+
+        return usuario?.roles?.includes('Administrador') ?? false;
     }
 }

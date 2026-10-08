@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { ApiService } from '../../../core/services/api.service';
 import { Remolque } from '../../../core/models/remolque';
+import { PermissionService } from '../../../core/services/permission.service';
 
 @Component({
   selector: 'app-remolque-detail',
@@ -15,6 +16,7 @@ export class RemolqueDetail implements OnInit {
   private readonly api = inject(ApiService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  readonly permissionService = inject(PermissionService);
 
   remolque: Remolque | null = null;
 

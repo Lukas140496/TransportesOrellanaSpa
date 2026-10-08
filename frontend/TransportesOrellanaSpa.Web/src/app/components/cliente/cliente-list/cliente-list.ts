@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { ApiService } from '../../../core/services/api.service';
+import { PermissionService } from '../../../core/services/permission.service';
 import { Cliente } from '../../../core/models/cliente';
 
 @Component({
@@ -20,6 +21,7 @@ export class ClienteList implements OnInit {
 
   private readonly api = inject(ApiService);
   private readonly router = inject(Router);
+  readonly permissionService = inject(PermissionService);
 
   clientes: Cliente[] = [];
 

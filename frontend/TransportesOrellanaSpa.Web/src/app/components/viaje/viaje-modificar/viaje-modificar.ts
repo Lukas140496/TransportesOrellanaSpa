@@ -11,6 +11,7 @@ import { Conductor } from '../../../core/models/conductor';
 import { Remolque } from '../../../core/models/remolque';
 import { Viaje } from '../../../core/models/viaje';
 import { ActualizarViaje } from '../../../core/models/actualizar-viaje';
+import { PermissionService } from '../../../core/services/permission.service';
 
 @Component({
   selector: 'app-viaje-modificar',
@@ -26,6 +27,7 @@ export class ViajeModificar implements OnInit {
 
   private readonly api = inject(ApiService);
   private readonly router = inject(Router);
+  readonly permissionService = inject(PermissionService);
 
   viajes: Viaje[] = [];
 

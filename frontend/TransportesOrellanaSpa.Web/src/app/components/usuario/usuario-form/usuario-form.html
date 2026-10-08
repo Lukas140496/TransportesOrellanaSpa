@@ -1,0 +1,349 @@
+<div class="form-page">
+  <div class="page-header">
+    <div>
+      <h1>Registrar Usuario</h1>
+      <p>Ingresa la información y permisos del nuevo usuario.</p>
+    </div>
+
+    <button type="button" class="btn-secondary" (click)="volver()" [disabled]="guardando">
+      Cancelar
+    </button>
+  </div>
+
+  <form class="form-card" (ngSubmit)="guardar()">
+    <!-- INFORMACIÓN PERSONAL -->
+
+    <section class="form-section">
+      <div class="section-header">
+        <div class="section-icon">👤</div>
+
+        <div>
+          <h2>Información personal</h2>
+          <p>Datos personales del usuario.</p>
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="rut"> RUT </label>
+
+          <input
+            id="rut"
+            type="text"
+            name="rut"
+            maxlength="12"
+            placeholder="Ej: 19.374.867-8"
+            [(ngModel)]="usuario.rut"
+            appRutFormat
+            (ngModelChange)="marcarFormularioModificado()"
+            (blur)="campoTocado('rut')"
+          />
+
+          @if (campoTieneError('rut')) {
+
+          <span class="error-message"> El RUT es obligatorio. </span>
+
+          }
+        </div>
+
+        <div class="form-group">
+          <label for="nombres"> Nombres </label>
+
+          <input
+            id="nombres"
+            type="text"
+            name="nombres"
+            maxlength="100"
+            placeholder="Ej: Juan Carlos"
+            [(ngModel)]="usuario.nombres"
+            (ngModelChange)="marcarFormularioModificado()"
+            (blur)="campoTocado('nombres')"
+          />
+
+          @if (campoTieneError('nombres')) {
+
+          <span class="error-message"> Los nombres son obligatorios. </span>
+
+          }
+        </div>
+
+        <div class="form-group">
+          <label for="apellidoPaterno"> Apellido paterno </label>
+
+          <input
+            id="apellidoPaterno"
+            type="text"
+            name="apellidoPaterno"
+            maxlength="100"
+            placeholder="Ej: González"
+            [(ngModel)]="usuario.apellidoPaterno"
+            (ngModelChange)="marcarFormularioModificado()"
+            (blur)="campoTocado('apellidoPaterno')"
+          />
+
+          @if (campoTieneError('apellidoPaterno')) {
+
+          <span class="error-message"> El apellido paterno es obligatorio. </span>
+
+          }
+        </div>
+
+        <div class="form-group">
+          <label for="apellidoMaterno"> Apellido materno </label>
+
+          <input
+            id="apellidoMaterno"
+            type="text"
+            name="apellidoMaterno"
+            maxlength="100"
+            placeholder="Ej: Pérez"
+            [(ngModel)]="usuario.apellidoMaterno"
+            (ngModelChange)="marcarFormularioModificado()"
+            (blur)="campoTocado('apellidoMaterno')"
+          />
+
+          @if (campoTieneError('apellidoMaterno')) {
+
+          <span class="error-message"> El apellido materno es obligatorio. </span>
+
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- INFORMACIÓN DE ACCESO -->
+
+    <section class="form-section">
+      <div class="section-header">
+        <div class="section-icon">🔐</div>
+
+        <div>
+          <h2>Información de acceso</h2>
+          <p>Datos utilizados para iniciar sesión en el sistema.</p>
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="email"> Correo electrónico </label>
+
+          <input
+            id="email"
+            type="email"
+            name="email"
+            maxlength="150"
+            placeholder="Ej: usuario@empresa.cl"
+            [(ngModel)]="usuario.email"
+            (ngModelChange)="marcarFormularioModificado()"
+            (blur)="campoTocado('email')"
+          />
+
+          @if (campoTieneError('email')) {
+
+          <span class="error-message"> El correo electrónico es obligatorio. </span>
+
+          }
+        </div>
+
+        <div class="form-group">
+          <label for="password"> Contraseña </label>
+
+          <input
+            id="password"
+            type="password"
+            name="password"
+            maxlength="100"
+            placeholder="Ingresa una contraseña"
+            [(ngModel)]="usuario.password"
+            (ngModelChange)="marcarFormularioModificado()"
+            (blur)="campoTocado('password')"
+          />
+
+          @if (campoTieneError('password')) {
+
+          <span class="error-message"> La contraseña debe tener al menos 6 caracteres. </span>
+
+          }
+        </div>
+
+        <div class="form-group">
+          <label for="repetirPassword"> Repetir contraseña </label>
+
+          <input
+            id="repetirPassword"
+            type="password"
+            name="repetirPassword"
+            maxlength="100"
+            placeholder="Repite la contraseña"
+            [(ngModel)]="repetirPassword"
+            (ngModelChange)="marcarFormularioModificado()"
+            (blur)="campoTocado('repetirPassword')"
+          />
+
+          @if (campoTieneError('repetirPassword')) {
+
+          <span class="error-message"> Las contraseñas no coinciden. </span>
+
+          }
+        </div>
+      </div>
+    </section>
+
+    <!-- ROL Y PERMISOS -->
+
+    <section class="form-section">
+      <div class="section-header">
+        <div class="section-icon">🛡️</div>
+
+        <div>
+          <h2>Rol y permisos</h2>
+          <p>Define el nivel de acceso que tendrá el usuario.</p>
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="rolId"> Rol </label>
+
+          <select
+            id="rolId"
+            name="rolId"
+            [(ngModel)]="usuario.rolId"
+            (ngModelChange)="marcarFormularioModificado()"
+            (blur)="campoTocado('rolId')"
+          >
+            <option [ngValue]="0">Selecciona un rol</option>
+
+            @for (rol of roles; track rol.id) {
+
+            <option [ngValue]="rol.id">
+              {{ rol.nombre }}
+            </option>
+
+            }
+          </select>
+
+          @if (campoTieneError('rolId')) {
+
+          <span class="error-message"> Debes seleccionar un rol. </span>
+
+          }
+        </div>
+      </div>
+
+      <div class="license-status">
+        <p style="margin: 0">
+          El rol seleccionado determinará los módulos y acciones que podrá utilizar este usuario.
+        </p>
+      </div>
+    </section>
+
+    <!-- ACCIONES -->
+
+    <div class="form-actions">
+      <button type="button" class="btn-secondary" (click)="volver()" [disabled]="guardando">
+        Cancelar
+      </button>
+
+      <button type="submit" class="btn-primary" [disabled]="guardando">
+        @if (guardando) { Guardando... } @else { Registrar usuario }
+      </button>
+    </div>
+  </form>
+</div>
+
+<!-- MODAL FORMULARIO INCOMPLETO -->
+
+@if (modalIncompletoVisible) {
+
+<div class="modal-backdrop" (click)="cerrarModalIncompleto()">
+  <div class="modal" role="alertdialog" aria-modal="true" (click)="$event.stopPropagation()">
+    <div class="modal-icon error">!</div>
+
+    <h2>Formulario incompleto</h2>
+
+    <p>
+      Debes completar correctamente todos los campos obligatorios antes de registrar el usuario.
+    </p>
+
+    <button type="button" class="btn-primary modal-button" (click)="cerrarModalIncompleto()">
+      Aceptar
+    </button>
+  </div>
+</div>
+
+}
+
+<!-- MODAL DE ERROR -->
+
+@if (modalErrorVisible) {
+
+<div class="modal-backdrop" (click)="cerrarModalError()">
+  <div class="modal" role="alertdialog" aria-modal="true" (click)="$event.stopPropagation()">
+    <div class="modal-icon error">!</div>
+
+    <h2>
+      {{ modalErrorTitulo }}
+    </h2>
+
+    <p>
+      {{ modalErrorMensaje }}
+    </p>
+
+    <button type="button" class="btn-primary modal-button" (click)="cerrarModalError()">
+      Aceptar
+    </button>
+  </div>
+</div>
+
+}
+
+<!-- MODAL DE ÉXITO -->
+
+@if (modalExitoVisible) {
+
+<div class="modal-backdrop" (click)="cerrarModalExito()">
+  <div class="modal" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
+    <div class="modal-icon success">✓</div>
+
+    <h2>
+      {{ modalExitoTitulo }}
+    </h2>
+
+    <p>
+      {{ modalExitoMensaje }}
+    </p>
+
+    <button type="button" class="btn-primary modal-button" (click)="cerrarModalExito()">
+      Aceptar
+    </button>
+  </div>
+</div>
+
+}
+
+<!-- MODAL CAMBIOS SIN GUARDAR -->
+
+@if (modalSalirVisible) {
+
+<div class="modal-backdrop" (click)="seguirEditando()">
+  <div class="modal" role="alertdialog" aria-modal="true" (click)="$event.stopPropagation()">
+    <div class="modal-icon error">!</div>
+
+    <h2>¿Salir del formulario?</h2>
+
+    <p>Tienes cambios sin guardar. Si sales ahora, perderás la información ingresada.</p>
+
+    <div class="modal-actions">
+      <button type="button" class="btn-secondary modal-button" (click)="seguirEditando()">
+        Seguir editando
+      </button>
+
+      <button type="button" class="btn-primary modal-button" (click)="salirSinGuardar()">
+        Salir sin guardar
+      </button>
+    </div>
+  </div>
+</div>
+
+}

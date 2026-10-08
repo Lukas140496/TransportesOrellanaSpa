@@ -1,5 +1,4 @@
 <div class="mi-perfil">
-
   <div class="pagina-header">
     <div>
       <h1>Mi perfil</h1>
@@ -9,276 +8,318 @@
 
   @if (cargando) {
 
-    <div class="estado-carga">
-      Cargando información del perfil...
-    </div>
+  <div class="estado-carga">Cargando información del perfil...</div>
 
   } @else if (error && !perfil) {
 
-    <div class="estado-error">
-      {{ error }}
-    </div>
+  <div class="estado-error">
+    {{ error }}
+  </div>
 
   } @else if (perfil) {
 
-    <!-- ========================= -->
-    <!-- MENSAJES -->
-    <!-- ========================= -->
+  <!-- ========================= -->
+  <!-- MENSAJES -->
+  <!-- ========================= -->
 
-    @if (mensajeExito) {
-      <div class="mensaje-exito">
-        {{ mensajeExito }}
-      </div>
-    }
+  @if (mensajeExito) {
+  <div class="mensaje-exito">
+    {{ mensajeExito }}
+  </div>
+  } @if (error) {
+  <div class="estado-error">
+    {{ error }}
+  </div>
+  }
 
-    @if (error) {
-      <div class="estado-error">
-        {{ error }}
-      </div>
-    }
+  <!-- ========================= -->
+  <!-- CABECERA DEL PERFIL -->
+  <!-- ========================= -->
 
+  <section class="perfil-header">
+    <div class="avatar">
+      {{ iniciales }}
+    </div>
 
-    <!-- ========================= -->
-    <!-- CABECERA DEL PERFIL -->
-    <!-- ========================= -->
+    <div class="perfil-identidad">
+      <h2>
+        {{ perfil.nombreCompleto }}
+      </h2>
 
-    <section class="perfil-header">
+      <span class="rol">
+        {{ rolPrincipal }}
+      </span>
+    </div>
 
-      <div class="avatar">
-        {{ iniciales }}
-      </div>
-
-      <div class="perfil-identidad">
-
-        <h2>
-          {{ perfil.nombreCompleto }}
-        </h2>
-
-        <span class="rol">
-          {{ rolPrincipal }}
-        </span>
-
-      </div>
-
-      <div class="perfil-acciones">
-
-        @if (!editando) {
-
-          <button
-            type="button"
-            class="btn-primario"
-            (click)="iniciarEdicion()"
-          >
-            Editar perfil
-          </button>
-
-          <button
-            type="button"
-            disabled
-          >
-            Cambiar contraseña
-          </button>
-
-        } @else {
-
-          <button
-            type="button"
-            class="btn-secundario"
-            [disabled]="guardando"
-            (click)="cancelarEdicion()"
-          >
-            Cancelar
-          </button>
-
-          <button
-            type="button"
-            class="btn-primario"
-            [disabled]="guardando"
-            (click)="guardarCambios()"
-          >
-            {{ guardando ? 'Guardando...' : 'Guardar cambios' }}
-          </button>
-
-        }
-
-      </div>
-
-    </section>
-
-
-    <!-- ========================= -->
-    <!-- DATOS PERSONALES -->
-    <!-- ========================= -->
-
-    <section class="seccion">
-
-      <h3>Datos personales</h3>
-
+    <div class="perfil-acciones">
       @if (!editando) {
 
-        <div class="datos-grid">
+      <button type="button" class="btn-primario" (click)="iniciarEdicion()">Editar perfil</button>
 
-          <div class="dato">
-            <span class="etiqueta">Nombres</span>
-            <strong>{{ perfil.nombres }}</strong>
-          </div>
-
-          <div class="dato">
-            <span class="etiqueta">Apellido paterno</span>
-            <strong>{{ perfil.apellidoPaterno }}</strong>
-          </div>
-
-          <div class="dato">
-            <span class="etiqueta">Apellido materno</span>
-            <strong>{{ perfil.apellidoMaterno }}</strong>
-          </div>
-
-          <div class="dato">
-            <span class="etiqueta">RUT</span>
-            <strong>{{ perfil.rut }}</strong>
-          </div>
-
-          <div class="dato dato-completo">
-            <span class="etiqueta">Correo electrónico</span>
-            <strong>{{ perfil.email }}</strong>
-          </div>
-
-        </div>
+      <button type="button" class="btn-secundario" (click)="iniciarCambioPassword()">
+        Cambiar contraseña
+      </button>
 
       } @else {
 
-        <div class="datos-grid">
+      <button
+        type="button"
+        class="btn-secundario"
+        [disabled]="guardando"
+        (click)="cancelarEdicion()"
+      >
+        Cancelar
+      </button>
 
-          <div class="dato campo-editable">
-            <label
-              class="etiqueta"
-              for="nombres"
-            >
-              Nombres
-            </label>
-
-            <input
-              id="nombres"
-              type="text"
-              name="nombres"
-              [(ngModel)]="datosEditados.nombres"
-              (ngModelChange)="marcarFormularioModificado()"
-              autocomplete="given-name"
-            />
-          </div>
-
-
-          <div class="dato campo-editable">
-            <label
-              class="etiqueta"
-              for="apellidoPaterno"
-            >
-              Apellido paterno
-            </label>
-
-            <input
-              id="apellidoPaterno"
-              type="text"
-              name="apellidoPaterno"
-              [(ngModel)]="datosEditados.apellidoPaterno"
-              (ngModelChange)="marcarFormularioModificado()"
-              autocomplete="family-name"
-            />
-          </div>
-
-
-          <div class="dato campo-editable">
-            <label
-              class="etiqueta"
-              for="apellidoMaterno"
-            >
-              Apellido materno
-            </label>
-
-            <input
-              id="apellidoMaterno"
-              type="text"
-              name="apellidoMaterno"
-              [(ngModel)]="datosEditados.apellidoMaterno"
-              (ngModelChange)="marcarFormularioModificado()"
-            />
-          </div>
-
-
-          <div class="dato campo-bloqueado">
-            <span class="etiqueta">RUT</span>
-            <strong>{{ perfil.rut }}</strong>
-            <small>No se puede modificar</small>
-          </div>
-
-
-          <div class="dato dato-completo campo-editable">
-            <label
-              class="etiqueta"
-              for="email"
-            >
-              Correo electrónico
-            </label>
-
-            <input
-              id="email"
-              type="email"
-              name="email"
-              [(ngModel)]="datosEditados.email"
-              (ngModelChange)="marcarFormularioModificado()"
-              autocomplete="email"
-            />
-          </div>
-
-        </div>
+      <button type="button" class="btn-primario" [disabled]="guardando" (click)="guardarCambios()">
+        {{ guardando ? 'Guardando...' : 'Guardar cambios' }}
+      </button>
 
       }
+    </div>
+  </section>
 
-    </section>
+  <!-- ========================= -->
+  <!-- DATOS PERSONALES -->
+  <!-- ========================= -->
 
+  <section class="seccion">
+    <h3>Datos personales</h3>
 
-    <!-- ========================= -->
-    <!-- INFORMACIÓN DE CUENTA -->
-    <!-- ========================= -->
+    @if (!editando) {
 
-    <section class="seccion">
+    <div class="datos-grid">
+      <div class="dato">
+        <span class="etiqueta">Nombres</span>
+        <strong>{{ perfil.nombres }}</strong>
+      </div>
 
-      <h3>Información de cuenta</h3>
+      <div class="dato">
+        <span class="etiqueta">Apellido paterno</span>
+        <strong>{{ perfil.apellidoPaterno }}</strong>
+      </div>
 
-      <div class="datos-grid">
+      <div class="dato">
+        <span class="etiqueta">Apellido materno</span>
+        <strong>{{ perfil.apellidoMaterno }}</strong>
+      </div>
 
-        <div class="dato">
-          <span class="etiqueta">Rol</span>
-          <strong>{{ rolPrincipal }}</strong>
+      <div class="dato">
+        <span class="etiqueta">RUT</span>
+        <strong>{{ perfil.rut }}</strong>
+      </div>
+
+      <div class="dato dato-completo">
+        <span class="etiqueta">Correo electrónico</span>
+        <strong>{{ perfil.email }}</strong>
+      </div>
+    </div>
+
+    } @else {
+
+    <div class="datos-grid">
+      <div class="dato campo-editable">
+        <label class="etiqueta" for="nombres"> Nombres </label>
+
+        <input
+          id="nombres"
+          type="text"
+          name="nombres"
+          [(ngModel)]="datosEditados.nombres"
+          (ngModelChange)="marcarFormularioModificado()"
+          autocomplete="given-name"
+        />
+      </div>
+
+      <div class="dato campo-editable">
+        <label class="etiqueta" for="apellidoPaterno"> Apellido paterno </label>
+
+        <input
+          id="apellidoPaterno"
+          type="text"
+          name="apellidoPaterno"
+          [(ngModel)]="datosEditados.apellidoPaterno"
+          (ngModelChange)="marcarFormularioModificado()"
+          autocomplete="family-name"
+        />
+      </div>
+
+      <div class="dato campo-editable">
+        <label class="etiqueta" for="apellidoMaterno"> Apellido materno </label>
+
+        <input
+          id="apellidoMaterno"
+          type="text"
+          name="apellidoMaterno"
+          [(ngModel)]="datosEditados.apellidoMaterno"
+          (ngModelChange)="marcarFormularioModificado()"
+        />
+      </div>
+
+      <div class="dato campo-bloqueado">
+        <span class="etiqueta">RUT</span>
+        <strong>{{ perfil.rut }}</strong>
+        <small>No se puede modificar</small>
+      </div>
+
+      <div class="dato dato-completo campo-editable">
+        <label class="etiqueta" for="email"> Correo electrónico </label>
+
+        <input
+          id="email"
+          type="email"
+          name="email"
+          [(ngModel)]="datosEditados.email"
+          (ngModelChange)="marcarFormularioModificado()"
+          autocomplete="email"
+        />
+      </div>
+    </div>
+
+    }
+  </section>
+
+  <!-- ========================= -->
+  <!-- INFORMACIÓN DE CUENTA -->
+  <!-- ========================= -->
+
+  <section class="seccion">
+    <h3>Información de cuenta</h3>
+
+    <div class="datos-grid">
+      <div class="dato">
+        <span class="etiqueta">Rol</span>
+        <strong>{{ rolPrincipal }}</strong>
+      </div>
+
+      <div class="dato">
+        <span class="etiqueta">Fecha de creación</span>
+        <strong>{{ fechaCreacionFormateada }}</strong>
+      </div>
+
+      <div class="dato">
+        <span class="etiqueta">Último acceso</span>
+        <strong>{{ penultimaConexionFormateada }}</strong>
+      </div>
+
+      <div class="dato">
+        <span class="etiqueta">Estado</span>
+
+        <span
+          class="estado"
+          [class.estado-activo]="perfil.activo"
+          [class.estado-inactivo]="!perfil.activo"
+        >
+          {{ perfil.activo ? 'Activo' : 'Inactivo' }}
+        </span>
+      </div>
+    </div>
+  </section>
+
+  }
+</div>
+
+@if (cambiandoPassword) {
+  <div class="modal-overlay">
+    <div class="modal-contenido">
+
+      <div class="modal-header">
+        <h2>Cambiar contraseña</h2>
+
+        <button
+          type="button"
+          class="btn-cerrar"
+          (click)="cancelarCambioPassword()"
+          [disabled]="guardandoPassword"
+        >
+          ×
+        </button>
+      </div>
+
+      <div class="modal-body">
+
+        @if (passwordError) {
+          <div class="mensaje-error">
+            {{ passwordError }}
+          </div>
+        }
+
+        @if (passwordExito) {
+          <div class="mensaje-exito">
+            {{ passwordExito }}
+          </div>
+        }
+
+        <div class="campo">
+          <label for="passwordActual">
+            Contraseña actual
+          </label>
+
+          <input
+            id="passwordActual"
+            type="password"
+            [(ngModel)]="datosPassword.passwordActual"
+            [disabled]="guardandoPassword"
+            autocomplete="current-password"
+          />
         </div>
 
-        <div class="dato">
-          <span class="etiqueta">Fecha de creación</span>
-          <strong>{{ fechaCreacionFormateada }}</strong>
+        <div class="campo">
+          <label for="passwordNueva">
+            Nueva contraseña
+          </label>
+
+          <input
+            id="passwordNueva"
+            type="password"
+            [(ngModel)]="datosPassword.passwordNueva"
+            [disabled]="guardandoPassword"
+            autocomplete="new-password"
+          />
         </div>
 
-        <div class="dato">
-          <span class="etiqueta">Último acceso</span>
-          <strong>{{ penultimaConexionFormateada }}</strong>
-        </div>
+        <div class="campo">
+          <label for="confirmarPasswordNueva">
+            Confirmar nueva contraseña
+          </label>
 
-        <div class="dato">
-          <span class="etiqueta">Estado</span>
-
-          <span
-            class="estado"
-            [class.estado-activo]="perfil.activo"
-            [class.estado-inactivo]="!perfil.activo"
-          >
-            {{ perfil.activo ? 'Activo' : 'Inactivo' }}
-          </span>
-
+          <input
+            id="confirmarPasswordNueva"
+            type="password"
+            [(ngModel)]="datosPassword.confirmarPasswordNueva"
+            [disabled]="guardandoPassword"
+            autocomplete="new-password"
+          />
         </div>
 
       </div>
 
-    </section>
+      <div class="modal-footer">
 
-  }
+        <button
+          type="button"
+          class="btn-secundario"
+          (click)="cancelarCambioPassword()"
+          [disabled]="guardandoPassword"
+        >
+          Cancelar
+        </button>
 
-</div>
+        <button
+          type="button"
+          class="btn-primario"
+          (click)="guardarPassword()"
+          [disabled]="guardandoPassword"
+        >
+          @if (guardandoPassword) {
+            Guardando...
+          } @else {
+            Cambiar contraseña
+          }
+        </button>
+
+      </div>
+
+    </div>
+  </div>
+}

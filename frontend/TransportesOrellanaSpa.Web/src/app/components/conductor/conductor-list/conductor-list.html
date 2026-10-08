@@ -9,10 +9,14 @@
       </div>
     </div>
 
-    <button type="button" class="btn-nuevo" (click)="nuevoConductor()">
-      <span class="btn-icon">+</span>
-      Nuevo Conductor
-    </button>
+    @if (permissionService.tienePermiso('CONDUCTORES_CREAR')) {
+
+        <button type="button" class="btn-nuevo" (click)="nuevoConductor()">
+        <span class="btn-icon">+</span>
+        Nuevo Conductor
+        </button>
+
+    }
   </div>
 
   @if (cargando) {

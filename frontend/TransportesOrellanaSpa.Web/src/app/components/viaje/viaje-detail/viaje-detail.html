@@ -32,48 +32,44 @@
 
         <!-- COMPLETAR VIAJE -->
 
-        @if (viaje.estado === 'Pendiente') {
+        @if (permissionService.tienePermiso('VIAJES_EDITAR')) {
 
-          <button
-            type="button"
-            class="btn-completar"
-            (click)="mostrarConfirmacionCompletar()">
+            @if (viaje.estado === 'Pendiente') {
+              <button
+                type="button"
+                class="..."
+                (click)="mostrarConfirmacionCompletar()"
+              >
+                Marcar como completado
+              </button>
+            }
+          
+            @if (viaje.estado === 'EnCurso') {
+              <button
+                type="button"
+                class="..."
+                (click)="mostrarConfirmacionCompletar()"
+              >
+                Marcar como completado
+              </button>
+            }
 
-            Marcar como completado
+            <!-- MARCAR COMO PAGADO -->
 
-          </button>
+            @if (viaje.estadoPago === 'Pendiente') {
 
+                <button
+                type="button"
+                class="btn-pagar"
+                (click)="mostrarConfirmacionPago()">
+    
+                Marcar como pagado
+    
+                </button>
+    
+            }
+          
         }
-
-        @if (viaje.estado === 'EnCurso') {
-
-          <button
-            type="button"
-            class="btn-completar"
-            (click)="mostrarConfirmacionCompletar()">
-
-            Marcar como completado
-
-          </button>
-
-        }
-
-
-        <!-- MARCAR COMO PAGADO -->
-
-        @if (viaje.estadoPago === 'Pendiente') {
-
-          <button
-            type="button"
-            class="btn-pagar"
-            (click)="mostrarConfirmacionPago()">
-
-            Marcar como pagado
-
-          </button>
-
-        }
-
 
         <!-- ESTADO DEL PAGO -->
 
@@ -472,155 +468,160 @@
 <!-- MODAL CONFIRMACIÓN COMPLETAR -->
 <!-- ===================================================== -->
 
-@if (modalConfirmacionVisible) {
+@if (permissionService.tienePermiso('VIAJES_EDITAR')) {
 
-  <div class="modal-overlay">
+    @if (modalConfirmacionVisible) {
 
-    <div class="modal">
-
-      <div class="modal-icon modal-icon-confirm">
-        ✓
-      </div>
-
-      <h2>
-        ¿Marcar viaje como completado?
-      </h2>
-
-      <p>
-
-        El viaje con guía
-
-        <strong>
-          {{ viaje?.numeroGuiaDespacho }}
-        </strong>
-
-        será marcado como completado.
-
-      </p>
-
-      <p class="modal-warning">
-
-        Esta acción cambiará únicamente el estado del viaje.
-        El estado de pago no será modificado.
-
-      </p>
-
-      <div class="modal-actions">
-
-        <button
-          type="button"
-          class="btn-modal-secondary"
-          [disabled]="completando"
-          (click)="cerrarModalConfirmacion()">
-
-          Cancelar
-
-        </button>
-
-
-        <button
-          type="button"
-          class="btn-modal-primary"
-          [disabled]="completando"
-          (click)="confirmarCompletar()">
-
-          @if (completando) {
-
-            Completando...
-
-          } @else {
-
-            Sí, completar
-
-          }
-
-        </button>
-
-      </div>
-
-    </div>
-
-  </div>
+        <div class="modal-overlay">
+      
+          <div class="modal">
+      
+            <div class="modal-icon modal-icon-confirm">
+              ✓
+            </div>
+      
+            <h2>
+              ¿Marcar viaje como completado?
+            </h2>
+      
+            <p>
+      
+              El viaje con guía
+      
+              <strong>
+                {{ viaje?.numeroGuiaDespacho }}
+              </strong>
+      
+              será marcado como completado.
+      
+            </p>
+      
+            <p class="modal-warning">
+      
+              Esta acción cambiará únicamente el estado del viaje.
+              El estado de pago no será modificado.
+      
+            </p>
+      
+            <div class="modal-actions">
+      
+              <button
+                type="button"
+                class="btn-modal-secondary"
+                [disabled]="completando"
+                (click)="cerrarModalConfirmacion()">
+      
+                Cancelar
+      
+              </button>
+      
+      
+              <button
+                type="button"
+                class="btn-modal-primary"
+                [disabled]="completando"
+                (click)="confirmarCompletar()">
+      
+                @if (completando) {
+      
+                  Completando...
+      
+                } @else {
+      
+                  Sí, completar
+      
+                }
+      
+              </button>
+      
+            </div>
+      
+          </div>
+      
+        </div>
+      
+    }
 
 }
-
 
 <!-- ===================================================== -->
 <!-- MODAL CONFIRMACIÓN PAGO -->
 <!-- ===================================================== -->
 
-@if (modalPagoVisible) {
+@if (permissionService.tienePermiso('VIAJES_EDITAR')) {
 
-  <div class="modal-overlay">
+    @if (modalPagoVisible) {
 
-    <div class="modal">
-
-      <div class="modal-icon modal-icon-payment">
-        $
-      </div>
-
-      <h2>
-        ¿Marcar viaje como pagado?
-      </h2>
-
-      <p>
-
-        El viaje con guía
-
-        <strong>
-          {{ viaje?.numeroGuiaDespacho }}
-        </strong>
-
-        será marcado como pagado.
-
-      </p>
-
-      <p class="modal-warning">
-
-        Esta acción registrará el pago y la fecha actual.
-        El estado del viaje no será modificado.
-
-      </p>
-
-      <div class="modal-actions">
-
-        <button
-          type="button"
-          class="btn-modal-secondary"
-          [disabled]="pagando"
-          (click)="cerrarModalPago()">
-
-          Cancelar
-
-        </button>
-
-
-        <button
-          type="button"
-          class="btn-modal-primary"
-          [disabled]="pagando"
-          (click)="confirmarPago()">
-
-          @if (pagando) {
-
-            Registrando...
-
-          } @else {
-
-            Sí, marcar como pagado
-
-          }
-
-        </button>
-
-      </div>
-
-    </div>
-
-  </div>
-
+        <div class="modal-overlay">
+      
+          <div class="modal">
+      
+            <div class="modal-icon modal-icon-payment">
+              $
+            </div>
+      
+            <h2>
+              ¿Marcar viaje como pagado?
+            </h2>
+      
+            <p>
+      
+              El viaje con guía
+      
+              <strong>
+                {{ viaje?.numeroGuiaDespacho }}
+              </strong>
+      
+              será marcado como pagado.
+      
+            </p>
+      
+            <p class="modal-warning">
+      
+              Esta acción registrará el pago y la fecha actual.
+              El estado del viaje no será modificado.
+      
+            </p>
+      
+            <div class="modal-actions">
+      
+              <button
+                type="button"
+                class="btn-modal-secondary"
+                [disabled]="pagando"
+                (click)="cerrarModalPago()">
+      
+                Cancelar
+      
+              </button>
+      
+      
+              <button
+                type="button"
+                class="btn-modal-primary"
+                [disabled]="pagando"
+                (click)="confirmarPago()">
+      
+                @if (pagando) {
+      
+                  Registrando...
+      
+                } @else {
+      
+                  Sí, marcar como pagado
+      
+                }
+      
+              </button>
+      
+            </div>
+      
+          </div>
+      
+        </div>
+      
+    }
 }
-
 
 <!-- ===================================================== -->
 <!-- MODAL ÉXITO -->

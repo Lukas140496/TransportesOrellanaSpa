@@ -5,6 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../core/services/api.service';
 import { Cliente } from '../../core/models/cliente';
 import { Viaje } from '../../core/models/viaje';
+import { PermissionService } from '../../core/services/permission.service';
 
 @Component({
   selector: 'app-pagos',
@@ -20,6 +21,7 @@ import { Viaje } from '../../core/models/viaje';
 export class Pagos implements OnInit {
 
   private readonly api = inject(ApiService);
+  readonly permissionService = inject(PermissionService);
 
   clientes: Cliente[] = [];
   viajes: Viaje[] = [];
@@ -215,14 +217,15 @@ export class Pagos implements OnInit {
   mostrarConfirmacionPagoMasivo(): void {
 
     if (
+      !this.permissionService.tienePermiso('VIAJES_EDITAR') ||
       this.cantidadSeleccionados() === 0 ||
       this.pagando
     ) {
       return;
     }
-
+  
     this.modalConfirmacionVisible = true;
-
+  
   }
 
   cerrarModalConfirmacion(): void {
@@ -238,15 +241,16 @@ export class Pagos implements OnInit {
   confirmarPagoMasivo(): void {
 
     if (
+      !this.permissionService.tienePermiso('VIAJES_EDITAR') ||
       this.pagando ||
       this.cantidadSeleccionados() === 0
     ) {
       return;
     }
-
+  
     const guias =
       this.obtenerGuiasSeleccionadas();
-
+  
     if (guias.length === 0) {
       return;
     }

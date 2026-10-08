@@ -3,27 +3,25 @@ import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { ApiService } from '../../../core/services/api.service';
-import { Conductor } from '../../../core/models/conductor';
-import { PermissionService } from '../../../core/services/permission.service';
+import { UsuarioService } from '../../../core/services/usuario.service';
+import { Usuario } from '../../../core/models/usuario/usuario';
 
 @Component({
-  selector: 'app-conductor-list',
+  selector: 'app-usuario-list',
   standalone: true,
   imports: [
     DatePipe,
     FormsModule
   ],
-  templateUrl: './conductor-list.html',
-  styleUrl: './conductor-list.scss'
+  templateUrl: './usuario-list.html',
+  styleUrl: './usuario-list.scss'
 })
-export class ConductorList implements OnInit {
+export class UsuarioList implements OnInit {
 
-  private readonly api = inject(ApiService);
+  private readonly usuarioService = inject(UsuarioService);
   private readonly router = inject(Router);
-  readonly permissionService = inject(PermissionService);
 
-  conductores: Conductor[] = [];
+  usuarios: Usuario[] = [];
 
   cargando = true;
   error = '';
@@ -34,11 +32,20 @@ export class ConductorList implements OnInit {
 
   ngOnInit(): void {
 
-    this.api.getConductores().subscribe({
+    this.cargarUsuarios();
 
-      next: conductores => {
+  }
 
-        this.conductores = conductores;
+  cargarUsuarios(): void {
+
+    this.cargando = true;
+    this.error = '';
+
+    this.usuarioService.getUsuarios().subscribe({
+
+      next: usuarios => {
+
+        this.usuarios = usuarios;
         this.cargando = false;
 
       },
@@ -46,12 +53,12 @@ export class ConductorList implements OnInit {
       error: error => {
 
         console.error(
-          'Error al cargar conductores:',
+          'Error al cargar usuarios:',
           error
         );
 
         this.error =
-          'No fue posible cargar los conductores.';
+          'No fue posible cargar los usuarios.';
 
         this.cargando = false;
 
@@ -61,14 +68,14 @@ export class ConductorList implements OnInit {
 
   }
 
-  get conductoresFiltrados(): Conductor[] {
+  get usuariosFiltrados(): Usuario[] {
 
     const texto =
       this.busqueda
         .trim()
         .toLowerCase();
 
-    return this.conductores.filter(conductor => {
+    return this.usuarios.filter(usuario => {
 
       // =====================================================
       // FILTRO POR ESTADO
@@ -78,17 +85,16 @@ export class ConductorList implements OnInit {
         this.filtroEstado === 'todos' ||
         (
           this.filtroEstado === 'activos' &&
-          conductor.activo
+          usuario.activo
         ) ||
         (
           this.filtroEstado === 'inactivos' &&
-          !conductor.activo
+          !usuario.activo
         );
 
       if (!coincideEstado) {
         return false;
       }
-
 
       // =====================================================
       // FILTRO DE BÚSQUEDA
@@ -98,30 +104,25 @@ export class ConductorList implements OnInit {
         return true;
       }
 
-      const nombreCompleto = [
-        conductor.nombres,
-        conductor.apellidoPaterno,
-        conductor.apellidoMaterno
-      ]
-        .filter(Boolean)
-        .join(' ')
-        .toLowerCase();
+      const roles =
+        usuario.roles
+          .join(' ')
+          .toLowerCase();
 
       return (
-        conductor.rut
+        usuario.rut
           .toLowerCase()
           .includes(texto) ||
 
-        nombreCompleto
-          .includes(texto) ||
-
-        conductor.telefono
+        usuario.nombreCompleto
           .toLowerCase()
           .includes(texto) ||
 
-        conductor.tipoLicencia
+        usuario.email
           .toLowerCase()
-          .includes(texto)
+          .includes(texto) ||
+
+        roles.includes(texto)
       );
 
     });
@@ -130,32 +131,16 @@ export class ConductorList implements OnInit {
 
   get cantidadActivos(): number {
 
-    return this.conductores.filter(
-      conductor => conductor.activo
+    return this.usuarios.filter(
+      usuario => usuario.activo
     ).length;
 
   }
 
   get cantidadInactivos(): number {
 
-    return this.conductores.filter(
-      conductor => !conductor.activo
-    ).length;
-
-  }
-
-  get licenciasAlDia(): number {
-
-    return this.conductores.filter(
-      conductor => conductor.licenciaAlDia
-    ).length;
-
-  }
-
-  get licenciasVencidas(): number {
-
-    return this.conductores.filter(
-      conductor => !conductor.licenciaAlDia
+    return this.usuarios.filter(
+      usuario => !usuario.activo
     ).length;
 
   }
@@ -190,19 +175,10 @@ export class ConductorList implements OnInit {
 
   }
 
-  verDetalle(rut: string): void {
+  nuevoUsuario(): void {
 
     this.router.navigate([
-      '/conductores',
-      rut
-    ]);
-
-  }
-
-  nuevoConductor(): void {
-
-    this.router.navigate([
-      '/conductores/nuevo'
+      '/usuarios/nuevo'
     ]);
 
   }

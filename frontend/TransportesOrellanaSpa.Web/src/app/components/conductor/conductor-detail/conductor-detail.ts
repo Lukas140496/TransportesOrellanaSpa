@@ -4,6 +4,7 @@ import { DatePipe } from '@angular/common';
 
 import { ApiService } from '../../../core/services/api.service';
 import { Conductor } from '../../../core/models/conductor';
+import { PermissionService } from '../../../core/services/permission.service';
 
 @Component({
   selector: 'app-conductor-detail',
@@ -16,6 +17,7 @@ export class ConductorDetail implements OnInit {
   private readonly api = inject(ApiService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  readonly permissionService = inject(PermissionService);
 
   conductor: Conductor | null = null;
 

@@ -8,6 +8,7 @@ import {
 } from '@angular/router';
 
 import { AuthService } from '../../core/services/auth.service';
+import { PermissionService } from '../../core/services/permission.service';
 
 @Component({
     selector: 'app-main-layout',
@@ -22,7 +23,8 @@ import { AuthService } from '../../core/services/auth.service';
 })
 export class MainLayout {
 
-    private readonly authService = inject(AuthService);
+    readonly authService = inject(AuthService);
+    readonly permissionService = inject(PermissionService);
     private readonly router = inject(Router);
 
     modalCerrarSesionVisible = false;

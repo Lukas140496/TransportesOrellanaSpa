@@ -22,8 +22,8 @@ import { DashboardKilometrosCamion } from '../models/dashboard-kilometros-camion
 import { DashboardEstadoPagos } from '../models/dashboard-estado-pagos';
 import { LoginRequest } from '../models/auth/login-request';
 import { LoginResponse } from '../models/auth/login-response';
-import { UsuarioPerfil } from '../models/usuario-perfil';
-import { ActualizarMiPerfil } from '../models/actualizar-mi-perfil';
+import { UsuarioPerfil } from '../models/usuario/usuario-perfil';
+import { ActualizarMiPerfil } from '../models/usuario/actualizar-mi-perfil';
 import { DashboardKilometrosConductor } from '../models/dashboard-kilometros-conductor';
 import { DashboardDiasHabiles } from '../models/dashboard-dias-habiles';
 
@@ -31,6 +31,13 @@ import { Gasto } from '../models/gasto';
 import { CrearGasto } from '../models/crear-gasto';
 import { GastoRemolque } from '../models/gasto-remolque';
 import { CrearGastoRemolque } from '../models/crear-gasto-remolque';
+
+import { Usuario } from '../models/usuario/usuario';
+import { CrearUsuario } from '../models/usuario/crear-usuario';
+import { EditarUsuario } from '../models/usuario/editar-usuario';
+import { Rol } from '../models/usuario/rol';
+import { CambiarPasswordUsuario } from '../models/usuario/cambiar-password-usuario';
+import { CambiarMiPassword } from '../models/usuario/cambiar-mi-password';
 
 @Injectable({
   providedIn: 'root'
@@ -63,6 +70,108 @@ export class ApiService {
   ): Observable<{ mensaje: string }> {
     return this.http.put<{ mensaje: string }>(
       `${this.apiUrl}/usuarios/me`,
+      datos
+    );
+  }
+
+  // =========================
+  // USUARIOS
+  // =========================
+
+  getUsuarios(): Observable<Usuario[]> {
+    return this.http.get<Usuario[]>(
+      `${this.apiUrl}/usuarios`
+    );
+  }
+
+  getRoles(): Observable<Rol[]> {
+    return this.http.get<Rol[]>(
+      `${this.apiUrl}/usuarios/roles`
+    );
+  }
+
+  getMisPermisos(): Observable<string[]> {
+    return this.http.get<string[]>(
+      `${this.apiUrl}/usuarios/me/permisos`
+    );
+  }
+
+  crearUsuario(
+    usuario: CrearUsuario
+  ): Observable<{
+    mensaje: string;
+    usuarioId: number;
+  }> {
+    return this.http.post<{
+      mensaje: string;
+      usuarioId: number;
+    }>(
+      `${this.apiUrl}/usuarios`,
+      usuario
+    );
+  }
+
+  editarUsuario(
+    id: number,
+    usuario: EditarUsuario
+  ): Observable<{
+    mensaje: string;
+  }> {
+    return this.http.put<{
+      mensaje: string;
+    }>(
+      `${this.apiUrl}/usuarios/${id}`,
+      usuario
+    );
+  }
+
+  cambiarEstadoUsuario(
+    id: number,
+    activo: boolean
+  ): Observable<{
+    mensaje: string;
+  }> {
+    return this.http.put<{
+      mensaje: string;
+    }>(
+      `${this.apiUrl}/usuarios/${id}/estado`,
+      {
+        activo
+      }
+    );
+  }
+
+  eliminarUsuario(
+    id: number
+  ): Observable<{
+    mensaje: string;
+  }> {
+    return this.http.delete<{
+      mensaje: string;
+    }>(
+      `${this.apiUrl}/usuarios/${id}`
+    );
+  }
+
+  cambiarPasswordUsuario(
+    id: number,
+    datos: CambiarPasswordUsuario
+  ): Observable<{
+    mensaje: string;
+  }> {
+    return this.http.put<{
+      mensaje: string;
+    }>(
+      `${this.apiUrl}/usuarios/${id}/password`,
+      datos
+    );
+  }
+
+  cambiarMiPassword(
+    datos: CambiarMiPassword
+  ): Observable<{ mensaje: string }> {
+    return this.http.put<{ mensaje: string }>(
+      `${this.apiUrl}/usuarios/me/password`,
       datos
     );
   }
@@ -108,7 +217,7 @@ export class ApiService {
       {}
     );
   }
-  
+
   activarCamion(
     patente: string
   ): Observable<Camion> {
@@ -226,12 +335,12 @@ export class ApiService {
     rut: string,
     conductor: Conductor
   ): Observable<void> {
-  
+
     return this.http.put<void>(
       `${this.apiUrl}/conductor/${rut}`,
       conductor
     );
-  
+
   }
 
   activarConductor(
@@ -354,7 +463,7 @@ export class ApiService {
     );
   }
 
-    // =========================
+  // =========================
   // GASTOS
   // =========================
 
@@ -460,29 +569,29 @@ export class ApiService {
     clienteId?: number,
     estadoPago?: string
   ): Observable<Viaje[]> {
-  
+
     const params: Record<string, string> = {};
-  
+
     if (guia?.trim()) {
       params['guia'] = guia.trim();
     }
-  
+
     if (fechaDesde) {
       params['fechaDesde'] = fechaDesde;
     }
-  
+
     if (fechaHasta) {
       params['fechaHasta'] = fechaHasta;
     }
-  
+
     if (clienteId !== undefined) {
       params['clienteId'] = clienteId.toString();
     }
-  
+
     if (estadoPago) {
       params['estadoPago'] = estadoPago;
     }
-  
+
     return this.http.get<Viaje[]>(
       `${this.apiUrl}/viaje`,
       {
@@ -539,21 +648,21 @@ export class ApiService {
     fechaDesde?: string,
     fechaHasta?: string
   ): Observable<Viaje[]> {
-  
+
     const params: Record<string, string> = {};
-  
+
     if (clienteId !== undefined) {
       params['clienteId'] = clienteId.toString();
     }
-  
+
     if (fechaDesde) {
       params['fechaDesde'] = fechaDesde;
     }
-  
+
     if (fechaHasta) {
       params['fechaHasta'] = fechaHasta;
     }
-  
+
     return this.http.get<Viaje[]>(
       `${this.apiUrl}/viaje/pendientes-pago`,
       {
@@ -753,7 +862,7 @@ export class ApiService {
     year: number,
     month: number
   ): Observable<DashboardKilometrosConductor[]> {
-  
+
     return this.http.get<DashboardKilometrosConductor[]>(
       `${this.apiUrl}/dashboard/kilometros-por-conductor`,
       {
@@ -769,7 +878,7 @@ export class ApiService {
     year: number,
     month: number
   ): Observable<DashboardDiasHabiles> {
-  
+
     return this.http.get<DashboardDiasHabiles>(
       `${this.apiUrl}/dashboard/dias-habiles`,
       {

@@ -25,7 +25,17 @@
     </div>
 
     <div class="header-actions">
-      <button type="button" class="btn-editar" (click)="editarRemolque()">✎ Editar remolque</button>
+        @if (permissionService.tienePermiso('REMOLQUES_EDITAR')) {
+
+            <button
+              type="button"
+              class="btn-editar"
+              (click)="editarRemolque()"
+            >
+              ✎ Editar remolque
+            </button>
+          
+        }
 
       <button type="button" class="btn-volver" (click)="volver()">← Volver</button>
     </div>
@@ -137,66 +147,70 @@
 
 <!-- MODAL CONFIRMACIÓN ESTADO -->
 
-@if (modalEstadoVisible && remolque) {
+@if (permissionService.tienePermiso('REMOLQUES_EDITAR')) {
+    
+    @if (modalEstadoVisible && remolque) {
 
-<div class="modal-overlay" (click)="cerrarModalEstado()">
-  <div class="modal" role="alertdialog" aria-modal="true" (click)="$event.stopPropagation()">
-    <div class="modal-icon" [class.warning]="remolque.activa" [class.activate]="!remolque.activa">
-      @if (remolque.activa) { ! } @else { ✓ }
-    </div>
-
-    <h2>@if (remolque.activa) { ¿Desactivar remolque? } @else { ¿Activar remolque? }</h2>
-
-    <p>
-      Estás a punto de @if (remolque.activa) { desactivar } @else { activar } el remolque
-
-      <strong>
-        {{ remolque.patente }} </strong
-      >.
-    </p>
-
-    <p class="modal-secondary-text">
-      @if (remolque.activa) { El remolque no será eliminado y su historial se conservará. No podrá
-      utilizarse para nuevos viajes mientras esté inactivo. } @else { El remolque volverá a estar
-      disponible para nuevos viajes. Su historial y todos sus datos se conservarán. }
-    </p>
-
-    <div class="modal-actions">
-      <button
-        type="button"
-        class="btn-secondary"
-        [disabled]="procesandoEstado"
-        (click)="cerrarModalEstado()"
-      >
-        Cancelar
-      </button>
-
-      @if (remolque.activa) {
-
-      <button
-        type="button"
-        class="btn-danger"
-        [disabled]="procesandoEstado"
-        (click)="confirmarCambioEstado()"
-      >
-        @if (procesandoEstado) { Desactivando... } @else { Sí, desactivar }
-      </button>
-
-      } @else {
-
-      <button
-        type="button"
-        class="btn-activar"
-        [disabled]="procesandoEstado"
-        (click)="confirmarCambioEstado()"
-      >
-        @if (procesandoEstado) { Activando... } @else { Sí, activar }
-      </button>
-
-      }
-    </div>
-  </div>
-</div>
+        <div class="modal-overlay" (click)="cerrarModalEstado()">
+          <div class="modal" role="alertdialog" aria-modal="true" (click)="$event.stopPropagation()">
+            <div class="modal-icon" [class.warning]="remolque.activa" [class.activate]="!remolque.activa">
+              @if (remolque.activa) { ! } @else { ✓ }
+            </div>
+        
+            <h2>@if (remolque.activa) { ¿Desactivar remolque? } @else { ¿Activar remolque? }</h2>
+        
+            <p>
+              Estás a punto de @if (remolque.activa) { desactivar } @else { activar } el remolque
+        
+              <strong>
+                {{ remolque.patente }} </strong
+              >.
+            </p>
+        
+            <p class="modal-secondary-text">
+              @if (remolque.activa) { El remolque no será eliminado y su historial se conservará. No podrá
+              utilizarse para nuevos viajes mientras esté inactivo. } @else { El remolque volverá a estar
+              disponible para nuevos viajes. Su historial y todos sus datos se conservarán. }
+            </p>
+        
+            <div class="modal-actions">
+              <button
+                type="button"
+                class="btn-secondary"
+                [disabled]="procesandoEstado"
+                (click)="cerrarModalEstado()"
+              >
+                Cancelar
+              </button>
+        
+              @if (remolque.activa) {
+        
+              <button
+                type="button"
+                class="btn-danger"
+                [disabled]="procesandoEstado"
+                (click)="confirmarCambioEstado()"
+              >
+                @if (procesandoEstado) { Desactivando... } @else { Sí, desactivar }
+              </button>
+        
+              } @else {
+        
+              <button
+                type="button"
+                class="btn-activar"
+                [disabled]="procesandoEstado"
+                (click)="confirmarCambioEstado()"
+              >
+                @if (procesandoEstado) { Activando... } @else { Sí, activar }
+              </button>
+        
+              }
+            </div>
+          </div>
+        </div>
+        
+    }
 
 }
 

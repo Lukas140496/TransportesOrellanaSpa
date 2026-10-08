@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { ApiService } from '../../../core/services/api.service';
 import { Viaje } from '../../../core/models/viaje';
+import { PermissionService } from '../../../core/services/permission.service';
 
 @Component({
   selector: 'app-viaje-detail',
@@ -16,6 +17,7 @@ export class ViajeDetail implements OnInit {
   private readonly api = inject(ApiService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  readonly permissionService = inject(PermissionService);
 
   modalConfirmacionVisible = false;
   modalPagoVisible = false;

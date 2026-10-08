@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { ApiService } from '../../../core/services/api.service';
 import { Camion } from '../../../core/models/camion';
+import { PermissionService } from '../../../core/services/permission.service';
 
 @Component({
   selector: 'app-camion-detail',
@@ -16,6 +17,7 @@ export class CamionDetail implements OnInit {
   private readonly api = inject(ApiService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  readonly permissionService = inject(PermissionService);
 
   camion: Camion | null = null;
 

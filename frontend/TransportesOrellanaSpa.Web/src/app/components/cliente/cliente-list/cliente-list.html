@@ -11,10 +11,18 @@
       </div>
     </div>
 
-    <button type="button" class="btn-nuevo" (click)="nuevoCliente()">
-      <span class="btn-icon">+</span>
-      Nuevo Cliente
-    </button>
+    @if (permissionService.tienePermiso('CLIENTES_CREAR')) {
+
+        <button
+          type="button"
+          class="btn-nuevo"
+          (click)="nuevoCliente()"
+        >
+          <span class="btn-icon">+</span>
+          Nuevo Cliente
+        </button>
+      
+    }
   </div>
 
   @if (cargando) {

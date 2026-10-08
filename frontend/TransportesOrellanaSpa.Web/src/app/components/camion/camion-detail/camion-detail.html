@@ -82,42 +82,50 @@
       
         <div class="detail-buttons">
       
-          <button
-            type="button"
-            class="btn-editar"
-            (click)="editarCamion()">
+            @if (permissionService.tienePermiso('CAMIONES_EDITAR')) {
+
+                <button
+                  type="button"
+                  class="btn-editar"
+                  (click)="editarCamion()">
+              
+                  ✎
+                  Editar camión
+              
+                </button>
+              
+            }
       
-            ✎
-            Editar camión
       
-          </button>
-      
-      
-          @if (camion.activo) {
-      
-            <button
-              type="button"
-              class="btn-danger"
-              (click)="mostrarConfirmacionEstado()"
-              [disabled]="procesandoEstado">
-      
-              Desactivar camión
-      
-            </button>
-      
-          } @else {
-      
-            <button
-              type="button"
-              class="btn-success"
-              (click)="mostrarConfirmacionEstado()"
-              [disabled]="procesandoEstado">
-      
-              Activar camión
-      
-            </button>
-      
-          }
+            @if (permissionService.tienePermiso('CAMIONES_EDITAR')) {
+
+                @if (camion.activo) {
+              
+                  <button
+                    type="button"
+                    class="btn-danger"
+                    (click)="mostrarConfirmacionEstado()"
+                    [disabled]="procesandoEstado">
+              
+                    Desactivar camión
+              
+                  </button>
+              
+                } @else {
+              
+                  <button
+                    type="button"
+                    class="btn-success"
+                    (click)="mostrarConfirmacionEstado()"
+                    [disabled]="procesandoEstado">
+              
+                    Activar camión
+              
+                  </button>
+              
+                }
+              
+            }
       
         </div>
       

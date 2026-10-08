@@ -947,15 +947,19 @@
             <!-- ACCIONES -->
             <section class="form-actions">
 
-              <button
-                type="button"
-                class="btn-danger-outline"
-                (click)="mostrarConfirmacionEliminar()"
-                [disabled]="guardando || eliminando"
-              >
-                🗑️
-                Eliminar viaje
-              </button>
+                @if (permissionService.tienePermiso('VIAJES_ELIMINAR')) {
+
+                    <button
+                      type="button"
+                      class="btn-danger-outline"
+                      (click)="mostrarConfirmacionEliminar()"
+                      [disabled]="guardando || eliminando"
+                    >
+                      🗑️
+                      Eliminar viaje
+                    </button>
+                  
+                }
 
               <div class="actions-right">
 
@@ -968,22 +972,25 @@
                   Cancelar
                 </button>
 
-                <button
-                  type="button"
-                  class="btn-primary"
-                  (click)="guardar()"
-                  [disabled]="guardando || eliminando"
-                >
+                @if (permissionService.tienePermiso('VIAJES_EDITAR')) {
 
-                  @if (guardando) {
-                    <span class="button-spinner"></span>
-                    Guardando...
-                  } @else {
-                    💾
-                    Guardar cambios
-                  }
-
-                </button>
+                    <button
+                      type="button"
+                      class="btn-primary"
+                      (click)="guardar()"
+                      [disabled]="guardando || eliminando"
+                    >
+              
+                      @if (guardando) {
+                        <span class="button-spinner"></span>
+                        Guardando...
+                      } @else {
+                        Guardar cambios
+                      }
+              
+                    </button>
+              
+                }
 
               </div>
 
@@ -1021,61 +1028,65 @@
 
 
 <!-- MODAL ELIMINAR -->
-@if (modalEliminarVisible) {
+@if (permissionService.tienePermiso('VIAJES_ELIMINAR')) {
 
-  <div class="modal-backdrop">
+    @if (modalEliminarVisible) {
 
-    <div class="modal">
-
-      <div class="modal-icon danger">
-        🗑️
-      </div>
-
-      <h2>¿Eliminar viaje?</h2>
-
-      <p>
-        Estás a punto de eliminar el viaje con guía
-        <strong>
-          {{ viajeSeleccionado?.numeroGuiaDespacho }}
-        </strong>.
-      </p>
-
-      <p class="modal-warning">
-        Esta acción no se puede deshacer.
-      </p>
-
-      <div class="modal-actions">
-
-        <button
-          type="button"
-          class="btn-secondary"
-          (click)="cerrarModalEliminar()"
-          [disabled]="eliminando"
-        >
-          Cancelar
-        </button>
-
-        <button
-          type="button"
-          class="btn-danger"
-          (click)="confirmarEliminar()"
-          [disabled]="eliminando"
-        >
-
-          @if (eliminando) {
-            <span class="button-spinner"></span>
-            Eliminando...
-          } @else {
-            Eliminar viaje
-          }
-
-        </button>
-
-      </div>
-
-    </div>
-
-  </div>
+        <div class="modal-backdrop">
+    
+            <div class="modal">
+        
+                <div class="modal-icon danger">
+                🗑️
+                </div>
+        
+                <h2>¿Eliminar viaje?</h2>
+        
+                <p>
+                Estás a punto de eliminar el viaje con guía
+                <strong>
+                    {{ viajeSeleccionado?.numeroGuiaDespacho }}
+                </strong>.
+                </p>
+        
+                <p class="modal-warning">
+                Esta acción no se puede deshacer.
+                </p>
+        
+                <div class="modal-actions">
+        
+                <button
+                    type="button"
+                    class="btn-secondary"
+                    (click)="cerrarModalEliminar()"
+                    [disabled]="eliminando"
+                >
+                    Cancelar
+                </button>
+        
+                <button
+                    type="button"
+                    class="btn-danger"
+                    (click)="confirmarEliminar()"
+                    [disabled]="eliminando"
+                >
+        
+                    @if (eliminando) {
+                    <span class="button-spinner"></span>
+                    Eliminando...
+                    } @else {
+                    Eliminar viaje
+                    }
+        
+                </button>
+        
+                </div>
+        
+            </div>
+    
+        </div>
+    
+    }
 
 }
 

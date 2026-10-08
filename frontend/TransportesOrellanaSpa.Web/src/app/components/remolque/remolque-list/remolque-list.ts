@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 
 import { ApiService } from '../../../core/services/api.service';
 import { Remolque } from '../../../core/models/remolque';
+import { PermissionService } from '../../../core/services/permission.service';
 
 @Component({
   selector: 'app-remolque-list',
@@ -18,6 +19,7 @@ export class RemolqueList implements OnInit {
 
   private readonly api = inject(ApiService);
   private readonly router = inject(Router);
+  readonly permissionService = inject(PermissionService);
 
   remolques: Remolque[] = [];
 

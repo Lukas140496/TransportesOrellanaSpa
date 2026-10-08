@@ -1,0 +1,511 @@
+<section class="usuario-list">
+
+  <!-- =====================================================
+       HEADER
+       ===================================================== -->
+
+  <div class="page-header">
+
+    <div class="header-content">
+
+      <div class="header-icon">👤</div>
+
+      <div>
+        <h1>Usuarios</h1>
+
+        <p>
+          Administra los usuarios y accesos de Flota360.
+        </p>
+      </div>
+
+    </div>
+
+    <button
+      type="button"
+      class="btn-nuevo"
+      (click)="nuevoUsuario()"
+    >
+      <span class="btn-icon">+</span>
+
+      Nuevo Usuario
+    </button>
+
+  </div>
+
+
+  <!-- =====================================================
+       CARGANDO
+       ===================================================== -->
+
+  @if (cargando) {
+
+    <div class="estado-container">
+
+      <div class="loading-spinner"></div>
+
+      <p>Cargando usuarios...</p>
+
+    </div>
+
+  }
+
+
+  <!-- =====================================================
+       ERROR
+       ===================================================== -->
+
+  @if (error) {
+
+    <div class="error-container">
+
+      <div class="error-icon">!</div>
+
+      <div>
+
+        <strong>
+          No fue posible cargar los usuarios
+        </strong>
+
+        <p>
+          {{ error }}
+        </p>
+
+      </div>
+
+    </div>
+
+  }
+
+
+  @if (!cargando && !error) {
+
+    <!-- =====================================================
+         RESUMEN
+         ===================================================== -->
+
+    <div class="resumen">
+
+      <div class="resumen-card">
+
+        <div class="resumen-icon total">
+          👤
+        </div>
+
+        <div>
+
+          <span>
+            Total usuarios
+          </span>
+
+          <strong>
+            {{ usuarios.length }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <div class="resumen-card">
+
+        <div class="resumen-icon activo">
+          ✓
+        </div>
+
+        <div>
+
+          <span>
+            Usuarios activos
+          </span>
+
+          <strong>
+            {{ cantidadActivos }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <div class="resumen-card">
+
+        <div class="resumen-icon inactivo">
+          !
+        </div>
+
+        <div>
+
+          <span>
+            Usuarios inactivos
+          </span>
+
+          <strong>
+            {{ cantidadInactivos }}
+          </strong>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         FILTROS
+         ===================================================== -->
+
+    <div class="filtros-card">
+
+      <div class="busqueda">
+
+        <span class="search-icon">
+          ⌕
+        </span>
+
+        <input
+          type="text"
+          [(ngModel)]="busqueda"
+          placeholder="Buscar por Rut, nombre, correo o rol..."
+          aria-label="Buscar usuarios"
+        />
+
+        @if (busqueda) {
+
+          <button
+            type="button"
+            class="btn-limpiar-busqueda"
+            (click)="limpiarBusqueda()"
+            aria-label="Limpiar búsqueda"
+          >
+            ×
+          </button>
+
+        }
+
+      </div>
+
+
+      <div class="filtro-estado">
+
+        <span class="filtro-label">
+          Estado:
+        </span>
+
+        <button
+          type="button"
+          [class.active]="filtroEstado === 'todos'"
+          (click)="cambiarFiltroEstado('todos')"
+        >
+          Todos
+        </button>
+
+        <button
+          type="button"
+          [class.active]="filtroEstado === 'activos'"
+          (click)="cambiarFiltroEstado('activos')"
+        >
+          Activos
+        </button>
+
+        <button
+          type="button"
+          [class.active]="filtroEstado === 'inactivos'"
+          (click)="cambiarFiltroEstado('inactivos')"
+        >
+          Inactivos
+        </button>
+
+      </div>
+
+
+      @if (hayFiltrosAplicados()) {
+
+        <button
+          type="button"
+          class="btn-limpiar-filtros"
+          (click)="limpiarFiltros()"
+        >
+          Limpiar filtros
+        </button>
+
+      }
+
+    </div>
+
+
+    <!-- =====================================================
+         RESULTADOS
+         ===================================================== -->
+
+    <div class="resultado-info">
+
+      <span>
+
+        Mostrando
+
+        <strong>
+          {{ usuariosFiltrados.length }}
+        </strong>
+
+        de
+
+        <strong>
+          {{ usuarios.length }}
+        </strong>
+
+        usuarios
+
+      </span>
+
+    </div>
+
+
+    <!-- =====================================================
+         TABLA
+         ===================================================== -->
+
+    @if (usuariosFiltrados.length > 0) {
+
+      <div class="tabla-container">
+
+        <table>
+
+          <thead>
+
+            <tr>
+
+              <th>Usuario</th>
+
+              <th>RUT</th>
+
+              <th>Correo</th>
+
+              <th>Rol</th>
+
+              <th>Fecha creación</th>
+
+              <th>Último acceso</th>
+
+              <th>Estado</th>
+
+              <th class="columna-acciones">
+                Acción
+              </th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            @for (
+              usuario of usuariosFiltrados;
+              track usuario.usuarioId
+            ) {
+
+              <tr>
+
+                <!-- USUARIO -->
+
+                <td>
+
+                  <div class="usuario-info">
+
+                    <div class="usuario-avatar">
+
+                      {{ usuario.nombres.charAt(0).toUpperCase() }}
+
+                    </div>
+
+                    <div>
+
+                      <strong>
+                        {{ usuario.nombreCompleto }}
+                      </strong>
+
+                      <span>
+                        Usuario del sistema
+                      </span>
+
+                    </div>
+
+                  </div>
+
+                </td>
+
+
+                <!-- RUT -->
+
+                <td>
+
+                  <span class="rut">
+                    {{ usuario.rut }}
+                  </span>
+
+                </td>
+
+
+                <!-- EMAIL -->
+
+                <td>
+
+                  <span class="dato-principal">
+                    {{ usuario.email }}
+                  </span>
+
+                </td>
+
+
+                <!-- ROL -->
+
+                <td>
+
+                  <div class="roles">
+
+                    @for (
+                      rol of usuario.roles;
+                      track rol
+                    ) {
+
+                      <span class="rol-badge">
+                        {{ rol }}
+                      </span>
+
+                    }
+
+                  </div>
+
+                </td>
+
+
+                <!-- FECHA CREACIÓN -->
+
+                <td>
+
+                  <span class="fecha">
+
+                    {{ usuario.fechaCreacion | date : 'dd/MM/yyyy' }}
+
+                  </span>
+
+                </td>
+
+
+                <!-- ÚLTIMO ACCESO -->
+
+                <td>
+
+                  @if (usuario.ultimoAcceso) {
+
+                    <span class="fecha">
+
+                      {{ usuario.ultimoAcceso | date : 'dd/MM/yyyy HH:mm' }}
+
+                    </span>
+
+                  } @else {
+
+                    <span class="sin-acceso">
+                      Nunca
+                    </span>
+
+                  }
+
+                </td>
+
+
+                <!-- ESTADO -->
+
+                <td>
+
+                  @if (usuario.activo) {
+
+                    <span class="badge activo">
+
+                      <span class="badge-dot"></span>
+
+                      Activo
+
+                    </span>
+
+                  } @else {
+
+                    <span class="badge inactivo">
+
+                      <span class="badge-dot"></span>
+
+                      Inactivo
+
+                    </span>
+
+                  }
+
+                </td>
+
+
+                <!-- ACCIÓN -->
+
+                <td class="columna-acciones">
+
+                  <button
+                    type="button"
+                    class="btn-detalle"
+                  >
+                    Gestionar
+
+                    <span>
+                      →
+                    </span>
+                  </button>
+
+                </td>
+
+              </tr>
+
+            }
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    }
+
+
+    <!-- =====================================================
+         SIN RESULTADOS
+         ===================================================== -->
+
+    @if (usuariosFiltrados.length === 0) {
+
+      <div class="sin-resultados">
+
+        <div class="sin-resultados-icon">
+          ⌕
+        </div>
+
+        <h2>
+          No encontramos usuarios
+        </h2>
+
+        <p>
+          No hay usuarios que coincidan con los filtros seleccionados.
+        </p>
+
+        <button
+          type="button"
+          class="btn-restablecer"
+          (click)="limpiarFiltros()"
+        >
+          Limpiar filtros
+        </button>
+
+      </div>
+
+    }
+
+  }
+
+</section>

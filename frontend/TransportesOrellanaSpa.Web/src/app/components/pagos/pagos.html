@@ -455,26 +455,30 @@
           </div>
 
 
-          <button
-            type="button"
-            class="btn-pagar-seleccionados"
-            [disabled]="
-              cantidadSeleccionados() === 0 ||
-              pagando
-            "
-            (click)="mostrarConfirmacionPagoMasivo()">
+          @if (permissionService.tienePermiso('VIAJES_EDITAR')) {
 
-            @if (pagando) {
-
-              Procesando pago...
-
-            } @else {
-
-              Marcar seleccionados como pagados
-
-            }
-
-          </button>
+            <button
+              type="button"
+              class="btn-pagar-seleccionados"
+              [disabled]="
+                cantidadSeleccionados() === 0 ||
+                pagando
+              "
+              (click)="mostrarConfirmacionPagoMasivo()">
+          
+              @if (pagando) {
+          
+                Procesando pago...
+          
+              } @else {
+          
+                Marcar seleccionados como pagados
+          
+              }
+          
+            </button>
+          
+          }
 
         </div>
 
@@ -523,98 +527,101 @@
 <!-- MODAL CONFIRMACIÓN PAGO -->
 <!-- ========================= -->
 
-@if (modalConfirmacionVisible) {
+@if (permissionService.tienePermiso('VIAJES_EDITAR')) {
 
-  <div
-    class="modal-overlay"
-    (click)="cerrarModalConfirmacion()">
+    @if (modalConfirmacionVisible) {
 
-    <div
-      class="modal-card"
-      (click)="$event.stopPropagation()">
-
-      <div class="modal-icon">
-        $
-      </div>
-
-
-      <h2>
-        Confirmar pago
-      </h2>
-
-
-      <p class="modal-message">
-
-        ¿Estás seguro de que deseas marcar como pagados los viajes seleccionados?
-
-      </p>
-
-
-      <div class="modal-summary">
-
-        <div class="modal-summary-item">
-
-          <span>
-            Viajes
-          </span>
-
-          <strong>
-            {{ cantidadSeleccionados() }}
-          </strong>
-
-        </div>
-
-
-        <div class="modal-summary-item">
-
-          <span>
-            Total
-          </span>
-
-          <strong>
-            ${{ totalSeleccionado() | number:'1.0-0' }}
-          </strong>
-
-        </div>
-
-      </div>
-
-
-      <div class="modal-actions">
-
-        <button
-          type="button"
-          class="btn-modal-cancelar"
-          [disabled]="pagando"
+        <div
+          class="modal-overlay"
           (click)="cerrarModalConfirmacion()">
-
-          Cancelar
-
-        </button>
-
-
-        <button
-          type="button"
-          class="btn-modal-confirmar"
-          [disabled]="pagando"
-          (click)="confirmarPagoMasivo()">
-
-          @if (pagando) {
-
-            Procesando...
-
-          } @else {
-
-            Confirmar pago
-
-          }
-
-        </button>
-
-      </div>
-
-    </div>
-
-  </div>
-
+      
+          <div
+            class="modal-card"
+            (click)="$event.stopPropagation()">
+      
+            <div class="modal-icon">
+              $
+            </div>
+      
+      
+            <h2>
+              Confirmar pago
+            </h2>
+      
+      
+            <p class="modal-message">
+      
+              ¿Estás seguro de que deseas marcar como pagados los viajes seleccionados?
+      
+            </p>
+      
+      
+            <div class="modal-summary">
+      
+              <div class="modal-summary-item">
+      
+                <span>
+                  Viajes
+                </span>
+      
+                <strong>
+                  {{ cantidadSeleccionados() }}
+                </strong>
+      
+              </div>
+      
+      
+              <div class="modal-summary-item">
+      
+                <span>
+                  Total
+                </span>
+      
+                <strong>
+                  ${{ totalSeleccionado() | number:'1.0-0' }}
+                </strong>
+      
+              </div>
+      
+            </div>
+      
+      
+            <div class="modal-actions">
+      
+              <button
+                type="button"
+                class="btn-modal-cancelar"
+                [disabled]="pagando"
+                (click)="cerrarModalConfirmacion()">
+      
+                Cancelar
+      
+              </button>
+      
+      
+              <button
+                type="button"
+                class="btn-modal-confirmar"
+                [disabled]="pagando"
+                (click)="confirmarPagoMasivo()">
+      
+                @if (pagando) {
+      
+                  Procesando...
+      
+                } @else {
+      
+                  Confirmar pago
+      
+                }
+      
+              </button>
+      
+            </div>
+      
+          </div>
+      
+        </div>
+      
+    }
 }

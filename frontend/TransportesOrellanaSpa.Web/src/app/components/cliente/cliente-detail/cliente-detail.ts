@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { DecimalPipe } from '@angular/common';
 
 import { ClienteService } from '../../../core/services/cliente.service';
+import { PermissionService } from '../../../core/services/permission.service';
 import { Cliente } from '../../../core/models/cliente';
 
 @Component({
@@ -16,6 +17,7 @@ export class ClienteDetail implements OnInit {
   private readonly clienteService = inject(ClienteService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  readonly permissionService = inject(PermissionService);
 
   cliente: Cliente | null = null;
 

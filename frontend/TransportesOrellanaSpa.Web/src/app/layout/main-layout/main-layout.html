@@ -128,41 +128,51 @@
         </button>
 
         <div class="submenu" [class.open]="submenuAbierto === 'clientes'">
-          <a
-            routerLink="/clientes"
-            routerLinkActive="active"
-            [routerLinkActiveOptions]="{ exact: true }"
-            (click)="cerrarMenu()"
-          >
-            <span>Listado Clientes</span>
-          </a>
 
-          <a
-            routerLink="/clientes/nuevo"
-            routerLinkActive="active"
-            [routerLinkActiveOptions]="{ exact: true }"
-            (click)="cerrarMenu()"
-          >
-            <span>Registrar Cliente</span>
-          </a>
-
-          <a
-            routerLink="/clientes/modificar"
-            routerLinkActive="active"
-            [routerLinkActiveOptions]="{ exact: true }"
-            (click)="cerrarMenu()"
-          >
-            <span>Modificar Cliente</span>
-          </a>
-
-          <a
-            routerLink="/clientes/desactivar"
-            routerLinkActive="active"
-            [routerLinkActiveOptions]="{ exact: true }"
-            (click)="cerrarMenu()"
-          >
-            <span>Desactivar Cliente</span>
-          </a>
+            <a
+              routerLink="/clientes"
+              routerLinkActive="active"
+              [routerLinkActiveOptions]="{ exact: true }"
+              (click)="cerrarMenu()"
+            >
+              <span>Listado Clientes</span>
+            </a>
+          
+            @if (permissionService.tienePermiso('CLIENTES_CREAR')) {
+          
+              <a
+                routerLink="/clientes/nuevo"
+                routerLinkActive="active"
+                [routerLinkActiveOptions]="{ exact: true }"
+                (click)="cerrarMenu()"
+              >
+                <span>Registrar Cliente</span>
+              </a>
+          
+            }
+          
+            @if (permissionService.tienePermiso('CLIENTES_EDITAR')) {
+          
+              <a
+                routerLink="/clientes/modificar"
+                routerLinkActive="active"
+                [routerLinkActiveOptions]="{ exact: true }"
+                (click)="cerrarMenu()"
+              >
+                <span>Modificar Cliente</span>
+              </a>
+          
+              <a
+                routerLink="/clientes/desactivar"
+                routerLinkActive="active"
+                [routerLinkActiveOptions]="{ exact: true }"
+                (click)="cerrarMenu()"
+              >
+                <span>Desactivar Cliente</span>
+              </a>
+          
+            }
+          
         </div>
       </div>
 
@@ -187,36 +197,55 @@
         </button>
 
         <div class="submenu" [class.open]="submenuAbierto === 'viajes'">
-          <a
-            routerLink="/viajes"
-            routerLinkActive="active"
-            [routerLinkActiveOptions]="{ exact: true }"
-            (click)="cerrarMenu()"
-          >
-            <span>Listado Viajes</span>
-          </a>
 
-          <a routerLink="/viajes/nuevo" routerLinkActive="active" (click)="cerrarMenu()">
-            <span>Registrar Viaje</span>
-          </a>
-
-          <a
-            routerLink="/viajes/modificar"
-            routerLinkActive="active"
-            [routerLinkActiveOptions]="{ exact: true }"
-            (click)="cerrarMenu()"
-          >
-            <span>Modificar Viaje</span>
-          </a>
-
-          <a
-            routerLink="/viajes/eliminar"
-            routerLinkActive="active"
-            [routerLinkActiveOptions]="{ exact: true }"
-            (click)="cerrarMenu()"
-          >
-            <span>Eliminar Viaje</span>
-          </a>
+            <a
+              routerLink="/viajes"
+              routerLinkActive="active"
+              [routerLinkActiveOptions]="{ exact: true }"
+              (click)="cerrarMenu()"
+            >
+              <span>Listado Viajes</span>
+            </a>
+          
+            @if (permissionService.tienePermiso('VIAJES_CREAR')) {
+          
+              <a
+                routerLink="/viajes/nuevo"
+                routerLinkActive="active"
+                [routerLinkActiveOptions]="{ exact: true }"
+                (click)="cerrarMenu()"
+              >
+                <span>Registrar Viaje</span>
+              </a>
+          
+            }
+          
+            @if (permissionService.tienePermiso('VIAJES_EDITAR')) {
+          
+              <a
+                routerLink="/viajes/modificar"
+                routerLinkActive="active"
+                [routerLinkActiveOptions]="{ exact: true }"
+                (click)="cerrarMenu()"
+              >
+                <span>Modificar Viaje</span>
+              </a>
+          
+            }
+          
+            @if (permissionService.tienePermiso('VIAJES_ELIMINAR')) {
+          
+              <a
+                routerLink="/viajes/eliminar"
+                routerLinkActive="active"
+                [routerLinkActiveOptions]="{ exact: true }"
+                (click)="cerrarMenu()"
+              >
+                <span>Eliminar Viaje</span>
+              </a>
+          
+            }
+          
         </div>
       </div>
 
@@ -241,68 +270,82 @@
         </button>
 
         <div class="submenu" [class.open]="submenuAbierto === 'camiones'">
-          <a
-            routerLink="/camiones"
-            routerLinkActive="active"
-            [routerLinkActiveOptions]="{ exact: true }"
-            (click)="cerrarMenu()"
-          >
-            <span>Listado Camiones</span>
-          </a>
 
-          <a
-            routerLink="/camiones/nuevo"
-            routerLinkActive="active"
-            [routerLinkActiveOptions]="{ exact: true }"
-            (click)="cerrarMenu()"
-          >
-            <span>Registrar Camión</span>
-          </a>
-
-          <a
-            routerLink="/camiones/modificar"
-            routerLinkActive="active"
-            [routerLinkActiveOptions]="{ exact: true }"
-            (click)="cerrarMenu()"
-          >
-            <span>Modificar Camión</span>
-          </a>
-
-          <a
-            routerLink="/camiones/asignar-conductor"
-            routerLinkActive="active"
-            [routerLinkActiveOptions]="{ exact: true }"
-            (click)="cerrarMenu()"
-          >
-            <span>Asignar Conductor</span>
-          </a>
-
-          <a
-            routerLink="/camiones/asignar-remolque"
-            routerLinkActive="active"
-            [routerLinkActiveOptions]="{ exact: true }"
-            (click)="cerrarMenu()"
-          >
-            <span>Asignar Remolque</span>
-          </a>
-
-          <a
-            routerLink="/camiones/gastos"
-            routerLinkActive="active"
-            [routerLinkActiveOptions]="{ exact: true }"
-            (click)="cerrarMenu()"
-          >
-            <span>Gastos</span>
-          </a>
-
-          <a
-            routerLink="/camiones/desactivar"
-            routerLinkActive="active"
-            [routerLinkActiveOptions]="{ exact: true }"
-            (click)="cerrarMenu()"
-          >
-            <span>Desactivar Camión</span>
-          </a>
+            <a
+              routerLink="/camiones"
+              routerLinkActive="active"
+              [routerLinkActiveOptions]="{ exact: true }"
+              (click)="cerrarMenu()"
+            >
+              <span>Listado Camiones</span>
+            </a>
+          
+            @if (permissionService.tienePermiso('CAMIONES_CREAR')) {
+          
+              <a
+                routerLink="/camiones/nuevo"
+                routerLinkActive="active"
+                [routerLinkActiveOptions]="{ exact: true }"
+                (click)="cerrarMenu()"
+              >
+                <span>Registrar Camión</span>
+              </a>
+          
+            }
+          
+            @if (permissionService.tienePermiso('CAMIONES_EDITAR')) {
+          
+              <a
+                routerLink="/camiones/modificar"
+                routerLinkActive="active"
+                [routerLinkActiveOptions]="{ exact: true }"
+                (click)="cerrarMenu()"
+              >
+                <span>Modificar Camión</span>
+              </a>
+          
+              <a
+                routerLink="/camiones/asignar-conductor"
+                routerLinkActive="active"
+                [routerLinkActiveOptions]="{ exact: true }"
+                (click)="cerrarMenu()"
+              >
+                <span>Asignar Conductor</span>
+              </a>
+          
+              <a
+                routerLink="/camiones/asignar-remolque"
+                routerLinkActive="active"
+                [routerLinkActiveOptions]="{ exact: true }"
+                (click)="cerrarMenu()"
+              >
+                <span>Asignar Remolque</span>
+              </a>
+          
+              <a
+                routerLink="/camiones/desactivar"
+                routerLinkActive="active"
+                [routerLinkActiveOptions]="{ exact: true }"
+                (click)="cerrarMenu()"
+              >
+                <span>Desactivar Camión</span>
+              </a>
+          
+            }
+          
+            @if (permissionService.tienePermiso('GASTOS_VER')) {
+          
+              <a
+                routerLink="/camiones/gastos"
+                routerLinkActive="active"
+                [routerLinkActiveOptions]="{ exact: true }"
+                (click)="cerrarMenu()"
+              >
+                <span>Gastos</span>
+              </a>
+          
+            }
+          
         </div>
       </div>
 
@@ -329,41 +372,51 @@
         </button>
 
         <div class="submenu" [class.open]="submenuAbierto === 'conductores'">
-          <a
-            routerLink="/conductores"
-            routerLinkActive="active"
-            [routerLinkActiveOptions]="{ exact: true }"
-            (click)="cerrarMenu()"
-          >
-            <span>Listado Conductores</span>
-          </a>
 
-          <a
-            routerLink="/conductores/nuevo"
-            routerLinkActive="active"
-            [routerLinkActiveOptions]="{ exact: true }"
-            (click)="cerrarMenu()"
-          >
-            <span>Registrar Conductor</span>
-          </a>
-
-          <a
-            routerLink="/conductores/modificar"
-            routerLinkActive="active"
-            [routerLinkActiveOptions]="{ exact: true }"
-            (click)="cerrarMenu()"
-          >
-            <span>Modificar Conductor</span>
-          </a>
-
-          <a
-            routerLink="/conductores/desactivar"
-            routerLinkActive="active"
-            [routerLinkActiveOptions]="{ exact: true }"
-            (click)="cerrarMenu()"
-          >
-            <span>Desactivar Conductor</span>
-          </a>
+            <a
+              routerLink="/conductores"
+              routerLinkActive="active"
+              [routerLinkActiveOptions]="{ exact: true }"
+              (click)="cerrarMenu()"
+            >
+              <span>Listado Conductores</span>
+            </a>
+          
+            @if (permissionService.tienePermiso('CONDUCTORES_CREAR')) {
+          
+              <a
+                routerLink="/conductores/nuevo"
+                routerLinkActive="active"
+                [routerLinkActiveOptions]="{ exact: true }"
+                (click)="cerrarMenu()"
+              >
+                <span>Registrar Conductor</span>
+              </a>
+          
+            }
+          
+            @if (permissionService.tienePermiso('CONDUCTORES_EDITAR')) {
+          
+              <a
+                routerLink="/conductores/modificar"
+                routerLinkActive="active"
+                [routerLinkActiveOptions]="{ exact: true }"
+                (click)="cerrarMenu()"
+              >
+                <span>Modificar Conductor</span>
+              </a>
+          
+              <a
+                routerLink="/conductores/desactivar"
+                routerLinkActive="active"
+                [routerLinkActiveOptions]="{ exact: true }"
+                (click)="cerrarMenu()"
+              >
+                <span>Desactivar Conductor</span>
+              </a>
+          
+            }
+          
         </div>
       </div>
 
@@ -390,75 +443,138 @@
         </button>
 
         <div class="submenu" [class.open]="submenuAbierto === 'remolques'">
+
+            <a
+              routerLink="/remolques"
+              routerLinkActive="active"
+              [routerLinkActiveOptions]="{ exact: true }"
+              (click)="cerrarMenu()"
+            >
+              <span>Listado Remolques</span>
+            </a>
+          
+            @if (permissionService.tienePermiso('REMOLQUES_CREAR')) {
+          
+              <a
+                routerLink="/remolques/nuevo"
+                routerLinkActive="active"
+                [routerLinkActiveOptions]="{ exact: true }"
+                (click)="cerrarMenu()"
+              >
+                <span>Registrar Remolque</span>
+              </a>
+          
+            }
+          
+            @if (permissionService.tienePermiso('REMOLQUES_EDITAR')) {
+          
+              <a
+                routerLink="/remolques/modificar"
+                routerLinkActive="active"
+                [routerLinkActiveOptions]="{ exact: true }"
+                (click)="cerrarMenu()"
+              >
+                <span>Modificar Remolque</span>
+              </a>
+          
+              <a
+                routerLink="/remolques/desactivar"
+                routerLinkActive="active"
+                [routerLinkActiveOptions]="{ exact: true }"
+                (click)="cerrarMenu()"
+              >
+                <span>Desactivar Remolque</span>
+              </a>
+          
+              <a
+                routerLink="/remolques/asignar-camion"
+                routerLinkActive="active"
+                [routerLinkActiveOptions]="{ exact: true }"
+                (click)="cerrarMenu()"
+              >
+                <span>Asignar Camión</span>
+              </a>
+          
+            }
+          
+            @if (permissionService.tienePermiso('GASTOS_VER')) {
+          
+              <a
+                routerLink="/remolques/gastos"
+                routerLinkActive="active"
+                [routerLinkActiveOptions]="{ exact: true }"
+                (click)="cerrarMenu()"
+              >
+                <span>Gastos</span>
+              </a>
+          
+            }
+          
+        </div>
+      </div>
+
+      <!-- ========================= -->
+      <!-- USUARIOS -->
+      <!-- ========================= -->
+
+      @if (authService.esAdministrador()) {
+
+      <div class="menu-group">
+        <button
+          type="button"
+          class="menu-parent"
+          [class.open]="submenuAbierto === 'usuarios'"
+          (click)="toggleSubmenu('usuarios')"
+        >
+          <span class="menu-parent-content">
+            <span class="icon">♙</span>
+
+            <span>Usuarios</span>
+          </span>
+
+          <span class="submenu-arrow"> @if (submenuAbierto === 'usuarios') { ⌃ } @else { ⌵ } </span>
+        </button>
+
+        <div class="submenu" [class.open]="submenuAbierto === 'usuarios'">
           <a
-            routerLink="/remolques"
+            routerLink="/usuarios"
             routerLinkActive="active"
             [routerLinkActiveOptions]="{ exact: true }"
             (click)="cerrarMenu()"
           >
-            <span>Listado Remolques</span>
+            <span>Listado Usuarios</span>
           </a>
 
           <a
-            routerLink="/remolques/nuevo"
+            routerLink="/usuarios/nuevo"
             routerLinkActive="active"
             [routerLinkActiveOptions]="{ exact: true }"
             (click)="cerrarMenu()"
           >
-            <span>Registrar Remolque</span>
-          </a>
-
-          <a
-            routerLink="/remolques/modificar"
-            routerLinkActive="active"
-            [routerLinkActiveOptions]="{ exact: true }"
-            (click)="cerrarMenu()"
-          >
-            <span>Modificar Remolque</span>
-          </a>
-
-          <a
-            routerLink="/remolques/desactivar"
-            routerLinkActive="active"
-            [routerLinkActiveOptions]="{ exact: true }"
-            (click)="cerrarMenu()"
-          >
-            <span>Desactivar Remolque</span>
-          </a>
-
-          <a
-            routerLink="/remolques/asignar-camion"
-            routerLinkActive="active"
-            [routerLinkActiveOptions]="{ exact: true }"
-            (click)="cerrarMenu()"
-          >
-            <span>Asignar Camión</span>
-          </a>
-
-          <a
-            routerLink="/remolques/gastos"
-            routerLinkActive="active"
-            [routerLinkActiveOptions]="{ exact: true }"
-            (click)="cerrarMenu()"
-          >
-            <span>Gastos</span>
+            <span>Registrar Usuario</span>
           </a>
         </div>
       </div>
+
+      }
 
       <!-- ========================= -->
       <!-- PAGOS -->
       <!-- ========================= -->
 
-      <a
-        routerLink="/pagos"
-        routerLinkActive="active"
-        [routerLinkActiveOptions]="{ exact: true }"
-        (click)="cerrarMenu()"
-      >
-        <span class="icon">$</span>
-        <span>Pagos</span>
-      </a>
+      @if (permissionService.tienePermiso('VIAJES_EDITAR')) {
+
+        <a
+          routerLink="/pagos"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+          (click)="cerrarMenu()"
+        >
+          <span class="icon">$</span>
+          <span>Pagos</span>
+        </a>
+      
+      }
     </nav>
 
     <!-- ========================= -->

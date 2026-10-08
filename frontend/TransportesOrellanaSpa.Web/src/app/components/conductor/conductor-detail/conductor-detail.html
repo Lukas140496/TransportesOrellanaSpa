@@ -89,35 +89,39 @@
 
         <div class="cabecera-botones">
 
-          @if (conductor.activo) {
-
+            @if (permissionService.tienePermiso('CONDUCTORES_EDITAR')) {
+          
+              @if (conductor.activo) {
+          
+                <button
+                  type="button"
+                  class="btn-danger"
+                  [disabled]="procesandoEstado"
+                  (click)="abrirModalEstado()">
+                  Desactivar conductor
+                </button>
+          
+              } @else {
+          
+                <button
+                  type="button"
+                  class="btn-activar"
+                  [disabled]="procesandoEstado"
+                  (click)="abrirModalEstado()">
+                  Activar conductor
+                </button>
+          
+              }
+          
+            }
+          
             <button
               type="button"
-              class="btn-danger"
-              [disabled]="procesandoEstado"
-              (click)="abrirModalEstado()">
-              Desactivar conductor
+              class="btn-volver"
+              (click)="volver()">
+              ← Volver
             </button>
-
-          } @else {
-
-            <button
-              type="button"
-              class="btn-activar"
-              [disabled]="procesandoEstado"
-              (click)="abrirModalEstado()">
-              Activar conductor
-            </button>
-
-          }
-
-          <button
-            type="button"
-            class="btn-volver"
-            (click)="volver()">
-            ← Volver
-          </button>
-
+          
         </div>
 
       </div>
@@ -151,15 +155,19 @@
 
         </div>
 
-        <button
-          type="button"
-          class="btn-editar"
-          (click)="editarConductor()">
+        @if (permissionService.tienePermiso('CONDUCTORES_EDITAR')) {
 
-          ✎
-          Editar conductor
-
-        </button>
+            <button
+              type="button"
+              class="btn-editar"
+              (click)="editarConductor()">
+          
+              ✎
+              Editar conductor
+          
+            </button>
+          
+        }
 
       </div>
 

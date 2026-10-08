@@ -53,33 +53,41 @@
 
         </span>
 
-        <button
-          type="button"
-          class="btn-primary"
-          (click)="editar()">
-          Editar cliente
-        </button>
+        @if (permissionService.tienePermiso('CLIENTES_EDITAR')) {
 
-        @if (cliente.activo) {
+            <button
+              type="button"
+              class="btn-primary"
+              (click)="editar()">
+              Editar cliente
+            </button>
+          
+        }
 
-          <button
-            type="button"
-            class="btn-danger"
-            (click)="mostrarConfirmacionEstado()"
-            [disabled]="procesandoEstado">
-            Desactivar cliente
-          </button>
+        @if (permissionService.tienePermiso('CLIENTES_EDITAR')) {
 
-        } @else {
-
-          <button
-            type="button"
-            class="btn-success"
-            (click)="mostrarConfirmacionEstado()"
-            [disabled]="procesandoEstado">
-            Activar cliente
-          </button>
-
+            @if (cliente.activo) {
+          
+              <button
+                type="button"
+                class="btn-danger"
+                (click)="mostrarConfirmacionEstado()"
+                [disabled]="procesandoEstado">
+                Desactivar cliente
+              </button>
+          
+            } @else {
+          
+              <button
+                type="button"
+                class="btn-success"
+                (click)="mostrarConfirmacionEstado()"
+                [disabled]="procesandoEstado">
+                Activar cliente
+              </button>
+          
+            }
+          
         }
 
         <button
@@ -224,120 +232,122 @@
      MODAL DE CONFIRMACIÓN
      ========================= -->
 
-@if (modalConfirmacionVisible && cliente) {
+@if (permissionService.tienePermiso('CLIENTES_EDITAR')) {
 
-  <div
-    class="modal-backdrop"
-    (click)="cerrarModalConfirmacion()">
+    @if (modalConfirmacionVisible && cliente) {
 
-    <div
-      class="modal"
-      role="alertdialog"
-      aria-modal="true"
-      (click)="$event.stopPropagation()">
-
-      <div
-        class="modal-icon"
-        [class.warning]="cliente.activo"
-        [class.activate]="!cliente.activo">
-
-        @if (cliente.activo) {
-          !
-        } @else {
-          ✓
-        }
-
-      </div>
-
-      <h2>
-
-        @if (cliente.activo) {
-          ¿Desactivar cliente?
-        } @else {
-          ¿Activar cliente?
-        }
-
-      </h2>
-
-      <p>
-        Estás a punto de
-        @if (cliente.activo) {
-          desactivar
-        } @else {
-          activar
-        }
-        al cliente
-        <strong>{{ cliente.nombre }}</strong>.
-      </p>
-
-      <p class="modal-secondary-text">
-
-        @if (cliente.activo) {
-
-          El cliente no será eliminado y su historial se conservará.
-          No podrá utilizarse para nuevos viajes mientras esté inactivo.
-
-        } @else {
-
-          El cliente volverá a estar disponible para nuevos viajes.
-          Su historial y todos sus datos se conservarán.
-
-        }
-
-      </p>
-
-      <div class="modal-actions">
-
-        <button
-          type="button"
-          class="btn-secondary"
-          [disabled]="procesandoEstado"
+        <div
+          class="modal-backdrop"
           (click)="cerrarModalConfirmacion()">
-          Cancelar
-        </button>
-
-        @if (cliente.activo) {
-
-          <button
-            type="button"
-            class="btn-danger"
-            [disabled]="procesandoEstado"
-            (click)="confirmarCambioEstado()">
-
-            @if (procesandoEstado) {
-              Desactivando...
-            } @else {
-              Sí, desactivar
-            }
-
-          </button>
-
-        } @else {
-
-          <button
-            type="button"
-            class="btn-success"
-            [disabled]="procesandoEstado"
-            (click)="confirmarCambioEstado()">
-
-            @if (procesandoEstado) {
-              Activando...
-            } @else {
-              Sí, activar
-            }
-
-          </button>
-
-        }
-
-      </div>
-
-    </div>
-
-  </div>
-
+      
+          <div
+            class="modal"
+            role="alertdialog"
+            aria-modal="true"
+            (click)="$event.stopPropagation()">
+      
+            <div
+              class="modal-icon"
+              [class.warning]="cliente.activo"
+              [class.activate]="!cliente.activo">
+      
+              @if (cliente.activo) {
+                !
+              } @else {
+                ✓
+              }
+      
+            </div>
+      
+            <h2>
+      
+              @if (cliente.activo) {
+                ¿Desactivar cliente?
+              } @else {
+                ¿Activar cliente?
+              }
+      
+            </h2>
+      
+            <p>
+              Estás a punto de
+              @if (cliente.activo) {
+                desactivar
+              } @else {
+                activar
+              }
+              al cliente
+              <strong>{{ cliente.nombre }}</strong>.
+            </p>
+      
+            <p class="modal-secondary-text">
+      
+              @if (cliente.activo) {
+      
+                El cliente no será eliminado y su historial se conservará.
+                No podrá utilizarse para nuevos viajes mientras esté inactivo.
+      
+              } @else {
+      
+                El cliente volverá a estar disponible para nuevos viajes.
+                Su historial y todos sus datos se conservarán.
+      
+              }
+      
+            </p>
+      
+            <div class="modal-actions">
+      
+              <button
+                type="button"
+                class="btn-secondary"
+                [disabled]="procesandoEstado"
+                (click)="cerrarModalConfirmacion()">
+                Cancelar
+              </button>
+      
+              @if (cliente.activo) {
+      
+                <button
+                  type="button"
+                  class="btn-danger"
+                  [disabled]="procesandoEstado"
+                  (click)="confirmarCambioEstado()">
+      
+                  @if (procesandoEstado) {
+                    Desactivando...
+                  } @else {
+                    Sí, desactivar
+                  }
+      
+                </button>
+      
+              } @else {
+      
+                <button
+                  type="button"
+                  class="btn-success"
+                  [disabled]="procesandoEstado"
+                  (click)="confirmarCambioEstado()">
+      
+                  @if (procesandoEstado) {
+                    Activando...
+                  } @else {
+                    Sí, activar
+                  }
+      
+                </button>
+      
+              }
+      
+            </div>
+      
+          </div>
+      
+        </div>
+      
+    }
 }
-
 
 <!-- =========================
      MODAL DE ERROR

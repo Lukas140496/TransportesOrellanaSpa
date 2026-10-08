@@ -8,10 +8,18 @@
       </div>
     </div>
 
-    <button type="button" class="btn-nuevo" (click)="nuevoViaje()">
-      <span class="btn-icon">+</span>
-      Nuevo Servicio
-    </button>
+    @if (permissionService.tienePermiso('VIAJES_CREAR')) {
+
+        <button
+          type="button"
+          class="btn-nuevo"
+          (click)="nuevoViaje()"
+        >
+          <span class="btn-icon">+</span>
+          Nuevo Servicio
+        </button>
+      
+    }
   </div>
 
   <!-- =========================
