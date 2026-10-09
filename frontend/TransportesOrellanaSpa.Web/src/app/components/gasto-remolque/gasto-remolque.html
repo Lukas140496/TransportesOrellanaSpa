@@ -185,199 +185,155 @@
          FILTROS
          ===================================================== -->
 
-    <div class="filtros-card">
+         <div class="filtros-card">
 
-
-      <!-- BÚSQUEDA -->
-
-      <div class="filtro-busqueda">
-
-        <label for="busqueda">
-          Buscar
-        </label>
-
-        <div class="busqueda">
-
-          <span class="search-icon">
-            ⌕
-          </span>
-
-          <input
-            id="busqueda"
-            type="text"
-            [(ngModel)]="busqueda"
-            placeholder="Buscar por patente o descripción..."
-            aria-label="Buscar gastos de remolques"
-          />
-
-          @if (busqueda) {
-
-            <button
-              type="button"
-              class="btn-limpiar-busqueda"
-              (click)="limpiarBusqueda()"
-              aria-label="Limpiar búsqueda"
-            >
-              ×
-            </button>
-
-          }
-
+            <!-- BÚSQUEDA -->
+            <div class="filtro-busqueda">
+              <label for="busqueda">Buscar</label>
+          
+              <div class="busqueda">
+                <span class="search-icon">⌕</span>
+          
+                <input
+                  id="busqueda"
+                  type="text"
+                  [(ngModel)]="busqueda"
+                  (ngModelChange)="cambiarBusqueda()"
+                  placeholder="Buscar por patente o descripción..."
+                  aria-label="Buscar gastos de remolques"
+                />
+          
+                @if (busqueda) {
+                  <button
+                    type="button"
+                    class="btn-limpiar-busqueda"
+                    (click)="limpiarBusqueda()"
+                    aria-label="Limpiar búsqueda"
+                  >
+                    ×
+                  </button>
+                }
+              </div>
+            </div>
+          
+            <!-- FILTRO POR PATENTE -->
+            <div class="filtro-patente">
+              <label for="filtroPatente">Patente</label>
+          
+              <select
+                id="filtroPatente"
+                [(ngModel)]="filtroPatente"
+                (ngModelChange)="cambiarFiltroPatente()"
+              >
+                <option value="todos">Remolques</option>
+          
+                @for (remolque of remolques; track remolque.id) {
+                  <option [value]="remolque.patente">
+                    {{ remolque.patente }}
+                  </option>
+                }
+              </select>
+            </div>
+          
+            <!-- FECHA DESDE -->
+            <div class="filtro-fecha">
+              <label for="fechaDesde">Desde</label>
+              <input
+                id="fechaDesde"
+                type="date"
+                [(ngModel)]="fechaDesde"
+                (ngModelChange)="cambiarFiltrosFecha()"
+              />
+            </div>
+          
+            <!-- FECHA HASTA -->
+            <div class="filtro-fecha">
+              <label for="fechaHasta">Hasta</label>
+              <input
+                id="fechaHasta"
+                type="date"
+                [(ngModel)]="fechaHasta"
+                (ngModelChange)="cambiarFiltrosFecha()"
+              />
+            </div>
+          
+            <!-- FILTRO TIPO -->
+            <div class="filtro-tipo">
+              <span class="filtro-label">Tipo:</span>
+          
+              <button
+                type="button"
+                [class.active]="filtroTipo === 'todos'"
+                (click)="cambiarFiltroTipo('todos')"
+              >Todos</button>
+          
+              <button
+                type="button"
+                [class.active]="filtroTipo === 'mantención'"
+                (click)="cambiarFiltroTipo('mantención')"
+              >Mantención</button>
+          
+              <button
+                type="button"
+                [class.active]="filtroTipo === 'reparación'"
+                (click)="cambiarFiltroTipo('reparación')"
+              >Reparación</button>
+          
+              <button
+                type="button"
+                [class.active]="filtroTipo === 'neumáticos'"
+                (click)="cambiarFiltroTipo('neumáticos')"
+              >Neumáticos</button>
+          
+              <button
+                type="button"
+                [class.active]="filtroTipo === 'permisos'"
+                (click)="cambiarFiltroTipo('permisos')"
+              >Permisos</button>
+          
+              <button
+                type="button"
+                [class.active]="filtroTipo === 'seguros'"
+                (click)="cambiarFiltroTipo('seguros')"
+              >Seguros</button>
+          
+              <button
+                type="button"
+                [class.active]="filtroTipo === 'revision'"
+                (click)="cambiarFiltroTipo('revision')"
+              >Revisión</button>
+          
+              <button
+                type="button"
+                [class.active]="filtroTipo === 'multas'"
+                (click)="cambiarFiltroTipo('multas')"
+              >Multas</button>
+          
+              <button
+                type="button"
+                [class.active]="filtroTipo === 'lavado'"
+                (click)="cambiarFiltroTipo('lavado')"
+              >Lavado</button>
+          
+              <button
+                type="button"
+                [class.active]="filtroTipo === 'otros'"
+                (click)="cambiarFiltroTipo('otros')"
+              >Otros</button>
+            </div>
+          
+            <!-- LIMPIAR FILTROS -->
+            @if (hayFiltrosAplicados()) {
+              <button
+                type="button"
+                class="btn-limpiar-filtros"
+                (click)="limpiarFiltros()"
+              >
+                Limpiar filtros
+              </button>
+            }
+          
         </div>
-
-      </div>
-
-
-      <!-- FECHA DESDE -->
-
-      <div class="filtro-fecha">
-
-        <label for="fechaDesde">
-          Desde
-        </label>
-
-        <input
-          id="fechaDesde"
-          type="date"
-          [(ngModel)]="fechaDesde"
-        />
-
-      </div>
-
-
-      <!-- FECHA HASTA -->
-
-      <div class="filtro-fecha">
-
-        <label for="fechaHasta">
-          Hasta
-        </label>
-
-        <input
-          id="fechaHasta"
-          type="date"
-          [(ngModel)]="fechaHasta"
-        />
-
-      </div>
-
-
-      <!-- FILTRO TIPO -->
-
-      <div class="filtro-tipo">
-
-        <span class="filtro-label">
-          Tipo:
-        </span>
-
-
-        <button
-          type="button"
-          [class.active]="filtroTipo === 'todos'"
-          (click)="cambiarFiltroTipo('todos')"
-        >
-          Todos
-        </button>
-
-
-        <button
-          type="button"
-          [class.active]="filtroTipo === 'mantención'"
-          (click)="cambiarFiltroTipo('mantención')"
-        >
-          Mantención
-        </button>
-
-
-        <button
-          type="button"
-          [class.active]="filtroTipo === 'reparación'"
-          (click)="cambiarFiltroTipo('reparación')"
-        >
-          Reparación
-        </button>
-
-
-        <button
-          type="button"
-          [class.active]="filtroTipo === 'neumáticos'"
-          (click)="cambiarFiltroTipo('neumáticos')"
-        >
-          Neumáticos
-        </button>
-
-
-        <button
-          type="button"
-          [class.active]="filtroTipo === 'permisos'"
-          (click)="cambiarFiltroTipo('permisos')"
-        >
-          Permisos
-        </button>
-
-
-        <button
-          type="button"
-          [class.active]="filtroTipo === 'seguros'"
-          (click)="cambiarFiltroTipo('seguros')"
-        >
-          Seguros
-        </button>
-
-
-        <button
-          type="button"
-          [class.active]="filtroTipo === 'revision'"
-          (click)="cambiarFiltroTipo('revision')"
-        >
-          Revisión
-        </button>
-
-
-        <button
-          type="button"
-          [class.active]="filtroTipo === 'multas'"
-          (click)="cambiarFiltroTipo('multas')"
-        >
-          Multas
-        </button>
-
-
-        <button
-          type="button"
-          [class.active]="filtroTipo === 'lavado'"
-          (click)="cambiarFiltroTipo('lavado')"
-        >
-          Lavado
-        </button>
-
-
-        <button
-          type="button"
-          [class.active]="filtroTipo === 'otros'"
-          (click)="cambiarFiltroTipo('otros')"
-        >
-          Otros
-        </button>
-
-      </div>
-
-
-      <!-- LIMPIAR FILTROS -->
-
-      @if (hayFiltrosAplicados()) {
-
-        <button
-          type="button"
-          class="btn-limpiar-filtros"
-          (click)="limpiarFiltros()"
-        >
-          Limpiar filtros
-        </button>
-
-      }
-
-    </div>
 
 
     <!-- =====================================================

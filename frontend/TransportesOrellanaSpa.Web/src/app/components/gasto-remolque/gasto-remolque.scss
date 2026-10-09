@@ -254,6 +254,59 @@
 }
 
 // =====================================================
+// FILTRO POR PATENTE
+// =====================================================
+
+.filtro-patente {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 5px;
+  flex: 0 1 175px;
+  min-width: 155px;
+}
+
+.filtro-patente label {
+  height: 15px;
+  color: #6b778c;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 15px;
+}
+
+.filtro-patente select {
+  width: 100%;
+  height: 42px;
+  box-sizing: border-box;
+  padding: 0 32px 0 11px;
+
+  border: 1px solid #d8dee8;
+  border-radius: 8px;
+
+  background-color: #fff;
+  color: #172b4d;
+
+  font-family: inherit;
+  font-size: 13px;
+
+  outline: none;
+  cursor: pointer;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.filtro-patente select:hover {
+  border-color: #b9c5d5;
+}
+
+.filtro-patente select:focus {
+  border-color: #2f80ed;
+  box-shadow: 0 0 0 3px rgba(47, 128, 237, 0.1);
+}
+
+// =====================================================
 // FECHAS
 // =====================================================
 
