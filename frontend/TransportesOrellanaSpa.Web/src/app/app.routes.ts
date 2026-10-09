@@ -46,6 +46,7 @@ import { Login } from './components/login/login';
 import { MiPerfil } from './components/mi-perfil/mi-perfil';
 import { UsuarioList } from './components/usuario/usuario-list/usuario-list';
 import { UsuarioForm } from './components/usuario/usuario-form/usuario-form';
+import { UsuarioModificar } from './components/usuario/usuario-modificar/usuario-modificar';
 
 import { GastoList } from './components/gasto/gasto-list/gasto-list';
 import { GastoRemolqueComponent } from './components/gasto-remolque/gasto-remolque';
@@ -160,6 +161,12 @@ export const routes: Routes = [
             {
                 path: 'usuarios/nuevo',
                 component: UsuarioForm,
+                canActivate: [adminGuard]
+            },
+
+            {
+                path: 'usuarios/modificar/:id',
+                component: UsuarioModificar,
                 canActivate: [adminGuard]
             },
 

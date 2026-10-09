@@ -183,4 +183,11 @@ export class UsuarioList implements OnInit {
 
   }
 
+  gestionarUsuario(id: number): void {
+    this.router.navigate([
+      '/usuarios/modificar',
+      id
+    ]);
+  }
+
 }
