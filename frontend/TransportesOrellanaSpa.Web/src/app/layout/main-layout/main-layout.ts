@@ -32,13 +32,13 @@ export class MainLayout {
     submenuAbierto: string | null = null;
     sesionExpiradaVisible = false;
 
+
     ngOnInit(): void {
-
-        this.authService.sesionExpirada$.subscribe(() => {
-            this.sesionExpiradaVisible = true;
+        this.authService.sesionExpirada$.subscribe(expirada => {
+            this.sesionExpiradaVisible = expirada;
         });
-
     }
+
 
     // =========================
     // USUARIO ACTUAL

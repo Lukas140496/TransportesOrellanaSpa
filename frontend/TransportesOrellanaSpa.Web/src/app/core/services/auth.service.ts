@@ -1,34 +1,42 @@
+
 import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable, tap, Subject } from 'rxjs';
-
+import {
+    BehaviorSubject,
+    Observable,
+    catchError,
+    of,
+    tap,
+    throwError
+} from 'rxjs';
 import { ApiService } from './api.service';
 import { LoginRequest } from '../models/auth/login-request';
 import { LoginResponse } from '../models/auth/login-response';
 import { UsuarioPerfil } from '../models/usuario/usuario-perfil';
 import { PermissionService } from './permission.service';
 
-@Injectable({
-    providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class AuthService {
-
     private readonly apiService = inject(ApiService);
     private readonly router = inject(Router);
     private readonly permissionService = inject(PermissionService);
 
     private readonly tokenKey = 'auth_token';
     private readonly userKey = 'auth_user';
-    private sesionExpiradaEnProceso = false;
-    private readonly sesionExpiradaSubject = new Subject<void>();
 
-    readonly sesionExpirada$ = this.sesionExpiradaSubject.asObservable();
+    private sesionExpiradaEnProceso = false;
+    private readonly sesionExpiradaSubject =
+        new BehaviorSubject<boolean>(false);
+
+    readonly sesionExpirada$ =
+        this.sesionExpiradaSubject.asObservable();
 
     login(request: LoginRequest): Observable<LoginResponse> {
         return this.apiService.login(request).pipe(
             tap(response => {
-
                 this.sesionExpiradaEnProceso = false;
+                this.sesionExpiradaSubject.next(false);
+                this.permissionService.limpiarPermisos();
 
                 const conexionAnterior =
                     localStorage.getItem('ultima_conexion_local');
@@ -45,10 +53,7 @@ export class AuthService {
                     new Date().toISOString()
                 );
 
-                localStorage.setItem(
-                    this.tokenKey,
-                    response.token
-                );
+                localStorage.setItem(this.tokenKey, response.token);
 
                 localStorage.setItem(
                     this.userKey,
@@ -65,9 +70,11 @@ export class AuthService {
                 );
 
                 this.permissionService.cargarPermisos().subscribe({
-                    error: error => {
-                        console.error('Error al cargar permisos:', error);
-                    }
+                    error: error =>
+                        console.error(
+                            'Error al cargar permisos:',
+                            error
+                        )
                 });
             })
         );
@@ -75,10 +82,7 @@ export class AuthService {
 
     actualizarUsuarioLocalmente(perfil: UsuarioPerfil): void {
         const usuarioActual = this.getUsuario();
-
-        if (!usuarioActual) {
-            return;
-        }
+        if (!usuarioActual) return;
 
         localStorage.setItem(
             this.userKey,
@@ -97,6 +101,8 @@ export class AuthService {
 
     logout(): void {
         this.sesionExpiradaEnProceso = false;
+        this.sesionExpiradaSubject.next(false);
+        this.permissionService.limpiarPermisos();
 
         localStorage.removeItem(this.tokenKey);
         localStorage.removeItem(this.userKey);
@@ -105,14 +111,11 @@ export class AuthService {
     }
 
     manejarSesionExpirada(): void {
-
-        if (this.sesionExpiradaEnProceso) {
-            return;
-        }
+        if (this.sesionExpiradaEnProceso) return;
 
         this.sesionExpiradaEnProceso = true;
-
-        this.sesionExpiradaSubject.next();
+        this.permissionService.limpiarPermisos();
+        this.sesionExpiradaSubject.next(true);
     }
 
     getToken(): string | null {
@@ -122,9 +125,7 @@ export class AuthService {
     getUsuario(): LoginResponse | null {
         const usuarioGuardado = localStorage.getItem(this.userKey);
 
-        if (!usuarioGuardado) {
-            return null;
-        }
+        if (!usuarioGuardado) return null;
 
         try {
             return JSON.parse(usuarioGuardado) as LoginResponse;
@@ -139,13 +140,18 @@ export class AuthService {
 
     cargarPermisosSesion(): Observable<string[]> {
         if (!this.estaAutenticado()) {
-            return new Observable<string[]>(subscriber => {
-                subscriber.next([]);
-                subscriber.complete();
-            });
+            return of([]);
         }
-    
-        return this.permissionService.cargarPermisos();
+
+        return this.permissionService.cargarPermisos().pipe(
+            catchError(error => {
+                if (error?.status === 401) {
+                    return of([]);
+                }
+
+                return throwError(() => error);
+            })
+        );
     }
 
     esAdministrador(): boolean {
