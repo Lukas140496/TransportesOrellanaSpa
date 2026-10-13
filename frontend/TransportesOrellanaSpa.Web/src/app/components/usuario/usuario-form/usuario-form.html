@@ -1,7 +1,7 @@
 <div class="form-page">
   <div class="page-header">
     <div>
-      <h1>Registrar Usuario</h1>
+      <h1>Registro de Usuario</h1>
       <p>Ingresa la información y permisos del nuevo usuario.</p>
     </div>
 
@@ -303,7 +303,12 @@
 @if (modalExitoVisible) {
 
 <div class="modal-backdrop" (click)="cerrarModalExito()">
-  <div class="modal" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
+  <div
+    class="modal modal-exito"
+    role="dialog"
+    aria-modal="true"
+    (click)="$event.stopPropagation()"
+  >
     <div class="modal-icon success">✓</div>
 
     <h2>
@@ -314,7 +319,23 @@
       {{ modalExitoMensaje }}
     </p>
 
-    <button type="button" class="btn-primary modal-button" (click)="cerrarModalExito()">
+    <div class="usuario-creado-info">
+      <div class="usuario-creado-campo">
+        <span>Nombre completo</span>
+        <strong>{{ modalExitoNombre }}</strong>
+      </div>
+
+      <div class="usuario-creado-campo">
+        <span>RUT</span>
+        <strong>{{ modalExitoRut }}</strong>
+      </div>
+    </div>
+
+    <button
+      type="button"
+      class="btn-primary modal-button"
+      (click)="cerrarModalExito()"
+    >
       Aceptar
     </button>
   </div>

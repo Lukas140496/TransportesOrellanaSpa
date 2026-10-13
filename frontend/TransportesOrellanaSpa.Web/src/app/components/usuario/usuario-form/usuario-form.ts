@@ -33,11 +33,14 @@ export class UsuarioForm implements OnInit {
   modalErrorVisible = false;
   modalIncompletoVisible = false;
 
-  modalErrorTitulo = '';
-  modalErrorMensaje = '';
-
   modalExitoTitulo = '';
   modalExitoMensaje = '';
+
+  modalExitoNombre = '';
+  modalExitoRut = '';
+
+  modalErrorTitulo = '';
+  modalErrorMensaje = '';
 
   // Modal de cambios sin guardar
   modalSalirVisible = false;
@@ -299,17 +302,27 @@ export class UsuarioForm implements OnInit {
       next: resultado => {
 
         this.guardando = false;
-
+      
         this.formularioModificado = false;
-
+      
         this.modalExitoTitulo =
           'Usuario creado correctamente';
-
+      
         this.modalExitoMensaje =
           'El usuario fue registrado exitosamente.';
-
+      
+        this.modalExitoNombre = [
+          usuario.nombres,
+          usuario.apellidoPaterno,
+          usuario.apellidoMaterno
+        ]
+          .filter(parte => parte.trim())
+          .join(' ');
+      
+        this.modalExitoRut = usuario.rut;
+      
         this.modalExitoVisible = true;
-
+      
       },
 
       error: error => {
@@ -327,8 +340,8 @@ export class UsuarioForm implements OnInit {
         if (error.status === 409) {
 
           this.modalErrorMensaje =
-            error.error ||
-            'Ya existe un usuario registrado con ese RUT o correo electrónico.';
+            error.error?.mensaje ??
+            'El correo electrónico o el RUT ya están registrados.';
 
         } else {
 
