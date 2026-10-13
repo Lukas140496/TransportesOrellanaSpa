@@ -128,13 +128,6 @@ public class GastoController : ControllerBase
                 "El tipo de gasto indicado no es válido.");
         }
 
-        // El combustible se genera automáticamente desde los viajes.
-        if (tipoGasto == "combustible")
-        {
-            return BadRequest(
-                "Los gastos de combustible se generan automáticamente desde los viajes.");
-        }
-
         if (dto.Monto <= 0)
         {
             return BadRequest(
