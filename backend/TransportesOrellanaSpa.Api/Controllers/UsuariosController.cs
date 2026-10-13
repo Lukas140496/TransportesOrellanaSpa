@@ -18,12 +18,16 @@ public class UsuariosController : ControllerBase
     private readonly AppDbContext _context;
     private readonly PasswordService _passwordService;
 
+    private readonly CorreoService _correoService;
+
     public UsuariosController(
         AppDbContext context,
-        PasswordService passwordService)
+        PasswordService passwordService,
+        CorreoService correoService)
     {
         _context = context;
         _passwordService = passwordService;
+        _correoService = correoService;
     }
 
     // =========================
@@ -719,6 +723,30 @@ public class UsuariosController : ControllerBase
         _context.UsuariosRoles.Add(usuarioRol);
 
         await _context.SaveChangesAsync();
+
+
+        // =========================
+        // ENVIAR CORREO DE BIENVENIDA
+        // =========================
+
+        try
+        {
+            await _correoService.EnviarBienvenidaAsync(
+                email,
+                nombres,
+                "https://transportesorellana-web-d8hfbucyh9fjffcj.chilecentral-01.azurewebsites.net",
+                rol.Nombre
+            );
+        }
+        catch (Exception ex)
+        {
+            // El usuario ya está creado. Un fallo del correo
+            // no debe convertir la operación en un error.
+            Console.Error.WriteLine(
+                $"Error al enviar correo de bienvenida al usuario {usuario.Id}: {ex.Message}"
+            );
+        }
+
 
         return StatusCode(201, new
         {

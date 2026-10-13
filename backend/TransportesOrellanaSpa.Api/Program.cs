@@ -60,6 +60,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<PasswordService>();
 builder.Services.AddScoped<AutenticacionService>();
 builder.Services.AddScoped<JwtService>();
+builder.Services.AddScoped<CorreoService>();
 
 builder.Services.AddScoped<IAuthorizationHandler, PermissionHandler>();
 
