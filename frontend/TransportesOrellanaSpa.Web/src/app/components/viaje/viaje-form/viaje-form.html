@@ -281,26 +281,24 @@
             </label>
 
             <select
-              id="remolque"
-              name="remolqueId"
-              [(ngModel)]="viaje.remolqueId"
-              [disabled]="!remolqueObligatorio"
-              (ngModelChange)="marcarFormularioModificado()"
-              (blur)="campoTocado('remolqueId')">
+                id="remolque"
+                name="remolqueId"
+                [(ngModel)]="viaje.remolqueId"
+                [disabled]="!remolqueObligatorio || guardando"
+                (ngModelChange)="marcarFormularioModificado()"
+                (blur)="campoTocado('remolqueId')">
 
-              <option [ngValue]="0">
-                Selecciona un remolque
-              </option>
-
-              @for (remolque of remolques; track remolque.id) {
-
-                <option [ngValue]="remolque.id">
-                  {{ remolque.patente }}
-                  - {{ remolque.marca }}
-                  {{ remolque.modelo }}
+                <option [ngValue]="0">
+                    Selecciona un remolque
                 </option>
 
-              }
+                @for (remolque of remolques; track remolque.id) {
+                    <option [ngValue]="remolque.id">
+                    {{ remolque.patente }}
+                    - {{ remolque.marca }}
+                    {{ remolque.modelo }}
+                    </option>
+                }
 
             </select>
 

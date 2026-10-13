@@ -467,6 +467,7 @@
                     (blur)="campoTocado('camionId')"
                     [class.input-error]="campoTieneError('camionId')"
                     [disabled]="guardando || eliminando"
+                    (ngModelChange)="actualizarRemolqueSegunCamion()"
                   >
                     <option [ngValue]="0">
                       Selecciona un camión

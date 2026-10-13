@@ -332,6 +332,7 @@ export class ViajeModificar implements OnInit {
             viajeCompleto.observaciones
         };
 
+        this.actualizarRemolqueSegunCamion();
         this.camposTocados = {};
         this.cargandoViaje = false;
 
@@ -722,6 +723,30 @@ export class ViajeModificar implements OnInit {
 
     });
 
+  }
+
+  actualizarRemolqueSegunCamion(): void {
+    const camion = this.camiones.find(
+      c => c.id === Number(this.viaje.camionId)
+    );
+
+    if (!camion) {
+      this.remolqueObligatorio = false;
+      this.viaje.remolqueId = 0;
+      return;
+    }
+
+    const capacidad = parseFloat(
+      String(camion.capacidad).replace(',', '.')
+    );
+
+    this.remolqueObligatorio = capacidad > 20;
+
+    if (!this.remolqueObligatorio) {
+      this.viaje.remolqueId = 9;
+    } else if (this.viaje.remolqueId <= 0) {
+      this.viaje.remolqueId = camion.remolques?.[0]?.id ?? 0;
+    }
   }
 
   mostrarConfirmacionEliminar(): void {
