@@ -64,6 +64,7 @@ export class ViajeModificar implements OnInit {
   cargandoViaje = false;
   guardando = false;
   eliminando = false;
+  remolqueObligatorio = false;
 
   error = '';
 
@@ -256,6 +257,17 @@ export class ViajeModificar implements OnInit {
       next: viajeCompleto => {
 
         this.viajeSeleccionado = viajeCompleto;
+
+        const camionSeleccionado = this.camiones.find(
+          camion =>
+            camion.patente === viajeCompleto.camion?.patente
+        );
+
+        const capacidad = camionSeleccionado
+          ? parseFloat(camionSeleccionado.capacidad.replace(',', '.'))
+          : 0;
+
+        this.remolqueObligatorio = capacidad > 20;
 
         this.viaje = {
           numeroGuiaDespacho:
@@ -462,7 +474,8 @@ export class ViajeModificar implements OnInit {
         return this.viaje.conductorId <= 0;
 
       case 'remolqueId':
-        return this.viaje.remolqueId <= 0;
+        return this.remolqueObligatorio &&
+          this.viaje.remolqueId <= 0;
 
       case 'origen':
         return !this.viaje.origen.trim();
@@ -512,7 +525,6 @@ export class ViajeModificar implements OnInit {
       'clienteId',
       'camionId',
       'conductorId',
-      'remolqueId',
       'origen',
       'destino',
       'comunaOrigen',
@@ -534,7 +546,7 @@ export class ViajeModificar implements OnInit {
       this.viaje.clienteId <= 0 ||
       this.viaje.camionId <= 0 ||
       this.viaje.conductorId <= 0 ||
-      this.viaje.remolqueId <= 0 ||
+      (this.remolqueObligatorio && this.viaje.remolqueId <= 0) ||
       !this.viaje.origen.trim() ||
       !this.viaje.destino.trim() ||
       !this.viaje.comunaOrigen.trim() ||
@@ -897,7 +909,7 @@ export class ViajeModificar implements OnInit {
     switch (estado) {
       case 'EnCurso':
         return 'En Curso';
-  
+
       default:
         return estado;
     }

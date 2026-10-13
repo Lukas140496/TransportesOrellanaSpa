@@ -541,6 +541,7 @@
                     (blur)="campoTocado('remolqueId')"
                     [class.input-error]="campoTieneError('remolqueId')"
                     [disabled]="guardando || eliminando"
+                    [disabled]="!remolqueObligatorio || cargandoViaje || guardando || eliminando"
                   >
                     <option [ngValue]="0">
                       Selecciona un remolque
