@@ -215,7 +215,7 @@ public class CorreoService
             _senderAddress,
             new EmailRecipients(
                 new[] { new EmailAddress(destinatario) }),
-            new EmailContent("Bienvenido a Flota360 | Transportes Orellana SpA")
+            new EmailContent("Bienvenido a Flota360 - Transportes Orellana SpA")
             {
                 Html = contenidoHtml,
                 PlainText = contenidoTexto
