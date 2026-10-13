@@ -19,6 +19,7 @@ import { Remolque } from '../../core/models/remolque';
 import { GastoRemolqueService } from '../../core/services/gasto-remolque.service';
 import { GastoRemolque } from '../../core/models/gasto-remolque';
 import { CrearGastoRemolque } from '../../core/models/crear-gasto-remolque';
+import { PermissionService } from '../../core/services/permission.service';
 
 @Component({
   selector: 'app-gasto-remolque',
@@ -42,6 +43,8 @@ export class GastoRemolqueComponent implements OnInit {
 
   private readonly cdr =
     inject(ChangeDetectorRef);
+
+  readonly permissionService = inject(PermissionService);
 
   gastos: GastoRemolque[] = [];
 
@@ -209,10 +212,14 @@ export class GastoRemolqueComponent implements OnInit {
   // =====================================================
 
   abrirFormulario(): void {
+    if (!this.permissionService.tienePermiso('GASTOS_CREAR')) {
+      return;
+    }
+  
     if (this.guardando) {
       return;
     }
-
+  
     this.reiniciarFormulario();
     this.mostrarFormulario = true;
   }

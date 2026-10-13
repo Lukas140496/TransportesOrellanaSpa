@@ -14,10 +14,12 @@
       </div>
     </div>
 
-    <button type="button" class="btn-nuevo" (click)="abrirFormulario()">
-      <span class="btn-icon">+</span>
-      Nuevo Gasto
-    </button>
+    @if (permissionService.tienePermiso('GASTOS_CREAR')) {
+        <button type="button" class="btn-nuevo" (click)="abrirFormulario()">
+            <span class="btn-icon">+</span>
+                Nuevo Gasto
+        </button>
+    }
   </div>
 
   <!-- =====================================================

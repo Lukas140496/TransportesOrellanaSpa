@@ -18,6 +18,7 @@ import { Gasto } from '../../../core/models/gasto';
 import { ApiService } from '../../../core/services/api.service';
 import { Camion } from '../../../core/models/camion';
 import { CrearGasto } from '../../../core/models/crear-gasto';
+import { PermissionService } from '../../../core/services/permission.service';
 
 @Component({
   selector: 'app-gasto-list',
@@ -36,6 +37,7 @@ export class GastoList implements OnInit {
   private readonly gastoService = inject(GastoService);
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly apiService = inject(ApiService);
+  readonly permissionService = inject(PermissionService);
 
   camiones: Camion[] = [];
   filtroPatente = 'todos';
@@ -354,6 +356,10 @@ export class GastoList implements OnInit {
   }
 
   abrirFormulario(): void {
+    if (!this.permissionService.tienePermiso('GASTOS_CREAR')) {
+      return;
+    }
+
     this.reiniciarFormulario();
     this.mostrarFormulario = true;
   }
