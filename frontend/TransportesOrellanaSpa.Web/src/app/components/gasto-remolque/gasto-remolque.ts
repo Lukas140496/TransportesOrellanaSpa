@@ -52,7 +52,7 @@ export class GastoRemolqueComponent implements OnInit {
 
   paginaActual = 1;
 
-  gastosPorPagina = 15;
+  gastosPorPagina = 10;
 
   cargando = true;
 

@@ -35,7 +35,7 @@ export class ViajeList implements OnInit {
   // =========================
 
   paginaActual = 1;
-  viajesPorPagina = 15;
+  viajesPorPagina = 10;
 
   // =========================
   // FILTROS
