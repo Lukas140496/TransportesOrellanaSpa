@@ -107,10 +107,7 @@
 
   white-space: nowrap;
 
-  transition:
-    background 0.2s ease,
-    border-color 0.2s ease,
-    box-shadow 0.2s ease,
+  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease,
     transform 0.15s ease;
 
   &:hover {
@@ -323,9 +320,7 @@
 
   outline: none;
 
-  transition:
-    border-color 0.2s ease,
-    box-shadow 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .busqueda input:focus {
@@ -413,9 +408,7 @@
   outline: none;
   cursor: pointer;
 
-  transition:
-    border-color 0.2s ease,
-    box-shadow 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .filtro-patente select:hover {
@@ -478,9 +471,7 @@
 
   outline: none;
 
-  transition:
-    border-color 0.2s ease,
-    box-shadow 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .filtro-fecha input:focus {
@@ -532,10 +523,7 @@
 
   cursor: pointer;
 
-  transition:
-    background 0.2s ease,
-    border-color 0.2s ease,
-    color 0.2s ease;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
 .filtro-tipo button:hover {
@@ -579,10 +567,7 @@
 
   cursor: pointer;
 
-  transition:
-    background 0.2s ease,
-    border-color 0.2s ease,
-    color 0.2s ease;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
 .btn-limpiar-filtros:hover {
@@ -948,9 +933,7 @@ tbody tr:hover {
 
   cursor: pointer;
 
-  transition:
-    background 0.2s ease,
-    border-color 0.2s ease;
+  transition: background 0.2s ease, border-color 0.2s ease;
 }
 
 .btn-restablecer:hover {
@@ -1140,11 +1123,7 @@ tbody tr:hover {
 
   cursor: pointer;
 
-  transition:
-    background 0.2s ease,
-    border-color 0.2s ease,
-    color 0.2s ease,
-    box-shadow 0.2s ease;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
 
   &:hover:not(:disabled) {
     background: #f5f7fa;
@@ -1173,42 +1152,417 @@ tbody tr:hover {
   text-align: center;
 }
 
-// =====================================================
-// RESPONSIVE PAGINACIÓN
-// =====================================================
+/* =====================================================
+   MODALES DE GASTOS DE REMOLQUES
+   ===================================================== */
 
-@media (max-width: 700px) {
-  .paginacion {
-    align-items: stretch;
-
-    flex-direction: column;
-
-    gap: 12px;
-  }
-
-  .paginacion-info {
-    text-align: center;
-  }
-
-  .paginacion-controles {
-    justify-content: center;
-  }
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow-y: auto;
+  padding: 24px;
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(3px);
 }
 
-@media (max-width: 480px) {
-  .paginacion-controles {
-    flex-wrap: wrap;
-  }
+.modal-gasto,
+.modal-confirmacion,
+.modal-error-gasto {
+  width: 100%;
+  max-width: 620px;
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+  border: 1px solid #e5eaf0;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 20px 60px rgba(15, 39, 71, 0.2);
+}
 
-  .btn-paginacion {
-    flex: 1;
-  }
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 22px 24px;
+  border-bottom: 1px solid #e5eaf0;
+}
 
-  .pagina-info {
-    order: -1;
+.modal-header h2 {
+  margin: 0 0 6px;
+  color: #172b4d;
+  font-size: 20px;
+  font-weight: 700;
+}
 
-    flex-basis: 100%;
-  }
+.modal-header p {
+  margin: 0;
+  color: #7a869a;
+  font-size: 13px;
+}
+
+.btn-cerrar-modal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  border: 0;
+  border-radius: 7px;
+  background: #f1f4f8;
+  color: #52606d;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.btn-cerrar-modal:hover:not(:disabled) {
+  background: #e5eaf0;
+  color: #172b4d;
+}
+
+.btn-cerrar-modal:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.modal-body {
+  padding: 24px;
+}
+
+.formulario-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px 16px;
+}
+
+.campo-formulario {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 0;
+}
+
+.campo-completo {
+  grid-column: 1 / -1;
+}
+
+.campo-formulario label {
+  color: #344563;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.obligatorio {
+  color: #dc2626;
+}
+
+.opcional {
+  color: #8a94a6;
+  font-size: 11px;
+  font-weight: 400;
+}
+
+.campo-formulario input,
+.campo-formulario select,
+.campo-formulario textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border: 1px solid #d8dee8;
+  border-radius: 8px;
+  background: #fff;
+  color: #172b4d;
+  font-family: inherit;
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.campo-formulario input,
+.campo-formulario select {
+  height: 42px;
+}
+
+.campo-formulario textarea {
+  min-height: 90px;
+  resize: vertical;
+}
+
+.campo-formulario input:focus,
+.campo-formulario select:focus,
+.campo-formulario textarea:focus {
+  border-color: #2f80ed;
+  box-shadow: 0 0 0 3px rgba(47, 128, 237, 0.1);
+}
+
+.campo-formulario input::placeholder,
+.campo-formulario textarea::placeholder {
+  color: #a5adba;
+}
+
+.campo-formulario .campo-error,
+.campo-formulario .campo-error:focus {
+  border-color: #dc2626;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.08);
+}
+
+.error-message {
+  color: #c53030;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.error-formulario {
+  margin-top: 18px;
+  padding: 11px 13px;
+  border: 1px solid #f1cccc;
+  border-radius: 8px;
+  background: #fff5f5;
+  color: #b42318;
+  font-size: 12px;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.btn-cancelar,
+.btn-guardar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 16px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn-cancelar {
+  border-color: #d8dee8;
+  background: #fff;
+  color: #52606d;
+}
+
+.btn-cancelar:hover:not(:disabled) {
+  border-color: #b9c5d5;
+  background: #f8fafc;
+}
+
+.btn-guardar {
+  border-color: #183b68;
+  background: #183b68;
+  color: #fff;
+}
+
+.btn-guardar:hover:not(:disabled) {
+  border-color: #2674dc;
+  background: #2674dc;
+  box-shadow: 0 4px 10px rgba(47, 128, 237, 0.18);
+}
+
+.btn-cancelar:disabled,
+.btn-guardar:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.mini-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+/* =====================================================
+       CONFIRMACIÓN
+       ===================================================== */
+
+.confirmacion-overlay {
+  z-index: 1001;
+}
+
+.modal-confirmacion {
+  max-width: 460px;
+  padding: 28px;
+}
+
+.confirmacion-icono {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 54px;
+  height: 54px;
+  margin: 0 auto 16px;
+  border-radius: 50%;
+  background: #e8f7ed;
+  color: #16834a;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.confirmacion-encabezado {
+  margin-bottom: 22px;
+  text-align: center;
+}
+
+.confirmacion-encabezado h2 {
+  margin: 0 0 8px;
+  color: #172b4d;
+  font-size: 21px;
+}
+
+.confirmacion-encabezado p {
+  margin: 0;
+  color: #7a869a;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.confirmacion-detalle {
+  padding: 4px 16px;
+  border: 1px solid #e5eaf0;
+  border-radius: 10px;
+  background: #f8fafc;
+}
+
+.confirmacion-fila {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid #e5eaf0;
+}
+
+.confirmacion-fila:last-child {
+  border-bottom: 0;
+}
+
+.confirmacion-fila span,
+.confirmacion-observaciones span {
+  color: #7a869a;
+  font-size: 12px;
+}
+
+.confirmacion-fila strong {
+  color: #172b4d;
+  font-size: 12px;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+.confirmacion-fila .confirmacion-monto {
+  color: #16834a;
+  font-size: 17px;
+}
+
+.confirmacion-observaciones {
+  padding: 12px 0;
+  border-top: 1px solid #e5eaf0;
+}
+
+.confirmacion-observaciones p {
+  margin: 6px 0 0;
+  color: #344563;
+  font-size: 12px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.confirmacion-footer {
+  display: flex;
+  justify-content: center;
+  margin-top: 22px;
+}
+
+.confirmacion-footer .btn-guardar {
+  min-width: 120px;
+}
+
+/* =====================================================
+       ERROR DE CREACIÓN
+       ===================================================== */
+
+.modal-error-gasto {
+  max-width: 430px;
+  padding: 28px;
+  text-align: center;
+}
+
+.error-gasto-icono {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  margin: 0 auto 16px;
+  border-radius: 50%;
+  background: #fff0f0;
+  color: #c53030;
+  font-size: 26px;
+  font-weight: 700;
+}
+
+.modal-error-gasto h2 {
+  margin: 0 0 10px;
+  color: #172b4d;
+  font-size: 19px;
+}
+
+.modal-error-gasto > p {
+  margin: 0;
+  color: #7a869a;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.modal-error-gasto .modal-footer {
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* =====================================================
+     AJUSTE INPUTS DE FECHA EN TABLET Y MÓVILES
+     ===================================================== */
+
+.modal-gasto .campo-formulario input[type='date'] {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  height: 42px;
+  min-height: 42px;
+  max-height: 42px;
+  box-sizing: border-box;
+  padding: 0 10px;
+  border: 1px solid #d8dee8;
+  border-radius: 8px;
+  background-color: #fff;
+  color: #172b4d;
+  font-family: inherit;
+  font-size: 14px;
+  line-height: normal;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.modal-gasto .campo-formulario input[type='date']:focus {
+  border-color: #2f80ed;
+  box-shadow: 0 0 0 3px rgba(47, 128, 237, 0.1);
 }
 
 // =====================================================
@@ -1216,7 +1570,6 @@ tbody tr:hover {
 // =====================================================
 
 @media (max-width: 1250px) {
-
   .resumen {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -1235,11 +1588,9 @@ tbody tr:hover {
     min-width: 0;
     flex-wrap: wrap;
   }
-
 }
 
 @media (max-width: 1000px) {
-
   .resumen {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -1256,16 +1607,13 @@ tbody tr:hover {
     width: 100%;
     flex-wrap: wrap;
   }
-
 }
 
 @media (max-width: 700px) {
-
   .gasto-list {
     padding: 20px 16px;
   }
 
-  // HEADER
   .page-header {
     display: flex;
     flex-direction: column;
@@ -1301,7 +1649,6 @@ tbody tr:hover {
     margin-left: 0 !important;
   }
 
-  // FILTROS
   .filtros-card {
     display: flex;
     flex-direction: column;
@@ -1331,7 +1678,6 @@ tbody tr:hover {
     width: 100%;
   }
 
-  // TIPOS
   .filtro-tipo {
     display: flex;
     align-items: center;
@@ -1365,10 +1711,24 @@ tbody tr:hover {
     padding: 13px 14px;
   }
 
+  .paginacion {
+    align-items: stretch;
+
+    flex-direction: column;
+
+    gap: 12px;
+  }
+
+  .paginacion-info {
+    text-align: center;
+  }
+
+  .paginacion-controles {
+    justify-content: center;
+  }
 }
 
 @media (max-width: 480px) {
-
   .gasto-list {
     padding: 10px 7px;
   }
@@ -1394,7 +1754,6 @@ tbody tr:hover {
     min-height: 70px;
   }
 
-  // FILTROS MÓVIL PEQUEÑO
   .filtros-card {
     gap: 10px;
     padding: 12px;
@@ -1410,4 +1769,104 @@ tbody tr:hover {
     padding: 0 9px;
   }
 
+  .confirmacion-detalle {
+    margin: 0 16px;
+  }
+
+  .confirmacion-encabezado {
+    padding-right: 16px;
+    padding-left: 16px;
+  }
+
+  .confirmacion-fila {
+    gap: 10px;
+  }
+
+  .modal-overlay {
+    padding: 20px;
+  }
+
+  .modal-gasto {
+    max-height: 80vh;
+  }
+
+  .modal-header {
+    padding: 18px;
+  }
+
+  .modal-body {
+    padding: 18px;
+  }
+
+  .modal-footer {
+    padding: 14px 18px 18px;
+  }
+
+  .modal-error-gasto {
+    padding-top: 20px;
+  }
+
+  .error-gasto-icono {
+    width: 42px;
+    height: 42px;
+    margin-bottom: 12px;
+    border-radius: 13px;
+    font-size: 24px;
+  }
+
+  .modal-error-gasto .confirmacion-encabezado {
+    padding: 0 22px 12px;
+  }
+
+  .modal-error-gasto .confirmacion-encabezado h2 {
+    font-size: 17px;
+  }
+
+  .modal-error-gasto .confirmacion-encabezado p {
+    font-size: 12px;
+    line-height: 1.45;
+  }
+
+  .modal-error-gasto .confirmacion-footer {
+    padding: 6px 22px 16px;
+  }
+
+  .formulario-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .paginacion-controles {
+    flex-wrap: wrap;
+  }
+
+  .btn-paginacion {
+    flex: 1;
+  }
+
+  .pagina-info {
+    order: -1;
+
+    flex-basis: 100%;
+  }
+
+  .filtros-card {
+    align-items: stretch;
+    justify-content: flex-start;
+  }
+
+  .filtro-patente,
+  .filtro-fecha {
+    margin-top: 0;
+    margin-bottom: 0;
+    align-self: stretch;
+    min-height: 0;
+  }
+
+  .filtro-patente {
+    flex: 0 0 auto;
+  }
+
+  .filtro-fecha {
+    flex: 0 0 auto;
+  }
 }

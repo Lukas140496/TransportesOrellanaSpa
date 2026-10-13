@@ -7,7 +7,8 @@ import {
 
 import {
   DatePipe,
-  DecimalPipe
+  DecimalPipe,
+  TitleCasePipe
 } from '@angular/common';
 
 import { FormsModule } from '@angular/forms';
@@ -17,6 +18,7 @@ import { Remolque } from '../../core/models/remolque';
 
 import { GastoRemolqueService } from '../../core/services/gasto-remolque.service';
 import { GastoRemolque } from '../../core/models/gasto-remolque';
+import { CrearGastoRemolque } from '../../core/models/crear-gasto-remolque';
 
 @Component({
   selector: 'app-gasto-remolque',
@@ -24,7 +26,8 @@ import { GastoRemolque } from '../../core/models/gasto-remolque';
   imports: [
     FormsModule,
     DatePipe,
-    DecimalPipe
+    DecimalPipe,
+    TitleCasePipe
   ],
   templateUrl: './gasto-remolque.html',
   styleUrl: './gasto-remolque.scss'
@@ -61,6 +64,59 @@ export class GastoRemolqueComponent implements OnInit {
   fechaDesde = '';
 
   fechaHasta = '';
+
+  // =====================================================
+  // FORMULARIO NUEVO GASTO
+  // =====================================================
+
+  mostrarFormulario = false;
+
+  guardando = false;
+
+  errorFormulario = '';
+
+  remolqueId = 0;
+
+  fechaGasto = '';
+
+  tipoGasto = 'mantención';
+
+  descripcionGasto = '';
+
+  montoGasto: number | null = null;
+
+  observacionesGasto = '';
+
+  tiposGasto = [
+    'mantención',
+    'reparación',
+    'neumáticos',
+    'permisos',
+    'seguros',
+    'revision',
+    'multas',
+    'lavado',
+    'otros'
+  ];
+
+  camposTocadosGasto: Record<string, boolean> = {};
+
+  // =====================================================
+  // CONFIRMACIÓN Y ERROR DE CREACIÓN
+  // =====================================================
+
+  mostrarConfirmacionGasto = false;
+
+  mostrarErrorGasto = false;
+
+  gastoCreadoConfirmacion: {
+    patenteRemolque: string;
+    fecha: string;
+    tipoGasto: string;
+    descripcion: string;
+    monto: number;
+    observaciones: string;
+  } | null = null;
 
   ngOnInit(): void {
     this.inicializarFechas();
@@ -147,6 +203,210 @@ export class GastoRemolqueComponent implements OnInit {
         }
       });
   }
+
+  // =====================================================
+  // APERTURA Y CIERRE DEL FORMULARIO
+  // =====================================================
+
+  abrirFormulario(): void {
+    if (this.guardando) {
+      return;
+    }
+
+    this.reiniciarFormulario();
+    this.mostrarFormulario = true;
+  }
+
+  cerrarFormulario(): void {
+    if (this.guardando) {
+      return;
+    }
+
+    this.mostrarFormulario = false;
+    this.errorFormulario = '';
+  }
+
+  private reiniciarFormulario(): void {
+    this.remolqueId = 0;
+    this.fechaGasto = this.formatearFecha(new Date());
+    this.tipoGasto = 'mantención';
+    this.descripcionGasto = '';
+    this.montoGasto = null;
+    this.observacionesGasto = '';
+    this.camposTocadosGasto = {};
+    this.errorFormulario = '';
+  }
+
+  // =====================================================
+  // VALIDACIONES
+  // =====================================================
+
+  campoTocadoGasto(campo: string): boolean {
+    return !!this.camposTocadosGasto[campo];
+  }
+
+  campoTieneErrorGasto(campo: string): boolean {
+    if (!this.campoTocadoGasto(campo)) {
+      return false;
+    }
+
+    switch (campo) {
+      case 'remolqueId':
+        return !this.remolqueId ||
+          !this.remolques.some(
+            remolque => remolque.id === Number(this.remolqueId)
+          );
+
+      case 'fecha':
+        return !this.fechaGasto;
+
+      case 'tipoGasto':
+        return !this.tipoGasto;
+
+      case 'descripcion':
+        return !this.descripcionGasto.trim();
+
+      case 'monto':
+        return this.montoGasto === null ||
+          this.montoGasto === undefined ||
+          !Number.isFinite(Number(this.montoGasto)) ||
+          Number(this.montoGasto) <= 0;
+
+      default:
+        return false;
+    }
+  }
+
+  private validarFormulario(): boolean {
+    const camposObligatorios = [
+      'remolqueId',
+      'fecha',
+      'tipoGasto',
+      'descripcion',
+      'monto'
+    ];
+
+    camposObligatorios.forEach(campo => {
+      this.camposTocadosGasto[campo] = true;
+    });
+
+    return !camposObligatorios.some(
+      campo => this.campoTieneErrorGasto(campo)
+    );
+  }
+
+  // =====================================================
+  // GUARDAR GASTO
+  // =====================================================
+
+  guardarGasto(): void {
+    if (this.guardando) {
+      return;
+    }
+
+    this.errorFormulario = '';
+
+    if (!this.validarFormulario()) {
+      return;
+    }
+
+    const remolqueSeleccionado = this.remolques.find(
+      remolque => remolque.id === Number(this.remolqueId)
+    );
+
+    if (!remolqueSeleccionado) {
+      this.errorFormulario =
+        'Selecciona un remolque activo válido.';
+      return;
+    }
+
+    const nuevoGasto: CrearGastoRemolque = {
+      remolqueId: Number(this.remolqueId),
+      fecha: this.fechaGasto,
+      tipoGasto: this.tipoGasto,
+      descripcion: this.descripcionGasto.trim(),
+      monto: Number(this.montoGasto),
+      observaciones: this.observacionesGasto.trim() || null
+    };
+
+    this.guardando = true;
+
+    this.gastoRemolqueService
+      .crearGastoRemolque(nuevoGasto)
+      .subscribe({
+        next: gastoCreado => {
+          this.gastoCreadoConfirmacion = {
+            patenteRemolque:
+              gastoCreado.patenteRemolque ||
+              remolqueSeleccionado.patente,
+            fecha: gastoCreado.fecha || this.fechaGasto,
+            tipoGasto: gastoCreado.tipoGasto,
+            descripcion: gastoCreado.descripcion,
+            monto: gastoCreado.monto,
+            observaciones:
+              gastoCreado.observaciones || ''
+          };
+
+          this.guardando = false;
+          this.mostrarFormulario = false;
+
+          this.reiniciarFormulario();
+
+          this.mostrarConfirmacionGasto = true;
+
+          // Recarga la lista sin modificar los filtros seleccionados.
+          this.cargarGastos();
+
+          this.cdr.markForCheck();
+        },
+
+        error: error => {
+          console.error(
+            'Error al crear gasto de remolque:',
+            error
+          );
+
+          this.guardando = false;
+          this.mostrarErrorGasto = true;
+
+          this.cdr.markForCheck();
+        }
+      });
+  }
+
+  cerrarConfirmacionGasto(): void {
+    this.mostrarConfirmacionGasto = false;
+    this.gastoCreadoConfirmacion = null;
+  }
+
+  cerrarErrorGasto(): void {
+    this.mostrarErrorGasto = false;
+  }
+
+  volverAlFormulario(): void {
+    this.mostrarErrorGasto = false;
+    this.errorFormulario = '';
+    this.mostrarFormulario = true;
+  }
+
+  formatearFechaConfirmacion(fecha: string): string {
+    if (!fecha) {
+      return '';
+    }
+
+    const fechaSoloDia = fecha.substring(0, 10);
+    const partes = fechaSoloDia.split('-');
+
+    if (partes.length !== 3) {
+      return fechaSoloDia;
+    }
+
+    return `${partes[2]}/${partes[1]}/${partes[0]}`;
+  }
+
+  // =====================================================
+  // FILTROS, TABLA Y PAGINACIÓN EXISTENTES
+  // =====================================================
 
   get gastosFiltrados(): GastoRemolque[] {
     const texto = this.busqueda

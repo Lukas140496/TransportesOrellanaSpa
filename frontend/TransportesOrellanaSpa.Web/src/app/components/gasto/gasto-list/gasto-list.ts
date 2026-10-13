@@ -7,7 +7,8 @@ import {
 
 import {
   DatePipe,
-  DecimalPipe
+  DecimalPipe,
+  TitleCasePipe
 } from '@angular/common';
 
 import { FormsModule } from '@angular/forms';
@@ -16,6 +17,7 @@ import { GastoService } from '../../../core/services/gasto.service';
 import { Gasto } from '../../../core/models/gasto';
 import { ApiService } from '../../../core/services/api.service';
 import { Camion } from '../../../core/models/camion';
+import { CrearGasto } from '../../../core/models/crear-gasto';
 
 @Component({
   selector: 'app-gasto-list',
@@ -23,7 +25,8 @@ import { Camion } from '../../../core/models/camion';
   imports: [
     FormsModule,
     DatePipe,
-    DecimalPipe
+    DecimalPipe,
+    TitleCasePipe
   ],
   templateUrl: './gasto-list.html',
   styleUrl: './gasto-list.scss'
@@ -39,6 +42,43 @@ export class GastoList implements OnInit {
 
   gastos: Gasto[] = [];
 
+  mostrarFormulario = false;
+  guardando = false;
+  errorFormulario = '';
+
+  mostrarConfirmacionGasto = false;
+  mostrarErrorGasto = false;
+
+  gastoCreadoConfirmacion: {
+    patenteCamion: string;
+    fecha: string;
+    tipoGasto: string;
+    descripcion: string;
+    monto: number;
+    observaciones: string | null;
+  } | null = null;
+
+
+  camionId: number | null = null;
+  fechaGasto = this.formatearFecha(new Date());
+  tipoGasto = 'combustible';
+  descripcionGasto = '';
+  montoGasto: number | null = null;
+  observacionesGasto = '';
+
+  readonly tiposGasto = [
+    'combustible',
+    'peajes',
+    'mantención',
+    'reparación',
+    'neumáticos',
+    'permisos',
+    'seguros',
+    'multas',
+    'lavado',
+    'otros'
+  ];
+
   paginaActual = 1;
   gastosPorPagina = 15;
 
@@ -51,10 +91,46 @@ export class GastoList implements OnInit {
   fechaDesde = '';
   fechaHasta = '';
 
+  camposTocadosGasto: Record<string, boolean> = {};
+
   ngOnInit(): void {
     this.inicializarFechas();
     this.cargarGastos();
     this.cargarCamiones();
+  }
+
+  campoTocadoGasto(campo: string): void {
+    this.camposTocadosGasto[campo] = true;
+  }
+
+  campoTieneErrorGasto(campo: string): boolean {
+    if (!this.camposTocadosGasto[campo]) {
+      return false;
+    }
+
+    switch (campo) {
+      case 'camionId':
+        return this.camionId === null || this.camionId <= 0;
+
+      case 'fechaGasto':
+        return !this.fechaGasto;
+
+      case 'tipoGasto':
+        return !this.tipoGasto;
+
+      case 'descripcionGasto':
+        return !this.descripcionGasto.trim();
+
+      case 'montoGasto':
+        return (
+          this.montoGasto === null ||
+          !Number.isFinite(this.montoGasto) ||
+          this.montoGasto <= 0
+        );
+
+      default:
+        return false;
+    }
   }
 
   cargarCamiones(): void {
@@ -275,5 +351,133 @@ export class GastoList implements OnInit {
 
   private obtenerFechaActual(): string {
     return this.formatearFecha(new Date());
+  }
+
+  abrirFormulario(): void {
+    this.reiniciarFormulario();
+    this.mostrarFormulario = true;
+  }
+
+  cerrarFormulario(): void {
+    if (this.guardando) {
+      return;
+    }
+
+    this.mostrarFormulario = false;
+    this.errorFormulario = '';
+  }
+
+  private reiniciarFormulario(): void {
+    this.camionId = null;
+    this.fechaGasto = this.formatearFecha(new Date());
+    this.tipoGasto = 'combustible';
+    this.descripcionGasto = '';
+    this.montoGasto = null;
+    this.observacionesGasto = '';
+    this.errorFormulario = '';
+
+    this.camposTocadosGasto = {};
+  }
+
+
+  guardarGasto(): void {
+    if (this.guardando) {
+      return;
+    }
+
+    this.camposTocadosGasto = {
+      camionId: true,
+      fechaGasto: true,
+      tipoGasto: true,
+      descripcionGasto: true,
+      montoGasto: true
+    };
+
+    if (
+      this.camionId === null ||
+      !this.fechaGasto ||
+      !this.tipoGasto ||
+      !this.descripcionGasto.trim() ||
+      this.montoGasto === null ||
+      !Number.isFinite(this.montoGasto) ||
+      this.montoGasto <= 0
+    ) {
+      this.errorFormulario =
+        'Completa los campos obligatorios y verifica que el monto sea mayor que cero.';
+      return;
+    }
+
+    const nuevoGasto: CrearGasto = {
+      camionId: this.camionId,
+      fecha: this.fechaGasto,
+      tipoGasto: this.tipoGasto,
+      descripcion: this.descripcionGasto.trim(),
+      monto: this.montoGasto,
+      observaciones: this.observacionesGasto.trim() || null
+    };
+
+    this.guardando = true;
+    this.errorFormulario = '';
+
+    this.gastoService.crearGasto(nuevoGasto).subscribe({
+      next: () => {
+        // Guardamos los datos antes de reiniciar el formulario.
+        const camionSeleccionado = this.camiones.find(
+          camion => camion.id === nuevoGasto.camionId
+        );
+
+        this.gastoCreadoConfirmacion = {
+          patenteCamion: camionSeleccionado?.patente ?? 'No disponible',
+          fecha: nuevoGasto.fecha,
+          tipoGasto: nuevoGasto.tipoGasto,
+          descripcion: nuevoGasto.descripcion,
+          monto: nuevoGasto.monto,
+          observaciones: nuevoGasto.observaciones ?? null
+        };
+
+        this.guardando = false;
+        this.mostrarFormulario = false;
+        this.reiniciarFormulario();
+
+        // Mostramos la confirmación del gasto creado.
+        this.mostrarConfirmacionGasto = true;
+
+        // Recarga los gastos sin modificar los filtros actuales.
+        this.cargarGastos();
+
+        this.cdr.markForCheck();
+      },
+      error: error => {
+        console.error('Error al crear el gasto:', error);
+
+        this.guardando = false;
+        this.mostrarErrorGasto = true;
+
+        this.cdr.markForCheck();
+      }
+    });
+  }
+
+  cerrarConfirmacionGasto(): void {
+    this.mostrarConfirmacionGasto = false;
+    this.gastoCreadoConfirmacion = null;
+  }
+
+
+  formatearFechaConfirmacion(fecha: string): string {
+    const [anio, mes, dia] = fecha.substring(0, 10).split('-');
+    return `${dia}/${mes}/${anio}`;
+  }
+
+
+  cerrarErrorGasto(): void {
+    this.mostrarErrorGasto = false;
+    this.cdr.markForCheck();
+  }
+
+  volverAlFormulario(): void {
+    this.mostrarErrorGasto = false;
+    this.errorFormulario = '';
+    this.mostrarFormulario = true;
   }
 }

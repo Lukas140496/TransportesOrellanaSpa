@@ -1,124 +1,76 @@
 <section class="gasto-list">
-  <!-- =====================================================
-       HEADER
-       ===================================================== -->
-
+  <!-- HEADER -->
   <div class="page-header">
     <div class="header-content">
       <div class="header-icon">💰</div>
-
       <div>
         <h1>Gastos de Camiones</h1>
-
         <p>Administra los gastos asociados a los camiones.</p>
       </div>
     </div>
 
-    <button type="button" class="btn-nuevo">
+    <button type="button" class="btn-nuevo" (click)="abrirFormulario()">
       <span class="btn-icon">+</span>
       Nuevo Gasto
     </button>
   </div>
 
-  <!-- =====================================================
-       ESTADOS
-       ===================================================== -->
-
+  <!-- ESTADOS -->
   @if (cargando) {
-
   <div class="estado-container">
     <div class="loading-spinner"></div>
-
     <p>Cargando gastos...</p>
   </div>
-
   } @if (error) {
-
   <div class="error-container">
     <div class="error-icon">!</div>
-
     <div>
-      <strong> No fue posible cargar los gastos </strong>
-
-      <p>
-        {{ error }}
-      </p>
+      <strong>No fue posible cargar los gastos</strong>
+      <p>{{ error }}</p>
     </div>
   </div>
-
   } @if (!cargando && !error) {
-
-  <!-- =====================================================
-         RESUMEN
-         ===================================================== -->
-
+  <!-- RESUMEN -->
   <div class="resumen">
-    <!-- TOTAL GASTOS -->
-
     <div class="resumen-card">
       <div class="resumen-icon total">💰</div>
-
       <div>
-        <span> Total gastos </span>
-
-        <strong>
-          {{ cantidadTotal }}
-        </strong>
+        <span>Total gastos</span>
+        <strong>{{ cantidadTotal }}</strong>
       </div>
     </div>
-
-    <!-- MONTO TOTAL -->
 
     <div class="resumen-card">
       <div class="resumen-icon total">$</div>
-
       <div>
-        <span> Monto total </span>
-
-        <strong> ${{ montoTotal | number : '1.0-0' }} </strong>
+        <span>Monto total</span>
+        <strong>${{ montoTotal | number : '1.0-0' }}</strong>
       </div>
     </div>
-
-    <!-- CANTIDAD COMBUSTIBLE -->
 
     <div class="resumen-card">
       <div class="resumen-icon combustible">⛽</div>
-
       <div>
-        <span> Gastos combustible </span>
-
-        <strong>
-          {{ cantidadCombustible }}
-        </strong>
+        <span>Gastos combustible</span>
+        <strong>{{ cantidadCombustible }}</strong>
       </div>
     </div>
 
-    <!-- MONTO COMBUSTIBLE -->
-
     <div class="resumen-card">
       <div class="resumen-icon combustible">$</div>
-
       <div>
-        <span> Monto combustible </span>
-
-        <strong> ${{ montoCombustible | number : '1.0-0' }} </strong>
+        <span>Monto combustible</span>
+        <strong>${{ montoCombustible | number : '1.0-0' }}</strong>
       </div>
     </div>
   </div>
 
-  <!-- =====================================================
-         FILTROS
-         ===================================================== -->
-
+  <!-- FILTROS -->
   <div class="filtros-card">
-    <!-- BÚSQUEDA -->
-
     <div class="filtro-busqueda">
-      <label for="busqueda"> Buscar </label>
-
+      <label for="busqueda">Buscar</label>
       <div class="busqueda">
-        <span class="search-icon"> ⌕ </span>
-
+        <span class="search-icon">⌕</span>
         <input
           id="busqueda"
           type="text"
@@ -128,7 +80,6 @@
         />
 
         @if (busqueda) {
-
         <button
           type="button"
           class="btn-limpiar-busqueda"
@@ -137,22 +88,18 @@
         >
           ×
         </button>
-
         }
       </div>
     </div>
 
-    <!-- FILTRO POR PATENTE -->
     <div class="filtro-patente">
       <label for="filtroPatente">Patente</label>
-
       <select
         id="filtroPatente"
         [(ngModel)]="filtroPatente"
         (ngModelChange)="cambiarFiltroPatente()"
       >
         <option value="todos">Camiones</option>
-
         @for (camion of camiones; track camion.id) {
         <option [value]="camion.patente">
           {{ camion.patente }}
@@ -161,26 +108,18 @@
       </select>
     </div>
 
-    <!-- FECHA DESDE -->
-
     <div class="filtro-fecha">
-      <label for="fechaDesde"> Desde </label>
-
+      <label for="fechaDesde">Desde</label>
       <input id="fechaDesde" type="date" [(ngModel)]="fechaDesde" />
     </div>
 
-    <!-- FECHA HASTA -->
-
     <div class="filtro-fecha">
-      <label for="fechaHasta"> Hasta </label>
-
+      <label for="fechaHasta">Hasta</label>
       <input id="fechaHasta" type="date" [(ngModel)]="fechaHasta" />
     </div>
 
-    <!-- FILTRO TIPO -->
-
     <div class="filtro-tipo">
-      <span class="filtro-label"> Tipo: </span>
+      <span class="filtro-label">Tipo:</span>
 
       <button
         type="button"
@@ -271,86 +210,48 @@
       </button>
     </div>
 
-    <!-- LIMPIAR FILTROS -->
-
     @if (hayFiltrosAplicados()) {
-
     <button type="button" class="btn-limpiar-filtros" (click)="limpiarFiltros()">
       Limpiar filtros
     </button>
-
     }
   </div>
 
-  <!-- =====================================================
-         RESULTADOS
-         ===================================================== -->
-
+  <!-- RESULTADOS -->
   <div class="resultado-info">
     <span>
-      Mostrando
-
-      <strong>
-        {{ gastosPaginados.length }}
-      </strong>
-
-      de
-
-      <strong>
-        {{ gastosFiltrados.length }}
-      </strong>
-
-      gastos
+      Mostrando <strong>{{ gastosPaginados.length }}</strong> de
+      <strong>{{ gastosFiltrados.length }}</strong> gastos
     </span>
   </div>
 
-  <!-- =====================================================
-         TABLA
-         ===================================================== -->
-
+  <!-- TABLA -->
   @if (gastosFiltrados.length > 0) {
-
   <div class="tabla-container">
     <table>
       <thead>
         <tr>
           <th>Fecha</th>
-
           <th>Camión</th>
-
           <th>Tipo</th>
-
           <th>Descripción</th>
-
           <th>Guía Despacho</th>
-
           <th>Monto</th>
         </tr>
       </thead>
 
       <tbody>
-        @for ( gasto of gastosPaginados; track gasto.id ) {
-
+        @for (gasto of gastosPaginados; track gasto.id) {
         <tr>
-          <!-- FECHA -->
-
-          <td>
-            {{ gasto.fecha | date : 'dd/MM/yyyy' }}
-          </td>
-
-          <!-- CAMIÓN -->
+          <td>{{ gasto.fecha | date : 'dd/MM/yyyy' }}</td>
 
           <td>
             <div class="camion-info">
               <div>
-                <strong>
-                  {{ gasto.patenteCamion }}
-                </strong>
+                <strong>{{ gasto.patenteCamion }}</strong>
               </div>
             </div>
           </td>
-
-          <!-- TIPO -->
 
           <td>
             <span
@@ -364,74 +265,37 @@
             </span>
           </td>
 
-          <!-- DESCRIPCIÓN -->
-
           <td>
-            <span class="dato-principal">
-              {{ gasto.descripcion }}
-            </span>
-
+            <span class="dato-principal">{{ gasto.descripcion }}</span>
             @if (gasto.observaciones) {
-
-            <span class="dato-secundario">
-              {{ gasto.observaciones }}
-            </span>
-
+            <span class="dato-secundario">{{ gasto.observaciones }}</span>
             }
           </td>
-
-          <!-- GUÍA -->
 
           <td>
             @if (gasto.numeroGuiaDespacho) {
-
-            <span class="guia">
-              {{ gasto.numeroGuiaDespacho }}
-            </span>
-
+            <span class="guia">{{ gasto.numeroGuiaDespacho }}</span>
             } @else {
-
-            <span class="sin-guia"> N/A </span>
-
+            <span class="sin-guia">N/A</span>
             }
           </td>
 
-          <!-- MONTO -->
-
           <td>
-            <strong class="monto"> ${{ gasto.monto | number : '1.0-0' }} </strong>
+            <strong class="monto">${{ gasto.monto | number : '1.0-0' }}</strong>
           </td>
         </tr>
-
         }
       </tbody>
     </table>
   </div>
 
-  <!-- =====================================================
-           PAGINACIÓN
-           ===================================================== -->
-
+  <!-- PAGINACIÓN -->
   @if (totalPaginas > 1) {
-
   <div class="paginacion">
-    <!-- INFORMACIÓN -->
-
     <div class="paginacion-info">
-      Mostrando
-
-      <strong> {{ indiceInicio }}–{{ indiceFin }} </strong>
-
-      de
-
-      <strong>
-        {{ gastosFiltrados.length }}
-      </strong>
-
-      gastos
+      Mostrando <strong>{{ indiceInicio }}–{{ indiceFin }}</strong> de
+      <strong>{{ gastosFiltrados.length }}</strong> gastos
     </div>
-
-    <!-- CONTROLES -->
 
     <div class="paginacion-controles">
       <button
@@ -443,12 +307,7 @@
         ← Anterior
       </button>
 
-      <span class="pagina-info">
-        Página
-        {{ paginaActual }}
-        de
-        {{ totalPaginas }}
-      </span>
+      <span class="pagina-info"> Página {{ paginaActual }} de {{ totalPaginas }} </span>
 
       <button
         type="button"
@@ -460,26 +319,303 @@
       </button>
     </div>
   </div>
-
   } }
 
-  <!-- =====================================================
-         SIN RESULTADOS
-         ===================================================== -->
-
+  <!-- SIN RESULTADOS -->
   @if (gastosFiltrados.length === 0) {
-
   <div class="sin-resultados">
     <div class="sin-resultados-icon">⌕</div>
-
     <h2>No encontramos gastos</h2>
-
     <p>No hay gastos que coincidan con los filtros seleccionados.</p>
-
     <button type="button" class="btn-restablecer" (click)="limpiarFiltros()">
       Limpiar filtros
     </button>
   </div>
-
   } }
+
+  <!-- =====================================================
+     MODAL NUEVO GASTO
+     ===================================================== -->
+
+  @if (mostrarFormulario) {
+  <div class="modal-overlay">
+    <div
+      class="modal-gasto"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="titulo-modal-gasto"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="modal-header">
+        <div>
+          <h2 id="titulo-modal-gasto">Nuevo gasto de Camión</h2>
+          <p>Completa los datos para registrar el gasto.</p>
+        </div>
+
+        <button
+          type="button"
+          class="btn-cerrar-modal"
+          aria-label="Cerrar formulario"
+          [disabled]="guardando"
+          (click)="cerrarFormulario()"
+        >
+          ×
+        </button>
+      </div>
+
+      <form class="modal-body" #formGasto="ngForm" (ngSubmit)="guardarGasto()" novalidate>
+        <div class="formulario-grid">
+          <!-- CAMIÓN -->
+          <div class="campo-formulario">
+            <label for="camionGasto"> Camión <span class="obligatorio">*</span> </label>
+
+            <select
+              id="camionGasto"
+              name="camionId"
+              [(ngModel)]="camionId"
+              (blur)="campoTocadoGasto('camionId')"
+              [class.campo-error]="campoTieneErrorGasto('camionId')"
+              required
+            >
+              <option [ngValue]="0">Selecciona un camión</option>
+
+              @for (camion of camiones; track camion.id) {
+              <option [ngValue]="camion.id">
+                {{ camion.patente }}
+              </option>
+              }
+            </select>
+
+            @if (campoTieneErrorGasto('camionId')) {
+            <span class="error-message"> Selecciona un camión. </span>
+            }
+          </div>
+
+          <!-- FECHA -->
+          <div class="campo-formulario">
+            <label for="fechaGasto"> Fecha <span class="obligatorio">*</span> </label>
+
+            <input
+              id="fechaGasto"
+              name="fecha"
+              type="date"
+              [(ngModel)]="fechaGasto"
+              (blur)="campoTocadoGasto('fechaGasto')"
+              [class.campo-error]="campoTieneErrorGasto('fechaGasto')"
+              required
+            />
+
+            @if (campoTieneErrorGasto('fechaGasto')) {
+            <span class="error-message"> Selecciona la fecha del gasto. </span>
+            }
+          </div>
+
+          <!-- TIPO DE GASTO -->
+          <div class="campo-formulario">
+            <label for="tipoGasto"> Tipo de gasto <span class="obligatorio">*</span> </label>
+
+            <select
+              id="tipoGasto"
+              name="tipoGasto"
+              [(ngModel)]="tipoGasto"
+              (blur)="campoTocadoGasto('tipoGasto')"
+              [class.campo-error]="campoTieneErrorGasto('tipoGasto')"
+              required
+            >
+              @for (tipo of tiposGasto; track tipo) {
+              <option [value]="tipo">
+                {{ tipo === 'revision' ? 'Revisión' : (tipo | titlecase) }}
+              </option>
+              }
+            </select>
+
+            @if (campoTieneErrorGasto('tipoGasto')) {
+            <span class="error-message"> Selecciona el tipo de gasto. </span>
+            }
+          </div>
+
+          <!-- MONTO -->
+          <div class="campo-formulario">
+            <label for="montoGasto"> Monto (CLP) <span class="obligatorio">*</span> </label>
+
+            <input
+              id="montoGasto"
+              name="monto"
+              type="number"
+              min="1"
+              step="1"
+              placeholder="Ej. 150000"
+              [(ngModel)]="montoGasto"
+              (blur)="campoTocadoGasto('montoGasto')"
+              [class.campo-error]="campoTieneErrorGasto('montoGasto')"
+              required
+            />
+
+            @if (campoTieneErrorGasto('montoGasto')) {
+            <span class="error-message"> Ingresa un monto mayor que cero. </span>
+            }
+          </div>
+
+          <!-- DESCRIPCIÓN -->
+          <div class="campo-formulario campo-completo">
+            <label for="descripcionGasto"> Descripción <span class="obligatorio">*</span> </label>
+
+            <input
+              id="descripcionGasto"
+              name="descripcion"
+              type="text"
+              maxlength="200"
+              placeholder="Describe el gasto"
+              [(ngModel)]="descripcionGasto"
+              (blur)="campoTocadoGasto('descripcionGasto')"
+              [class.campo-error]="campoTieneErrorGasto('descripcionGasto')"
+              required
+            />
+
+            @if (campoTieneErrorGasto('descripcionGasto')) {
+            <span class="error-message"> Ingresa una descripción. </span>
+            }
+          </div>
+
+          <!-- OBSERVACIONES OPCIONALES -->
+          <div class="campo-formulario campo-completo">
+            <label for="observacionesGasto">
+              Observaciones <span class="opcional">(opcional)</span>
+            </label>
+
+            <textarea
+              id="observacionesGasto"
+              name="observaciones"
+              rows="3"
+              maxlength="500"
+              placeholder="Agrega observaciones si corresponde"
+              [(ngModel)]="observacionesGasto"
+            ></textarea>
+          </div>
+        </div>
+
+        <!-- ERROR GENERAL -->
+        @if (errorFormulario) {
+        <div class="error-formulario">
+          {{ errorFormulario }}
+        </div>
+        }
+
+        <!-- BOTONES -->
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn-cancelar"
+            [disabled]="guardando"
+            (click)="cerrarFormulario()"
+          >
+            Cancelar
+          </button>
+
+          <button type="submit" class="btn-guardar" [disabled]="guardando">
+            @if (guardando) {
+            <span class="mini-spinner"></span>
+            Guardando... } @else { Guardar gasto }
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+  }
+
+  <!-- =====================================================
+             MODAL CONFIRMACIÓN
+             ===================================================== -->
+
+  @if (mostrarConfirmacionGasto && gastoCreadoConfirmacion) {
+  <div class="modal-overlay confirmacion-overlay">
+    <div
+      class="modal-confirmacion"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="titulo-confirmacion-gasto"
+    >
+      <div class="confirmacion-icono">✓</div>
+
+      <div class="confirmacion-encabezado">
+        <h2 id="titulo-confirmacion-gasto">¡Gasto registrado!</h2>
+
+        <p>El gasto del camión se guardó correctamente.</p>
+      </div>
+
+      <div class="confirmacion-detalle">
+        <div class="confirmacion-fila">
+          <span>Camión</span>
+          <strong>{{ gastoCreadoConfirmacion.patenteCamion }}</strong>
+        </div>
+
+        <div class="confirmacion-fila">
+          <span>Fecha</span>
+          <strong>
+            {{ formatearFechaConfirmacion(gastoCreadoConfirmacion.fecha) }}
+          </strong>
+        </div>
+
+        <div class="confirmacion-fila">
+          <span>Tipo</span>
+          <strong>{{ gastoCreadoConfirmacion.tipoGasto | titlecase }}</strong>
+        </div>
+
+        <div class="confirmacion-fila">
+          <span>Descripción</span>
+          <strong>{{ gastoCreadoConfirmacion.descripcion }}</strong>
+        </div>
+
+        <div class="confirmacion-fila">
+          <span>Monto</span>
+          <strong class="confirmacion-monto">
+            ${{ gastoCreadoConfirmacion.monto | number : '1.0-0' }}
+          </strong>
+        </div>
+
+        @if (gastoCreadoConfirmacion.observaciones) {
+        <div class="confirmacion-observaciones">
+          <span>Observaciones</span>
+          <p>{{ gastoCreadoConfirmacion.observaciones }}</p>
+        </div>
+        }
+      </div>
+
+      <div class="confirmacion-footer">
+        <button type="button" class="btn-guardar" (click)="cerrarConfirmacionGasto()">
+          Aceptar
+        </button>
+      </div>
+    </div>
+  </div>
+  }
+
+  <!-- =====================================================
+             MODAL ERROR AL GUARDAR
+             ===================================================== -->
+
+  @if (mostrarErrorGasto) {
+  <div class="modal-overlay">
+    <div
+      class="modal-error-gasto"
+      role="alertdialog"
+      aria-modal="true"
+      aria-labelledby="titulo-error-gasto"
+    >
+      <div class="error-gasto-icono">!</div>
+
+      <h2 id="titulo-error-gasto">No se pudo registrar el gasto</h2>
+
+      <p>Ocurrió un problema al guardar el gasto. Revisa los datos e inténtalo nuevamente.</p>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-cancelar" (click)="cerrarErrorGasto()">Cerrar</button>
+
+        <button type="button" class="btn-guardar" (click)="volverAlFormulario()">
+          Volver al formulario
+        </button>
+      </div>
+    </div>
+  </div>
+  }
 </section>
