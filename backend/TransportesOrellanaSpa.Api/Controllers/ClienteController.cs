@@ -102,10 +102,16 @@ public class ClienteController : ControllerBase
 
     [RequirePermission("CLIENTES_VER")]
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<ClienteDto>>> GetAll()
+    public async Task<ActionResult<IEnumerable<ClienteDto>>> GetAll([FromQuery] bool soloActivos = false)
     {
-        var clientes = await _context.Clientes
-            .AsNoTracking()
+        var query = _context.Clientes.AsNoTracking();
+
+        if (soloActivos)
+        {
+            query = query.Where(c => c.Activo);
+        }
+
+        var clientes = await query
             .OrderBy(c => c.Nombre)
             .Select(c => new ClienteDto
             {

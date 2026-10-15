@@ -99,21 +99,15 @@ export class ViajeForm implements OnInit {
 
     };
 
-    this.api.getClientes().subscribe({
+    this.api.getClientes(true).subscribe({
       next: clientes => {
         this.clientes = clientes;
         clientesCargados = true;
         comprobarCarga();
       },
       error: error => {
-        console.error(
-          'Error al cargar clientes:',
-          error
-        );
-
-        this.error =
-          'No fue posible cargar los clientes.';
-
+        console.error('Error al cargar clientes:', error);
+        this.error = 'No fue posible cargar los clientes.';
         clientesCargados = true;
         comprobarCarga();
       }

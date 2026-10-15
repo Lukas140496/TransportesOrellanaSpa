@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
@@ -515,10 +515,14 @@ export class ApiService {
   // CLIENTES
   // =========================
 
-  getClientes(): Observable<Cliente[]> {
-    return this.http.get<Cliente[]>(
-      `${this.apiUrl}/cliente`
-    );
+  getClientes(soloActivos: boolean = false): Observable<Cliente[]> {
+    let params = new HttpParams();
+    
+    if (soloActivos) {
+      params = params.set('soloActivos', 'true');
+    }
+
+    return this.http.get<Cliente[]>(`${this.apiUrl}/cliente`, { params });
   }
 
   getClienteById(id: number): Observable<Cliente> {
