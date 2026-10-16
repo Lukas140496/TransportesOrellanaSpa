@@ -112,6 +112,42 @@ public class DashboardController : ControllerBase
                     v.Fecha < inicioMesSiguiente
                 );
 
+            // ===================================
+            // GASTOS DEL PERÍODO
+            // ===================================
+
+            var gastosCamionesMes = await _context.Gastos
+                .Where(g =>
+                    g.Fecha >= inicioMes &&
+                    g.Fecha < inicioMesSiguiente
+                )
+                .SumAsync(g => (decimal?)g.Monto) ?? 0m;
+
+            var gastosRemolquesMes = await _context.GastosRemolque
+                .Where(g =>
+                    g.Fecha >= inicioMes &&
+                    g.Fecha < inicioMesSiguiente
+                )
+                .SumAsync(g => (decimal?)g.Monto) ?? 0m;
+
+            var gastosConductoresMes = await _context.GastosConductor
+                .Where(g =>
+                    g.Fecha >= inicioMes &&
+                    g.Fecha < inicioMesSiguiente
+                )
+                .SumAsync(g => (decimal?)g.Monto) ?? 0m;
+
+            var produccionMes = await viajesMes
+                .SumAsync(v => v.Tarifa);
+
+            var totalGastosMes =
+                gastosCamionesMes
+                + gastosRemolquesMes
+                + gastosConductoresMes;
+
+            var gananciaNetaMes =
+                produccionMes - totalGastosMes;
+
             var resumen = new DashboardResumenDto
             {
                 Camiones = camiones,
@@ -121,8 +157,13 @@ public class DashboardController : ControllerBase
 
                 ViajesMes = await viajesMes.CountAsync(),
 
-                ProduccionMes = await viajesMes
-                    .SumAsync(v => v.Tarifa),
+                ProduccionMes = produccionMes,
+                GananciaNetaMes = gananciaNetaMes,
+                TotalGastosMes = totalGastosMes,
+
+                GastosCamionesMes = gastosCamionesMes,
+                GastosRemolquesMes = gastosRemolquesMes,
+                GastosConductoresMes = gastosConductoresMes,
 
                 LitrosCombustibleMes = await viajesMes
                     .SumAsync(v => v.LitrosCombustible),
@@ -467,6 +508,210 @@ public class DashboardController : ControllerBase
                 .ToListAsync();
 
             return Ok(kilometros);
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+
+    // =========================================================
+    // GET: api/dashboard/gastos-por-camion
+    // =========================================================
+
+    [HttpGet("gastos-por-camion")]
+    public async Task<ActionResult<IEnumerable<DashboardGastosCamionDto>>>
+        ObtenerGastosPorCamion(
+            [FromQuery] int? year,
+            [FromQuery] int? month)
+    {
+        try
+        {
+            var (inicioMes, inicioMesSiguiente) =
+                ObtenerRangoPeriodo(year, month);
+
+            var gastos = await _context.Gastos
+                .Where(g =>
+                    g.Fecha >= inicioMes &&
+                    g.Fecha < inicioMesSiguiente
+                )
+                .GroupBy(g => new
+                {
+                    g.CamionId,
+                    g.Camion.Patente
+                })
+                .Select(grupo => new DashboardGastosCamionDto
+                {
+                    CamionId = grupo.Key.CamionId,
+                    Patente = grupo.Key.Patente,
+                    Monto = grupo.Sum(g => g.Monto)
+                })
+                .OrderByDescending(g => g.Monto)
+                .ToListAsync();
+
+            return Ok(gastos);
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+
+    // =========================================================
+    // GET: api/dashboard/gastos-por-conductor
+    // =========================================================
+
+    [HttpGet("gastos-por-conductor")]
+    public async Task<ActionResult<IEnumerable<DashboardGastosConductorDto>>>
+        ObtenerGastosPorConductor(
+            [FromQuery] int? year,
+            [FromQuery] int? month)
+    {
+        try
+        {
+            var (inicioMes, inicioMesSiguiente) =
+                ObtenerRangoPeriodo(year, month);
+
+            var gastos = await _context.GastosConductor
+                .Where(g =>
+                    g.Fecha >= inicioMes &&
+                    g.Fecha < inicioMesSiguiente
+                )
+                .GroupBy(g => new
+                {
+                    g.ConductorId,
+                    g.Conductor.Nombres
+                })
+                .Select(grupo => new DashboardGastosConductorDto
+                {
+                    ConductorId = grupo.Key.ConductorId,
+                    Nombre = grupo.Key.Nombres,
+                    Monto = grupo.Sum(g => g.Monto)
+                })
+                .OrderByDescending(g => g.Monto)
+                .ToListAsync();
+
+            return Ok(gastos);
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+
+    // =========================================================
+    // GET: api/dashboard/gastos-por-remolque
+    // =========================================================
+
+    [HttpGet("gastos-por-remolque")]
+    public async Task<ActionResult<IEnumerable<DashboardGastosRemolqueDto>>>
+        ObtenerGastosPorRemolque(
+            [FromQuery] int? year,
+            [FromQuery] int? month)
+    {
+        try
+        {
+            var (inicioMes, inicioMesSiguiente) =
+                ObtenerRangoPeriodo(year, month);
+
+            var gastos = await _context.GastosRemolque
+                .Where(g =>
+                    g.Fecha >= inicioMes &&
+                    g.Fecha < inicioMesSiguiente
+                )
+                .GroupBy(g => new
+                {
+                    g.RemolqueId,
+                    g.Remolque.Patente
+                })
+                .Select(grupo => new DashboardGastosRemolqueDto
+                {
+                    RemolqueId = grupo.Key.RemolqueId,
+                    Nombre = grupo.Key.Patente,
+                    Monto = grupo.Sum(g => g.Monto)
+                })
+                .OrderByDescending(g => g.Monto)
+                .ToListAsync();
+
+            return Ok(gastos);
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+
+    // =========================================================
+    // GET: api/dashboard/gastos-por-tipo
+    // =========================================================
+
+    [HttpGet("gastos-por-tipo")]
+    public async Task<ActionResult<IEnumerable<DashboardGastosTipoDto>>>
+        ObtenerGastosPorTipo(
+            [FromQuery] int? year,
+            [FromQuery] int? month)
+    {
+        try
+        {
+            var (inicioMes, inicioMesSiguiente) =
+                ObtenerRangoPeriodo(year, month);
+
+            var gastosCamiones = await _context.Gastos
+                .Where(g =>
+                    g.Fecha >= inicioMes &&
+                    g.Fecha < inicioMesSiguiente
+                )
+                .GroupBy(g => g.TipoGasto)
+                .Select(grupo => new DashboardGastosTipoDto
+                {
+                    TipoGasto = grupo.Key,
+                    Monto = grupo.Sum(g => g.Monto)
+                })
+                .ToListAsync();
+
+            var gastosConductores = await _context.GastosConductor
+                .Where(g =>
+                    g.Fecha >= inicioMes &&
+                    g.Fecha < inicioMesSiguiente
+                )
+                .GroupBy(g => g.TipoGasto)
+                .Select(grupo => new DashboardGastosTipoDto
+                {
+                    TipoGasto = grupo.Key,
+                    Monto = grupo.Sum(g => g.Monto)
+                })
+                .ToListAsync();
+
+            var gastosRemolques = await _context.GastosRemolque
+                .Where(g =>
+                    g.Fecha >= inicioMes &&
+                    g.Fecha < inicioMesSiguiente
+                )
+                .GroupBy(g => g.TipoGasto)
+                .Select(grupo => new DashboardGastosTipoDto
+                {
+                    TipoGasto = grupo.Key,
+                    Monto = grupo.Sum(g => g.Monto)
+                })
+                .ToListAsync();
+
+            var gastos = gastosCamiones
+                .Concat(gastosConductores)
+                .Concat(gastosRemolques)
+                .GroupBy(g => g.TipoGasto)
+                .Select(grupo => new DashboardGastosTipoDto
+                {
+                    TipoGasto = grupo.Key,
+                    Monto = grupo.Sum(g => g.Monto)
+                })
+                .OrderByDescending(g => g.Monto)
+                .ToList();
+
+            return Ok(gastos);
         }
         catch (ArgumentException ex)
         {

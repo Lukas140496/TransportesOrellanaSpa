@@ -13,13 +13,13 @@ import {
 
 import { FormsModule } from '@angular/forms';
 
-import { ApiService } from '../../core/services/api.service';
-import { Remolque } from '../../core/models/remolque';
+import { ApiService } from '../../../core/services/api.service';
+import { Remolque } from '../../../core/models/remolque';
 
-import { GastoRemolqueService } from '../../core/services/gasto-remolque.service';
-import { GastoRemolque } from '../../core/models/gasto-remolque';
-import { CrearGastoRemolque } from '../../core/models/crear-gasto-remolque';
-import { PermissionService } from '../../core/services/permission.service';
+import { GastoRemolqueService } from '../../../core/services/gasto-remolque.service';
+import { GastoRemolque } from '../../../core/models/gasto-remolque';
+import { CrearGastoRemolque } from '../../../core/models/crear-gasto-remolque';
+import { PermissionService } from '../../../core/services/permission.service';
 
 @Component({
   selector: 'app-gasto-remolque',

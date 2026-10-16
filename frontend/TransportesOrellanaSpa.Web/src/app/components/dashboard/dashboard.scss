@@ -6,7 +6,6 @@
   box-sizing: border-box;
 }
 
-
 /* ========================= */
 /* CONTENIDO - TRANSICIÓN */
 /* ========================= */
@@ -14,10 +13,7 @@
 .dashboard-content {
   position: relative;
 
-  transition:
-    opacity 0.32s ease,
-    transform 0.32s ease,
-    filter 0.32s ease;
+  transition: opacity 0.32s ease, transform 0.32s ease, filter 0.32s ease;
 }
 
 .dashboard-content.initial-loading {
@@ -31,7 +27,6 @@
   pointer-events: none;
 }
 
-
 /* ========================= */
 /* ACTUALIZACIÓN DE TARJETAS */
 /* ========================= */
@@ -39,10 +34,7 @@
 .dashboard-content .card,
 .dashboard-content .chart-card,
 .dashboard-content .summary-strip {
-  transition:
-    transform 0.32s ease,
-    box-shadow 0.32s ease,
-    opacity 0.32s ease;
+  transition: transform 0.32s ease, box-shadow 0.32s ease, opacity 0.32s ease;
 }
 
 .dashboard-content.period-changing .card,
@@ -50,7 +42,6 @@
 .dashboard-content.period-changing .summary-strip {
   transform: translateY(2px);
 }
-
 
 /* ========================= */
 /* HEADER */
@@ -98,7 +89,6 @@
   font-weight: 600;
 }
 
-
 /* ========================= */
 /* PERÍODO */
 /* ========================= */
@@ -113,9 +103,7 @@
   box-shadow: 0 4px 16px rgba(24, 59, 104, 0.05);
   box-sizing: border-box;
 
-  transition:
-    border-color 0.2s ease,
-    box-shadow 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .periodo:hover {
@@ -205,9 +193,7 @@
   text-transform: capitalize;
   cursor: pointer;
 
-  transition:
-    background 0.18s ease,
-    color 0.18s ease;
+  transition: background 0.18s ease, color 0.18s ease;
 }
 
 .periodo-option:hover {
@@ -226,7 +212,6 @@
   font-size: 13px;
   font-weight: 800;
 }
-
 
 /* ========================= */
 /* SECCIONES */
@@ -254,7 +239,6 @@
   font-size: 12px;
 }
 
-
 /* ========================= */
 /* CARDS */
 /* ========================= */
@@ -269,7 +253,7 @@
 }
 
 .operation-cards {
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 .card {
@@ -281,17 +265,13 @@
   box-shadow: 0 4px 18px rgba(24, 59, 104, 0.045);
   box-sizing: border-box;
 
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease,
-    opacity 0.3s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.3s ease;
 }
 
 .card:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 24px rgba(24, 59, 104, 0.08);
 }
-
 
 /* ========================= */
 /* INVENTORY CARDS */
@@ -336,7 +316,6 @@
   font-size: 11px;
 }
 
-
 /* ========================= */
 /* OPERATION METRICS */
 /* ========================= */
@@ -378,29 +357,95 @@
   white-space: nowrap;
 }
 
-
 /* ========================= */
 /* PRODUCCIÓN DESTACADA */
 /* ========================= */
 
 .production {
-  border-color: #dce8f4;
+  border-color: #d9e4f0;
 
   box-shadow:
-    0 5px 20px rgba(24, 59, 104, 0.07),
-    inset 0 2px 0 #417cc0;
+    0 5px 20px rgba(30, 64, 100, 0.06),
+    inset 0 2px 0 #4f7ea8;
 }
 
 .production:hover {
   box-shadow:
-    0 9px 26px rgba(24, 59, 104, 0.10),
-    inset 0 2px 0 #417cc0;
+    0 9px 26px rgba(30, 64, 100, 0.09),
+    inset 0 2px 0 #3f6f9a;
 }
 
 .production .metric-value {
-  color: #183b68;
+  color: #3f6f9a;
 }
 
+
+/* ========================= */
+/* IVA DESTACADO */
+/* ========================= */
+
+.iva {
+  border-color: #e7e0d1;
+
+  box-shadow:
+    0 5px 20px rgba(100, 75, 30, 0.06),
+    inset 0 2px 0 #c49a55;
+}
+
+.iva:hover {
+  box-shadow:
+    0 9px 26px rgba(100, 75, 30, 0.09),
+    inset 0 2px 0 #b78942;
+}
+
+.iva .metric-value {
+  color: #b78942;
+}
+
+
+/* ========================= */
+/* DESCUENTOS DESTACADOS */
+/* ========================= */
+
+.expenses {
+  border-color: #eadada;
+
+  box-shadow:
+    0 5px 20px rgba(120, 50, 50, 0.06),
+    inset 0 2px 0 #c97878;
+}
+
+.expenses:hover {
+  box-shadow:
+    0 9px 26px rgba(120, 50, 50, 0.09),
+    inset 0 2px 0 #b96565;
+}
+
+.expenses .metric-value {
+  color: #b96565;
+}
+
+/* ========================= */
+/* GANANCIA NETA DESTACADA */
+/* ========================= */
+
+.net-profit {
+  border-color: #d9e6dc;
+
+  box-shadow:
+    0 5px 20px rgba(45, 100, 65, 0.06),
+    inset 0 2px 0 #69a47a;
+}
+
+.net-profit:hover {
+  box-shadow:
+    0 9px 26px rgba(45, 100, 65, 0.09),
+    inset 0 2px 0 #58936a;
+}
+
+.net-profit .metric-value {
+  color: #4f9463;
+}
 
 /* ========================= */
 /* MÉTRICAS SECUNDARIAS */
@@ -413,9 +458,43 @@
   font-size: 10px;
 }
 
+/* ========================= */
+/* PRODUCCIÓN */
+/* ========================= */
+
 .production .metric-icon {
-  background: #edf5f1;
-  color: #39755d;
+  background: #edf2f7;
+  color: #6f8faa;
+}
+
+
+/* ========================= */
+/* IVA */
+/* ========================= */
+
+.iva .metric-icon {
+  background: #f5f0e7;
+  color: #c1a06b;
+}
+
+
+/* ========================= */
+/* DESCUENTOS */
+/* ========================= */
+
+.expenses .metric-icon {
+  background: #f5eaea;
+  color: #c98989;
+}
+
+
+/* ========================= */
+/* GANANCIA NETA */
+/* ========================= */
+
+.net-profit .metric-icon {
+  background: #eaf2ec;
+  color: #78a987;
 }
 
 .fuel .metric-icon {
@@ -429,8 +508,8 @@
 }
 
 .kilometers .metric-icon {
-  background: #f0eff7;
-  color: #625c8b;
+  background: #eaf2ec;
+  color: #78a987;
 }
 
 .bar-percentage {
@@ -452,7 +531,6 @@
   font-size: 12px;
   line-height: 1.2;
 }
-
 
 /* ========================= */
 /* ESTADO DE PAGOS */
@@ -594,7 +672,6 @@
   background: #e8edf2;
 }
 
-
 /* ========================= */
 /* CHARTS */
 /* ========================= */
@@ -614,9 +691,7 @@
   background: #ffffff;
   box-shadow: 0 4px 18px rgba(24, 59, 104, 0.045);
 
-  transition:
-    opacity 0.3s ease,
-    transform 0.3s ease;
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 .chart-header {
@@ -654,7 +729,6 @@
   font-size: 16px;
 }
 
-
 /* ========================= */
 /* BARRAS */
 /* ========================= */
@@ -669,10 +743,7 @@
 .bar-item {
   min-width: 0;
 
-  transition:
-    background 0.2s ease,
-    box-shadow 0.2s ease,
-    transform 0.2s ease;
+  transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
 
 .bar-info {
@@ -724,12 +795,9 @@
   border-radius: 999px;
   background: #edf1f5;
 
-  box-shadow:
-    inset 0 1px 2px rgba(24, 59, 104, 0.04);
+  box-shadow: inset 0 1px 2px rgba(24, 59, 104, 0.04);
 
-  transition:
-    height 0.2s ease,
-    box-shadow 0.2s ease;
+  transition: height 0.2s ease, box-shadow 0.2s ease;
 }
 
 .bar-fill {
@@ -737,13 +805,8 @@
   min-width: 3px;
   border-radius: inherit;
 
-  transition:
-    width 0.45s ease,
-    filter 0.2s ease,
-    background 0.2s ease,
-    box-shadow 0.2s ease;
+  transition: width 0.45s ease, filter 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
 }
-
 
 /* ========================= */
 /* COLORES DE LAS BARRAS */
@@ -754,32 +817,27 @@
 .production-bar {
   background: #417cc0;
 
-  box-shadow:
-    0 1px 3px rgba(65, 124, 192, 0.18);
+  box-shadow: 0 1px 3px rgba(65, 124, 192, 0.18);
 }
 
 .production-bar.cliente {
   background: #417cc0;
 }
 
-
 /* KILÓMETROS */
 
 .kilometers-bar {
   background: #4c9a82;
 
-  box-shadow:
-    0 1px 3px rgba(76, 154, 130, 0.18);
+  box-shadow: 0 1px 3px rgba(76, 154, 130, 0.18);
 }
-
 
 /* COSTO DE COMBUSTIBLE */
 
 .bar-fill.conductor {
-  background: #dd8634;
+  background: #b78942;
 
-  box-shadow:
-    0 1px 3px rgba(221, 134, 52, 0.18);
+  box-shadow: 0 1px 3px rgba(221, 134, 52, 0.18);
 }
 
 /* ========================= */
@@ -796,10 +854,8 @@
 
   background: #f8fbfe;
 
-  box-shadow:
-    inset 0 0 0 1px #edf3f8;
+  box-shadow: inset 0 0 0 1px #edf3f8;
 }
-
 
 /* Nombre / patente */
 
@@ -809,7 +865,6 @@
   color: #183b68;
   font-weight: 800;
 }
-
 
 /* Estrella alineada a la derecha del campo */
 
@@ -825,7 +880,6 @@
   vertical-align: 1px;
 }
 
-
 /* Valor */
 
 .bar-first .bar-value {
@@ -833,43 +887,35 @@
   font-weight: 800;
 }
 
-
 /* Barra más intensa */
 
 .bar-first .bar-track {
   height: 9px;
 
-  box-shadow:
-    inset 0 1px 2px rgba(24, 59, 104, 0.06);
+  box-shadow: inset 0 1px 2px rgba(24, 59, 104, 0.06);
 }
-
 
 /* Primer lugar - producción */
 
 .bar-first .production-bar {
   background: #245f9e;
 
-  box-shadow:
-    0 2px 5px rgba(36, 95, 158, 0.30);
+  box-shadow: 0 2px 5px rgba(36, 95, 158, 0.3);
 }
-
 
 /* Primer lugar - kilómetros */
 
 .bar-first .kilometers-bar {
   background: #2f8068;
 
-  box-shadow:
-    0 2px 5px rgba(47, 128, 104, 0.30);
+  box-shadow: 0 2px 5px rgba(47, 128, 104, 0.3);
 }
-
 
 /* Primer lugar - cualquier barra */
 
 .bar-first .bar-fill {
   filter: saturate(1.08);
 }
-
 
 /* ========================= */
 /* EMPTY STATE */
@@ -912,7 +958,6 @@
   line-height: 1.5;
 }
 
-
 /* ========================= */
 /* ESTADO DE DOCUMENTACIÓN */
 /* ========================= */
@@ -944,9 +989,7 @@
 
   overflow: hidden;
 
-  transition:
-    opacity 0.3s ease,
-    transform 0.3s ease;
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 .summary-item {
@@ -968,9 +1011,7 @@
 
   background: #ffffff;
 
-  transition:
-    background 0.2s ease,
-    transform 0.2s ease;
+  transition: background 0.2s ease, transform 0.2s ease;
 }
 
 .summary-item > span {
@@ -1047,7 +1088,6 @@
   background: #f1faf4;
 }
 
-
 /* ========================= */
 /* ERROR */
 /* ========================= */
@@ -1090,7 +1130,6 @@
   font-size: 11px;
 }
 
-
 /* ========================= */
 /* SKELETON */
 /* ========================= */
@@ -1101,12 +1140,7 @@
   margin-top: 18px;
   border-radius: 6px;
 
-  background: linear-gradient(
-    90deg,
-    #edf0f3 25%,
-    #f5f6f8 50%,
-    #edf0f3 75%
-  );
+  background: linear-gradient(90deg, #edf0f3 25%, #f5f6f8 50%, #edf0f3 75%);
 
   background-size: 200% 100%;
 
@@ -1129,13 +1163,11 @@
   }
 }
 
-
 /* ========================= */
 /* RESPONSIVE */
 /* ========================= */
 
 @media (max-width: 1200px) {
-
   .inventory-cards {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -1143,12 +1175,9 @@
   .operation-cards {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
-
 }
 
-
 @media (max-width: 900px) {
-
   .charts-grid {
     grid-template-columns: 1fr;
   }
@@ -1169,12 +1198,9 @@
   .summary-item:nth-last-child(-n + 2) {
     border-bottom: none;
   }
-
 }
 
-
 @media (max-width: 700px) {
-
   .dashboard {
     padding: 22px 17px;
   }
@@ -1237,12 +1263,9 @@
   .payment-amount strong {
     font-size: 16px;
   }
-
 }
 
-
 @media (max-width: 480px) {
-
   .dashboard {
     padding: 18px 13px;
   }
@@ -1302,5 +1325,4 @@
   .payment-amount strong {
     font-size: 14px;
   }
-
 }

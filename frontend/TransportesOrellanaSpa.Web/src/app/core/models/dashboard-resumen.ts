@@ -1,21 +1,27 @@
 export interface DashboardResumen {
-  camiones: number;
-  conductores: number;
-  remolques: number;
-  clientes: number;
+    camiones: number;
+    conductores: number;
+    remolques: number;
+    clientes: number;
 
-  viajesMes: number;
-  produccionMes: number;
-  litrosCombustibleMes: number;
-  costoCombustibleMes: number;
-  kilometrosMes: number;
+    viajesMes: number;
+    produccionMes: number;
+    gananciaNetaMes: number;
+    totalGastosMes: number;
+    litrosCombustibleMes: number;
+    costoCombustibleMes: number;
+    kilometrosMes: number;
 
-  // ===================================
-  // DOCUMENTACIÓN DE LA FLOTA
-  // ===================================
+    gastosCamionesMes: number;
+    gastosRemolquesMes: number;
+    gastosConductoresMes: number;
 
-  camionesRevisionVencida: number;
-  camionesPermisoVencido: number;
-  camionesSeguroVencido: number;
-  camionesDocumentacionVencida: number;
+    // ===================================
+    // DOCUMENTACIÓN DE LA FLOTA
+    // ===================================
+
+    camionesRevisionVencida: number;
+    camionesPermisoVencido: number;
+    camionesSeguroVencido: number;
+    camionesDocumentacionVencida: number;
 }

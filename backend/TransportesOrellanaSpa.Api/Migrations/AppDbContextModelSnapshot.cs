@@ -266,6 +266,42 @@ namespace TransportesOrellanaSpa.Api.Migrations
                     b.ToTable("Gastos");
                 });
 
+            modelBuilder.Entity("TransportesOrellanaSpa.Api.Models.GastoConductor", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ConductorId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Descripcion")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("Fecha")
+                        .HasColumnType("date");
+
+                    b.Property<decimal>("Monto")
+                        .HasPrecision(12, 2)
+                        .HasColumnType("numeric(12,2)");
+
+                    b.Property<string>("Observaciones")
+                        .HasColumnType("text");
+
+                    b.Property<string>("TipoGasto")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ConductorId");
+
+                    b.ToTable("GastosConductor");
+                });
+
             modelBuilder.Entity("TransportesOrellanaSpa.Api.Models.GastoRemolque", b =>
                 {
                     b.Property<int>("Id")
@@ -640,6 +676,17 @@ namespace TransportesOrellanaSpa.Api.Migrations
                     b.Navigation("Camion");
 
                     b.Navigation("Viaje");
+                });
+
+            modelBuilder.Entity("TransportesOrellanaSpa.Api.Models.GastoConductor", b =>
+                {
+                    b.HasOne("TransportesOrellanaSpa.Api.Models.Conductor", "Conductor")
+                        .WithMany()
+                        .HasForeignKey("ConductorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Conductor");
                 });
 
             modelBuilder.Entity("TransportesOrellanaSpa.Api.Models.GastoRemolque", b =>

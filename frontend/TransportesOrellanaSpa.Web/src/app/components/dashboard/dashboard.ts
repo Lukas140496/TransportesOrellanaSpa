@@ -11,6 +11,11 @@ import { DashboardKilometrosCamion } from '../../core/models/dashboard-kilometro
 import { DashboardKilometrosConductor } from '../../core/models/dashboard-kilometros-conductor';
 import { DashboardEstadoPagos } from '../../core/models/dashboard-estado-pagos';
 import { DashboardDiasHabiles } from '../../core/models/dashboard-dias-habiles';
+import { DashboardGastosCamion } from '../../core/models/dashboard-gastos-camion';
+import { DashboardGastosConductor } from '../../core/models/dashboard-gastos-conductor';
+import { DashboardGastosRemolque } from '../../core/models/dashboard-gastos-remolque';
+import { DashboardGastosTipo } from '../../core/models/dashboard-gastos-tipo';
+
 
 interface PeriodoDashboard {
   year: number;
@@ -37,6 +42,14 @@ export class Dashboard implements OnInit {
   produccionClientes: DashboardProduccionCliente[] = [];
 
   costoCombustibleCamiones: DashboardCostoCombustibleCamion[] = [];
+
+  gastosCamiones: DashboardGastosCamion[] = [];
+
+  gastosConductores: DashboardGastosConductor[] = [];
+
+  gastosRemolques: DashboardGastosRemolque[] = [];
+
+  gastosPorTipo: DashboardGastosTipo[] = [];
 
   kilometrosCamiones: DashboardKilometrosCamion[] = [];
 
@@ -197,6 +210,14 @@ export class Dashboard implements OnInit {
 
     let estadoPagosCargado = false;
 
+    let gastosCamionesCargados = false;
+
+    let gastosConductoresCargados = false;
+
+    let gastosRemolquesCargados = false;
+
+    let gastosPorTipoCargados = false;
+
 
     const finalizarTransicion = (): void => {
 
@@ -209,7 +230,11 @@ export class Dashboard implements OnInit {
         kilometrosCamionesCargados &&
         kilometrosConductoresCargados &&
         diasHabilesCargados &&
-        estadoPagosCargado
+        estadoPagosCargado &&
+        gastosCamionesCargados &&
+        gastosConductoresCargados &&
+        gastosRemolquesCargados &&
+        gastosPorTipoCargados
       ) {
 
         if (cargaInicial) {
@@ -402,26 +427,26 @@ export class Dashboard implements OnInit {
       year,
       month
     ).subscribe({
-    
+
       next: kilometros => {
-    
+
         this.kilometrosConductores =
           kilometros;
-    
+
         kilometrosConductoresCargados = true;
-    
+
         finalizarTransicion();
       },
-    
+
       error: error => {
-    
+
         console.error(
           'ERROR KILÓMETROS CONDUCTORES:',
           error
         );
-    
+
         kilometrosConductoresCargados = true;
-    
+
         finalizarTransicion();
       }
     });
@@ -430,25 +455,25 @@ export class Dashboard implements OnInit {
       year,
       month
     ).subscribe({
-    
+
       next: dias => {
-    
+
         this.diasHabiles = dias;
-    
+
         diasHabilesCargados = true;
-    
+
         finalizarTransicion();
       },
-    
+
       error: error => {
-    
+
         console.error(
           'ERROR DÍAS HÁBILES:',
           error
         );
-    
+
         diasHabilesCargados = true;
-    
+
         finalizarTransicion();
       }
     });
@@ -481,6 +506,79 @@ export class Dashboard implements OnInit {
         finalizarTransicion();
       }
     });
+
+
+    // ===================================
+    // GASTOS POR CAMIÓN
+    // ===================================
+
+    this.api.getGastosPorCamion(year, month).subscribe({
+      next: gastos => {
+        this.gastosCamiones = gastos;
+        gastosCamionesCargados = true;
+        finalizarTransicion();
+      },
+      error: error => {
+        console.error('ERROR GASTOS CAMIONES:', error);
+        this.gastosCamiones = [];
+        gastosCamionesCargados = true;
+        finalizarTransicion();
+      }
+    });
+
+    // ===================================
+    // GASTOS POR CONDUCTOR
+    // ===================================
+
+    this.api.getGastosPorConductor(year, month).subscribe({
+      next: gastos => {
+        this.gastosConductores = gastos;
+        gastosConductoresCargados = true;
+        finalizarTransicion();
+      },
+      error: error => {
+        console.error('ERROR GASTOS CONDUCTORES:', error);
+        this.gastosConductores = [];
+        gastosConductoresCargados = true;
+        finalizarTransicion();
+      }
+    });
+
+    // ===================================
+    // GASTOS POR REMOLQUE
+    // ===================================
+
+    this.api.getGastosPorRemolque(year, month).subscribe({
+      next: gastos => {
+        this.gastosRemolques = gastos;
+        gastosRemolquesCargados = true;
+        finalizarTransicion();
+      },
+      error: error => {
+        console.error('ERROR GASTOS REMOLQUES:', error);
+        this.gastosRemolques = [];
+        gastosRemolquesCargados = true;
+        finalizarTransicion();
+      }
+    });
+
+    // ===================================
+    // GASTOS POR TIPO
+    // ===================================
+
+    this.api.getGastosPorTipo(year, month).subscribe({
+      next: gastos => {
+        this.gastosPorTipo = gastos;
+        gastosPorTipoCargados = true;
+        finalizarTransicion();
+      },
+      error: error => {
+        console.error('ERROR GASTOS POR TIPO:', error);
+        this.gastosPorTipo = [];
+        gastosPorTipoCargados = true;
+        finalizarTransicion();
+      }
+    });
   }
 
 
@@ -505,6 +603,15 @@ export class Dashboard implements OnInit {
         maximumFractionDigits: 0
       }
     ).format(valor);
+  }
+
+  get ivaProduccion(): number {
+
+    if (!this.resumen) {
+      return 0;
+    }
+
+    return this.resumen.produccionMes * 0.19;
   }
 
 
@@ -627,16 +734,16 @@ export class Dashboard implements OnInit {
   obtenerPorcentajeTotalKilometrosConductor(
     kilometros: number
   ): number {
-  
+
     const total = this.kilometrosConductores.reduce(
       (suma, conductor) => suma + conductor.kilometros,
       0
     );
-  
+
     if (total === 0) {
       return 0;
     }
-  
+
     return (kilometros / total) * 100;
   }
 
@@ -735,5 +842,42 @@ export class Dashboard implements OnInit {
       this.periodoSeleccionado.month,
       0
     ).getDate();
+  }
+
+
+  obtenerPorcentajeGastoCamion(monto: number): number {
+    const total = this.gastosCamiones.reduce(
+      (suma, gasto) => suma + gasto.monto,
+      0
+    );
+
+    return total > 0 ? (monto / total) * 100 : 0;
+  }
+
+  obtenerPorcentajeGastoConductor(monto: number): number {
+    const total = this.gastosConductores.reduce(
+      (suma, gasto) => suma + gasto.monto,
+      0
+    );
+
+    return total > 0 ? (monto / total) * 100 : 0;
+  }
+
+  obtenerPorcentajeGastoRemolque(monto: number): number {
+    const total = this.gastosRemolques.reduce(
+      (suma, gasto) => suma + gasto.monto,
+      0
+    );
+
+    return total > 0 ? (monto / total) * 100 : 0;
+  }
+
+  obtenerPorcentajeGastoTipo(monto: number): number {
+    const total = this.gastosPorTipo.reduce(
+      (suma, gasto) => suma + gasto.monto,
+      0
+    );
+
+    return total > 0 ? (monto / total) * 100 : 0;
   }
 }

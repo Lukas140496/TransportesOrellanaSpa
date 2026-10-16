@@ -48,8 +48,9 @@ import { UsuarioList } from './components/usuario/usuario-list/usuario-list';
 import { UsuarioForm } from './components/usuario/usuario-form/usuario-form';
 import { UsuarioModificar } from './components/usuario/usuario-modificar/usuario-modificar';
 
-import { GastoList } from './components/gasto/gasto-list/gasto-list';
-import { GastoRemolqueComponent } from './components/gasto-remolque/gasto-remolque';
+import { GastoList } from './components/camion/gasto-camion/gasto-list';
+import { GastoRemolqueComponent } from './components/remolque/gasto-remolque/gasto-remolque';
+import { GastoConductorComponent } from './components/conductor/gasto-conductor/gasto-conductor';
 
 export const routes: Routes = [
 
@@ -249,6 +250,11 @@ export const routes: Routes = [
             {
                 path: 'conductores/desactivar',
                 component: ConductorDesactivar
+            },
+
+            {
+                path: 'conductores/gastos',
+                component: GastoConductorComponent
             },
 
             {

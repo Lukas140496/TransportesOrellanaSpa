@@ -14,6 +14,16 @@ public class DashboardResumenDto
 
     public decimal ProduccionMes { get; set; }
 
+    public decimal GananciaNetaMes { get; set; }
+
+    public decimal TotalGastosMes { get; set; }
+
+    public decimal GastosCamionesMes { get; set; }
+
+    public decimal GastosRemolquesMes { get; set; }
+
+    public decimal GastosConductoresMes { get; set; }
+
     public decimal LitrosCombustibleMes { get; set; }
 
     public decimal CostoCombustibleMes { get; set; }

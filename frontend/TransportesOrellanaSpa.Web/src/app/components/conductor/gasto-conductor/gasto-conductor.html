@@ -1,0 +1,406 @@
+
+<div class="gasto-conductor">
+  <header class="page-header">
+    <div class="header-content">
+      <div class="header-icon">👥</div>
+      <div>
+        <h1>Gastos de Conductores</h1>
+        <p>Administra sueldos, adelantos, bonos y otros gastos del personal.</p>
+      </div>
+    </div>
+
+    <button
+      *ngIf="permissionService.tienePermiso('GASTOS_CREAR')"
+      class="btn-nuevo"
+      type="button"
+      (click)="abrirFormulario()">
+      <span class="btn-icon">+</span>
+      Nuevo gasto
+    </button>
+  </header>
+
+  <div *ngIf="cargando" class="estado-container">
+    <div class="loading-spinner"></div>
+    <p>Cargando gastos de conductores...</p>
+  </div>
+
+  <div *ngIf="!cargando && errorCarga" class="error-container">
+    <div class="error-icon">!</div>
+    <div>
+      <strong>No se pudieron cargar los datos</strong>
+      <p>{{ errorCarga }}</p>
+      <button class="btn-restablecer" type="button" (click)="reintentarCarga()">
+        Reintentar
+      </button>
+    </div>
+  </div>
+
+  <ng-container *ngIf="!cargando && !errorCarga">
+    <section class="resumen">
+      <div class="resumen-card">
+        <div class="resumen-icon total">#</div>
+        <div>
+          <span>Gastos registrados</span>
+          <strong>{{ gastosFiltrados.length }}</strong>
+        </div>
+      </div>
+
+      <div class="resumen-card">
+        <div class="resumen-icon combustible">$</div>
+        <div>
+          <span>Total de gastos</span>
+          <strong>{{ totalFiltrado | number:'1.0-0' }} $</strong>
+        </div>
+      </div>
+
+      <div class="resumen-card">
+        <div class="resumen-icon total">S</div>
+        <div>
+          <span>Registros de sueldo</span>
+          <strong>{{ cantidadSueldos }}</strong>
+        </div>
+      </div>
+
+      <div class="resumen-card">
+        <div class="resumen-icon combustible">$</div>
+        <div>
+          <span>Total en sueldos</span>
+          <strong>{{ montoSueldos | number:'1.0-0' }} $</strong>
+        </div>
+      </div>
+    </section>
+
+    <section class="filtros-card">
+      <div class="filtro-busqueda">
+        <label for="buscarGasto">Buscar</label>
+        <div class="busqueda">
+          <span class="search-icon">⌕</span>
+          <input
+            id="buscarGasto"
+            type="text"
+            placeholder="Conductor, descripción o tipo..."
+            [(ngModel)]="busqueda"
+            (ngModelChange)="aplicarFiltros()">
+          <button
+            *ngIf="busqueda"
+            class="btn-limpiar-busqueda"
+            type="button"
+            aria-label="Limpiar búsqueda"
+            (click)="limpiarBusqueda()">×</button>
+        </div>
+      </div>
+
+      <div class="filtro-conductor">
+        <label for="filtroConductor">Conductor</label>
+        <select
+          id="filtroConductor"
+          [(ngModel)]="conductorFiltro"
+          (ngModelChange)="aplicarFiltros()">
+          <option value="">Todos los conductores</option>
+          <option *ngFor="let conductor of conductores" [value]="conductor.id">
+            {{ conductor.nombres }} {{ conductor.apellidoPaterno }}
+            {{ conductor.apellidoMaterno }}
+          </option>
+        </select>
+      </div>
+
+      <div class="filtro-fecha">
+        <label for="fechaDesde">Desde</label>
+        <input
+          id="fechaDesde"
+          type="date"
+          [(ngModel)]="fechaDesde"
+          (ngModelChange)="aplicarFiltros()">
+      </div>
+
+      <div class="filtro-fecha">
+        <label for="fechaHasta">Hasta</label>
+        <input
+          id="fechaHasta"
+          type="date"
+          [(ngModel)]="fechaHasta"
+          (ngModelChange)="aplicarFiltros()">
+      </div>
+
+      <div class="filtro-tipo">
+        <span class="filtro-label">Tipo:</span>
+        <button
+          type="button"
+          [class.active]="tipoFiltro === ''"
+          (click)="tipoFiltro = ''; aplicarFiltros()">
+          Todos
+        </button>
+        <button
+          *ngFor="let tipo of tiposGasto"
+          type="button"
+          [class.active]="tipoFiltro === tipo.valor"
+          (click)="tipoFiltro = tipo.valor; aplicarFiltros()">
+          {{ tipo.etiqueta }}
+        </button>
+      </div>
+
+      <button class="btn-limpiar-filtros" type="button" (click)="limpiarFiltros()">
+        Limpiar filtros
+      </button>
+    </section>
+
+    <div class="resultado-info">
+      Mostrando <strong>{{ primerResultado }}–{{ ultimoResultado }}</strong>
+      de <strong>{{ gastosFiltrados.length }}</strong> gastos
+    </div>
+
+    <div *ngIf="gastosPaginados.length > 0" class="tabla-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Conductor</th>
+            <th>Tipo</th>
+            <th>Descripción</th>
+            <th>Monto</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let gasto of gastosPaginados">
+            <td>{{ gasto.fecha | date : 'dd/MM/yyyy' }}</td>
+            <td>
+              <div class="camion-info">
+                <div>
+                  <strong>{{ gasto.nombreConductor || nombreConductor(gasto.conductorId) }}</strong>
+                </div>
+              </div>
+            </td>
+            <td>
+              <span class="tipo-gasto" [ngClass]="gasto.tipoGasto">
+                {{ etiquetaTipo(gasto.tipoGasto) }}
+              </span>
+            </td>
+            <td>
+              <span class="dato-principal">{{ gasto.descripcion }}</span>
+              <span *ngIf="gasto.observaciones" class="dato-secundario">
+                {{ gasto.observaciones }}
+              </span>
+            </td>
+            <td>
+              <span class="monto">{{ gasto.monto | number:'1.0-0' }} $</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div *ngIf="gastosPaginados.length === 0" class="sin-resultados">
+      <div class="sin-resultados-icon">⌕</div>
+      <h2>No hay gastos para mostrar</h2>
+      <p>No se encontraron gastos que coincidan con los filtros seleccionados.</p>
+      <button class="btn-restablecer" type="button" (click)="limpiarFiltros()">
+        Restablecer filtros
+      </button>
+    </div>
+
+    <div *ngIf="gastosFiltrados.length > tamanioPagina" class="paginacion">
+      <div class="paginacion-info">
+        Mostrando <strong>{{ primerResultado }}–{{ ultimoResultado }}</strong>
+        de <strong>{{ gastosFiltrados.length }}</strong>
+      </div>
+
+      <div class="paginacion-controles">
+        <button
+          class="btn-paginacion"
+          type="button"
+          [disabled]="paginaActual === 1"
+          (click)="cambiarPagina(paginaActual - 1)">
+          Anterior
+        </button>
+
+        <span class="pagina-info">
+          Página {{ paginaActual }} de {{ totalPaginas }}
+        </span>
+
+        <button
+          class="btn-paginacion"
+          type="button"
+          [disabled]="paginaActual === totalPaginas"
+          (click)="cambiarPagina(paginaActual + 1)">
+          Siguiente
+        </button>
+      </div>
+    </div>
+  </ng-container>
+</div>
+
+<!-- Modal de registro -->
+<div *ngIf="modalFormulario" class="modal-overlay" (click)="cerrarFormulario()">
+  <section class="modal-gasto" role="dialog" aria-modal="true"
+    aria-labelledby="tituloFormulario" (click)="$event.stopPropagation()">
+    <header class="modal-header">
+      <div>
+        <h2 id="tituloFormulario">Registrar gasto de conductor</h2>
+        <p>Completa los datos del gasto que deseas registrar.</p>
+      </div>
+      <button class="btn-cerrar-modal" type="button"
+        [disabled]="guardando" aria-label="Cerrar" (click)="cerrarFormulario()">×</button>
+    </header>
+
+    <div class="modal-body">
+      <form (ngSubmit)="guardarGasto()" novalidate>
+        <div class="formulario-grid">
+          <div class="campo-formulario campo-completo">
+            <label for="conductorId">Conductor <span class="obligatorio">*</span></label>
+            <select
+              id="conductorId"
+              name="conductorId"
+              [(ngModel)]="nuevoGasto.conductorId"
+              [class.campo-error]="campoInvalido('conductorId')"
+              required>
+              <option [ngValue]="0">Selecciona un conductor</option>
+              <option *ngFor="let conductor of conductoresActivos" [ngValue]="conductor.id">
+                {{ conductor.nombres }} {{ conductor.apellidoPaterno }}
+                {{ conductor.apellidoMaterno }} — {{ conductor.rut }}
+              </option>
+            </select>
+            <span *ngIf="campoInvalido('conductorId')" class="error-message">
+              Selecciona un conductor activo.
+            </span>
+          </div>
+
+          <div class="campo-formulario">
+            <label for="fechaGasto">Fecha <span class="obligatorio">*</span></label>
+            <input
+              id="fechaGasto"
+              name="fecha"
+              type="date"
+              [(ngModel)]="nuevoGasto.fecha"
+              [class.campo-error]="campoInvalido('fecha')"
+              required>
+            <span *ngIf="campoInvalido('fecha')" class="error-message">
+              Selecciona una fecha.
+            </span>
+          </div>
+
+          <div class="campo-formulario">
+            <label for="tipoGasto">Tipo de gasto <span class="obligatorio">*</span></label>
+            <select
+              id="tipoGasto"
+              name="tipoGasto"
+              [(ngModel)]="nuevoGasto.tipoGasto"
+              [class.campo-error]="campoInvalido('tipoGasto')"
+              required>
+              <option *ngFor="let tipo of tiposGasto" [value]="tipo.valor">
+                {{ tipo.etiqueta }}
+              </option>
+            </select>
+            <span *ngIf="campoInvalido('tipoGasto')" class="error-message">
+              Selecciona un tipo de gasto válido.
+            </span>
+          </div>
+
+          <div class="campo-formulario campo-completo">
+            <label for="descripcion">Descripción <span class="obligatorio">*</span></label>
+            <input
+              id="descripcion"
+              name="descripcion"
+              type="text"
+              maxlength="200"
+              placeholder="Ej. Sueldo correspondiente a octubre"
+              [(ngModel)]="nuevoGasto.descripcion"
+              [class.campo-error]="campoInvalido('descripcion')"
+              required>
+            <span *ngIf="campoInvalido('descripcion')" class="error-message">
+              Ingresa una descripción.
+            </span>
+          </div>
+
+          <div class="campo-formulario campo-completo">
+            <label for="monto">Monto (CLP) <span class="obligatorio">*</span></label>
+            <input
+              id="monto"
+              name="monto"
+              type="number"
+              min="1"
+              step="1"
+              placeholder="Ej. 850000"
+              [(ngModel)]="nuevoGasto.monto"
+              [class.campo-error]="campoInvalido('monto')"
+              required>
+            <span *ngIf="campoInvalido('monto')" class="error-message">
+              Ingresa un monto mayor que cero.
+            </span>
+          </div>
+
+          <div class="campo-formulario campo-completo">
+            <label for="observaciones">
+              Observaciones <span class="opcional">(Opcional)</span>
+            </label>
+            <textarea
+              id="observaciones"
+              name="observaciones"
+              rows="3"
+              maxlength="1000"
+              placeholder="Información adicional..."
+              [(ngModel)]="nuevoGasto.observaciones"></textarea>
+          </div>
+        </div>
+
+        <div *ngIf="errorFormulario" class="error-formulario">
+          {{ errorFormulario }}
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn-cancelar" type="button"
+            [disabled]="guardando" (click)="cerrarFormulario()">
+            Cancelar
+          </button>
+          <button class="btn-guardar" type="submit" [disabled]="guardando">
+            <span *ngIf="guardando" class="mini-spinner"></span>
+            {{ guardando ? 'Guardando...' : 'Guardar gasto' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </section>
+</div>
+
+<!-- Modal de confirmación -->
+<div *ngIf="modalConfirmacion && gastoCreado" class="modal-overlay confirmacion-overlay">
+  <section class="modal-confirmacion" role="dialog" aria-modal="true">
+    <div class="confirmacion-icono">✓</div>
+    <div class="confirmacion-encabezado">
+      <h2>¡Gasto registrado!</h2>
+      <p>El gasto del conductor se guardó correctamente.</p>
+    </div>
+
+    <div class="confirmacion-detalle">
+      <div class="confirmacion-fila">
+        <span>Conductor</span>
+        <strong>{{ gastoCreado.nombreConductor || nombreConductor(gastoCreado.conductorId) }}</strong>
+      </div>
+      <div class="confirmacion-fila">
+        <span>Fecha</span>
+        <strong>{{ gastoCreado.fecha | date:'dd/MM/yyyy':'':'es-CL' }}</strong>
+      </div>
+      <div class="confirmacion-fila">
+        <span>Tipo</span>
+        <strong>{{ etiquetaTipo(gastoCreado.tipoGasto) }}</strong>
+      </div>
+      <div class="confirmacion-fila">
+        <span>Descripción</span>
+        <strong>{{ gastoCreado.descripcion }}</strong>
+      </div>
+      <div class="confirmacion-fila">
+        <span>Monto</span>
+        <strong class="confirmacion-monto">{{ gastoCreado.monto | number:'1.0-0' }} $</strong>
+      </div>
+      <div *ngIf="gastoCreado.observaciones" class="confirmacion-observaciones">
+        <span>Observaciones</span>
+        <p>{{ gastoCreado.observaciones }}</p>
+      </div>
+    </div>
+
+    <div class="confirmacion-footer">
+      <button class="btn-guardar" type="button" (click)="cerrarConfirmacion()">
+        Aceptar
+      </button>
+    </div>
+  </section>
+</div>

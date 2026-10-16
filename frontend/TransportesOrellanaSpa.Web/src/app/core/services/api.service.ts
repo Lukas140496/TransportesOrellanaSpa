@@ -31,6 +31,8 @@ import { Gasto } from '../models/gasto';
 import { CrearGasto } from '../models/crear-gasto';
 import { GastoRemolque } from '../models/gasto-remolque';
 import { CrearGastoRemolque } from '../models/crear-gasto-remolque';
+import { GastoConductor } from '../models/gasto-conductor';
+import { CrearGastoConductor } from '../models/crear-gasto-conductor';
 
 import { Usuario } from '../models/usuario/usuario';
 import { CrearUsuario } from '../models/usuario/crear-usuario';
@@ -38,6 +40,12 @@ import { EditarUsuario } from '../models/usuario/editar-usuario';
 import { Rol } from '../models/usuario/rol';
 import { CambiarPasswordUsuario } from '../models/usuario/cambiar-password-usuario';
 import { CambiarMiPassword } from '../models/usuario/cambiar-mi-password';
+
+import { DashboardGastosCamion } from '../models/dashboard-gastos-camion';
+import { DashboardGastosConductor } from '../models/dashboard-gastos-conductor';
+import { DashboardGastosRemolque } from '../models/dashboard-gastos-remolque';
+import { DashboardGastosTipo } from '../models/dashboard-gastos-tipo';
+
 
 @Injectable({
   providedIn: 'root'
@@ -511,6 +519,32 @@ export class ApiService {
     );
   }
 
+
+  // =========================
+  // GASTOS CONDUCTORES
+  // =========================
+
+  getGastosConductor(): Observable<GastoConductor[]> {
+    return this.http.get<GastoConductor[]>(
+      `${this.apiUrl}/gastoconductor`
+    );
+  }
+
+  getGastoConductorById(id: number): Observable<GastoConductor> {
+    return this.http.get<GastoConductor>(
+      `${this.apiUrl}/gastoconductor/${id}`
+    );
+  }
+
+  crearGastoConductor(
+    gasto: CrearGastoConductor
+  ): Observable<GastoConductor> {
+    return this.http.post<GastoConductor>(
+      `${this.apiUrl}/gastoconductor`,
+      gasto
+    );
+  }
+
   // =========================
   // CLIENTES
   // =========================
@@ -891,6 +925,87 @@ export class ApiService {
           month: month.toString()
         }
       }
+    );
+  }
+
+
+  getGastosPorCamion(
+    year?: number,
+    month?: number
+  ): Observable<DashboardGastosCamion[]> {
+    const params: Record<string, string> = {};
+
+    if (year !== undefined) {
+      params['year'] = year.toString();
+    }
+
+    if (month !== undefined) {
+      params['month'] = month.toString();
+    }
+
+    return this.http.get<DashboardGastosCamion[]>(
+      `${this.apiUrl}/dashboard/gastos-por-camion`,
+      { params }
+    );
+  }
+
+  getGastosPorConductor(
+    year?: number,
+    month?: number
+  ): Observable<DashboardGastosConductor[]> {
+    const params: Record<string, string> = {};
+
+    if (year !== undefined) {
+      params['year'] = year.toString();
+    }
+
+    if (month !== undefined) {
+      params['month'] = month.toString();
+    }
+
+    return this.http.get<DashboardGastosConductor[]>(
+      `${this.apiUrl}/dashboard/gastos-por-conductor`,
+      { params }
+    );
+  }
+
+  getGastosPorRemolque(
+    year?: number,
+    month?: number
+  ): Observable<DashboardGastosRemolque[]> {
+    const params: Record<string, string> = {};
+
+    if (year !== undefined) {
+      params['year'] = year.toString();
+    }
+
+    if (month !== undefined) {
+      params['month'] = month.toString();
+    }
+
+    return this.http.get<DashboardGastosRemolque[]>(
+      `${this.apiUrl}/dashboard/gastos-por-remolque`,
+      { params }
+    );
+  }
+
+  getGastosPorTipo(
+    year?: number,
+    month?: number
+  ): Observable<DashboardGastosTipo[]> {
+    const params: Record<string, string> = {};
+
+    if (year !== undefined) {
+      params['year'] = year.toString();
+    }
+
+    if (month !== undefined) {
+      params['month'] = month.toString();
+    }
+
+    return this.http.get<DashboardGastosTipo[]>(
+      `${this.apiUrl}/dashboard/gastos-por-tipo`,
+      { params }
     );
   }
 }
