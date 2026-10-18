@@ -448,6 +448,33 @@
 }
 
 /* ========================= */
+/* GANANCIA NETA NEGATIVA */
+/* ========================= */
+
+.net-profit.negative {
+  border-color: #ddd7e8;
+
+  box-shadow:
+    0 5px 20px rgba(92, 72, 120, 0.06),
+    inset 0 2px 0 #9278ad;
+}
+
+.net-profit.negative:hover {
+  box-shadow:
+    0 9px 26px rgba(92, 72, 120, 0.09),
+    inset 0 2px 0 #80669d;
+}
+
+.net-profit.negative .metric-value {
+  color: #7d5da1;
+}
+
+.net-profit.negative .metric-icon {
+  background: #f1edf6;
+  color: #9278ad;
+}
+
+/* ========================= */
 /* MÉTRICAS SECUNDARIAS */
 /* ========================= */
 

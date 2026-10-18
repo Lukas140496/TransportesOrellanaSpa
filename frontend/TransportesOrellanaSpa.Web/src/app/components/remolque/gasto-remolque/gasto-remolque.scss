@@ -1292,6 +1292,16 @@ tbody tr:hover {
     min-width: 0;
   }
 
+  .filtro-patente {
+    width: 100%;
+    min-width: 0;
+    flex: none;
+  }
+  
+  .filtro-patente select {
+    width: 100%;
+  }
+
   .filtro-fecha {
     width: 100%;
     flex: none;

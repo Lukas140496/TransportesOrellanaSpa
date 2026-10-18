@@ -286,7 +286,9 @@
 
         <!-- GANANCIA NETA -->
 
-        <div class="card metric-card net-profit">
+        <div class="card metric-card net-profit"
+            [class.negative]="(resumen?.gananciaNetaMes ?? 0) < 0"
+        >
           <div class="metric-icon">$</div>
 
           <div class="metric-content">
@@ -300,7 +302,7 @@
             </strong>
             }
 
-            <span class="metric-description"> Utilidad neta </span>
+            <span class="metric-description"> Utilidad libre </span>
           </div>
         </div>
 
