@@ -1,20 +1,20 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 
-import { ApiService } from '../../core/services/api.service';
-import { DashboardProduccionCamion } from '../../core/models/dashboard-produccion-camion';
-import { DashboardProduccionConductor } from '../../core/models/dashboard-produccion-conductor';
-import { DashboardResumen } from '../../core/models/dashboard-resumen';
-import { DashboardProduccionCliente } from '../../core/models/dashboard-produccion-cliente';
-import { DashboardCostoCombustibleCamion } from '../../core/models/dashboard-costo-combustible-camion';
-import { DashboardKilometrosCamion } from '../../core/models/dashboard-kilometros-camion';
-import { DashboardKilometrosConductor } from '../../core/models/dashboard-kilometros-conductor';
-import { DashboardEstadoPagos } from '../../core/models/dashboard-estado-pagos';
-import { DashboardDiasHabiles } from '../../core/models/dashboard-dias-habiles';
-import { DashboardGastosCamion } from '../../core/models/dashboard-gastos-camion';
-import { DashboardGastosConductor } from '../../core/models/dashboard-gastos-conductor';
-import { DashboardGastosRemolque } from '../../core/models/dashboard-gastos-remolque';
-import { DashboardGastosTipo } from '../../core/models/dashboard-gastos-tipo';
+import { ApiService } from '../../../core/services/api.service';
+import { DashboardProduccionCamion } from '../../../core/models/dashboard-produccion-camion';
+import { DashboardProduccionConductor } from '../../../core/models/dashboard-produccion-conductor';
+import { DashboardResumen } from '../../../core/models/dashboard-resumen';
+import { DashboardProduccionCliente } from '../../../core/models/dashboard-produccion-cliente';
+import { DashboardCostoCombustibleCamion } from '../../../core/models/dashboard-costo-combustible-camion';
+import { DashboardKilometrosCamion } from '../../../core/models/dashboard-kilometros-camion';
+import { DashboardKilometrosConductor } from '../../../core/models/dashboard-kilometros-conductor';
+import { DashboardEstadoPagos } from '../../../core/models/dashboard-estado-pagos';
+import { DashboardDiasHabiles } from '../../../core/models/dashboard-dias-habiles';
+import { DashboardGastosCamion } from '../../../core/models/dashboard-gastos-camion';
+import { DashboardGastosConductor } from '../../../core/models/dashboard-gastos-conductor';
+import { DashboardGastosRemolque } from '../../../core/models/dashboard-gastos-remolque';
+import { DashboardGastosTipo } from '../../../core/models/dashboard-gastos-tipo';
 
 
 interface PeriodoDashboard {

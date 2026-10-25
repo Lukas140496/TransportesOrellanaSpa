@@ -1,0 +1,581 @@
+<section class="dashboard-produccion">
+  <header class="dashboard-header">
+    <div class="header-brand">
+      <div class="header-text">
+        <span class="eyebrow">TRANSPORTES ORELLANA · OPERACIONES</span>
+        <h1>Análisis de Producción</h1>
+        <p>Control de actividad, producción y rendimiento de la flota.</p>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <div class="periodo-container">
+        <span class="control-label">PERÍODO ANALIZADO</span>
+
+        <button
+          type="button"
+          class="periodo-button"
+          (click)="toggleSelector()"
+          [attr.aria-expanded]="selectorAbierto"
+        >
+          <span>{{ periodoSeleccionado.nombre }}</span>
+          <span class="periodo-arrow">
+            {{ selectorAbierto ? '⌃' : '⌄' }}
+          </span>
+        </button>
+
+        @if (selectorAbierto) {
+        <div class="periodo-dropdown">
+          @for (periodo of periodos; track periodo.year + '-' + periodo.month) {
+          <button
+            type="button"
+            [class.selected]="
+              periodo.year === periodoSeleccionado.year &&
+              periodo.month === periodoSeleccionado.month
+            "
+            (click)="seleccionarPeriodo(periodo)"
+          >
+            {{ periodo.nombre }}
+          </button>
+          }
+        </div>
+        }
+      </div>
+    </div>
+  </header>
+
+  <div class="report-meta">
+    <span class="status-dot"></span>
+    <span>Datos del período seleccionado</span>
+    <span class="meta-separator">·</span>
+    <span>Última actualización: {{ fechaActualizacionTexto }}</span>
+  </div>
+
+  @if (error) {
+  <div class="error-message">
+    <strong>No se pudo cargar toda la información.</strong>
+    <span>{{ error }}</span>
+  </div>
+  } @if (cargando) {
+  <div class="loading-state">
+    <span class="spinner"></span>
+    <p>Cargando información de producción...</p>
+  </div>
+  } @else {
+  <div class="dashboard-content" [class.actualizando]="cambiandoPeriodo">
+    <section class="metric-grid">
+      <article class="metric-card production-card">
+        <div class="metric-top">
+          <span class="metric-label">Producción Total</span>
+          <span class="metric-icon">$</span>
+        </div>
+
+        <strong class="metric-value">
+          {{ formatoMoneda(produccionTotal) }}
+        </strong>
+
+        <div class="metric-footer">
+          @if (variacionProduccion !== null) {
+          <span
+            class="variation"
+            [class.positive]="variacionProduccion >= 0"
+            [class.negative]="variacionProduccion < 0"
+          >
+            {{ variacionProduccion > 0 ? '↑' : variacionProduccion < 0 ? '↓' : '→' }}
+            {{ formatoVariacion(variacionProduccion) }}
+          </span>
+          <span class="metric-description">vs. mes anterior</span>
+          } @else {
+          <span class="metric-description"> Comparación mensual no disponible </span>
+          }
+        </div>
+      </article>
+
+      <article class="metric-card trips-card">
+        <div class="metric-top">
+          <span class="metric-label">Viajes Realizados</span>
+          <span class="metric-icon">↗</span>
+        </div>
+
+        <strong class="metric-value">
+          {{ formatoNumero(viajesTotales) }}
+        </strong>
+
+        <div class="metric-footer">
+          @if (variacionViajes !== null) {
+          <span
+            class="variation"
+            [class.positive]="variacionViajes >= 0"
+            [class.negative]="variacionViajes < 0"
+          >
+            {{ variacionViajes > 0 ? '↑' : variacionViajes < 0 ? '↓' : '→' }}
+            {{ formatoVariacion(variacionViajes) }}
+          </span>
+          <span class="metric-description">vs. mes anterior</span>
+          } @else {
+          <span class="metric-description"> Comparación mensual no disponible </span>
+          }
+        </div>
+      </article>
+
+      <article class="metric-card kilometers-card">
+        <div class="metric-top">
+          <span class="metric-label">Kilómetros Recorridos</span>
+          <span class="metric-icon">↔</span>
+        </div>
+
+        <strong class="metric-value">
+          {{ formatoNumero(kilometrosTotales) }}
+        </strong>
+
+        <div class="metric-footer">
+          @if (variacionKilometros !== null) {
+          <span
+            class="variation"
+            [class.positive]="variacionKilometros >= 0"
+            [class.negative]="variacionKilometros < 0"
+          >
+            {{ variacionKilometros > 0 ? '↑' : variacionKilometros < 0 ? '↓' : '→' }}
+            {{ formatoVariacion(variacionKilometros) }}
+          </span>
+          <span class="metric-description">vs. mes anterior</span>
+          } @else {
+          <span class="metric-description"> Comparación mensual no disponible </span>
+          }
+        </div>
+      </article>
+
+      <article class="metric-card average-card">
+        <div class="metric-top">
+          <span class="metric-label">Produccion Promedio por Viaje</span>
+          <span class="metric-icon">≈</span>
+        </div>
+
+        <strong class="metric-value">
+          {{ formatoMoneda(produccionPromedioViaje) }}
+        </strong>
+
+        <div class="metric-footer">
+          @if (variacionProduccionPorViaje !== null) {
+          <span
+            class="variation"
+            [class.positive]="variacionProduccionPorViaje >= 0"
+            [class.negative]="variacionProduccionPorViaje < 0"
+          >
+            {{
+              variacionProduccionPorViaje > 0 ? '↑' : variacionProduccionPorViaje < 0 ? '↓' : '→'
+            }}
+            {{ formatoVariacion(variacionProduccionPorViaje) }}
+          </span>
+          <span class="metric-description">vs. mes anterior</span>
+          } @else {
+          <span class="metric-description"> Comparación mensual no disponible </span>
+          }
+        </div>
+      </article>
+    </section>
+
+    <section class="secondary-metrics">
+      <article class="secondary-metric">
+        <span class="secondary-icon fuel-icon">⛽</span>
+
+        <div class="secondary-metric-content">
+          <span class="secondary-label">Combustible Registrado</span>
+
+          <div class="secondary-value-row">
+            <strong>{{ formatoNumero(litrosTotales) }} L</strong>
+
+            <div class="secondary-comparison">
+              @if (variacionLitros !== null) {
+              <span
+                class="variation"
+                [class.positive]="variacionLitros >= 0"
+                [class.negative]="variacionLitros < 0"
+              >
+                {{ variacionLitros > 0 ? '↑' : variacionLitros < 0 ? '↓' : '→' }}
+                {{ formatoVariacion(variacionLitros) }}
+              </span>
+              <span class="metric-description">vs. mes anterior</span>
+              } @else {
+              <span class="metric-description"> Comparación no disponible </span>
+              }
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="secondary-metric">
+        <span class="secondary-icon cost-icon">$</span>
+
+        <div class="secondary-metric-content">
+          <span class="secondary-label">Costo de Combustible</span>
+
+          <div class="secondary-value-row">
+            <strong>{{ formatoMoneda(costoCombustibleTotal) }}</strong>
+
+            <div class="secondary-comparison">
+              @if (variacionCostoCombustible !== null) {
+              <span
+                class="variation"
+                [class.positive]="variacionCostoCombustible >= 0"
+                [class.negative]="variacionCostoCombustible < 0"
+              >
+                {{
+                  variacionCostoCombustible > 0 ? '↑' : variacionCostoCombustible < 0 ? '↓' : '→'
+                }}
+                {{ formatoVariacion(variacionCostoCombustible) }}
+              </span>
+              <span class="metric-description">vs. mes anterior</span>
+              } @else {
+              <span class="metric-description"> Comparación no disponible </span>
+              }
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="secondary-metric">
+        <span class="secondary-icon efficiency-icon">◎</span>
+
+        <div class="secondary-metric-content">
+          <span class="secondary-label">Rendimiento Promedio</span>
+
+          <div class="secondary-value-row">
+            <strong>{{ formatoDecimal(rendimientoPromedio) }} km/L</strong>
+
+            <div class="secondary-comparison">
+              @if (variacionRendimiento !== null) {
+              <span
+                class="variation"
+                [class.positive]="variacionRendimiento >= 0"
+                [class.negative]="variacionRendimiento < 0"
+              >
+                {{ variacionRendimiento > 0 ? '↑' : variacionRendimiento < 0 ? '↓' : '→' }}
+                {{ formatoVariacion(variacionRendimiento) }}
+              </span>
+              <span class="metric-description">vs. mes anterior</span>
+              } @else {
+              <span class="metric-description"> Comparación no disponible </span>
+              }
+            </div>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section class="panel history-panel">
+      <div class="panel-heading">
+        <div>
+          <span class="section-kicker">TENDENCIA HISTÓRICA</span>
+          <h2>Evolución de la producción</h2>
+          <p>Producción mensual durante los 12 meses que terminan en el período seleccionado.</p>
+        </div>
+
+        <div class="heading-period">
+          <span class="heading-period-dot"></span>
+          Últimos 12 meses
+        </div>
+      </div>
+
+      @if (historialCargando) {
+      <div class="chart-placeholder">
+        <span class="spinner"></span>
+        <span>Consultando historial de producción...</span>
+      </div>
+      } @else if (historialProduccion.length === 0) {
+      <div class="empty-state">No fue posible obtener el historial de producción.</div>
+      } @else {
+      <div class="chart-container">
+        <div class="chart-y-labels" aria-hidden="true">
+          <span>{{ formatoMoneda(maxProduccion) }}</span>
+          <span>{{ formatoMoneda(tresQuartosProduccion) }}</span>
+          <span>{{ formatoMoneda(unQuartoProduccion) }}</span>
+          <span>{{ formatoMoneda(minProduccion) }}</span>
+        </div>
+
+        <div class="chart-visual">
+          <svg
+            class="production-chart"
+            viewBox="0 0 720 205"
+            preserveAspectRatio="none"
+            role="img"
+            aria-label="Gráfico de evolución mensual de la producción"
+          >
+            <line x1="36" y1="35" x2="684" y2="35" class="chart-grid-line" />
+            <line x1="36" y1="77" x2="684" y2="77" class="chart-grid-line" />
+            <line x1="36" y1="119" x2="684" y2="119" class="chart-grid-line" />
+            <line x1="36" y1="160" x2="684" y2="160" class="chart-axis-line" />
+
+            @if (puntosGrafico) {
+            <polyline [attr.points]="puntosGrafico" class="chart-line" />
+
+            @for (periodo of historialProduccion; track periodo.year + '-' + periodo.month; let i =
+            $index) { @if (periodo.produccion !== null) {
+            <circle
+              [attr.cx]="coordenadaXGrafico(i)"
+              [attr.cy]="coordenadaYGrafico(periodo.produccion)"
+              r="3.5"
+              class="chart-point"
+            >
+              <title>{{ periodo.nombre }}: {{ formatoMoneda(periodo.produccion) }}</title>
+            </circle>
+            } } }
+          </svg>
+
+          <div class="chart-x-labels">
+            @for (periodo of historialProduccion; track periodo.year + '-' + periodo.month) {
+            <span>{{ nombreMesCorto(periodo.nombre) }}</span>
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="chart-footer">
+        <div class="chart-legend">
+          <span class="legend-line"></span>
+          <span>Producción mensual</span>
+        </div>
+
+        @if (!historialDisponible) {
+        <span class="history-warning"> Algunos meses no pudieron consultarse. </span>
+        } @else {
+        <span class="history-note"> Montos en pesos chilenos (CLP) </span>
+        }
+      </div>
+      }
+    </section>
+
+    <section class="panel fleet-panel">
+      <div class="panel-heading">
+        <div>
+          <span class="section-kicker">DESEMPEÑO OPERACIONAL</span>
+          <h2>Rendimiento de la flota</h2>
+          <p>Comparación de producción, actividad y consumo por camión.</p>
+        </div>
+
+        <span class="record-count">
+          {{ camionesOrdenados.length }}
+          {{ camionesOrdenados.length === 1 ? 'camión' : 'camiones' }}
+        </span>
+      </div>
+
+      @if (camionesOrdenados.length === 0) {
+      <div class="empty-state">No hay producción registrada para este período.</div>
+      } @else {
+      <div class="table-scroll">
+        <table class="fleet-table">
+          <thead>
+            <tr>
+              <th>Camión</th>
+              <th class="numeric">Viajes</th>
+              <th class="numeric">Kilómetros</th>
+              <th class="numeric">Producción</th>
+              <th class="numeric">Participación</th>
+              <th class="numeric">Costo combustible</th>
+              <th class="numeric">Rendimiento</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            @for (camion of camionesOrdenados; track camion.camionId; let i = $index) {
+            <tr>
+              <td>
+                <div class="truck-cell">
+                  <span class="truck-rank">
+                    {{ (i + 1).toString().padStart(2, '0') }}
+                  </span>
+                  <strong>{{ camion.patente }}</strong>
+                </div>
+              </td>
+
+              <td class="numeric">
+                {{ formatoNumero(camion.viajes) }}
+              </td>
+
+              <td class="numeric">{{ formatoNumero(camion.kilometros) }} km</td>
+
+              <td class="numeric production-cell">
+                {{ formatoMoneda(camion.produccion) }}
+              </td>
+
+              <td class="numeric">
+                <div class="share-cell">
+                  <span>
+                    {{ formatoDecimal(obtenerPorcentajeProduccionCamion(camion.produccion)) }}%
+                  </span>
+                  <div class="share-track">
+                    <div
+                      class="share-fill"
+                      [style.width.%]="obtenerPorcentajeProduccionCamion(camion.produccion)"
+                    ></div>
+                  </div>
+                </div>
+              </td>
+
+              <td class="numeric">
+                {{ formatoMoneda(camion.costoCombustible) }}
+              </td>
+
+              <td class="numeric">
+                <span class="efficiency-value">
+                  {{
+                    camion.litrosCombustible > 0
+                      ? formatoDecimal(camion.kilometros / camion.litrosCombustible)
+                      : '—'
+                  }}
+                  @if (camion.litrosCombustible > 0) {
+                  <small>km/L</small>
+                  }
+                </span>
+              </td>
+            </tr>
+            }
+          </tbody>
+
+          <tfoot>
+            <tr>
+              <td>Total</td>
+              <td class="numeric">{{ formatoNumero(viajesTotales) }}</td>
+              <td class="numeric">{{ formatoNumero(kilometrosTotales) }} km</td>
+              <td class="numeric">{{ formatoMoneda(produccionTotal) }}</td>
+              <td class="numeric">100%</td>
+              <td class="numeric">{{ formatoMoneda(costoCombustibleTotal) }}</td>
+              <td class="numeric">{{ formatoDecimal(rendimientoPromedio) }} km/L</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+      }
+    </section>
+
+    <section class="ranking-grid">
+      <article class="panel ranking-panel">
+        <div class="panel-heading compact-heading">
+          <div>
+            <span class="section-kicker">DISTRIBUCIÓN COMERCIAL</span>
+            <h2>Producción por cliente</h2>
+            <p>Clientes ordenados por producción generada.</p>
+          </div>
+          <span class="ranking-symbol client-symbol">CL</span>
+        </div>
+
+        @if (clientesOrdenados.length === 0) {
+        <div class="empty-state">No hay datos disponibles.</div>
+        } @else {
+        <div class="ranking-list">
+          @for (cliente of clientesOrdenados; track cliente.clienteId; let i = $index) {
+          <div class="ranking-item">
+            <div class="ranking-info">
+              <span class="ranking-position">{{ i + 1 }}</span>
+              <div class="ranking-name">
+                <strong>{{ cliente.nombre }}</strong>
+              </div>
+            </div>
+
+            <div class="ranking-amount">
+              <strong>{{ formatoMoneda(cliente.produccion) }}</strong>
+              <span>
+                {{ formatoDecimal(obtenerPorcentajeProduccionCliente(cliente.produccion)) }}%
+              </span>
+            </div>
+
+            <div class="progress-track">
+              <div
+                class="progress-fill client-fill"
+                [style.width.%]="obtenerPorcentajeCliente(cliente.produccion)"
+              ></div>
+            </div>
+          </div>
+          }
+        </div>
+        }
+      </article>
+
+      <article class="panel ranking-panel">
+        <div class="panel-heading compact-heading">
+          <div>
+            <span class="section-kicker">DISTRIBUCIÓN COMERCIAL</span>
+            <h2>Producción por Camión</h2>
+            <p>Camiones ordenados por producción generada.</p>
+          </div>
+          <span class="ranking-symbol client-symbol">CL</span>
+        </div>
+
+        @if (camionesOrdenados.length === 0) {
+        <div class="empty-state">No hay datos disponibles.</div>
+        } @else {
+        <div class="ranking-list">
+          @for (camion of camionesOrdenados; track camion.camionId; let i = $index) {
+          <div class="ranking-item">
+            <div class="ranking-info">
+              <span class="ranking-position">{{ i + 1 }}</span>
+              <div class="ranking-name">
+                <strong>{{ camion.patente }}</strong>
+              </div>
+            </div>
+
+            <div class="ranking-amount">
+              <strong>{{ formatoMoneda(camion.produccion) }}</strong>
+              <span>
+                {{ formatoDecimal(obtenerPorcentajeProduccionCliente(camion.produccion)) }}%
+              </span>
+            </div>
+
+            <div class="progress-track">
+              <div
+                class="progress-fill client-fill"
+                [style.width.%]="obtenerPorcentajeCamion(camion.produccion)"
+              ></div>
+            </div>
+          </div>
+          }
+        </div>
+        }
+      </article>
+
+      <article class="panel ranking-panel">
+        <div class="panel-heading compact-heading">
+          <div>
+            <span class="section-kicker">PRODUCTIVIDAD</span>
+            <h2>Producción por conductor</h2>
+            <p>Ordenados por producción generada.</p>
+          </div>
+          <span class="ranking-symbol driver-symbol">C</span>
+        </div>
+
+        @if (conductoresOrdenados.length === 0) {
+        <div class="empty-state">No hay datos disponibles.</div>
+        } @else {
+        <div class="ranking-list">
+          @for (conductor of conductoresOrdenados; track conductor.conductorId; let i = $index) {
+          <div class="ranking-item">
+            <div class="ranking-info">
+              <span class="ranking-position">{{ i + 1 }}</span>
+              <div class="ranking-name">
+                <strong>{{ conductor.nombre }}</strong>
+                <span>{{ formatoNumero(conductor.viajes) }} viajes</span>
+              </div>
+            </div>
+
+            <div class="ranking-amount">
+              <strong>{{ formatoMoneda(conductor.produccion) }}</strong>
+              <span>
+                {{ formatoDecimal(obtenerPorcentajeProduccionConductor(conductor.produccion)) }}%
+              </span>
+            </div>
+
+            <div class="progress-track">
+              <div
+                class="progress-fill driver-fill"
+                [style.width.%]="obtenerPorcentajeConductor(conductor.produccion)"
+              ></div>
+            </div>
+          </div>
+          }
+        </div>
+        }
+      </article>
+    </section>
+  </div>
+  }
+</section>

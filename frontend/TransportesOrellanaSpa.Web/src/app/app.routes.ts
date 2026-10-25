@@ -2,7 +2,7 @@ import { Routes } from '@angular/router';
 
 import { MainLayout } from './layout/main-layout/main-layout';
 
-import { Dashboard } from './components/dashboard/dashboard';
+import { Dashboard } from './components/dashboard/dashboard-general/dashboard';
 
 import { CamionList } from './components/camion/camion-list/camion-list';
 import { CamionDetail } from './components/camion/camion-detail/camion-detail';
@@ -51,6 +51,9 @@ import { UsuarioModificar } from './components/usuario/usuario-modificar/usuario
 import { GastoList } from './components/camion/gasto-camion/gasto-list';
 import { GastoRemolqueComponent } from './components/remolque/gasto-remolque/gasto-remolque';
 import { GastoConductorComponent } from './components/conductor/gasto-conductor/gasto-conductor';
+import { DashboardProduccion } from './components/dashboard/dashboard-produccion/dashboard-produccion';
+import { DashboardGastos } from './components/dashboard/dashboard-gastos/dashboard-gastos';
+import { DashboardOperacion } from './components/dashboard/dashboard-operacion/dashboard-operacion';
 
 export const routes: Routes = [
 
@@ -101,7 +104,7 @@ export const routes: Routes = [
 
             {
                 path: 'dashboard/produccion',
-                component: Dashboard
+                component: DashboardProduccion
             },
 
             // =========================
@@ -110,7 +113,7 @@ export const routes: Routes = [
 
             {
                 path: 'dashboard/operacion',
-                component: Dashboard
+                component: DashboardOperacion
             },
 
             // =========================
@@ -119,7 +122,7 @@ export const routes: Routes = [
 
             {
                 path: 'dashboard/gastos',
-                component: Dashboard
+                component: DashboardGastos
             },
 
             // =========================

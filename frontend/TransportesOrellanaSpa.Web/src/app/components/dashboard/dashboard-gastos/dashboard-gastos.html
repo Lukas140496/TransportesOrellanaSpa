@@ -1,0 +1,851 @@
+<div class="dashboard-gastos">
+  <header class="dashboard-header">
+
+    <div class="header-brand">
+      <div class="header-text">
+        <span class="eyebrow">TRANSPORTES ORELLANA · OPERACIONES</span>
+        <h1>Análisis de Gastos</h1>
+        <p>Control de actividad de gastos de la flota.</p>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <div class="periodo-container">
+        <span class="control-label">PERÍODO ANALIZADO</span>
+
+        <button
+          type="button"
+          class="periodo-button"
+          (click)="toggleSelector()"
+          [attr.aria-expanded]="selectorAbierto"
+        >
+          <span>{{ periodoSeleccionado.nombre }}</span>
+          <span class="periodo-arrow">
+            {{ selectorAbierto ? '⌃' : '⌄' }}
+          </span>
+        </button>
+
+        @if (selectorAbierto) {
+          <div class="periodo-dropdown">
+            @for (periodo of periodos; track periodo.year + '-' + periodo.month) {
+              <button
+                type="button"
+                [class.selected]="
+                  periodo.year === periodoSeleccionado.year &&
+                  periodo.month === periodoSeleccionado.month
+                "
+                (click)="seleccionarPeriodo(periodo)"
+              >
+                {{ periodo.nombre }}
+              </button>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  </header>
+
+  <div class="report-meta">
+    <span class="status-dot"></span>
+    <span>Datos del período seleccionado</span>
+    <span class="meta-separator">·</span>
+    <span>Última actualización: {{ fechaActualizacionTexto }}</span>
+  </div>
+
+  <div
+    *ngIf="cargando"
+    class="estado-carga">
+
+    <span class="spinner"></span>
+
+    <p>Cargando gastos...</p>
+
+  </div>
+
+
+  <!-- =========================================
+       ERROR
+       ========================================= -->
+  <div
+    *ngIf="!cargando && erroresCarga.length > 0"
+    class="aviso-error">
+
+    <div>
+
+      <strong>
+        Algunos datos no están disponibles
+      </strong>
+
+      <p
+        *ngFor="let error of erroresCarga">
+
+        {{ error }}
+
+      </p>
+
+    </div>
+
+    <button
+      type="button"
+      (click)="cargarGastos()">
+
+      Reintentar
+
+    </button>
+
+  </div>
+
+
+  <!-- =========================================
+       CONTENIDO
+       ========================================= -->
+  <ng-container *ngIf="!cargando">
+
+
+    <!-- =======================================
+         RESUMEN PRINCIPAL
+         ======================================= -->
+    <section class="resumen-principal">
+
+
+      <!-- TOTAL -->
+      <article class="tarjeta total-destacado">
+
+        <div class="tarjeta-icono tarjeta-icono-total">
+          $
+        </div>
+
+        <span class="etiqueta">
+          Gastos totales del período
+        </span>
+
+        <h2>
+          {{ formatoMoneda(totalGeneralMes) }}
+        </h2>
+
+        <p>
+          {{ etiquetaPeriodoSeleccionado }}
+        </p>
+
+        <div
+          *ngIf="variacionGeneral !== null"
+          class="variacion"
+          [class.aumento]="variacionGeneral > 0"
+          [class.disminucion]="variacionGeneral < 0">
+
+          <strong>
+            {{ formatoNumero(variacionGeneral) }}%
+          </strong>
+
+          <span>
+            respecto del mes anterior
+          </span>
+
+        </div>
+
+        <div
+          *ngIf="variacionGeneral === null"
+          class="nota-variacion">
+
+          Sin gastos registrados en el mes anterior para comparar.
+
+        </div>
+
+      </article>
+
+
+      <!-- MES ANTERIOR -->
+      <article class="tarjeta">
+
+        <div class="tarjeta-icono tarjeta-icono-anterior">
+          ↙
+        </div>
+
+        <span class="etiqueta">
+          Mes anterior
+        </span>
+
+        <h2>
+          {{ formatoMoneda(totalGeneralAnterior) }}
+        </h2>
+
+        <p>
+          {{ etiquetaPeriodoAnterior }}
+        </p>
+
+      </article>
+
+
+      <!-- CANTIDAD -->
+      <article class="tarjeta">
+
+        <div class="tarjeta-icono tarjeta-icono-registros">
+          #
+        </div>
+
+        <span class="etiqueta">
+          Cantidad de registros
+        </span>
+
+        <h2>
+          {{ cantidadGeneralMes }}
+        </h2>
+
+        <p>
+          Gastos registrados en el período
+        </p>
+
+      </article>
+
+
+      <!-- PROMEDIO -->
+      <article class="tarjeta">
+
+        <div class="tarjeta-icono tarjeta-icono-promedio">
+          ≈
+        </div>
+
+        <span class="etiqueta">
+          Promedio por registro
+        </span>
+
+        <h2>
+          {{ formatoMoneda(promedioGeneralMes) }}
+        </h2>
+
+        <p>
+          Promedio de los gastos del período
+        </p>
+
+      </article>
+
+    </section>
+
+    <section class="seccion-dashboard">
+
+      <div class="encabezado-seccion">
+
+        <div>
+
+          <h2>
+            Gastos por categoría
+          </h2>
+
+          <p>
+            Comparación con el mes calendario anterior.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="categorias-grid">
+
+
+        <!-- CAMIONES -->
+        <article class="tarjeta categoria">
+
+          <div class="categoria-titulo">
+
+            <div class="categoria-nombre">
+
+              <span class="indicador indicador-camion"></span>
+
+              <h3>
+                Camiones
+              </h3>
+
+            </div>
+
+            <span class="cantidad">
+              {{ camionesMes.length }}
+              {{ camionesMes.length === 1 ? 'registro' : 'registros' }}
+            </span>
+
+          </div>
+
+
+          <h2>
+            {{ formatoMoneda(totalCamionesMes) }}
+          </h2>
+
+
+          <div class="comparacion">
+
+            <span>
+              Variación mensual
+            </span>
+
+            <strong
+              *ngIf="variacionCamiones !== null"
+              [class.aumento]="variacionCamiones > 0"
+              [class.disminucion]="variacionCamiones < 0">
+
+              {{ formatoNumero(variacionCamiones) }}%
+
+            </strong>
+
+            <strong
+              *ngIf="variacionCamiones === null"
+              class="sin-comparacion">
+
+              Sin base de comparación
+
+            </strong>
+
+          </div>
+
+
+          <div class="barra-resumen">
+
+            <div
+              class="barra barra-camion"
+              [style.width.%]="
+                totalGeneralMes > 0
+                  ? totalCamionesMes / totalGeneralMes * 100
+                  : 0
+              ">
+            </div>
+
+          </div>
+
+
+          <div class="categoria-footer">
+
+            <small>
+              Participación en el gasto total
+            </small>
+
+            <strong>
+              {{
+                totalGeneralMes > 0
+                  ? formatoNumero(totalCamionesMes / totalGeneralMes * 100)
+                  : '0'
+              }}%
+            </strong>
+
+          </div>
+
+        </article>
+
+
+        <!-- REMOLQUES -->
+        <article class="tarjeta categoria">
+
+          <div class="categoria-titulo">
+
+            <div class="categoria-nombre">
+
+              <span class="indicador indicador-remolque"></span>
+
+              <h3>
+                Remolques
+              </h3>
+
+            </div>
+
+            <span class="cantidad">
+              {{ remolquesMes.length }}
+              {{ remolquesMes.length === 1 ? 'registro' : 'registros' }}
+            </span>
+
+          </div>
+
+
+          <h2>
+            {{ formatoMoneda(totalRemolquesMes) }}
+          </h2>
+
+
+          <div class="comparacion">
+
+            <span>
+              Variación mensual
+            </span>
+
+            <strong
+              *ngIf="variacionRemolques !== null"
+              [class.aumento]="variacionRemolques > 0"
+              [class.disminucion]="variacionRemolques < 0">
+
+              {{ formatoNumero(variacionRemolques) }}%
+
+            </strong>
+
+            <strong
+              *ngIf="variacionRemolques === null"
+              class="sin-comparacion">
+
+              Sin base de comparación
+
+            </strong>
+
+          </div>
+
+
+          <div class="barra-resumen">
+
+            <div
+              class="barra barra-remolque"
+              [style.width.%]="
+                totalGeneralMes > 0
+                  ? totalRemolquesMes / totalGeneralMes * 100
+                  : 0
+              ">
+            </div>
+
+          </div>
+
+
+          <div class="categoria-footer">
+
+            <small>
+              Participación en el gasto total
+            </small>
+
+            <strong>
+              {{
+                totalGeneralMes > 0
+                  ? formatoNumero(totalRemolquesMes / totalGeneralMes * 100)
+                  : '0'
+              }}%
+            </strong>
+
+          </div>
+
+        </article>
+
+
+        <!-- CONDUCTORES -->
+        <article class="tarjeta categoria">
+
+          <div class="categoria-titulo">
+
+            <div class="categoria-nombre">
+
+              <span class="indicador indicador-conductor"></span>
+
+              <h3>
+                Conductores
+              </h3>
+
+            </div>
+
+            <span class="cantidad">
+              {{ conductoresMes.length }}
+              {{ conductoresMes.length === 1 ? 'registro' : 'registros' }}
+            </span>
+
+          </div>
+
+
+          <h2>
+            {{ formatoMoneda(totalConductoresMes) }}
+          </h2>
+
+
+          <div class="comparacion">
+
+            <span>
+              Variación mensual
+            </span>
+
+            <strong
+              *ngIf="variacionConductores !== null"
+              [class.aumento]="variacionConductores > 0"
+              [class.disminucion]="variacionConductores < 0">
+
+              {{ formatoNumero(variacionConductores) }}%
+
+            </strong>
+
+            <strong
+              *ngIf="variacionConductores === null"
+              class="sin-comparacion">
+
+              Sin base de comparación
+
+            </strong>
+
+          </div>
+
+
+          <div class="barra-resumen">
+
+            <div
+              class="barra barra-conductor"
+              [style.width.%]="
+                totalGeneralMes > 0
+                  ? totalConductoresMes / totalGeneralMes * 100
+                  : 0
+              ">
+            </div>
+
+          </div>
+
+
+          <div class="categoria-footer">
+
+            <small>
+              Participación en el gasto total
+            </small>
+
+            <strong>
+              {{
+                totalGeneralMes > 0
+                  ? formatoNumero(totalConductoresMes / totalGeneralMes * 100)
+                  : '0'
+              }}%
+            </strong>
+
+          </div>
+
+        </article>
+
+      </div>
+
+    </section>
+
+    <section class="seccion-dashboard">
+
+      <div class="encabezado-seccion">
+
+        <div>
+          <h2>
+            Distribución por tipo de gasto
+          </h2>
+
+          <p>
+            Consolidado de los tres módulos para
+            {{ etiquetaPeriodoSeleccionado }}.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <article class="tarjeta panel-grafico">
+
+        <div
+          *ngIf="gastosPorTipo.length === 0"
+          class="sin-datos">
+
+          No hay gastos registrados para este período.
+
+        </div>
+
+
+        <div
+          *ngFor="let item of gastosPorTipo"
+          class="fila-grafico">
+
+          <div class="fila-info">
+
+            <span>
+              {{ etiquetaTipo(item.nombre) }}
+            </span>
+
+            <strong>
+              {{ formatoMoneda(item.monto) }}
+            </strong>
+
+          </div>
+
+
+          <div class="pista">
+
+            <div
+              class="barra barra-tipo"
+              [style.width.%]="
+                item.monto / maximoMonto(gastosPorTipo) * 100
+              ">
+            </div>
+
+          </div>
+
+
+          <small>
+
+            {{ item.cantidad }}
+
+            {{ item.cantidad === 1 ? 'registro' : 'registros' }}
+
+          </small>
+
+        </div>
+
+      </article>
+
+    </section>
+
+    <section class="seccion-dashboard">
+
+      <div class="encabezado-seccion">
+
+        <div>
+          <h2>
+            Detalle por unidad y conductor
+          </h2>
+
+          <p>
+            Ordenado de mayor a menor gasto del período seleccionado.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <div class="detalle-grid">
+
+
+        <!-- CAMIONES -->
+        <article class="tarjeta panel-grafico">
+
+          <div class="categoria-titulo">
+
+            <div class="categoria-nombre">
+
+                <span class="indicador indicador-camion"></span>
+  
+                <h3>
+                  Por Camión
+                </h3>
+  
+              </div>
+
+          </div>
+
+          <div
+            *ngIf="gastosPorCamion.length === 0"
+            class="sin-datos">
+
+            Sin gastos de camiones.
+
+          </div>
+
+
+          <div
+            *ngFor="let item of gastosPorCamion"
+            class="fila-grafico">
+
+            <div class="fila-info">
+
+              <span>
+                {{ item.nombre }}
+              </span>
+
+              <strong>
+                {{ formatoMoneda(item.monto) }}
+              </strong>
+
+            </div>
+
+            <div class="pista">
+
+              <div
+                class="barra barra-camion"
+                [style.width.%]="
+                  item.monto / maximoMonto(gastosPorCamion) * 100
+                ">
+              </div>
+
+            </div>
+
+          </div>
+
+        </article>
+
+
+        <!-- REMOLQUES -->
+        <article class="tarjeta panel-grafico">
+
+          <div class="categoria-titulo">
+
+            <div class="categoria-nombre">
+
+                <span class="indicador indicador-remolque"></span>
+  
+                <h3>
+                  Por Remolque
+                </h3>
+  
+              </div>
+
+          </div>
+
+
+          <div
+            *ngIf="gastosPorRemolque.length === 0"
+            class="sin-datos">
+
+            Sin gastos de remolques.
+
+          </div>
+
+
+          <div
+            *ngFor="let item of gastosPorRemolque"
+            class="fila-grafico">
+
+            <div class="fila-info">
+
+              <span>
+                {{ item.nombre }}
+              </span>
+
+              <strong>
+                {{ formatoMoneda(item.monto) }}
+              </strong>
+
+            </div>
+
+            <div class="pista">
+
+              <div
+                class="barra barra-remolque"
+                [style.width.%]="
+                  item.monto / maximoMonto(gastosPorRemolque) * 100
+                ">
+              </div>
+
+            </div>
+
+          </div>
+
+        </article>
+
+
+        <!-- CONDUCTORES -->
+        <article class="tarjeta panel-grafico">
+
+          <div class="categoria-titulo">
+
+            <div class="categoria-nombre">
+
+                <span class="indicador indicador-conductor"></span>
+  
+                <h3>
+                  Por Conductor
+                </h3>
+  
+              </div>
+
+          </div>
+
+
+          <div
+            *ngIf="gastosPorConductor.length === 0"
+            class="sin-datos">
+
+            Sin gastos de conductores.
+
+          </div>
+
+
+          <div
+            *ngFor="let item of gastosPorConductor"
+            class="fila-grafico">
+
+            <div class="fila-info">
+
+              <span>
+                {{ item.nombre }}
+              </span>
+
+              <strong>
+                {{ formatoMoneda(item.monto) }}
+              </strong>
+
+            </div>
+
+            <div class="pista">
+
+              <div
+                class="barra barra-conductor"
+                [style.width.%]="
+                  item.monto / maximoMonto(gastosPorConductor) * 100
+                ">
+              </div>
+
+            </div>
+
+          </div>
+
+        </article>
+
+
+      </div>
+
+    </section>
+
+    <section class="seccion-dashboard">
+
+      <div class="encabezado-seccion">
+
+        <div>
+
+          <h2>
+            Evolución de los últimos 12 meses
+          </h2>
+
+          <p>
+            Gastos registrados por fecha, sumando cada módulo una sola vez.
+          </p>
+
+        </div>
+
+      </div>
+
+
+      <article class="tarjeta panel-grafico evolucion">
+
+        <div
+          *ngFor="let mes of evolucionMensual"
+          class="fila-evolucion">
+
+          <span class="etiqueta-mes">
+            {{ mes.etiqueta }}
+          </span>
+
+
+          <div class="pista">
+
+            <div
+              class="barra barra-evolucion"
+              [style.width.%]="
+                mes.monto / maximoMensual * 100
+              ">
+            </div>
+
+          </div>
+
+
+          <strong>
+            {{ formatoMoneda(mes.monto) }}
+          </strong>
+
+        </div>
+
+      </article>
+
+    </section>
+
+
+    <!-- =======================================
+         NOTA
+         ======================================= -->
+    <footer class="nota-dashboard">
+
+      Los totales se calculan a partir de los gastos registrados
+      en los módulos de camiones, remolques y conductores.
+      La comparación considera el mes calendario anterior.
+
+    </footer>
+
+
+  </ng-container>
+
+</div>
