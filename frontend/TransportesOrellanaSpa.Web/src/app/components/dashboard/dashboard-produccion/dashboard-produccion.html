@@ -494,11 +494,11 @@
       <article class="panel ranking-panel">
         <div class="panel-heading compact-heading">
           <div>
-            <span class="section-kicker">DISTRIBUCIÓN COMERCIAL</span>
+            <span class="section-kicker">PRODUCTIVIDAD</span>
             <h2>Producción por Camión</h2>
             <p>Camiones ordenados por producción generada.</p>
           </div>
-          <span class="ranking-symbol client-symbol">CL</span>
+          <span class="ranking-symbol camion-symbol">C</span>
         </div>
 
         @if (camionesOrdenados.length === 0) {
@@ -523,7 +523,7 @@
 
             <div class="progress-track">
               <div
-                class="progress-fill client-fill"
+                class="progress-fill camion-fill"
                 [style.width.%]="obtenerPorcentajeCamion(camion.produccion)"
               ></div>
             </div>

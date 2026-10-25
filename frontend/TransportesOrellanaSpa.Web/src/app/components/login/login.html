@@ -1,78 +1,98 @@
 <div class="login-container">
-  <div class="login-card">
-    <div class="login-header">
-      <h1>Flota360</h1>
+  <div class="login-wrapper">
+    <div class="login-card">
+      <div class="login-header">
+        <div class="brand-icon-wrapper">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2l9 4-9 4-9-4 9-4z"/>
+            <path d="M3 10l9 4 9-4"/>
+            <path d="M3 16l9 4 9-4"/>
+          </svg>
+        </div>
+        <h1>Flota360</h1>
+        <span class="login-brand">Transportes Orellana SpA</span>
+        <p>Inicio de sesión</p>
+      </div>
 
-      <span class="login-brand"> by Transportes Orellana SpA </span>
+      <form (ngSubmit)="iniciarSesion()">
+        <div class="campo">
+          <label for="email">Correo electrónico</label>
+          <div class="input-container-custom">
+            <span class="input-icon">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            </span>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              [(ngModel)]="email"
+              autocomplete="username"
+              placeholder="nombre@correo.cl"
+              [disabled]="cargando"
+            />
+          </div>
+        </div>
 
-      <p>Iniciar sesión</p>
+        <div class="campo">
+            <label for="password">Contraseña</label>
+            <div class="input-container-custom password-container">
+              <span class="input-icon">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              </span>
+              
+              <input
+                id="password"
+                name="password"
+                [type]="mostrarPassword ? 'text' : 'password'"
+                [(ngModel)]="password"
+                autocomplete="current-password"
+                placeholder="••••••••••••"
+                [disabled]="cargando"
+              />
+          
+              <button
+                type="button"
+                class="password-toggle"
+                (click)="alternarPassword()"
+                [disabled]="cargando"
+                [attr.aria-label]="mostrarPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+              >
+                @if (mostrarPassword) {
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                  <line x1="1" y1="1" x2="23" y2="23"/>
+                </svg>
+                } @else {
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                  <circle cx="12" cy="12" r="3"/>
+                </svg>
+                }
+              </button>
+            </div>
+        </div>
+
+        @if (error) {
+        <div class="mensaje-error">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span>{{ error }}</span>
+        </div>
+        }
+
+        <button type="submit" class="btn-ingresar" [disabled]="cargando">
+          @if (cargando) {
+            <span class="spinner"></span>
+            <span>Ingresando al sistema...</span>
+          } @else {
+            <span>Iniciar Sesión</span>
+          }
+        </button>
+      </form>
     </div>
 
-    <form (ngSubmit)="iniciarSesion()">
-      <div class="campo">
-        <label for="email"> Correo electrónico </label>
-
-        <input
-          id="email"
-          name="email"
-          type="email"
-          [(ngModel)]="email"
-          autocomplete="username"
-          placeholder="Ingresa tu correo"
-          [disabled]="cargando"
-        />
-      </div>
-
-      <div class="campo">
-        <label for="password"> Contraseña </label>
-
-        <div class="password-container">
-          <input
-            id="password"
-            name="password"
-            [type]="mostrarPassword ? 'text' : 'password'"
-            [(ngModel)]="password"
-            autocomplete="current-password"
-            placeholder="Ingresa tu contraseña"
-            [disabled]="cargando"
-          />
-
-          <button
-            type="button"
-            class="password-toggle"
-            (click)="alternarPassword()"
-            [disabled]="cargando"
-            [attr.aria-label]="mostrarPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'"
-          >
-            @if (mostrarPassword) {
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6-9.5-6-9.5-6Z" />
-
-              <circle cx="12" cy="12" r="2.8" />
-            </svg>
-            } @else {
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M3 3l18 18" />
-
-              <path d="M10.6 6.2A10.8 10.8 0 0 1 12 6c6 0 9.5 6 9.5 6a18 18 0 0 1-3.1 3.8" />
-
-              <path d="M6.1 6.8C3.8 8.4 2.5 12 2.5 12s3.5 6 9.5 6c1.4 0 2.7-.3 3.8-.8" />
-            </svg>
-            }
-          </button>
-        </div>
-      </div>
-
-      @if (error) {
-      <div class="mensaje-error">
-        {{ error }}
-      </div>
-      }
-
-      <button type="submit" [disabled]="cargando">
-        @if (cargando) { Ingresando... } @else { Ingresar }
-      </button>
-    </form>
+    <div class="login-footer">
+      <p>© 2026 Flota360 · Transportes Orellana SpA</p>
+      <p class="rights">Todos los derechos reservados.</p>
+    </div>
   </div>
 </div>
-

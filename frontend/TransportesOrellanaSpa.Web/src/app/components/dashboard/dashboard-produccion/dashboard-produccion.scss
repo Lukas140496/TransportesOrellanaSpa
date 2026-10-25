@@ -743,6 +743,11 @@
   color: #8977af;
 }
 
+.camion-symbol {
+  background: #e7ebef;
+  color: #183b68;
+}
+
 .ranking-list {
   display: flex;
   flex-direction: column;
@@ -848,6 +853,10 @@
 
 .client-fill {
   background: #a798c8;
+}
+
+.camion-fill {
+  background: #183b68;
 }
 
 .empty-state {
