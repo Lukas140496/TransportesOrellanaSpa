@@ -1,7 +1,17 @@
+
 import { CommonModule, TitleCasePipe } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  OnDestroy,
+  OnInit,
+  inject
+} from '@angular/core';
+
 import { forkJoin, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+
+import * as L from 'leaflet';
 
 import { ApiService } from '../../../core/services/api.service';
 import { Viaje } from '../../../core/models/viaje';
@@ -33,6 +43,11 @@ interface ResumenConductor {
   estados: string[];
 }
 
+interface Coordenada {
+  lat: number;
+  lng: number;
+}
+
 @Component({
   selector: 'app-dashboard-operacion',
   standalone: true,
@@ -40,20 +55,45 @@ interface ResumenConductor {
   templateUrl: './dashboard-operacion.html',
   styleUrl: './dashboard-operacion.scss'
 })
-export class DashboardOperacion implements OnInit {
+export class DashboardOperacion
+  implements OnInit, AfterViewInit, OnDestroy {
+
   private readonly api = inject(ApiService);
 
+  // =========================================================
+  // MAPA
+  // =========================================================
+
+  private mapa: L.Map | null = null;
+  private capaMapa: L.FeatureGroup = L.featureGroup();
+  private vistaInicializada = false;
+
+  rutasMapa: ResumenRuta[] = [];
+  comunasMapa: ResumenComuna[] = [];
+
+  // =========================================================
+  // DATOS
+  // =========================================================
+
   private todosLosViajes: Viaje[] = [];
+
   conductores: Conductor[] = [];
   viajesPeriodo: Viaje[] = [];
 
   cargando = true;
   cambiandoPeriodo = false;
   error = '';
+
   selectorAbierto = false;
+
   periodos: PeriodoDashboard[] = [];
   periodoSeleccionado!: PeriodoDashboard;
+
   ultimaActualizacion: Date | null = null;
+
+  // =========================================================
+  // PAGOS
+  // =========================================================
 
   estadoPagos = {
     viajesPagados: 0,
@@ -62,16 +102,305 @@ export class DashboardOperacion implements OnInit {
     montoPendientePago: 0
   };
 
+  // =========================================================
+  // DÍAS HÁBILES
+  // =========================================================
+
   diasHabiles = {
     diasNoTrabajados: 0,
     diasHabiles: 0,
     diasTrabajados: 0
   };
 
+  // =========================================================
+  // COORDENADAS APROXIMADAS DE COMUNAS
+  // =========================================================
+
+  private readonly coordenadasComunas: Record<string, Coordenada> = {
+
+    // Santiago y alrededores
+    'santiago': {
+      lat: -33.4489,
+      lng: -70.6693
+    },
+
+    'maipu': {
+      lat: -33.5108,
+      lng: -70.7572
+    },
+
+    'quilicura': {
+      lat: -33.3650,
+      lng: -70.7290
+    },
+
+    'lampa': {
+      lat: -33.2860,
+      lng: -70.8750
+    },
+
+    'colina': {
+      lat: -33.2030,
+      lng: -70.6750
+    },
+
+    'tiltil': {
+      lat: -33.0830,
+      lng: -70.9300
+    },
+
+    'pudahuel': {
+      lat: -33.4430,
+      lng: -70.7350
+    },
+
+    'renca': {
+      lat: -33.4040,
+      lng: -70.7250
+    },
+
+    'independencia': {
+      lat: -33.4150,
+      lng: -70.6650
+    },
+
+    'conchali': {
+      lat: -33.3830,
+      lng: -70.6750
+    },
+
+    'huechuraba': {
+      lat: -33.3730,
+      lng: -70.6500
+    },
+
+    'las condes': {
+      lat: -33.4100,
+      lng: -70.5670
+    },
+
+    'providencia': {
+      lat: -33.4250,
+      lng: -70.6100
+    },
+
+    'vitacura': {
+      lat: -33.3900,
+      lng: -70.5700
+    },
+
+    'lo barnechea': {
+      lat: -33.3500,
+      lng: -70.5170
+    },
+
+    'la florida': {
+      lat: -33.5300,
+      lng: -70.5800
+    },
+
+    'puente alto': {
+      lat: -33.6100,
+      lng: -70.5750
+    },
+
+    'san bernardo': {
+      lat: -33.5920,
+      lng: -70.6990
+    },
+
+    'buin': {
+      lat: -33.7320,
+      lng: -70.7420
+    },
+
+    'paine': {
+      lat: -33.8100,
+      lng: -70.7500
+    },
+
+    'talagante': {
+      lat: -33.6630,
+      lng: -70.9270
+    },
+
+    'padre hurtado': {
+      lat: -33.5700,
+      lng: -70.8150
+    },
+
+    'cerrillos': {
+      lat: -33.5000,
+      lng: -70.7170
+    },
+
+    'estacion central': {
+      lat: -33.4630,
+      lng: -70.7030
+    },
+
+    'la cisterna': {
+      lat: -33.5270,
+      lng: -70.6610
+    },
+
+    'lo espejo': {
+      lat: -33.5200,
+      lng: -70.6880
+    },
+
+    'penalolen': {
+      lat: -33.4860,
+      lng: -70.5350
+    },
+
+    'san miguel': {
+      lat: -33.4950,
+      lng: -70.6510
+    },
+
+    'la reina': {
+      lat: -33.4500,
+      lng: -70.5500
+    },
+
+    'macul': {
+      lat: -33.4860,
+      lng: -70.5980
+    },
+
+    'el bosque': {
+      lat: -33.5650,
+      lng: -70.6750
+    },
+
+    'recoleta': {
+      lat: -33.4060,
+      lng: -70.6410
+    },
+
+    'lo prado': {
+      lat: -33.4450,
+      lng: -70.7250
+    },
+
+    'cerro navia': {
+      lat: -33.4250,
+      lng: -70.7400
+    },
+
+    // Región de O'Higgins y Maule
+    'melipilla': {
+      lat: -33.6890,
+      lng: -71.2160
+    },
+
+    'curacavi': {
+      lat: -33.4000,
+      lng: -71.1400
+    },
+
+    'rancagua': {
+      lat: -34.1700,
+      lng: -70.7400
+    },
+
+    'san fernando': {
+      lat: -34.5850,
+      lng: -70.9900
+    },
+
+    'curico': {
+      lat: -34.9820,
+      lng: -71.2390
+    },
+
+    'talca': {
+      lat: -35.4264,
+      lng: -71.6554
+    },
+
+    'constitucion': {
+      lat: -35.3333,
+      lng: -72.4167
+    },
+
+    // Región de Valparaíso
+    'vina del mar': {
+      lat: -33.0153,
+      lng: -71.5500
+    },
+
+    'valparaiso': {
+      lat: -33.0472,
+      lng: -71.6127
+    },
+
+    'san antonio': {
+      lat: -33.5930,
+      lng: -71.6210
+    },
+
+    // Otras regiones
+    'chillan': {
+      lat: -36.6066,
+      lng: -72.1034
+    },
+
+    'concepcion': {
+      lat: -36.8201,
+      lng: -73.0444
+    },
+
+    'temuco': {
+      lat: -38.7359,
+      lng: -72.5904
+    }
+  };
+
+  private configurarIconosLeaflet(): void {
+    const iconosLeaflet =
+      L.Icon.Default.prototype as any;
+
+    delete iconosLeaflet._getIconUrl;
+
+    L.Icon.Default.mergeOptions({
+      iconRetinaUrl: '/leaflet/marker-icon-2x.png',
+      iconUrl: '/leaflet/marker-icon.png',
+      shadowUrl: '/leaflet/marker-shadow.png'
+    });
+  }
+
+  // =========================================================
+  // CICLO DE VIDA
+  // =========================================================
+
   ngOnInit(): void {
+    this.configurarIconosLeaflet();
     this.inicializarPeriodos();
     this.cargarDatos();
   }
+
+  ngAfterViewInit(): void {
+    this.vistaInicializada = true;
+
+    setTimeout(() => {
+      this.prepararMapa();
+    }, 0);
+  }
+
+  ngOnDestroy(): void {
+    if (this.mapa) {
+      this.mapa.remove();
+      this.mapa = null;
+    }
+
+    this.capaMapa.clearLayers();
+  }
+
+  // =========================================================
+  // PERIODOS
+  // =========================================================
 
   private inicializarPeriodos(): void {
     const actual = new Date();
@@ -79,7 +408,11 @@ export class DashboardOperacion implements OnInit {
     for (let i = 0; i < 12; i++) {
       this.periodos.push(
         this.crearPeriodo(
-          new Date(actual.getFullYear(), actual.getMonth() - i, 1)
+          new Date(
+            actual.getFullYear(),
+            actual.getMonth() - i,
+            1
+          )
         )
       );
     }
@@ -113,144 +446,357 @@ export class DashboardOperacion implements OnInit {
     }
 
     this.periodoSeleccionado = periodo;
+
     this.aplicarPeriodo(false);
   }
+
+  // =========================================================
+  // CARGA DE DATOS
+  // =========================================================
 
   cargarDatos(): void {
     this.cargando = true;
     this.error = '';
-  
+
     const { year, month } = this.periodoSeleccionado;
-  
+
     forkJoin({
       viajes: this.api.getViajes().pipe(
         catchError(err => {
-          console.error('ERROR CARGANDO VIAJES PARA RESUMEN OPERACIÓN:', err);
-          this.error = 'No fue posible cargar los viajes.';
+          console.error(
+            'ERROR CARGANDO VIAJES PARA RESUMEN OPERACIÓN:',
+            err
+          );
+
+          this.error =
+            'No fue posible cargar los viajes.';
+
           return of([] as Viaje[]);
         })
       ),
+
       conductores: this.api.getConductores().pipe(
         catchError(err => {
-          console.error('ERROR CARGANDO CONDUCTORES PARA RESUMEN OPERACIÓN:', err);
+          console.error(
+            'ERROR CARGANDO CONDUCTORES PARA RESUMEN OPERACIÓN:',
+            err
+          );
+
           this.error = this.error
             ? `${this.error} Tampoco fue posible cargar los conductores.`
             : 'No fue posible cargar los conductores.';
+
           return of([] as Conductor[]);
         })
       ),
-      // AGREGAMOS ESTADO DE PAGOS:
-      estadoPagos: this.api.getEstadoPagosDashboard(year, month).pipe(
-        catchError(err => {
-          console.error('ERROR CARGANDO ESTADO PAGOS:', err);
-          return of({ viajesPagados: 0, montoPagado: 0, viajesPendientesPago: 0, montoPendientePago: 0 });
-        })
-      ),
-      diasHabiles: this.api.getDiasHabiles(year, month).pipe(
-        catchError(err => {
-          console.error('ERROR CARGANDO DÍAS HÁBILES:', err);
-          return of({ diasNoTrabajados: 0, diasHabiles: 0, diasTrabajados: 0 });
-        })
-      )
+
+      estadoPagos:
+        this.api.getEstadoPagosDashboard(year, month).pipe(
+          catchError(err => {
+            console.error(
+              'ERROR CARGANDO ESTADO PAGOS:',
+              err
+            );
+
+            return of({
+              viajesPagados: 0,
+              montoPagado: 0,
+              viajesPendientesPago: 0,
+              montoPendientePago: 0
+            });
+          })
+        ),
+
+      diasHabiles:
+        this.api.getDiasHabiles(year, month).pipe(
+          catchError(err => {
+            console.error(
+              'ERROR CARGANDO DÍAS HÁBILES:',
+              err
+            );
+
+            return of({
+              diasNoTrabajados: 0,
+              diasHabiles: 0,
+              diasTrabajados: 0
+            });
+          })
+        )
     }).subscribe({
       next: resultado => {
-        this.todosLosViajes = resultado.viajes ?? [];
-        this.conductores = resultado.conductores ?? [];
-        
-        // ASIGNAMOS LOS DATOS REALES DE LA API
-        this.estadoPagos = resultado.estadoPagos;
-        if (resultado.diasHabiles) {
-          this.diasHabiles = resultado.diasHabiles;
-        }
-  
+        this.todosLosViajes =
+          resultado.viajes ?? [];
+
+        this.conductores =
+          resultado.conductores ?? [];
+
+        this.estadoPagos =
+          resultado.estadoPagos;
+
+        this.diasHabiles =
+          resultado.diasHabiles;
+
         this.aplicarPeriodo(true);
-        this.ultimaActualizacion = new Date();
+
+        this.ultimaActualizacion =
+          new Date();
+
         this.cargando = false;
+
+        this.prepararMapa();
       },
+
       error: err => {
-        console.error('ERROR RESUMEN OPERACIÓN:', err);
-        this.error = 'No fue posible cargar la información operacional.';
+        console.error(
+          'ERROR RESUMEN OPERACIÓN:',
+          err
+        );
+
+        this.error =
+          'No fue posible cargar la información operacional.';
+
         this.cargando = false;
         this.cambiandoPeriodo = false;
       }
     });
   }
 
-  private aplicarPeriodo(cargaInicial: boolean): void {
+  // =========================================================
+  // APLICAR PERIODO
+  // =========================================================
+
+  private aplicarPeriodo(
+    cargaInicial: boolean
+  ): void {
     if (cargaInicial) {
       this.cargando = true;
     } else {
       this.cambiandoPeriodo = true;
     }
-  
-    const { year, month } = this.periodoSeleccionado;
-  
-    this.viajesPeriodo = this.todosLosViajes.filter(viaje => {
-      if (!viaje.fecha) return false;
-      const fecha = new Date(viaje.fecha);
-      return (
-        !Number.isNaN(fecha.getTime()) &&
-        fecha.getFullYear() === year &&
-        fecha.getMonth() + 1 === month
-      );
-    });
-  
-    if (!cargaInicial) {
-      this.api.getEstadoPagosDashboard(year, month).subscribe({
-        next: res => {
-          this.estadoPagos = res;
+
+    const {
+      year,
+      month
+    } = this.periodoSeleccionado;
+
+    this.viajesPeriodo =
+      this.todosLosViajes.filter(viaje => {
+        if (!viaje.fecha) {
+          return false;
         }
+
+        const fecha =
+          new Date(viaje.fecha);
+
+        return (
+          !Number.isNaN(fecha.getTime()) &&
+          fecha.getFullYear() === year &&
+          fecha.getMonth() + 1 === month
+        );
       });
-  
-      if (this.api.getDiasHabiles) {
-        this.api.getDiasHabiles(year, month).subscribe({
+
+    this.rutasMapa =
+      this.rutasFrecuentes;
+
+    this.comunasMapa =
+      this.comunasFrecuentes;
+
+    if (!cargaInicial) {
+      this.api
+        .getEstadoPagosDashboard(year, month)
+        .subscribe({
+          next: res => {
+            this.estadoPagos = res;
+          }
+        });
+
+      this.api
+        .getDiasHabiles(year, month)
+        .subscribe({
           next: res => {
             this.diasHabiles = res;
           }
         });
-      }
     }
-  
-    this.ultimaActualizacion = new Date();
+
+    this.ultimaActualizacion =
+      new Date();
+
     this.cargando = false;
     this.cambiandoPeriodo = false;
+
+    this.prepararMapa();
   }
+
+  // =========================================================
+  // MAPA: COMUNAS MÁS FRECUENTES, SIN CONEXIONES
+  // =========================================================
+
+  private prepararMapa(): void {
+    if (!this.vistaInicializada) {
+      return;
+    }
+
+    setTimeout(() => {
+      const contenedor =
+        document.getElementById('mapa-operacion');
+
+      if (!contenedor) {
+        return;
+      }
+
+      if (!this.mapa) {
+        this.mapa = L.map(contenedor, {
+          center: [-33.4489, -70.6693],
+          zoom: 6,
+          scrollWheelZoom: false
+        });
+
+        L.tileLayer(
+          'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+          {
+            attribution:
+              '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            maxZoom: 19
+          }
+        ).addTo(this.mapa);
+
+        this.capaMapa.addTo(this.mapa);
+      }
+
+      // Quitamos los marcadores anteriores.
+      this.capaMapa.clearLayers();
+
+      // Actualizamos las frecuencias del período seleccionado.
+      this.comunasMapa =
+        this.comunasFrecuentes;
+
+      const puntos: L.LatLng[] = [];
+
+      for (const comuna of this.comunasMapa) {
+        const coordenadas =
+          this.obtenerCoordenadas(comuna.nombre);
+
+        // No dibujamos comunas que no tengan coordenadas conocidas.
+        if (!coordenadas) {
+          continue;
+        }
+
+        const marcador = L.marker([
+          coordenadas.lat,
+          coordenadas.lng
+        ]);
+
+        marcador.bindPopup(
+          `<strong>${this.escaparHtml(comuna.nombre)}</strong><br>` +
+          `<span>Frecuencia: ${comuna.viajes} ` +
+          `${comuna.viajes === 1 ? 'aparición' : 'apariciones'}</span>`
+        );
+
+        marcador.addTo(this.capaMapa);
+
+        puntos.push(
+          L.latLng(
+            coordenadas.lat,
+            coordenadas.lng
+          )
+        );
+      }
+
+      this.mapa.invalidateSize();
+
+      if (puntos.length > 0) {
+        const bounds =
+          L.latLngBounds(puntos);
+
+        this.mapa.fitBounds(bounds, {
+          padding: [40, 40],
+          maxZoom: 11
+        });
+      } else {
+        this.mapa.setView(
+          [-33.4489, -70.6693],
+          6
+        );
+      }
+    }, 100);
+  }
+
+  private obtenerCoordenadas(
+    nombre: string
+  ): Coordenada | null {
+    const normalizado =
+      this.normalizarNombreComuna(nombre);
+
+    return this.coordenadasComunas[normalizado] ?? null;
+  }
+
+  private normalizarNombreComuna(
+    nombre: string
+  ): string {
+    return String(nombre ?? '')
+      .trim()
+      .toLocaleLowerCase('es-CL')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '');
+  }
+
+  private escaparHtml(valor: string): string {
+    return valor
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  // =========================================================
+  // KPIs
+  // =========================================================
 
   get viajesTotales(): number {
     return this.viajesPeriodo.length;
   }
 
   get contarRutas(): number {
-    const claves = new Set(
-      this.viajesPeriodo.map(v => {
-        const origen = this.limpiar(
-          v.comunaOrigen || v.origen
-        ).toLocaleLowerCase('es-CL');
+    const claves =
+      new Set(
+        this.viajesPeriodo.map(v => {
+          const origen =
+            this.limpiar(
+              v.comunaOrigen || v.origen
+            ).toLocaleLowerCase('es-CL');
 
-        const destino = this.limpiar(
-          v.comunaDestino || v.destino
-        ).toLocaleLowerCase('es-CL');
+          const destino =
+            this.limpiar(
+              v.comunaDestino || v.destino
+            ).toLocaleLowerCase('es-CL');
 
-        return `${origen}|${destino}`;
-      })
-    );
+          return `${origen}|${destino}`;
+        })
+      );
 
     return claves.size;
   }
 
-  nombreDesdeViajePublico(viaje: Viaje): string {
+  nombreDesdeViajePublico(
+    viaje: Viaje
+  ): string {
     return this.nombreDesdeViaje(viaje);
   }
 
   get kilometrosTotales(): number {
     return this.viajesPeriodo.reduce(
-      (total, viaje) => total + this.numero(viaje.kilometros),
+      (total, viaje) =>
+        total + this.numero(viaje.kilometros),
       0
     );
   }
 
   get conductoresConActividad(): number {
-    return this.conductoresResumen.filter(c => c.viajes > 0).length;
+    return this.conductoresResumen
+      .filter(c => c.viajes > 0)
+      .length;
   }
 
   get promedioViajesConductor(): number {
@@ -259,16 +805,22 @@ export class DashboardOperacion implements OnInit {
       : 0;
   }
 
+  // =========================================================
+  // ESTADOS
+  // =========================================================
+
   get estadosResumen(): {
     nombre: string;
     cantidad: number;
     porcentaje: number;
     clase: string;
   }[] {
-    const conteo = new Map<string, number>();
+    const conteo =
+      new Map<string, number>();
 
     for (const viaje of this.viajesPeriodo) {
-      const estado = this.limpiar(viaje.estado) || 'Sin estado';
+      const estado =
+        this.limpiar(viaje.estado) || 'Sin estado';
 
       conteo.set(
         estado,
@@ -289,8 +841,13 @@ export class DashboardOperacion implements OnInit {
       .sort((a, b) => b.cantidad - a.cantidad);
   }
 
+  // =========================================================
+  // CONDUCTORES
+  // =========================================================
+
   get conductoresResumen(): ResumenConductor[] {
-    const mapa = new Map<number, ResumenConductor>();
+    const mapa =
+      new Map<number, ResumenConductor>();
 
     for (const conductor of this.conductores) {
       mapa.set(conductor.id, {
@@ -303,18 +860,18 @@ export class DashboardOperacion implements OnInit {
     }
 
     for (const viaje of this.viajesPeriodo) {
-      // Relacionamos el resumen del conductor del viaje con el registro
-      // completo usando el RUT normalizado.
-      const rutViaje = this.normalizarRut(viaje.conductor?.rut);
+      const rutViaje =
+        this.normalizarRut(viaje.conductor?.rut);
 
       if (!rutViaje) {
         continue;
       }
 
-      const conductorRegistrado = this.conductores.find(
-        conductor =>
-          this.normalizarRut(conductor.rut) === rutViaje
-      );
+      const conductorRegistrado =
+        this.conductores.find(
+          conductor =>
+            this.normalizarRut(conductor.rut) === rutViaje
+        );
 
       const id = conductorRegistrado?.id;
 
@@ -337,9 +894,12 @@ export class DashboardOperacion implements OnInit {
       }
 
       resumen.viajes++;
-      resumen.kilometros += this.numero(viaje.kilometros);
 
-      const estado = this.limpiar(viaje.estado);
+      resumen.kilometros +=
+        this.numero(viaje.kilometros);
+
+      const estado =
+        this.limpiar(viaje.estado);
 
       if (estado && !resumen.estados.includes(estado)) {
         resumen.estados.push(estado);
@@ -359,8 +919,11 @@ export class DashboardOperacion implements OnInit {
     );
   }
 
-  get diasDelMes(): number {
+  // =========================================================
+  // DÍAS
+  // =========================================================
 
+  get diasDelMes(): number {
     if (!this.periodoSeleccionado) {
       return 0;
     }
@@ -372,31 +935,43 @@ export class DashboardOperacion implements OnInit {
     ).getDate();
   }
 
+  // =========================================================
+  // RUTAS FRECUENTES
+  // Se conserva para los demás indicadores del dashboard.
+  // El mapa ya no dibuja estas rutas.
+  // =========================================================
+
   get rutasFrecuentes(): ResumenRuta[] {
-    const mapa = new Map<string, ResumenRuta>();
+    const mapa =
+      new Map<string, ResumenRuta>();
 
     for (const viaje of this.viajesPeriodo) {
       const origen =
-        this.limpiar(viaje.comunaOrigen || viaje.origen) ||
-        'Origen no informado';
+        this.limpiar(
+          viaje.comunaOrigen || viaje.origen
+        ) || 'Origen no informado';
 
       const destino =
-        this.limpiar(viaje.comunaDestino || viaje.destino) ||
-        'Destino no informado';
+        this.limpiar(
+          viaje.comunaDestino || viaje.destino
+        ) || 'Destino no informado';
 
       const key =
         `${origen.toLocaleLowerCase('es-CL')}|` +
         destino.toLocaleLowerCase('es-CL');
 
-      const ruta = mapa.get(key) ?? {
-        origen,
-        destino,
-        viajes: 0,
-        kilometros: 0
-      };
+      const ruta =
+        mapa.get(key) ?? {
+          origen,
+          destino,
+          viajes: 0,
+          kilometros: 0
+        };
 
       ruta.viajes++;
-      ruta.kilometros += this.numero(viaje.kilometros);
+
+      ruta.kilometros +=
+        this.numero(viaje.kilometros);
 
       mapa.set(key, ruta);
     }
@@ -418,10 +993,61 @@ export class DashboardOperacion implements OnInit {
     return this.frecuenciaComunas('destino').slice(0, 6);
   }
 
+  /**
+   * Frecuencia total de comunas para el mapa.
+   *
+   * Cada viaje aporta una aparición a su comuna de origen
+   * y otra a su comuna de destino.
+   *
+   * Si origen y destino son la misma comuna, se contabilizan
+   * ambas apariciones.
+   */
+  get comunasFrecuentes(): ResumenComuna[] {
+    const mapa =
+      new Map<string, ResumenComuna>();
+
+    for (const viaje of this.viajesPeriodo) {
+      const valores = [
+        viaje.comunaOrigen || viaje.origen,
+        viaje.comunaDestino || viaje.destino
+      ];
+
+      for (const valor of valores) {
+        const nombre =
+          this.limpiar(valor);
+
+        if (!nombre) {
+          continue;
+        }
+
+        const key =
+          this.normalizarNombreComuna(nombre);
+
+        const item =
+          mapa.get(key) ?? {
+            nombre,
+            viajes: 0
+          };
+
+        item.viajes++;
+
+        mapa.set(key, item);
+      }
+    }
+
+    return [...mapa.values()]
+      .sort(
+        (a, b) =>
+          b.viajes - a.viajes ||
+          a.nombre.localeCompare(b.nombre, 'es-CL')
+      );
+  }
+
   private frecuenciaComunas(
     tipo: 'origen' | 'destino'
   ): ResumenComuna[] {
-    const mapa = new Map<string, ResumenComuna>();
+    const mapa =
+      new Map<string, ResumenComuna>();
 
     for (const viaje of this.viajesPeriodo) {
       const valor =
@@ -431,25 +1057,33 @@ export class DashboardOperacion implements OnInit {
 
       const nombre =
         this.limpiar(valor) ||
-        (tipo === 'origen'
-          ? 'Origen no informado'
-          : 'Destino no informado');
+        (
+          tipo === 'origen'
+            ? 'Origen no informado'
+            : 'Destino no informado'
+        );
 
-      const key = nombre.toLocaleLowerCase('es-CL');
+      const key =
+        nombre.toLocaleLowerCase('es-CL');
 
-      const item = mapa.get(key) ?? {
-        nombre,
-        viajes: 0
-      };
+      const item =
+        mapa.get(key) ?? {
+          nombre,
+          viajes: 0
+        };
 
       item.viajes++;
+
       mapa.set(key, item);
     }
 
-    return [...mapa.values()].sort(
-      (a, b) => b.viajes - a.viajes
-    );
+    return [...mapa.values()]
+      .sort((a, b) => b.viajes - a.viajes);
   }
+
+  // =========================================================
+  // VIAJES RECIENTES
+  // =========================================================
 
   get viajesRecientes(): Viaje[] {
     return [...this.viajesPeriodo]
@@ -461,6 +1095,10 @@ export class DashboardOperacion implements OnInit {
       .slice(0, 8);
   }
 
+  // =========================================================
+  // PORCENTAJES
+  // =========================================================
+
   porcentajeConductor(viajes: number): number {
     return this.viajesTotales > 0
       ? (viajes / this.viajesTotales) * 100
@@ -471,25 +1109,38 @@ export class DashboardOperacion implements OnInit {
     cantidad: number,
     lista: ResumenComuna[]
   ): number {
-    const maximo = Math.max(
-      0,
-      ...lista.map(item => item.viajes)
-    );
+    const maximo =
+      Math.max(
+        0,
+        ...lista.map(item => item.viajes)
+      );
 
     return maximo > 0
       ? (cantidad / maximo) * 100
       : 0;
   }
 
+  // =========================================================
+  // GOOGLE MAPS
+  // =========================================================
+
   enlaceGoogleMaps(ruta: ResumenRuta): string {
-    const origen = encodeURIComponent(`${ruta.origen}, Chile`);
-    const destino = encodeURIComponent(`${ruta.destino}, Chile`);
+    const origen =
+      encodeURIComponent(`${ruta.origen}, Chile`);
+
+    const destino =
+      encodeURIComponent(`${ruta.destino}, Chile`);
 
     return (
       'https://www.google.com/maps/dir/?api=1' +
-      `&origin=${origen}&destination=${destino}`
+      `&origin=${origen}` +
+      `&destination=${destino}`
     );
   }
+
+  // =========================================================
+  // CONDUCTORES
+  // =========================================================
 
   nombreConductor(conductor: Conductor): string {
     return [
@@ -504,25 +1155,29 @@ export class DashboardOperacion implements OnInit {
 
   private nombreDesdeViaje(viaje: Viaje): string {
     const resumen = viaje.conductor;
-    const rut = this.normalizarRut(resumen?.rut);
 
-    const conductorRegistrado = rut
-      ? this.conductores.find(
-          conductor =>
-            this.normalizarRut(conductor.rut) === rut
-        )
-      : undefined;
+    const rut =
+      this.normalizarRut(resumen?.rut);
+
+    const conductorRegistrado =
+      rut
+        ? this.conductores.find(
+            conductor =>
+              this.normalizarRut(conductor.rut) === rut
+          )
+        : undefined;
 
     if (conductorRegistrado) {
       return this.nombreConductor(conductorRegistrado);
     }
 
-    const conductor = resumen as unknown as {
-      nombres?: string;
-      apellidoPaterno?: string;
-      apellidoMaterno?: string;
-      nombreCompleto?: string;
-    } | undefined;
+    const conductor =
+      resumen as unknown as {
+        nombres?: string;
+        apellidoPaterno?: string;
+        apellidoMaterno?: string;
+        nombreCompleto?: string;
+      } | undefined;
 
     return (
       conductor?.nombreCompleto ||
@@ -538,18 +1193,27 @@ export class DashboardOperacion implements OnInit {
     );
   }
 
+  // =========================================================
+  // RUT
+  // =========================================================
+
   private normalizarRut(rut: unknown): string {
     return String(rut ?? '')
       .replace(/[.\-\s]/g, '')
       .toUpperCase();
   }
 
+  // =========================================================
+  // ESTADOS
+  // =========================================================
+
   etiquetaEstado(estado: string): string {
     if (!estado) {
       return 'Sin estado';
     }
 
-    const normalizado = estado.toLocaleLowerCase('es-CL');
+    const normalizado =
+      estado.toLocaleLowerCase('es-CL');
 
     const etiquetas: Record<string, string> = {
       pendiente: 'Pendiente',
@@ -561,7 +1225,9 @@ export class DashboardOperacion implements OnInit {
     };
 
     return (
-      etiquetas[normalizado.replace(/[\s_-]/g, '')] ??
+      etiquetas[
+        normalizado.replace(/[\s_-]/g, '')
+      ] ??
       etiquetas[normalizado] ??
       estado.replace(
         /([a-záéíóú])([A-ZÁÉÍÓÚ])/g,
@@ -571,9 +1237,10 @@ export class DashboardOperacion implements OnInit {
   }
 
   claseEstado(estado: string): string {
-    const normalizado = estado
-      .toLocaleLowerCase('es-CL')
-      .replace(/[\s_-]/g, '');
+    const normalizado =
+      estado
+        .toLocaleLowerCase('es-CL')
+        .replace(/[\s_-]/g, '');
 
     if (normalizado.includes('complet')) {
       return 'estado-completado';
@@ -593,6 +1260,10 @@ export class DashboardOperacion implements OnInit {
 
     return 'estado-otro';
   }
+
+  // =========================================================
+  // FORMATEOS
+  // =========================================================
 
   formatoNumero(valor: number): string {
     return new Intl.NumberFormat('es-CL', {
@@ -623,6 +1294,18 @@ export class DashboardOperacion implements OnInit {
         });
   }
 
+  formatoMoneda(valor: number): string {
+    return new Intl.NumberFormat('es-CL', {
+      style: 'currency',
+      currency: 'CLP',
+      maximumFractionDigits: 0
+    }).format(valor);
+  }
+
+  // =========================================================
+  // FECHA ACTUALIZACIÓN
+  // =========================================================
+
   get fechaActualizacionTexto(): string {
     return this.ultimaActualizacion
       ? this.ultimaActualizacion.toLocaleString('es-CL', {
@@ -635,24 +1318,19 @@ export class DashboardOperacion implements OnInit {
       : 'Actualizando información';
   }
 
+  // =========================================================
+  // UTILIDADES
+  // =========================================================
+
   private numero(valor: unknown): number {
     const numero = Number(valor);
-    return Number.isFinite(numero) ? numero : 0;
+
+    return Number.isFinite(numero)
+      ? numero
+      : 0;
   }
 
   private limpiar(valor: unknown): string {
     return String(valor ?? '').trim();
-  }
-
-  formatoMoneda(valor: number): string {
-
-    return new Intl.NumberFormat(
-      'es-CL',
-      {
-        style: 'currency',
-        currency: 'CLP',
-        maximumFractionDigits: 0
-      }
-    ).format(valor);
   }
 }

@@ -976,6 +976,68 @@
   font-size: 10px;
 }
 
+
+/* =========================
+   MAPA DE OPERACIONES
+   ========================= */
+
+.panel-mapa {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.mapa-resumen {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.mapa-indicador {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  color: var(--texto-secundario, #64748b);
+}
+
+.mapa-punto {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #16a34a;
+  flex-shrink: 0;
+}
+
+.mapa-nota {
+  font-size: 0.75rem;
+  color: var(--texto-secundario, #64748b);
+}
+
+.mapa-operacion {
+  width: 100%;
+  height: 420px;
+  min-height: 320px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #e8edf2;
+  z-index: 0;
+}
+
+.mapa-oculto {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .mapa-operacion {
+    height: 340px;
+    min-height: 280px;
+  }
+}
+
+
 /* =========================================
    RESPONSIVE
 ========================================= */
