@@ -63,6 +63,7 @@ export class ViajeDetail implements OnInit, OnDestroy {
 
   mapaCargando = false;
   errorMapa = '';
+  kilometrosRuta: number | null = null;
 
   // =========================
   // INICIALIZACIÓN
@@ -359,6 +360,9 @@ export class ViajeDetail implements OnInit, OnDestroy {
           'No se encontró una ruta vial entre las ubicaciones.'
         );
       }
+
+      const distanciaMetros = datos.routes[0].distance;
+      this.kilometrosRuta = distanciaMetros / 1000;
 
       const coordenadas = datos.routes[0].geometry.coordinates.map(
         (coordenada: [number, number]) =>

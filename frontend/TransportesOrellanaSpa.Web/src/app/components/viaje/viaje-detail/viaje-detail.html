@@ -365,9 +365,20 @@
   <!-- ========================= -->
 
   <div class="card card-mapa-recorrido">
-    <h2>Mapa del recorrido</h2>
+    <div class="mapa-card-header">
+      <div>
+        <h2>Mapa del recorrido</h2>
+        <p class="mapa-descripcion">
+          Recorrido vial estimado entre el origen y el destino del viaje.
+        </p>
+      </div>
 
-    <p class="mapa-descripcion">Recorrido vial estimado entre el origen y el destino del viaje.</p>
+      @if (kilometrosRuta !== null) {
+        <span class="badge-kilometros-viaje">
+          📍 {{ kilometrosRuta | number:'1.1-1' }} km
+        </span>
+      }
+    </div>
 
     @if (mapaCargando) {
     <p class="mapa-mensaje">Calculando el recorrido...</p>

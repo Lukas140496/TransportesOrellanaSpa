@@ -530,6 +530,33 @@ button {
   line-height: 1.5;
 }
 
+.mapa-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+
+  .mapa-descripcion {
+    margin: 4px 0 16px;
+  }
+}
+
+.badge-kilometros-viaje {
+  display: inline-flex;
+  align-items: center;
+  background: #f1f5f9;
+  color: #1e293b;
+  padding: 6px 15px;
+  margin-top: 25px;
+  border-radius: 9999px;
+  font-size: 15px;
+  font-weight: 700;
+  border: 1px solid #cbd5e1;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
 /* ========================= */
 /* ICONOS LEAFLET */
 /* ========================= */
@@ -582,6 +609,22 @@ button {
   .mapa-recorrido {
     height: 320px;
     min-height: 280px;
+  }
+}
+
+@media (max-width: 640px) {
+  .mapa-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .badge-kilometros-viaje {
+    padding: 5px 10px;
+    font-size: 13px;
+    align-self: flex-start;
+    margin-top: 0;
+    margin-bottom: 15px;
   }
 }
 
