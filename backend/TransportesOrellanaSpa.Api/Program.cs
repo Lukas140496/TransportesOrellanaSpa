@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
 using TransportesOrellanaSpa.Api.Authorization;
+using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -61,6 +62,28 @@ builder.Services.AddScoped<PasswordService>();
 builder.Services.AddScoped<AutenticacionService>();
 builder.Services.AddScoped<JwtService>();
 builder.Services.AddScoped<CorreoService>();
+
+// =========================
+// PRECIO HISTÓRICO DEL DIÉSEL
+// =========================
+
+builder.Services.AddSingleton<PrecioDieselHistoricoService>();
+
+builder.Services.AddSingleton<PrecioDieselActualCache>();
+
+builder.Services.AddHttpClient("BencinaEnLinea", client =>
+{
+    client.Timeout = TimeSpan.FromSeconds(30);
+})
+.ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler
+{
+    AutomaticDecompression =
+        DecompressionMethods.GZip |
+        DecompressionMethods.Deflate |
+        DecompressionMethods.Brotli
+});
+
+builder.Services.AddHostedService<PrecioDieselActualBackgroundService>();
 
 builder.Services.AddScoped<IAuthorizationHandler, PermissionHandler>();
 

@@ -227,11 +227,13 @@ public class ViajeController : ControllerBase
 
                 Cliente = new ClienteResumenDto
                 {
-                    Nombre =
-                        v.Cliente.Nombre,
+                    Nombre = v.Cliente.Nombre,
 
-                    Rut =
-                        v.Cliente.Rut
+                    Rut = v.Cliente.Rut,
+
+                    Direccion = v.Cliente.Direccion,
+
+                    Comuna = v.Cliente.Comuna
                 },
 
                 Camion = new CamionResumenDto
@@ -430,11 +432,13 @@ public class ViajeController : ControllerBase
 
                 Cliente = new ClienteResumenDto
                 {
-                    Nombre =
-                        v.Cliente.Nombre,
+                    Nombre = v.Cliente.Nombre,
 
-                    Rut =
-                        v.Cliente.Rut
+                    Rut = v.Cliente.Rut,
+
+                    Direccion = v.Cliente.Direccion,
+
+                    Comuna = v.Cliente.Comuna
                 },
 
                 Camion = new CamionResumenDto
@@ -553,11 +557,13 @@ public class ViajeController : ControllerBase
 
                 Cliente = new ClienteResumenDto
                 {
-                    Nombre =
-                        v.Cliente.Nombre,
+                    Nombre = v.Cliente.Nombre,
 
-                    Rut =
-                        v.Cliente.Rut
+                    Rut = v.Cliente.Rut,
+
+                    Direccion = v.Cliente.Direccion,
+
+                    Comuna = v.Cliente.Comuna
                 },
 
                 Camion = new CamionResumenDto
@@ -907,11 +913,13 @@ public class ViajeController : ControllerBase
 
                 Cliente = new ClienteResumenDto
                 {
-                    Nombre =
-                        v.Cliente.Nombre,
+                    Nombre = v.Cliente.Nombre,
 
-                    Rut =
-                        v.Cliente.Rut
+                    Rut = v.Cliente.Rut,
+
+                    Direccion = v.Cliente.Direccion,
+                    
+                    Comuna = v.Cliente.Comuna
                 },
 
                 Camion = new CamionResumenDto
@@ -1072,11 +1080,13 @@ public class ViajeController : ControllerBase
 
                 Cliente = new ClienteResumenDto
                 {
-                    Nombre =
-                        v.Cliente.Nombre,
+                    Nombre = v.Cliente.Nombre,
 
-                    Rut =
-                        v.Cliente.Rut
+                    Rut = v.Cliente.Rut,
+
+                    Direccion = v.Cliente.Direccion,
+
+                    Comuna = v.Cliente.Comuna
                 },
 
                 Camion = new CamionResumenDto
@@ -1212,7 +1222,9 @@ public class ViajeController : ControllerBase
                 Cliente = new ClienteResumenDto
                 {
                     Nombre = v.Cliente.Nombre,
-                    Rut = v.Cliente.Rut
+                    Rut = v.Cliente.Rut,
+                    Direccion = v.Cliente.Direccion,
+                    Comuna = v.Cliente.Comuna
                 },
 
                 Camion = new CamionResumenDto
@@ -1413,7 +1425,9 @@ public class ViajeController : ControllerBase
                 Cliente = new ClienteResumenDto
                 {
                     Nombre = v.Cliente.Nombre,
-                    Rut = v.Cliente.Rut
+                    Rut = v.Cliente.Rut,
+                    Direccion = v.Cliente.Direccion,
+                    Comuna = v.Cliente.Comuna
                 },
 
                 Camion = new CamionResumenDto
