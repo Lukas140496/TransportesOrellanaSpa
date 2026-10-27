@@ -6,6 +6,7 @@ import * as L from 'leaflet';
 import { ApiService } from '../../../core/services/api.service';
 import { Viaje } from '../../../core/models/viaje';
 import { PermissionService } from '../../../core/services/permission.service';
+import { PrecioDieselHistorico } from '../../../core//models/precio-diesel-historico';
 
 // Importación del JSON de clientes frecuentes
 import * as clientesData from '../../../core/assets/json/clientes-frecuentes.json';
@@ -22,6 +23,9 @@ export class ViajeDetail implements OnInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   readonly permissionService = inject(PermissionService);
+
+  cargandoPrecioDiesel = false;
+  precioDieselHistorico: PrecioDieselHistorico | null = null;
 
   // =========================
   // MODALES
@@ -86,6 +90,7 @@ export class ViajeDetail implements OnInit, OnDestroy {
 
       next: viaje => {
         this.viaje = viaje;
+        this.cargarPrecioDieselHistorico(viaje.fecha);
         this.cargando = false;
 
         this.configurarIconosLeaflet();
@@ -689,6 +694,41 @@ export class ViajeDetail implements OnInit, OnDestroy {
     });
   }
 
+
+  private cargarPrecioDieselHistorico(fechaViaje: string | Date): void {
+    this.cargandoPrecioDiesel = true;
+
+    const fecha = typeof fechaViaje === 'string'
+      ? fechaViaje.substring(0, 10)
+      : `${fechaViaje.getFullYear()}-${String(
+        fechaViaje.getMonth() + 1
+      ).padStart(2, '0')}-${String(
+        fechaViaje.getDate()
+      ).padStart(2, '0')}`;
+
+    this.api.getPrecioDieselHistorico(fecha).subscribe({
+      next: (resultado) => {
+        this.precioDieselHistorico = resultado;
+        this.cargandoPrecioDiesel = false;
+      },
+      error: (error) => {
+        console.error('Error al consultar el precio histórico del diésel:', error);
+        this.precioDieselHistorico = null;
+        this.cargandoPrecioDiesel = false;
+      }
+    });
+  }
+
+  nombreMesPrecioDiesel(mes: number): string {
+    const meses = [
+      'enero', 'febrero', 'marzo', 'abril',
+      'mayo', 'junio', 'julio', 'agosto',
+      'septiembre', 'octubre', 'noviembre', 'diciembre'
+    ];
+
+    return meses[mes - 1] ?? '';
+  }
+
   // =========================
   // CERRAR MODALES
   // =========================
@@ -699,6 +739,80 @@ export class ViajeDetail implements OnInit, OnDestroy {
 
   cerrarModalError(): void {
     this.modalErrorVisible = false;
+  }
+
+  obtenerLineasObservaciones(
+    observaciones: string
+  ): { titulo: string | null; contenido: string }[] {
+  
+    const titulos = [
+      'Nota de venta',
+      'Orden de compra',
+      'Dirección',
+      'Direccion',
+      'Carga',
+      'Peso',
+      'Precio combustible',
+      'Este servicio incluye la guía',
+      'Este servicio incluye la guia'
+    ];
+  
+    const lineas = observaciones
+      .split(/\r?\n/)
+      .map(linea => linea.trim())
+      .filter(linea => linea.length > 0);
+  
+    return lineas.map(linea => {
+  
+      // Buscar si la línea comienza con alguno de los títulos conocidos
+      const tituloEncontrado = titulos.find(titulo => {
+  
+        const regex = new RegExp(
+          `^${titulo.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*: ?`,
+          'i'
+        );
+  
+        return regex.test(linea);
+      });
+  
+      if (tituloEncontrado) {
+  
+        const regex = new RegExp(
+          `^${tituloEncontrado.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*: ?`,
+          'i'
+        );
+  
+        const contenido = linea
+          .replace(regex, '')
+          .trim();
+  
+        return {
+          titulo: tituloEncontrado,
+          contenido
+        };
+      }
+  
+      // Compatibilidad con cualquier otro texto que venga como "Título: contenido"
+      const coincidencia = linea.match(
+        /^([^:]+):\s*(.*)$/
+      );
+  
+      if (coincidencia) {
+  
+        return {
+          titulo: coincidencia[1].trim(),
+          contenido: coincidencia[2].trim()
+        };
+  
+      }
+  
+      // Línea sin título
+      return {
+        titulo: null,
+        contenido: linea
+      };
+  
+    });
   }
 
   // =========================

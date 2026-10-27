@@ -1,7 +1,7 @@
 {
     "IPACER": "-33.379660, -70.740870",
-    "MACHILE": "Los Fresnos 301, Colina, Chile",
-    "INVICTA": "Avenida Presidente Eduardo Frei Montalva 20338, Lampa, Chile",
+    "MACHILE": "-33.300278, -70.725378",
+    "INVICTA": "-33.281669, -70.738821",
     "SCHAFFNER": "-33.461641, -70.693607",
     "CHADA": "-33.488735, -70.718088",
     "HICHA": "-33.488735, -70.718088",
@@ -31,5 +31,8 @@
     "DAGOMET": "-33.345345, -70.832559",
     "VPM": "-33.370445, -70.706484",
     "BBOSH CAÑAVERAL": "-33.323368, -70.710092",
-    "BBOSH VESPUCIO": "-33.365360, -70.695208"
-  }
+    "BBOSH VESPUCIO": "-33.365360, -70.695208",
+    "PROSOLMEC": "-33.540129, -70.697317",
+    "PRODALAM": "-33.407997, -70.686024",
+    "OTERO": "-33.334652, -70.719241"
+}

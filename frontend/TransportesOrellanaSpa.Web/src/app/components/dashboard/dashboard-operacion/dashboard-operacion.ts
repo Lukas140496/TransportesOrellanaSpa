@@ -17,6 +17,8 @@ import { ApiService } from '../../../core/services/api.service';
 import { Viaje } from '../../../core/models/viaje';
 import { Conductor } from '../../../core/models/conductor';
 
+import * as clientesData from '../../../core/assets/json/clientes-frecuentes.json';
+
 interface PeriodoDashboard {
   year: number;
   month: number;
@@ -26,6 +28,9 @@ interface PeriodoDashboard {
 interface ResumenRuta {
   origen: string;
   destino: string;
+  comunaOrigen: string;
+  comunaDestino: string;
+  cliente: string;
   viajes: number;
   kilometros: number;
 }
@@ -70,6 +75,20 @@ export class DashboardOperacion
 
   rutasMapa: ResumenRuta[] = [];
   comunasMapa: ResumenComuna[] = [];
+
+  // =========================================================
+  // MODAL MAPA DE RUTA
+  // =========================================================
+
+  mostrarModalRuta = false;
+  rutaSeleccionada: ResumenRuta | null = null;
+  kilometrosRutaModal: number | null = null;
+
+  mapaRutaCargando = false;
+  errorMapaRuta = '';
+
+  private mapaRutaModal: L.Map | null = null;
+  private capaRutaModal: L.FeatureGroup = L.featureGroup();
 
   // =========================================================
   // DATOS
@@ -396,6 +415,8 @@ export class DashboardOperacion
     }
 
     this.capaMapa.clearLayers();
+
+    this.destruirMapaRutaModal();
   }
 
   // =========================================================
@@ -731,6 +752,47 @@ export class DashboardOperacion
     return this.coordenadasComunas[normalizado] ?? null;
   }
 
+  private obtenerCoordenadasCliente(
+    nombreEmpresa: string
+  ): Coordenada | null {
+    const mapaClientes: Record<string, string> =
+      (clientesData as any).default || clientesData;
+
+    const normalizar = (valor: string): string =>
+      valor
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLocaleLowerCase('es-CL')
+        .trim();
+
+    const nombreNormalizado = normalizar(nombreEmpresa);
+
+    const entrada = Object.entries(mapaClientes).find(
+      ([empresa]) => normalizar(empresa) === nombreNormalizado
+    );
+
+    if (!entrada) {
+      return null;
+    }
+
+    const valor = entrada[1].trim();
+
+    // Si el JSON contiene coordenadas, las usamos directamente.
+    const coincidencia = valor.match(
+      /^\s*(-?\d+(?:\.\d+)?)\s*,\s*(-?\d+(?:\.\d+)?)\s*$/
+    );
+
+    if (coincidencia) {
+      return {
+        lat: Number(coincidencia[1]),
+        lng: Number(coincidencia[2])
+      };
+    }
+
+    // Si contiene una dirección, se geocodifica.
+    return null;
+  }
+
   private normalizarNombreComuna(
     nombre: string
   ): string {
@@ -771,6 +833,11 @@ export class DashboardOperacion
             this.limpiar(
               v.comunaDestino || v.destino
             ).toLocaleLowerCase('es-CL');
+
+          const cliente =
+            this.limpiar(
+              v.cliente?.nombre || 'Sin cliente'
+            );
 
           return `${origen}|${destino}`;
         })
@@ -942,36 +1009,39 @@ export class DashboardOperacion
   // =========================================================
 
   get rutasFrecuentes(): ResumenRuta[] {
-    const mapa =
-      new Map<string, ResumenRuta>();
+    const mapa = new Map<string, ResumenRuta>();
 
     for (const viaje of this.viajesPeriodo) {
       const origen =
-        this.limpiar(
-          viaje.comunaOrigen || viaje.origen
-        ) || 'Origen no informado';
+        this.limpiar(viaje.origen) || 'Origen no informado';
 
       const destino =
-        this.limpiar(
-          viaje.comunaDestino || viaje.destino
-        ) || 'Destino no informado';
+        this.limpiar(viaje.destino) || 'Destino no informado';
+
+      const comunaOrigen =
+        this.limpiar(viaje.comunaOrigen) || 'Comuna no informada';
+
+      const comunaDestino =
+        this.limpiar(viaje.comunaDestino) || 'Comuna no informada';
+
+      const cliente = `${comunaOrigen} → ${comunaDestino}`;
 
       const key =
         `${origen.toLocaleLowerCase('es-CL')}|` +
-        destino.toLocaleLowerCase('es-CL');
+        `${destino.toLocaleLowerCase('es-CL')}`;
 
-      const ruta =
-        mapa.get(key) ?? {
-          origen,
-          destino,
-          viajes: 0,
-          kilometros: 0
-        };
+      const ruta: ResumenRuta = mapa.get(key) ?? {
+        origen,
+        destino,
+        comunaOrigen,
+        comunaDestino,
+        cliente,
+        viajes: 0,
+        kilometros: 0
+      };
 
       ruta.viajes++;
-
-      ruta.kilometros +=
-        this.numero(viaje.kilometros);
+      ruta.kilometros += this.numero(viaje.kilometros);
 
       mapa.set(key, ruta);
     }
@@ -991,6 +1061,337 @@ export class DashboardOperacion
 
   get destinosFrecuentes(): ResumenComuna[] {
     return this.frecuenciaComunas('destino').slice(0, 6);
+  }
+
+  verRuta(ruta: ResumenRuta): void {
+    this.destruirMapaRutaModal();
+
+    this.rutaSeleccionada = ruta;
+    this.mostrarModalRuta = true;
+    this.mapaRutaCargando = true;
+    this.errorMapaRuta = '';
+    this.kilometrosRutaModal = null;
+
+    setTimeout(() => {
+      if (this.mostrarModalRuta && this.rutaSeleccionada === ruta) {
+        void this.inicializarMapaRutaModal(ruta);
+      }
+    }, 100);
+  }
+
+  private destruirMapaRutaModal(): void {
+    if (this.mapaRutaModal) {
+      this.mapaRutaModal.remove();
+      this.mapaRutaModal = null;
+    }
+
+    this.capaRutaModal.clearLayers();
+  }
+
+  cerrarModalRuta(): void {
+    this.mostrarModalRuta = false;
+    this.mapaRutaCargando = false;
+    this.errorMapaRuta = '';
+    this.rutaSeleccionada = null;
+
+    this.destruirMapaRutaModal();
+  }
+
+  private extraerDireccionObservaciones(
+    observaciones: string | null | undefined
+  ): string | null {
+    if (!observaciones) {
+      return null;
+    }
+
+    const regex =
+      /(?:^|\s)direcci[oó]n\s*:\s*(.+?)(?=\s+(?:carga|peso|nota\s+de\s+venta|orden\s+de\s+compra|tarifa(?:\s+de)?\s+combustible(?:\s+actual)?)\s*:|$)/i;
+
+    const coincidencia = observaciones.match(regex);
+
+    if (!coincidencia?.[1]) {
+      return null;
+    }
+
+    const direccion = coincidencia[1]
+      .trim()
+      .replace(/[.,;]+$/, '')
+      .trim();
+
+    return direccion || null;
+  }
+
+  private obtenerDireccionConocida(
+    nombreEmpresa: string
+  ): string | null {
+    if (!nombreEmpresa) {
+      return null;
+    }
+
+    const normalizar = (valor: string): string =>
+      valor
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toUpperCase()
+        .trim();
+
+    const mapaClientes: Record<string, string> =
+      (clientesData as any).default || clientesData;
+
+    const nombreNormalizado = normalizar(nombreEmpresa);
+
+    for (const [empresa, direccion] of Object.entries(mapaClientes)) {
+      const claveNormalizada = normalizar(empresa);
+
+      if (nombreNormalizado.includes(claveNormalizada)) {
+        return direccion;
+      }
+    }
+
+    return null;
+  }
+
+  private async geocodificarRutaModal(
+    nombreEmpresa: string,
+    comuna?: string,
+    direccionObservacion?: string | null
+  ): Promise<Coordenada | null> {
+    const consultas: string[] = [];
+
+    const empresa = nombreEmpresa?.trim();
+    const coordenadasCliente =
+      this.obtenerCoordenadasCliente(nombreEmpresa);
+
+    if (coordenadasCliente) {
+      return coordenadasCliente;
+    }
+    const nombreComuna = comuna?.trim();
+    const direccion = direccionObservacion?.trim();
+
+    const direccionConocida =
+      this.obtenerDireccionConocida(empresa || '');
+
+    if (direccionConocida) {
+      consultas.push(`${direccionConocida}, Chile`);
+    } else {
+      if (direccion && nombreComuna) {
+        consultas.push(`${direccion}, ${nombreComuna}, Chile`);
+      }
+
+      if (empresa && direccion && nombreComuna) {
+        consultas.push(
+          `${empresa}, ${direccion}, ${nombreComuna}, Chile`
+        );
+      }
+
+      if (empresa && nombreComuna) {
+        consultas.push(`${empresa}, ${nombreComuna}, Chile`);
+      }
+
+      if (empresa) {
+        consultas.push(`${empresa}, Chile`);
+      }
+    }
+
+    for (const consulta of [...new Set(consultas)]) {
+      try {
+        const parametros = new URLSearchParams({
+          q: consulta,
+          format: 'jsonv2',
+          limit: '1',
+          countrycodes: 'cl'
+        });
+
+        const respuesta = await fetch(
+          'https://nominatim.openstreetmap.org/search?' +
+          parametros.toString()
+        );
+
+        if (!respuesta.ok) {
+          continue;
+        }
+
+        const resultados = await respuesta.json();
+
+        if (!resultados?.length) {
+          continue;
+        }
+
+        const lat = Number(resultados[0].lat);
+        const lng = Number(resultados[0].lon);
+
+        if (Number.isFinite(lat) && Number.isFinite(lng)) {
+          return { lat, lng };
+        }
+      } catch (error) {
+        console.error(
+          `Error geocodificando "${consulta}":`,
+          error
+        );
+      }
+    }
+
+    return null;
+  }
+
+  private async inicializarMapaRutaModal(
+    ruta: ResumenRuta
+  ): Promise<void> {
+    const contenedor = document.getElementById('mapa-ruta-modal');
+
+    if (!contenedor || !this.mostrarModalRuta) {
+      this.mapaRutaCargando = false;
+      return;
+    }
+
+    this.destruirMapaRutaModal();
+
+    this.errorMapaRuta = '';
+    this.mapaRutaCargando = true;
+
+    const mapa = L.map(contenedor, {
+      center: [-33.4489, -70.6693],
+      zoom: 6,
+      scrollWheelZoom: true
+    });
+
+    this.mapaRutaModal = mapa;
+
+    L.tileLayer(
+      'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+      {
+        attribution: '&copy; OpenStreetMap contributors',
+        maxZoom: 19
+      }
+    ).addTo(mapa);
+
+    this.capaRutaModal = L.featureGroup().addTo(mapa);
+
+    requestAnimationFrame(() => {
+      if (this.mapaRutaModal === mapa) {
+        mapa.invalidateSize();
+      }
+    });
+
+    try {
+      // Geocodificar directamente los nombres de las empresas
+      // y sus respectivas comunas.
+      const origen = await this.geocodificarRutaModal(
+        ruta.origen,
+        ruta.comunaOrigen
+      );
+
+      if (this.mapaRutaModal !== mapa) {
+        return;
+      }
+
+      if (!origen) {
+        throw new Error(
+          `No se encontró el origen "${ruta.origen}" en ${ruta.comunaOrigen}.`
+        );
+      }
+
+      const destino = await this.geocodificarRutaModal(
+        ruta.destino,
+        ruta.comunaDestino
+      );
+
+      if (this.mapaRutaModal !== mapa) {
+        return;
+      }
+
+      if (!destino) {
+        throw new Error(
+          `No se encontró el destino "${ruta.destino}" en ${ruta.comunaDestino}.`
+        );
+      }
+
+      // Marcador de origen.
+      L.marker([origen.lat, origen.lng])
+        .bindPopup(
+          `<strong>Origen: ${this.escaparHtml(ruta.origen)}</strong><br>` +
+          `${this.escaparHtml(ruta.comunaOrigen)}`
+        )
+        .addTo(this.capaRutaModal);
+
+      // Marcador de destino.
+      L.marker([destino.lat, destino.lng])
+        .bindPopup(
+          `<strong>Destino: ${this.escaparHtml(ruta.destino)}</strong><br>` +
+          `${this.escaparHtml(ruta.comunaDestino)}`
+        )
+        .addTo(this.capaRutaModal);
+
+      // Calcular recorrido vial con OSRM.
+      const urlRuta =
+        'https://router.project-osrm.org/route/v1/driving/' +
+        `${origen.lng},${origen.lat};${destino.lng},${destino.lat}` +
+        '?overview=full&geometries=geojson&steps=false';
+
+      const respuesta = await fetch(urlRuta);
+
+      if (this.mapaRutaModal !== mapa) {
+        return;
+      }
+
+      if (!respuesta.ok) {
+        throw new Error(
+          'No fue posible calcular el recorrido vial.'
+        );
+      }
+
+      const datos = await respuesta.json();
+
+      if (datos.code !== 'Ok' || !datos.routes?.length) {
+        throw new Error(
+          'No se encontró una ruta vial entre las ubicaciones.'
+        );
+      }
+
+      const distanciaMetros = datos.routes[0].distance;
+      this.kilometrosRutaModal = distanciaMetros / 1000;
+
+      const coordenadas = datos.routes[0].geometry.coordinates.map(
+        (coordenada: [number, number]) =>
+          L.latLng(coordenada[1], coordenada[0])
+      );
+
+      L.polyline(coordenadas, {
+        color: '#2563eb',
+        weight: 5,
+        opacity: 0.85
+      }).addTo(this.capaRutaModal);
+
+      mapa.fitBounds(this.capaRutaModal.getBounds(), {
+        padding: [35, 35]
+      });
+
+    } catch (error) {
+      console.error(
+        'Error al mostrar la ruta en el modal:',
+        error
+      );
+
+      if (this.mapaRutaModal !== mapa) {
+        return;
+      }
+
+      this.errorMapaRuta =
+        error instanceof Error
+          ? error.message
+          : 'No fue posible mostrar el recorrido.';
+
+      mapa.setView([-33.4489, -70.6693], 6);
+
+    } finally {
+      if (this.mapaRutaModal === mapa) {
+        this.mapaRutaCargando = false;
+
+        requestAnimationFrame(() => {
+          mapa.invalidateSize();
+        });
+      }
+    }
   }
 
   /**
@@ -1162,9 +1563,9 @@ export class DashboardOperacion
     const conductorRegistrado =
       rut
         ? this.conductores.find(
-            conductor =>
-              this.normalizarRut(conductor.rut) === rut
-          )
+          conductor =>
+            this.normalizarRut(conductor.rut) === rut
+        )
         : undefined;
 
     if (conductorRegistrado) {
@@ -1226,7 +1627,7 @@ export class DashboardOperacion
 
     return (
       etiquetas[
-        normalizado.replace(/[\s_-]/g, '')
+      normalizado.replace(/[\s_-]/g, '')
       ] ??
       etiquetas[normalizado] ??
       estado.replace(
@@ -1288,10 +1689,10 @@ export class DashboardOperacion
     return Number.isNaN(valor.getTime())
       ? '—'
       : valor.toLocaleDateString('es-CL', {
-          day: '2-digit',
-          month: 'short',
-          year: 'numeric'
-        });
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric'
+      });
   }
 
   formatoMoneda(valor: number): string {
@@ -1309,12 +1710,12 @@ export class DashboardOperacion
   get fechaActualizacionTexto(): string {
     return this.ultimaActualizacion
       ? this.ultimaActualizacion.toLocaleString('es-CL', {
-          day: '2-digit',
-          month: 'short',
-          year: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit'
-        })
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      })
       : 'Actualizando información';
   }
 

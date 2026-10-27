@@ -37,6 +37,13 @@ export class ViajeForm implements OnInit {
   modalSalirVisible = false;
   formularioModificado = false;
 
+  precioDieselReferencia: number | null = null;
+  cargandoPrecioDiesel = false;
+  costoEstimadoAplicado = false;
+  errorPrecioDiesel = '';
+
+  private solicitudPrecioDiesel = 0;
+
   private resolverSalida: ((salir: boolean) => void) | null = null;
 
   viaje = {
@@ -186,76 +193,84 @@ export class ViajeForm implements OnInit {
     this.camposTocados[campo] = true;
   }
 
-  campoTieneError(campo: string): boolean {
 
+  campoTieneError(campo: string): boolean {
     if (!this.camposTocados[campo]) {
       return false;
     }
-
+  
     switch (campo) {
-
       case 'numeroGuiaDespacho':
         return !this.viaje.numeroGuiaDespacho.trim();
-
+  
       case 'fecha':
         return !this.viaje.fecha;
-
+  
       case 'estado':
         return !this.viaje.estado;
-
+  
       case 'clienteId':
         return this.viaje.clienteId <= 0;
-
+  
       case 'camionId':
         return this.viaje.camionId <= 0;
-
+  
       case 'conductorId':
         return this.viaje.conductorId <= 0;
-
+  
       case 'remolqueId':
         return this.remolqueObligatorio &&
           this.viaje.remolqueId <= 0;
-
+  
       case 'origen':
         return !this.viaje.origen.trim();
-
+  
       case 'destino':
         return !this.viaje.destino.trim();
-
+  
       case 'comunaOrigen':
         return !this.viaje.comunaOrigen.trim();
-
+  
       case 'comunaDestino':
         return !this.viaje.comunaDestino.trim();
-
+  
       case 'tipoCarga':
         return !this.viaje.tipoCarga.trim();
-
+  
       case 'kilometros':
         return (
-          this.viaje.kilometros !== null &&
-          this.viaje.kilometros < 0
+          this.viaje.kilometros === null ||
+          !Number.isFinite(Number(this.viaje.kilometros)) ||
+          Number(this.viaje.kilometros) <= 0
         );
-
+  
       case 'litrosCombustible':
-        return this.viaje.litrosCombustible < 0;
-
+        return (
+          !Number.isFinite(Number(this.viaje.litrosCombustible)) ||
+          Number(this.viaje.litrosCombustible) <= 0
+        );
+  
       case 'costoCombustible':
-        return this.viaje.costoCombustible < 0;
-
+        return (
+          !Number.isFinite(Number(this.viaje.costoCombustible)) ||
+          Number(this.viaje.costoCombustible) <= 0
+        );
+  
       case 'tarifa':
-        return this.viaje.tarifa < 0;
-
+        return (
+          !Number.isFinite(Number(this.viaje.tarifa)) ||
+          Number(this.viaje.tarifa) <= 0
+        );
+  
       case 'observaciones':
         return this.viaje.observaciones.length > 500;
-
+  
       default:
         return false;
     }
   }
 
   private formularioValido(): boolean {
-
     const camposObligatorios = [
       'numeroGuiaDespacho',
       'fecha',
@@ -268,6 +283,7 @@ export class ViajeForm implements OnInit {
       'comunaOrigen',
       'comunaDestino',
       'tipoCarga',
+      'kilometros',
       'litrosCombustible',
       'costoCombustible',
       'tarifa'
@@ -295,24 +311,34 @@ export class ViajeForm implements OnInit {
     }
 
     if (
-      this.viaje.kilometros !== null &&
-      this.viaje.kilometros < 0
+      this.viaje.kilometros === null ||
+      !Number.isFinite(Number(this.viaje.kilometros)) ||
+      Number(this.viaje.kilometros) <= 0
     ) {
       this.camposTocados['kilometros'] = true;
       return false;
     }
-
-    if (this.viaje.litrosCombustible < 0) {
+    
+    if (
+      !Number.isFinite(Number(this.viaje.litrosCombustible)) ||
+      Number(this.viaje.litrosCombustible) <= 0
+    ) {
       this.camposTocados['litrosCombustible'] = true;
       return false;
     }
-
-    if (this.viaje.costoCombustible < 0) {
+    
+    if (
+      !Number.isFinite(Number(this.viaje.costoCombustible)) ||
+      Number(this.viaje.costoCombustible) <= 0
+    ) {
       this.camposTocados['costoCombustible'] = true;
       return false;
     }
-
-    if (this.viaje.tarifa < 0) {
+    
+    if (
+      !Number.isFinite(Number(this.viaje.tarifa)) ||
+      Number(this.viaje.tarifa) <= 0
+    ) {
       this.camposTocados['tarifa'] = true;
       return false;
     }
@@ -325,53 +351,103 @@ export class ViajeForm implements OnInit {
     return true;
   }
 
+  formatearObservaciones(): void {
+    const texto = this.viaje.observaciones;
+  
+    if (!texto.trim()) {
+      return;
+    }
+  
+    const etiquetas = [
+      'Nota de venta',
+      'Orden de compra',
+      'Dirección',
+      'Direccion',
+      'Carga',
+      'Peso',
+      'Precio combustible'
+    ];
+  
+    let resultado = texto.replace(/\r\n/g, '\n');
+  
+    for (const etiqueta of etiquetas) {
+      const escapada = etiqueta.replace(
+        /[.*+?^${}()|[\]\\]/g,
+        '\\$&'
+      );
+  
+      const expresion = new RegExp(
+        `(?<!^)(?<!\\n)\\s*(${escapada}\\s*:)`,
+        'gi'
+      );
+  
+      resultado = resultado.replace(
+        expresion,
+        '\n$1'
+      );
+    }
+  
+    this.viaje.observaciones = resultado
+      .split('\n')
+      .map(linea => linea.trim())
+      .filter(linea => linea.length > 0)
+      .join('\n');
+  
+    this.marcarFormularioModificado();
+  }
+
+  alSalirObservaciones(): void {
+    this.formatearObservaciones();
+    this.campoTocado('observaciones');
+  }
+
   marcarFormularioModificado(): void {
     if (!this.guardando) {
       this.formularioModificado = true;
     }
   }
-  
+
   puedeSalir(): boolean | Promise<boolean> {
     if (this.guardando) {
       return false;
     }
-  
+
     if (!this.formularioModificado) {
       return true;
     }
-  
+
     this.modalSalirVisible = true;
-  
+
     return new Promise<boolean>((resolve) => {
       this.resolverSalida = resolve;
     });
   }
-  
+
   seguirEditando(): void {
     this.modalSalirVisible = false;
-  
+
     if (this.resolverSalida) {
       this.resolverSalida(false);
       this.resolverSalida = null;
     }
   }
-  
+
   salirSinGuardar(): void {
 
     this.modalSalirVisible = false;
-  
+
     if (this.resolverSalida) {
-  
+
       this.formularioModificado = false;
-  
+
       this.resolverSalida(true);
       this.resolverSalida = null;
-  
+
       return;
     }
-  
+
     this.formularioModificado = false;
-  
+
     this.router.navigate(['/viajes']);
   }
 
@@ -508,16 +584,16 @@ export class ViajeForm implements OnInit {
     if (this.guardando) {
       return;
     }
-  
+
     if (this.formularioModificado) {
       this.modalSalirVisible = true;
       return;
     }
-  
+
     this.router.navigate([
       '/viajes'
     ]);
-  
+
   }
 
   private mostrarError(
@@ -560,44 +636,159 @@ export class ViajeForm implements OnInit {
 
   cambioCamion(camionId: number): void {
     this.marcarFormularioModificado();
-  
+
     const camion = this.camiones.find(
       c => c.id === Number(camionId)
     );
-  
+
     if (!camion) {
       this.remolqueObligatorio = false;
       this.viaje.remolqueId = 0;
       this.viaje.conductorId = 0;
       return;
     }
-  
+
     const capacidad = parseFloat(
       camion.capacidad.replace(',', '.')
     );
-  
+
     this.remolqueObligatorio = capacidad > 20;
-  
+
     if (this.remolqueObligatorio) {
       this.viaje.remolqueId =
         camion.remolques?.[0]?.id ?? 0;
     } else {
       this.viaje.remolqueId = 9;
     }
-  
+
     const conductorHabitual =
       camion.conductoresHabituales?.[0];
-  
+
     if (conductorHabitual) {
       const conductor = this.conductores.find(
         c => c.rut === conductorHabitual.rut
       );
-  
+
       this.viaje.conductorId =
         conductor?.id ?? 0;
     } else {
       this.viaje.conductorId = 0;
     }
+  }
+
+  cambioFecha(fecha: string): void {
+    this.costoEstimadoAplicado = false;
+    this.marcarFormularioModificado();
+    this.cargarPrecioDiesel(fecha);
+  }
+
+  cargarPrecioDiesel(fecha: string): void {
+    const solicitud = ++this.solicitudPrecioDiesel;
+
+    this.precioDieselReferencia = null;
+    this.errorPrecioDiesel = '';
+
+    if (!fecha) {
+      this.cargandoPrecioDiesel = false;
+      return;
+    }
+
+    this.cargandoPrecioDiesel = true;
+
+    this.api.getPrecioDieselHistorico(fecha).subscribe({
+      next: (respuesta) => {
+        if (solicitud !== this.solicitudPrecioDiesel) {
+          return;
+        }
+
+        const precio = respuesta.precio;
+
+        this.precioDieselReferencia =
+          precio !== null &&
+            precio !== undefined &&
+            Number(precio) > 0
+            ? Number(precio)
+            : null;
+
+        if (this.precioDieselReferencia === null) {
+          this.errorPrecioDiesel =
+            'No hay un precio referencial disponible para esta fecha. Puedes ingresar el costo real manualmente.';
+        }
+
+        this.cargandoPrecioDiesel = false;
+      },
+      error: () => {
+        if (solicitud !== this.solicitudPrecioDiesel) {
+          return;
+        }
+
+        this.precioDieselReferencia = null;
+        this.cargandoPrecioDiesel = false;
+        this.errorPrecioDiesel =
+          'No fue posible consultar el precio del diésel. Puedes ingresar el costo real manualmente.';
+      }
+    });
+  }
+
+  get costoCombustibleEstimado(): number | null {
+    const litros = Number(this.viaje.litrosCombustible);
+
+    if (
+      this.precioDieselReferencia === null ||
+      !Number.isFinite(litros) ||
+      litros <= 0
+    ) {
+      return null;
+    }
+
+    return Math.round(litros * this.precioDieselReferencia);
+  }
+
+  get precioDieselFormateado(): string {
+    if (this.precioDieselReferencia === null) {
+      return '';
+    }
+
+    return this.formatearPesos(this.precioDieselReferencia);
+  }
+
+  get costoEstimadoFormateado(): string {
+    if (this.costoCombustibleEstimado === null) {
+      return '';
+    }
+
+    return this.formatearPesos(this.costoCombustibleEstimado);
+  }
+
+  private formatearPesos(valor: number): string {
+    return new Intl.NumberFormat('es-CL', {
+      style: 'currency',
+      currency: 'CLP',
+      maximumFractionDigits: 0
+    }).format(valor);
+  }
+
+  usarCostoEstimado(): void {
+    const costo = this.costoCombustibleEstimado;
+
+    if (costo === null) {
+      return;
+    }
+
+    this.viaje.costoCombustible = costo;
+    this.camposTocados['costoCombustible'] = true;
+    this.costoEstimadoAplicado = true;
+    this.marcarFormularioModificado();
+  }
+
+  cambioLitros(): void {
+    this.costoEstimadoAplicado = false;
+    this.marcarFormularioModificado();
+  }
+
+  cambioCostoCombustible(): void {
+    this.costoEstimadoAplicado = false;
+    this.marcarFormularioModificado();
   }
 
 }

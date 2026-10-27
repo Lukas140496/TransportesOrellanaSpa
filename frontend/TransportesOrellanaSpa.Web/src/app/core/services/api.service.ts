@@ -46,6 +46,8 @@ import { DashboardGastosConductor } from '../models/dashboard-gastos-conductor';
 import { DashboardGastosRemolque } from '../models/dashboard-gastos-remolque';
 import { DashboardGastosTipo } from '../models/dashboard-gastos-tipo';
 
+import { PrecioDieselHistorico } from '../models/precio-diesel-historico';
+
 
 @Injectable({
   providedIn: 'root'
@@ -551,7 +553,7 @@ export class ApiService {
 
   getClientes(soloActivos: boolean = false): Observable<Cliente[]> {
     let params = new HttpParams();
-    
+
     if (soloActivos) {
       params = params.set('soloActivos', 'true');
     }
@@ -1008,4 +1010,12 @@ export class ApiService {
       { params }
     );
   }
+
+  getPrecioDieselHistorico(fecha: string): Observable<PrecioDieselHistorico> {
+    return this.http.get<PrecioDieselHistorico>(
+      `${this.apiUrl}/PrecioDiesel/precio-historico`,
+      { params: { fecha } }
+    );
+  }
+
 }

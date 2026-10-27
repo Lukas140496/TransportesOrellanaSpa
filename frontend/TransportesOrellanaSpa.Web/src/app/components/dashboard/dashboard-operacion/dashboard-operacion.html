@@ -56,38 +56,23 @@
       <p>{{ error }}</p>
     </div>
 
-    <button
-      type="button"
-      class="btn-reintentar"
-      (click)="cargarDatos()"
-    >
-      Reintentar
-    </button>
+    <button type="button" class="btn-reintentar" (click)="cargarDatos()">Reintentar</button>
   </div>
 
   <ng-container *ngIf="!cargando">
-
     <!-- ACTUALIZACIÓN -->
     <div class="actualizacion-info">
       <span class="indicador-online"></span>
 
       Información del periodo seleccionado
 
-      <span class="actualizacion-fecha">
-        Actualizado: {{ fechaActualizacionTexto }}
-      </span>
+      <span class="actualizacion-fecha"> Actualizado: {{ fechaActualizacionTexto }} </span>
 
-      <span
-        class="actualizacion-cargando"
-        *ngIf="cambiandoPeriodo"
-      >
-        Actualizando periodo...
-      </span>
+      <span class="actualizacion-cargando" *ngIf="cambiandoPeriodo"> Actualizando periodo... </span>
     </div>
 
     <!-- INDICADORES PRINCIPALES -->
     <section class="kpi-grid">
-
       <article class="kpi-card kpi-viajes">
         <div class="kpi-top">
           <span class="kpi-label">Viajes registrados</span>
@@ -98,9 +83,7 @@
           {{ formatoNumero(viajesTotales) }}
         </div>
 
-        <div class="kpi-descripcion">
-          Movimientos del periodo
-        </div>
+        <div class="kpi-descripcion">Movimientos del periodo</div>
       </article>
 
       <article class="kpi-card kpi-rutas">
@@ -113,9 +96,7 @@
           {{ formatoNumero(contarRutas) }}
         </div>
 
-        <div class="kpi-descripcion">
-          Orígenes y destinos distintos
-        </div>
+        <div class="kpi-descripcion">Orígenes y destinos distintos</div>
       </article>
 
       <article class="kpi-card kpi-kilometros">
@@ -128,9 +109,7 @@
           {{ formatoNumero(kilometrosTotales) }}
         </div>
 
-        <div class="kpi-descripcion">
-          Kilometraje informado en los viajes
-        </div>
+        <div class="kpi-descripcion">Kilometraje informado en los viajes</div>
       </article>
 
       <article class="kpi-card kpi-conductores">
@@ -159,106 +138,68 @@
           {{ formatoDecimal(promedioViajesConductor) }}
         </div>
 
-        <div class="kpi-descripcion">
-          Viajes por conductor con actividad
-        </div>
+        <div class="kpi-descripcion">Viajes por conductor con actividad</div>
       </article>
-
     </section>
 
     <!-- ESTADOS Y CONDUCTORES -->
     <section class="paneles-grid">
-
       <article class="panel">
-
         <div class="panel-header">
           <div>
             <h2>Estado de los viajes y métricas</h2>
-            <p>
-              Distribución de movimientos, estados de pago y jornada laboral.
-            </p>
+            <p>Distribución de movimientos, estados de pago y jornada laboral.</p>
           </div>
 
-          <span class="panel-total">
-            {{ viajesTotales }} viajes
-          </span>
+          <span class="panel-total"> {{ viajesTotales }} viajes </span>
         </div>
 
         <!-- DISTRIBUCIÓN DE ESTADOS -->
-        <div class="panel-section-title">
-          Distribución de viajes
-        </div>
+        <div class="panel-section-title">Distribución de viajes</div>
 
-        <div
-          class="panel-vacio"
-          *ngIf="estadosResumen.length === 0"
-        >
+        <div class="panel-vacio" *ngIf="estadosResumen.length === 0">
           <span class="vacio-icono">▤</span>
           <p>No hay viajes registrados en este periodo.</p>
         </div>
 
-        <div
-          class="estados-lista"
-          *ngIf="estadosResumen.length > 0"
-        >
-
-          <div
-            class="estado-item"
-            *ngFor="let estado of estadosResumen"
-          >
-
+        <div class="estados-lista" *ngIf="estadosResumen.length > 0">
+          <div class="estado-item" *ngFor="let estado of estadosResumen">
             <div class="estado-item-info">
-
-              <span
-                class="estado-badge"
-                [ngClass]="estado.clase"
-              >
+              <span class="estado-badge" [ngClass]="estado.clase">
                 {{ etiquetaEstado(estado.nombre) }}
               </span>
 
               <strong>
                 {{ estado.cantidad }}
               </strong>
-
             </div>
 
             <div class="barra-fondo">
-
               <div
                 class="barra-progreso"
                 [ngClass]="estado.clase"
                 [style.width.%]="estado.porcentaje"
               ></div>
-
             </div>
 
-            <span class="estado-porcentaje">
-              {{ formatoDecimal(estado.porcentaje) }}%
-            </span>
-
+            <span class="estado-porcentaje"> {{ formatoDecimal(estado.porcentaje) }}% </span>
           </div>
-
         </div>
 
         <div class="panel-internal-divider"></div>
 
         <!-- ESTADO DE PAGOS -->
-        <div class="panel-section-title">
-          Estado de pagos
-        </div>
+        <div class="panel-section-title">Estado de pagos</div>
 
         <div class="payment-cards-grid">
-
           <!-- PAGADOS -->
           <div class="payment-card paid">
-
             <div class="payment-card-header">
               <span class="payment-icon success">✓</span>
               <span class="payment-title">Pagados</span>
             </div>
 
             <div class="payment-card-body">
-
               <div class="payment-metric">
                 <span class="metric-num">
                   {{ estadoPagos.viajesPagados }}
@@ -268,21 +209,17 @@
               <div class="payment-total-monto">
                 {{ formatoMoneda(estadoPagos.montoPagado) }}
               </div>
-
             </div>
-
           </div>
 
           <!-- PENDIENTES -->
           <div class="payment-card pending">
-
             <div class="payment-card-header">
               <span class="payment-icon warning">✕</span>
               <span class="payment-title">Pendientes</span>
             </div>
 
             <div class="payment-card-body">
-
               <div class="payment-metric">
                 <span class="metric-num">
                   {{ estadoPagos.viajesPendientesPago }}
@@ -292,24 +229,17 @@
               <div class="payment-total-monto">
                 {{ formatoMoneda(estadoPagos.montoPendientePago) }}
               </div>
-
             </div>
-
           </div>
-
         </div>
 
         <div class="panel-internal-divider"></div>
 
         <!-- JORNADA LABORAL -->
-        <div class="panel-section-title">
-          Jornada laboral
-        </div>
+        <div class="panel-section-title">Jornada laboral</div>
 
         <div class="work-days-card">
-
           <div class="work-days-header">
-
             <div class="work-days-badge">
               <span class="calendar-icon">📅</span>
               <span>Días no trabajados</span>
@@ -319,11 +249,9 @@
               {{ diasHabiles.diasNoTrabajados }}
               <small>días</small>
             </div>
-
           </div>
 
           <div class="work-days-footer">
-
             <span class="work-days-detail">
               <strong>
                 {{ diasHabiles.diasHabiles }}
@@ -347,59 +275,37 @@
               <strong>{{ diasDelMes }}</strong>
               días
             </span>
-
           </div>
-
         </div>
-
       </article>
 
       <!-- ACTIVIDAD DE CONDUCTORES -->
       <article class="panel">
-
         <div class="panel-header">
-
           <div>
             <h2>Actividad de conductores</h2>
             <p>Conductores ordenados por cantidad de viajes</p>
           </div>
 
-          <span class="panel-total">
-            {{ conductoresConActividad }} activos en operación
-          </span>
-
+          <span class="panel-total"> {{ conductoresConActividad }} activos en operación </span>
         </div>
 
-        <div
-          class="panel-vacio"
-          *ngIf="conductoresConActividad === 0"
-        >
+        <div class="panel-vacio" *ngIf="conductoresConActividad === 0">
           <span class="vacio-icono">♙</span>
-          <p>
-            No hay actividad de conductores en este periodo.
-          </p>
+          <p>No hay actividad de conductores en este periodo.</p>
         </div>
 
-        <div
-          class="conductores-lista"
-          *ngIf="conductoresConActividad > 0"
-        >
-
+        <div class="conductores-lista" *ngIf="conductoresConActividad > 0">
           <div
             class="conductor-item"
-            *ngFor="
-              let conductor of conductoresResumen.slice(0, 6);
-              let i = index
-            "
+            *ngFor="let conductor of conductoresResumen.slice(0, 6); let i = index"
             [class.conductor-sin-viajes]="conductor.viajes === 0"
           >
-
             <div class="conductor-posicion">
               {{ i + 1 }}
             </div>
 
             <div class="conductor-info">
-
               <strong>
                 {{ conductor.nombre }}
               </strong>
@@ -413,71 +319,45 @@
               </span>
 
               <div class="barra-fondo conductor-barra">
-
                 <div
                   class="barra-progreso"
-                  [style.width.%]="
-                    porcentajeConductor(conductor.viajes)
-                  "
+                  [style.width.%]="porcentajeConductor(conductor.viajes)"
                 ></div>
-
               </div>
-
             </div>
 
             <div class="conductor-total">
               {{ conductor.viajes }}
             </div>
-
           </div>
-
         </div>
-
       </article>
-
     </section>
 
     <!-- RUTAS FRECUENTES -->
     <section class="panel">
-
       <div class="panel-header">
-
         <div>
           <h2>Rutas más frecuentes</h2>
-          <p>
-            Principales conexiones según los viajes registrados
-          </p>
+          <p>Principales conexiones según los viajes registrados</p>
         </div>
 
-        <span class="panel-total">
-          {{ rutasFrecuentes.length }} rutas
-        </span>
-
+        <span class="panel-total"> {{ rutasFrecuentes.length }} rutas </span>
       </div>
 
-      <div
-        class="panel-vacio"
-        *ngIf="rutasFrecuentes.length === 0"
-      >
+      <div class="panel-vacio" *ngIf="rutasFrecuentes.length === 0">
         <span class="vacio-icono">⌖</span>
-        <p>
-          No hay rutas disponibles para este periodo.
-        </p>
+        <p>No hay rutas disponibles para este periodo.</p>
       </div>
 
-      <div
-        class="tabla-contenedor"
-        *ngIf="rutasFrecuentes.length > 0"
-      >
-
+      <div class="tabla-contenedor" *ngIf="rutasFrecuentes.length > 0">
         <table class="tabla-operacion">
-
           <thead>
             <tr>
               <th>#</th>
               <th>Origen</th>
-              <th class="columna-centro">Ruta</th>
               <th>Destino</th>
+              <th>Ruta</th>
               <th class="columna-derecha">Viajes</th>
               <th class="columna-derecha">Kilómetros</th>
               <th class="columna-centro">Mapa</th>
@@ -485,14 +365,7 @@
           </thead>
 
           <tbody>
-
-            <tr
-              *ngFor="
-                let ruta of rutasFrecuentes;
-                let i = index
-              "
-            >
-
+            <tr *ngFor="let ruta of rutasFrecuentes; let i = index">
               <td>
                 <span class="tabla-ranking">
                   {{ i + 1 }}
@@ -505,15 +378,13 @@
                 </strong>
               </td>
 
-              <td class="columna-centro">
-                <span class="ruta-flecha">→</span>
-              </td>
-
               <td>
                 <strong>
                   {{ ruta.destino }}
                 </strong>
               </td>
+
+              <td>{{ ruta.cliente }}</td>
 
               <td class="columna-derecha">
                 <span class="tabla-cantidad">
@@ -521,69 +392,35 @@
                 </span>
               </td>
 
-              <td class="columna-derecha">
-                {{ formatoNumero(ruta.kilometros) }} km
-              </td>
+              <td class="columna-derecha">{{ formatoNumero(ruta.kilometros) }} km</td>
 
               <td class="columna-centro">
-
-                <a
-                  class="btn-mapa"
-                  [href]="enlaceGoogleMaps(ruta)"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Ver ruta ↗
-                </a>
-
+                <button type="button" class="btn-mapa" (click)="verRuta(ruta)">Ver ruta</button>
               </td>
-
             </tr>
-
           </tbody>
-
         </table>
-
       </div>
-
     </section>
 
     <!-- PRINCIPALES ORÍGENES Y DESTINOS -->
     <section class="paneles-grid">
-
       <!-- ORÍGENES -->
       <article class="panel">
-
         <div class="panel-header">
-
           <div>
             <h2>Principales orígenes</h2>
-            <p>
-              Comunas desde donde comienzan los viajes
-            </p>
+            <p>Comunas desde donde comienzan los viajes</p>
           </div>
-
         </div>
 
-        <div
-          class="panel-vacio"
-          *ngIf="origenesFrecuentes.length === 0"
-        >
+        <div class="panel-vacio" *ngIf="origenesFrecuentes.length === 0">
           <p>No hay información de orígenes.</p>
         </div>
 
-        <div
-          class="frecuencia-lista"
-          *ngIf="origenesFrecuentes.length > 0"
-        >
-
-          <div
-            class="frecuencia-item"
-            *ngFor="let item of origenesFrecuentes"
-          >
-
+        <div class="frecuencia-lista" *ngIf="origenesFrecuentes.length > 0">
+          <div class="frecuencia-item" *ngFor="let item of origenesFrecuentes">
             <div class="frecuencia-info">
-
               <span>
                 {{ item.nombre }}
               </span>
@@ -591,62 +428,34 @@
               <strong>
                 {{ item.viajes }}
               </strong>
-
             </div>
 
             <div class="barra-fondo">
-
               <div
                 class="barra-progreso barra-origen"
-                [style.width.%]="
-                  porcentajeFrecuencia(
-                    item.viajes,
-                    origenesFrecuentes
-                  )
-                "
+                [style.width.%]="porcentajeFrecuencia(item.viajes, origenesFrecuentes)"
               ></div>
-
             </div>
-
           </div>
-
         </div>
-
       </article>
 
       <!-- DESTINOS -->
       <article class="panel">
-
         <div class="panel-header">
-
           <div>
             <h2>Principales destinos</h2>
-            <p>
-              Comunas donde terminan los viajes
-            </p>
+            <p>Comunas donde terminan los viajes</p>
           </div>
-
         </div>
 
-        <div
-          class="panel-vacio"
-          *ngIf="destinosFrecuentes.length === 0"
-        >
+        <div class="panel-vacio" *ngIf="destinosFrecuentes.length === 0">
           <p>No hay información de destinos.</p>
         </div>
 
-        <div
-          class="frecuencia-lista"
-          *ngIf="destinosFrecuentes.length > 0"
-        >
-
-          <div
-            class="frecuencia-item"
-            *ngFor="let item of destinosFrecuentes"
-          >
-
+        <div class="frecuencia-lista" *ngIf="destinosFrecuentes.length > 0">
+          <div class="frecuencia-item" *ngFor="let item of destinosFrecuentes">
             <div class="frecuencia-info">
-
               <span>
                 {{ item.nombre }}
               </span>
@@ -654,71 +463,43 @@
               <strong>
                 {{ item.viajes }}
               </strong>
-
             </div>
 
             <div class="barra-fondo">
-
               <div
                 class="barra-progreso barra-destino"
-                [style.width.%]="
-                  porcentajeFrecuencia(
-                    item.viajes,
-                    destinosFrecuentes
-                  )
-                "
+                [style.width.%]="porcentajeFrecuencia(item.viajes, destinosFrecuentes)"
               ></div>
-
             </div>
-
           </div>
-
         </div>
-
       </article>
-
     </section>
 
     <!-- ÚLTIMOS VIAJES -->
     <section class="panel">
-
       <div class="panel-header">
-
         <div>
           <h2>Últimos viajes del periodo</h2>
-          <p>
-            Movimientos operacionales más recientes
-          </p>
+          <p>Movimientos operacionales más recientes</p>
         </div>
 
-        <span class="panel-total">
-          {{ viajesRecientes.length }} registros
-        </span>
-
+        <span class="panel-total"> {{ viajesRecientes.length }} registros </span>
       </div>
 
-      <div
-        class="panel-vacio"
-        *ngIf="viajesRecientes.length === 0"
-      >
+      <div class="panel-vacio" *ngIf="viajesRecientes.length === 0">
         <span class="vacio-icono">▤</span>
-        <p>
-          No existen viajes registrados para el periodo seleccionado.
-        </p>
+        <p>No existen viajes registrados para el periodo seleccionado.</p>
       </div>
 
-      <div
-        class="tabla-contenedor"
-        *ngIf="viajesRecientes.length > 0"
-      >
-
+      <div class="tabla-contenedor" *ngIf="viajesRecientes.length > 0">
         <table class="tabla-operacion tabla-viajes">
-
           <thead>
             <tr>
               <th>Fecha</th>
               <th>Guía de despacho</th>
               <th>Origen</th>
+              <th></th>
               <th>Destino</th>
               <th>Conductor</th>
               <th>Camión</th>
@@ -728,9 +509,7 @@
           </thead>
 
           <tbody>
-
             <tr *ngFor="let viaje of viajesRecientes">
-
               <td>
                 {{ formatoFecha(viaje.fecha) }}
               </td>
@@ -742,18 +521,21 @@
               </td>
 
               <td>
-                {{ viaje.comunaOrigen || viaje.origen || '—' }}
+                {{ viaje.origen || '—' }}
+              </td>
+
+              <td class="columna-centro">
+                <span class="ruta-flecha">→</span>
               </td>
 
               <td>
-                {{ viaje.comunaDestino || viaje.destino || '—' }}
+                {{ viaje.destino || '—' }}
               </td>
 
               <td>
                 {{ nombreDesdeViajePublico(viaje) }}
               </td>
 
-              <!-- IMPORTANTE: navegación segura -->
               <td>
                 {{ viaje.camion.patente || '—' }}
               </td>
@@ -763,74 +545,42 @@
               </td>
 
               <td>
-
-                <span
-                  class="estado-badge"
-                  [ngClass]="
-                    claseEstado(viaje.estado || '')
-                  "
-                >
+                <span class="estado-badge" [ngClass]="claseEstado(viaje.estado || '')">
                   {{ etiquetaEstado(viaje.estado || 'Sin estado') }}
                 </span>
-
               </td>
-
             </tr>
-
           </tbody>
-
         </table>
-
       </div>
-
     </section>
 
     <!-- MAPA OPERACIONAL -->
     <section class="panel panel-mapa">
-
       <div class="panel-header">
-
         <div>
           <h2>Mapa de operaciones</h2>
-          <p>
-            Ubicaciones y conexiones de los viajes del período
-          </p>
+          <p>Ubicaciones y conexiones de los viajes del período</p>
         </div>
 
-        <span class="panel-total">
-          {{ rutasMapa.length }} conexiones
-        </span>
-
+        <span class="panel-total"> {{ rutasMapa.length }} conexiones </span>
       </div>
 
-      <div
-        class="mapa-resumen"
-        *ngIf="rutasMapa.length > 0"
-      >
-
+      <div class="mapa-resumen" *ngIf="rutasMapa.length > 0">
         <span class="mapa-indicador">
-
           <span class="mapa-punto"></span>
 
           Orígenes y destinos identificados
-
         </span>
 
         <span class="mapa-nota">
-          Las líneas representan conexiones registradas,
-          no recorridos viales GPS.
+          Las líneas representan conexiones registradas, no recorridos viales GPS.
         </span>
-
       </div>
 
-      <div
-        class="panel-vacio"
-        *ngIf="rutasMapa.length === 0"
-      >
+      <div class="panel-vacio" *ngIf="rutasMapa.length === 0">
         <span class="vacio-icono">⌖</span>
-        <p>
-          No hay ubicaciones suficientes para mostrar el mapa.
-        </p>
+        <p>No hay ubicaciones suficientes para mostrar el mapa.</p>
       </div>
 
       <div
@@ -838,22 +588,85 @@
         class="mapa-operacion"
         [class.mapa-oculto]="rutasMapa.length === 0"
       ></div>
-
     </section>
 
     <!-- PIE -->
     <footer class="dashboard-footer">
-
-      <span>
-        Transportes Orellana SpA
-      </span>
+      <span> Transportes Orellana SpA </span>
 
       <span>
         Resumen operacional ·
         {{ periodoSeleccionado.nombre | titlecase }}
       </span>
-
     </footer>
-
   </ng-container>
+
+  <!-- MODAL: RECORRIDO DE LA RUTA -->
+  <div class="modal-ruta-overlay" *ngIf="mostrarModalRuta" (click)="cerrarModalRuta()">
+    <section
+      class="modal-ruta"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="titulo-modal-ruta"
+      (click)="$event.stopPropagation()"
+    >
+      <header class="modal-ruta-header">
+        <div>
+          <span class="modal-ruta-subtitulo">RECORRIDO VIAL</span>
+
+          <h2 id="titulo-modal-ruta">Mapa de la ruta</h2>
+
+          <p *ngIf="rutaSeleccionada">
+            {{ rutaSeleccionada.origen }}
+            <span class="modal-ruta-flecha">→</span>
+            {{ rutaSeleccionada.destino }}
+          </p>
+
+          <span class="modal-ruta-comunas" *ngIf="rutaSeleccionada">
+            {{ rutaSeleccionada.comunaOrigen }}
+            →
+            {{ rutaSeleccionada.comunaDestino }}
+          </span>
+        </div>
+
+        <div class="modal-ruta-derecha">
+            <button
+              type="button"
+              class="modal-ruta-cerrar"
+              aria-label="Cerrar mapa de ruta"
+              (click)="cerrarModalRuta()"
+            >
+              &times;
+            </button>
+  
+            <span class="badge-kilometros-abajo" *ngIf="kilometrosRutaModal !== null">
+              📍 {{ formatoDecimal(kilometrosRutaModal) }} km
+            </span>
+        </div>
+      </header>
+
+      <div class="modal-ruta-contenido">
+
+        <p class="modal-ruta-cargando" *ngIf="mapaRutaCargando">
+          <span class="spinner"></span>
+          Buscando ubicaciones y calculando recorrido...
+        </p>
+
+        <div class="modal-ruta-error" *ngIf="errorMapaRuta">
+          <strong>No se pudo calcular la ruta</strong>
+          <p>{{ errorMapaRuta }}</p>
+        </div>
+
+        <div id="mapa-ruta-modal" class="mapa-ruta-modal"></div>
+      </div>
+
+      <footer class="modal-ruta-footer">
+        <span> Recorrido vial estimado · OpenStreetMap </span>
+
+        <button type="button" class="btn-modal-ruta-cerrar" (click)="cerrarModalRuta()">
+          Cerrar mapa
+        </button>
+      </footer>
+    </section>
+  </div>
 </div>

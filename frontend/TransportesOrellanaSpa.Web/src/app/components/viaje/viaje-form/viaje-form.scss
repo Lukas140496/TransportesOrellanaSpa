@@ -409,6 +409,265 @@
   }
 }
 
+
+/* =========================================
+   ESTIMACIÓN DE COMBUSTIBLE
+   ========================================= */
+
+.estimacion-combustible {
+  margin-top: 20px;
+  padding: 20px;
+  border: 1px solid #dbe5ed;
+  border-radius: 14px;
+  background: #f8fafc;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.estimacion-combustible__encabezado {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.estimacion-combustible__icono {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: #e0f2fe;
+  font-size: 23px;
+}
+
+.estimacion-combustible__encabezado h4 {
+  margin: 0 0 5px;
+  color: #1e293b;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.estimacion-combustible__encabezado p {
+  margin: 0;
+  color: #64748b;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.estimacion-combustible__detalle {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px 0;
+  border-top: 1px solid #e2e8f0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.estimacion-combustible__fila {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+}
+
+.estimacion-combustible__fila span {
+  color: #64748b;
+}
+
+.estimacion-combustible__fila strong {
+  color: #334155;
+  text-align: right;
+}
+
+.estimacion-combustible__resultado {
+  padding: 16px;
+  border: 1px solid #bfdbfe;
+  border-radius: 10px;
+  background: #eff6ff;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.estimacion-combustible__resultado > span {
+  color: #1e40af;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.estimacion-combustible__resultado > strong {
+  color: #1d4ed8;
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.estimacion-combustible__resultado p {
+  margin: 0;
+  color: #475569;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.btn-usar-costo-estimado {
+  width: 100%;
+  min-height: 46px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  border: none;
+  border-radius: 9px;
+  background: #0f766e;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.btn-usar-costo-estimado:hover {
+  background: #115e59;
+}
+
+.btn-usar-costo-estimado:active {
+  transform: scale(0.99);
+}
+
+.btn-usar-costo-estimado:focus-visible {
+  outline: 3px solid #99f6e4;
+  outline-offset: 3px;
+}
+
+.estimacion-combustible__estado,
+.estimacion-combustible__aviso {
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.estimacion-combustible__estado {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.estimacion-combustible__aviso {
+  background: #fff7ed;
+  color: #9a3412;
+}
+
+.estimacion-combustible__nota {
+  margin: 0;
+  color: #64748b;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+
+/* Estado del botón después de aplicar el costo */
+.btn-usar-costo-estimado.aplicado {
+  background: #15803d;
+  cursor: default;
+}
+
+.btn-usar-costo-estimado.aplicado:hover {
+  background: #166534;
+}
+
+.btn-usar-costo-estimado .icono-confirmacion {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  border-radius: 50%;
+  font-size: 13px;
+}
+
+/* Confirmación discreta */
+.confirmacion-costo-aplicado {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  padding: 14px;
+  border: 1px solid #bbf7d0;
+  border-radius: 10px;
+  background: #f0fdf4;
+  animation: aparecer-confirmacion 0.2s ease-out;
+}
+
+.confirmacion-costo-aplicado__icono {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  background: #dcfce7;
+  color: #15803d;
+  font-weight: 800;
+}
+
+.confirmacion-costo-aplicado strong {
+  display: block;
+  margin: 2px 0 5px;
+  color: #166534;
+  font-size: 13px;
+}
+
+.confirmacion-costo-aplicado p {
+  margin: 0;
+  color: #3f6249;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.observaciones-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+
+  label {
+    margin-bottom: 0;
+  }
+}
+
+.contador-caracteres {
+  font-size: 12px;
+  color: #64748b;
+  white-space: nowrap;
+  transition: color 0.2s ease;
+}
+
+.contador-caracteres.contador-limite {
+  color: #dc3545;
+  font-weight: 600;
+}
+
+@keyframes aparecer-confirmacion {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
 @keyframes modalIn {
   from {
     opacity: 0;
@@ -548,5 +807,13 @@
 
   .modal {
     padding: 24px 18px;
+  }
+
+  .estimacion-combustible {
+    padding: 15px;
+  }
+
+  .estimacion-combustible__resultado > strong {
+    font-size: 24px;
   }
 }

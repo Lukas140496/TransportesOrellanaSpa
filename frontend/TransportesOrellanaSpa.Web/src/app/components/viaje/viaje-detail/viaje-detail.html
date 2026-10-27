@@ -76,7 +76,7 @@
 
     <div class="grid">
       <div>
-        <span class="label"> Fecha </span>
+        <span class="label">Fecha</span>
 
         <strong>
           {{ viaje.fecha | date : 'dd/MM/yyyy' }}
@@ -84,11 +84,11 @@
       </div>
 
       <div>
-        <span class="label"> Estado del viaje </span>
+        <span class="label">Estado del viaje</span>
 
         @if (viaje.estado === 'EnCurso') {
 
-        <strong> En Curso </strong>
+        <strong>En Curso</strong>
 
         } @else {
 
@@ -100,7 +100,7 @@
       </div>
 
       <div>
-        <span class="label"> Estado del pago </span>
+        <span class="label">Estado del pago</span>
 
         <strong>
           {{ viaje.estadoPago }}
@@ -108,7 +108,7 @@
       </div>
 
       <div>
-        <span class="label"> Fecha de pago </span>
+        <span class="label">Fecha de pago</span>
 
         @if (viaje.fechaPago) {
 
@@ -118,7 +118,7 @@
 
         } @else {
 
-        <strong> Sin pago registrado </strong>
+        <strong>Sin pago registrado</strong>
 
         }
       </div>
@@ -134,7 +134,7 @@
 
     <div class="grid">
       <div>
-        <span class="label"> Nombre </span>
+        <span class="label">Nombre</span>
 
         <strong>
           {{ viaje.cliente.nombre }}
@@ -142,10 +142,26 @@
       </div>
 
       <div>
-        <span class="label"> RUT </span>
+        <span class="label">RUT</span>
 
         <strong>
           {{ viaje.cliente.rut }}
+        </strong>
+      </div>
+
+      <div>
+        <span class="label">Dirección</span>
+
+        <strong>
+          {{ viaje.cliente.direccion }}
+        </strong>
+      </div>
+
+      <div>
+        <span class="label">Comuna</span>
+
+        <strong>
+          {{ viaje.cliente.comuna }}
         </strong>
       </div>
     </div>
@@ -160,7 +176,7 @@
 
     <div class="grid">
       <div>
-        <span class="label"> Origen </span>
+        <span class="label">Origen</span>
 
         <strong>
           {{ viaje.origen }}
@@ -168,7 +184,7 @@
       </div>
 
       <div>
-        <span class="label"> Comuna origen </span>
+        <span class="label">Comuna origen</span>
 
         <strong>
           {{ viaje.comunaOrigen }}
@@ -176,7 +192,7 @@
       </div>
 
       <div>
-        <span class="label"> Destino </span>
+        <span class="label">Destino</span>
 
         <strong>
           {{ viaje.destino }}
@@ -184,7 +200,7 @@
       </div>
 
       <div>
-        <span class="label"> Comuna destino </span>
+        <span class="label">Comuna destino</span>
 
         <strong>
           {{ viaje.comunaDestino }}
@@ -202,7 +218,7 @@
 
     <div class="grid">
       <div>
-        <span class="label"> Camión </span>
+        <span class="label">Camión</span>
 
         <strong>
           {{ viaje.camion.patente }}
@@ -215,7 +231,7 @@
       </div>
 
       <div>
-        <span class="label"> Conductor </span>
+        <span class="label">Conductor</span>
 
         <strong>
           {{ viaje.conductor.nombres }}
@@ -227,7 +243,7 @@
       </div>
 
       <div>
-        <span class="label"> Remolque </span>
+        <span class="label">Remolque</span>
 
         <strong>
           {{ viaje.remolque.patente }}
@@ -250,7 +266,7 @@
 
     <div class="grid">
       <div>
-        <span class="label"> Tipo de carga </span>
+        <span class="label">Tipo de carga</span>
 
         <strong>
           {{ viaje.tipoCarga }}
@@ -258,7 +274,7 @@
       </div>
 
       <div>
-        <span class="label"> Kilómetros </span>
+        <span class="label">Kilómetros</span>
 
         @if (viaje.kilometros !== null) {
 
@@ -272,9 +288,39 @@
       </div>
 
       <div>
-        <span class="label"> Tarifa </span>
+        <span class="label">Tarifa</span>
 
         <strong> ${{ viaje.tarifa | number : '1.0-0' }} </strong>
+      </div>
+
+      <div>
+        <span class="label">Litros combustible</span>
+
+        <strong> {{ viaje.litrosCombustible | number : '1.2-2' }} L </strong>
+      </div>
+
+      <div>
+        <span class="label">Costo combustible</span>
+
+        <strong> ${{ viaje.costoCombustible | number : '1.0-0' }} </strong>
+      </div>
+
+      <div>
+        <span> </span>
+
+        @if (cargandoPrecioDiesel) {
+        <strong>Consultando...</strong>
+        } @else if (precioDieselHistorico; as precio) { @if (precio.precio !== null) {
+        <span class="label">
+          Precio diésel referencia: {{ nombreMesPrecioDiesel(precio.mes) }}
+          {{ precio.anio }}
+        </span>
+        <strong>${{ precio.precio | number : '1.1-1' }} / L</strong>
+        } @else {
+        <strong>Sin información histórica</strong>
+        } } @else {
+        <strong>No disponible</strong>
+        }
       </div>
     </div>
   </div>
@@ -288,13 +334,28 @@
 
     @if (viaje.observaciones) {
 
-    <p>
-      {{ viaje.observaciones }}
-    </p>
+    <div class="observaciones-detalle">
+      @for ( linea of obtenerLineasObservaciones(viaje.observaciones); track $index ) { @if
+      (linea.titulo) {
+
+      <div class="observacion-linea">
+        <strong>{{ linea.titulo }}:</strong>&nbsp; @if (linea.contenido) {
+        <span>{{ linea.contenido }}</span>
+        }
+      </div>
+
+      } @else {
+
+      <div class="observacion-linea observacion-texto">
+        {{ linea.contenido }}
+      </div>
+
+      } }
+    </div>
 
     } @else {
 
-    <p class="sin-datos">Sin observaciones registradas.</p>
+    <strong class="sin-datos"> Sin observaciones registradas. </strong>
 
     }
   </div>

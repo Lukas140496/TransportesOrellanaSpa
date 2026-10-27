@@ -16,6 +16,10 @@ export interface Viaje {
 
     rut: string;
 
+    direccion: string;
+
+    comuna: string;
+
   };
 
   camion: CamionResumen;
