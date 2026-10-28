@@ -313,33 +313,36 @@
             <span>Descargar</span>
           </button>
 
-          <!-- Botón Eliminar -->
-          <button
-            type="button"
-            class="btn-documento btn-eliminar"
-            (click)="eliminarDocumento(item.tipo)"
-            [disabled]="subiendoDocumento || eliminandoDocumento"
-            title="Eliminar documento"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+          @if (permissionService.tienePermiso('CAMIONES_EDITAR')) {
+            <!-- Botón Eliminar -->
+            <button
+                type="button"
+                class="btn-documento btn-eliminar"
+                (click)="eliminarDocumento(item.tipo)"
+                [disabled]="subiendoDocumento || eliminandoDocumento"
+                title="Eliminar documento"
             >
-              <polyline points="3 6 5 6 21 6" />
-              <path
-                d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
-              />
-            </svg>
-          </button>
-          }
-
+                <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                >
+                <polyline points="3 6 5 6 21 6" />
+                <path
+                    d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
+                />
+                </svg>
+            </button>
+          } 
+        } 
+        
+        @if (permissionService.tienePermiso('CAMIONES_EDITAR')) {
           <!-- Botón Subir / Reemplazar -->
           <label
             class="btn-documento btn-subir"
@@ -370,6 +373,7 @@
               hidden
             />
           </label>
+        }
         </div>
       </article>
       }
@@ -620,44 +624,59 @@
 <!-- MODAL DE PREVISUALIZACIÓN -->
 <!-- ========================= -->
 @if (modalPrevisualizacionVisible) {
-  <div class="modal-overlay" (click)="cerrarModalPrevisualizacion()">
-    <div class="modal-container" (click)="$event.stopPropagation()">
-      
-      <!-- Cabecera del Modal -->
-      <div class="modal-header">
-        <h3>{{ documentoSeleccionadoTitulo }}</h3>
-        <button type="button" class="btn-cerrar-modal" (click)="cerrarModalPrevisualizacion()">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-        </button>
-      </div>
+<div class="modal-overlay" (click)="cerrarModalPrevisualizacion()">
+  <div class="modal-container" (click)="$event.stopPropagation()">
+    <!-- Cabecera del Modal -->
+    <div class="modal-header">
+      <h3>{{ documentoSeleccionadoTitulo }}</h3>
+      <button type="button" class="btn-cerrar-modal" (click)="cerrarModalPrevisualizacion()">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </button>
+    </div>
 
-      <div class="modal-body">
-        @if (esPdf) {
-          <iframe
-            [src]="documentoSeleccionadoUrl"
-            class="visor-pdf"
-            title="Previsualización del documento PDF"
-          ></iframe>
-        } @else {
-          <img
-            [src]="documentoSeleccionadoUrl"
-            alt="Previsualización del documento"
-            class="visor-imagen"
-          />
-        }
-      </div>
+    <div class="modal-body">
+      @if (esPdf) {
+      <iframe
+        [src]="documentoSeleccionadoUrl"
+        class="visor-pdf"
+        title="Previsualización del documento PDF"
+      ></iframe>
+      } @else {
+      <img
+        [src]="documentoSeleccionadoUrl"
+        alt="Previsualización del documento"
+        class="visor-imagen"
+      />
+      }
+    </div>
 
-      <!-- Footer del Modal -->
-      <div class="modal-footer">
-        <!-- Apuntamos al nuevo método auxiliar que llama a tu descarga real -->
-        <button type="button" class="btn-documento btn-descargar" (click)="descargarDocumentoDesdeModal()">
-          Descargar archivo
-        </button>
-        <button type="button" class="btn-documento btn-subir" (click)="cerrarModalPrevisualizacion()">
-          Cerrar
-        </button>
-      </div>
-
+    <!-- Footer del Modal -->
+    <div class="modal-footer">
+      <!-- Apuntamos al nuevo método auxiliar que llama a tu descarga real -->
+      <button
+        type="button"
+        class="btn-documento btn-descargar"
+        (click)="descargarDocumentoDesdeModal()"
+      >
+        Descargar archivo
+      </button>
+      <button type="button" class="btn-documento btn-subir" (click)="cerrarModalPrevisualizacion()">
+        Cerrar
+      </button>
     </div>
   </div>
+</div>
 }
