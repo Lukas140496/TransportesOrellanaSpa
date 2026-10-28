@@ -34,7 +34,7 @@ namespace TransportesOrellanaSpa.Api.Migrations
 
                     b.HasIndex("ConductorId");
 
-                    b.ToTable("CamionConductor");
+                    b.ToTable("CamionConductor", (string)null);
                 });
 
             modelBuilder.Entity("TransportesOrellanaSpa.Api.Models.Camion", b =>
@@ -114,7 +114,7 @@ namespace TransportesOrellanaSpa.Api.Migrations
                     b.HasIndex("Patente")
                         .IsUnique();
 
-                    b.ToTable("Camiones");
+                    b.ToTable("Camiones", (string)null);
                 });
 
             modelBuilder.Entity("TransportesOrellanaSpa.Api.Models.Cliente", b =>
@@ -164,7 +164,7 @@ namespace TransportesOrellanaSpa.Api.Migrations
                     b.HasIndex("Rut")
                         .IsUnique();
 
-                    b.ToTable("Clientes");
+                    b.ToTable("Clientes", (string)null);
                 });
 
             modelBuilder.Entity("TransportesOrellanaSpa.Api.Models.Conductor", b =>
@@ -222,7 +222,52 @@ namespace TransportesOrellanaSpa.Api.Migrations
                     b.HasIndex("Rut")
                         .IsUnique();
 
-                    b.ToTable("Conductores");
+                    b.ToTable("Conductores", (string)null);
+                });
+
+            modelBuilder.Entity("TransportesOrellanaSpa.Api.Models.DocumentoCamion", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("BlobName")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<int>("CamionId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ContentType")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)");
+
+                    b.Property<DateTime>("FechaCarga")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("NombreArchivo")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("character varying(255)");
+
+                    b.Property<string>("TipoDocumento")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BlobName")
+                        .IsUnique();
+
+                    b.HasIndex("CamionId", "TipoDocumento")
+                        .IsUnique();
+
+                    b.ToTable("DocumentoCamion", (string)null);
                 });
 
             modelBuilder.Entity("TransportesOrellanaSpa.Api.Models.Gasto", b =>
@@ -263,7 +308,7 @@ namespace TransportesOrellanaSpa.Api.Migrations
 
                     b.HasIndex("ViajeId");
 
-                    b.ToTable("Gastos");
+                    b.ToTable("Gastos", (string)null);
                 });
 
             modelBuilder.Entity("TransportesOrellanaSpa.Api.Models.GastoConductor", b =>
@@ -299,7 +344,7 @@ namespace TransportesOrellanaSpa.Api.Migrations
 
                     b.HasIndex("ConductorId");
 
-                    b.ToTable("GastosConductor");
+                    b.ToTable("GastosConductor", (string)null);
                 });
 
             modelBuilder.Entity("TransportesOrellanaSpa.Api.Models.GastoRemolque", b =>
@@ -335,7 +380,7 @@ namespace TransportesOrellanaSpa.Api.Migrations
 
                     b.HasIndex("RemolqueId");
 
-                    b.ToTable("GastosRemolque");
+                    b.ToTable("GastosRemolque", (string)null);
                 });
 
             modelBuilder.Entity("TransportesOrellanaSpa.Api.Models.Modulo", b =>
@@ -366,7 +411,7 @@ namespace TransportesOrellanaSpa.Api.Migrations
                     b.HasIndex("Codigo")
                         .IsUnique();
 
-                    b.ToTable("Modulos");
+                    b.ToTable("Modulos", (string)null);
                 });
 
             modelBuilder.Entity("TransportesOrellanaSpa.Api.Models.Permiso", b =>
@@ -395,7 +440,7 @@ namespace TransportesOrellanaSpa.Api.Migrations
 
                     b.HasIndex("ModuloId");
 
-                    b.ToTable("Permisos");
+                    b.ToTable("Permisos", (string)null);
                 });
 
             modelBuilder.Entity("TransportesOrellanaSpa.Api.Models.Remolque", b =>
@@ -441,7 +486,7 @@ namespace TransportesOrellanaSpa.Api.Migrations
                     b.HasIndex("Patente")
                         .IsUnique();
 
-                    b.ToTable("Remolques");
+                    b.ToTable("Remolques", (string)null);
                 });
 
             modelBuilder.Entity("TransportesOrellanaSpa.Api.Models.Rol", b =>
@@ -468,7 +513,7 @@ namespace TransportesOrellanaSpa.Api.Migrations
                     b.HasIndex("Nombre")
                         .IsUnique();
 
-                    b.ToTable("Roles");
+                    b.ToTable("Roles", (string)null);
                 });
 
             modelBuilder.Entity("TransportesOrellanaSpa.Api.Models.RolPermiso", b =>
@@ -483,7 +528,7 @@ namespace TransportesOrellanaSpa.Api.Migrations
 
                     b.HasIndex("PermisoId");
 
-                    b.ToTable("RolesPermisos");
+                    b.ToTable("RolesPermisos", (string)null);
                 });
 
             modelBuilder.Entity("TransportesOrellanaSpa.Api.Models.Usuario", b =>
@@ -535,7 +580,7 @@ namespace TransportesOrellanaSpa.Api.Migrations
                     b.HasIndex("Rut")
                         .IsUnique();
 
-                    b.ToTable("Usuarios");
+                    b.ToTable("Usuarios", (string)null);
                 });
 
             modelBuilder.Entity("TransportesOrellanaSpa.Api.Models.UsuarioRol", b =>
@@ -550,7 +595,7 @@ namespace TransportesOrellanaSpa.Api.Migrations
 
                     b.HasIndex("RolId");
 
-                    b.ToTable("UsuariosRoles");
+                    b.ToTable("UsuariosRoles", (string)null);
                 });
 
             modelBuilder.Entity("TransportesOrellanaSpa.Api.Models.Viaje", b =>
@@ -642,7 +687,7 @@ namespace TransportesOrellanaSpa.Api.Migrations
 
                     b.HasIndex("RemolqueId");
 
-                    b.ToTable("Viajes");
+                    b.ToTable("Viajes", (string)null);
                 });
 
             modelBuilder.Entity("CamionConductor", b =>
@@ -658,6 +703,17 @@ namespace TransportesOrellanaSpa.Api.Migrations
                         .HasForeignKey("ConductorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("TransportesOrellanaSpa.Api.Models.DocumentoCamion", b =>
+                {
+                    b.HasOne("TransportesOrellanaSpa.Api.Models.Camion", "Camion")
+                        .WithMany("Documentos")
+                        .HasForeignKey("CamionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Camion");
                 });
 
             modelBuilder.Entity("TransportesOrellanaSpa.Api.Models.Gasto", b =>
@@ -796,6 +852,8 @@ namespace TransportesOrellanaSpa.Api.Migrations
 
             modelBuilder.Entity("TransportesOrellanaSpa.Api.Models.Camion", b =>
                 {
+                    b.Navigation("Documentos");
+
                     b.Navigation("Gastos");
 
                     b.Navigation("Remolques");

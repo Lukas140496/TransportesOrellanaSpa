@@ -48,6 +48,8 @@ import { DashboardGastosTipo } from '../models/dashboard-gastos-tipo';
 
 import { PrecioDieselHistorico } from '../models/precio-diesel-historico';
 
+import { DocumentoCamion, TipoDocumentoCamion } from '../models/documento-camion';
+
 
 @Injectable({
   providedIn: 'root'
@@ -303,6 +305,54 @@ export class ApiService {
       conductor: string;
     }>(
       `${this.apiUrl}/camion/${patenteCamion}/conductor-habitual/${rutConductor}`
+    );
+  }
+
+
+  // =========================
+  // DOCUMENTOS DE CAMIONES
+  // =========================
+
+  getDocumentosCamion(
+    camionId: number
+  ): Observable<DocumentoCamion[]> {
+    return this.http.get<DocumentoCamion[]>(
+      `${this.apiUrl}/camion/${camionId}/documentos`
+    );
+  }
+
+  subirDocumentoCamion(
+    camionId: number,
+    tipoDocumento: TipoDocumentoCamion,
+    archivo: File
+  ): Observable<DocumentoCamion> {
+    const formData = new FormData();
+    formData.append('archivo', archivo);
+
+    return this.http.post<DocumentoCamion>(
+      `${this.apiUrl}/camion/${camionId}/documentos/${tipoDocumento}`,
+      formData
+    );
+  }
+
+  descargarDocumentoCamion(
+    camionId: number,
+    tipoDocumento: TipoDocumentoCamion
+  ): Observable<Blob> {
+    return this.http.get(
+      `${this.apiUrl}/camion/${camionId}/documentos/${tipoDocumento}`,
+      {
+        responseType: 'blob'
+      }
+    );
+  }
+
+  eliminarDocumentoCamion(
+    camionId: number,
+    tipoDocumento: TipoDocumentoCamion
+  ): Observable<void> {
+    return this.http.delete<void>(
+      `${this.apiUrl}/camion/${camionId}/documentos/${tipoDocumento}`
     );
   }
 

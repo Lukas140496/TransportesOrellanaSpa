@@ -64,6 +64,12 @@ builder.Services.AddScoped<JwtService>();
 builder.Services.AddScoped<CorreoService>();
 
 // =========================
+// DOCUMENTOS DE CAMIONES - AZURE BLOB STORAGE
+// =========================
+
+builder.Services.AddSingleton<AzureBlobStorageService>();
+
+// =========================
 // PRECIO HISTÓRICO DEL DIÉSEL
 // =========================
 

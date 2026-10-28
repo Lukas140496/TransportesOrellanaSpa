@@ -25,4 +25,7 @@ public class Camion
     public ICollection<Remolque> Remolques { get; set; } = new List<Remolque>();
     public ICollection<Viaje> Viajes { get; set; } = new List<Viaje>();
     public ICollection<Gasto> Gastos { get; set; } = new List<Gasto>();
+    public ICollection<DocumentoCamion> Documentos { get; set; }
+        = new List<DocumentoCamion>();
+
 }

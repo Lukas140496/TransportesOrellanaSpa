@@ -18,6 +18,7 @@ public class AppDbContext : DbContext
     public DbSet<Gasto> Gastos { get; set; }
     public DbSet<GastoRemolque> GastosRemolque { get; set; }
     public DbSet<GastoConductor> GastosConductor { get; set; }
+    public DbSet<DocumentoCamion> DocumentosCamion { get; set; } = null!;
 
     // =========================
     // AUTENTICACIÓN Y PERMISOS
@@ -32,6 +33,29 @@ public class AppDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+        // ===================================
+        // CAMIÓN - DOCUMENTOS
+        // ===================================
+        modelBuilder.Entity<DocumentoCamion>()
+            .ToTable("DocumentoCamion");
+
+        modelBuilder.Entity<DocumentoCamion>()
+            .HasOne(d => d.Camion)
+            .WithMany(c => c.Documentos)
+            .HasForeignKey(d => d.CamionId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // Un documento por tipo para cada camión.
+        modelBuilder.Entity<DocumentoCamion>()
+            .HasIndex(d => new { d.CamionId, d.TipoDocumento })
+            .IsUnique();
+
+        // Un nombre de blob único por documento.
+        modelBuilder.Entity<DocumentoCamion>()
+            .HasIndex(d => d.BlobName)
+            .IsUnique();
+
 
         // ===================================
         // CAMIÓN - CONDUCTOR (MUCHOS A MUCHOS)
