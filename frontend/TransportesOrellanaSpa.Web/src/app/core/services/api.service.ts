@@ -49,6 +49,9 @@ import { DashboardGastosTipo } from '../models/dashboard-gastos-tipo';
 import { PrecioDieselHistorico } from '../models/precio-diesel-historico';
 
 import { DocumentoCamion, TipoDocumentoCamion } from '../models/documento-camion';
+import { DocumentoConductor, TipoDocumentoConductor } from '../models/documento-conductor';
+import { DocumentoViaje, TipoDocumentoViaje } from '../models/documento-viaje';
+import { DocumentoRemolque, TipoDocumentoRemolque } from '../models/documento-remolque';
 
 
 @Injectable({
@@ -422,6 +425,56 @@ export class ApiService {
   }
 
   // =========================
+  // DOCUMENTOS DE CONDUCTORES
+  // =========================
+
+  getDocumentosConductor(
+    conductorId: number
+  ): Observable<DocumentoConductor[]> {
+    return this.http.get<DocumentoConductor[]>(
+      `${this.apiUrl}/conductor/${conductorId}/documentos`
+    );
+  }
+
+  subirDocumentoConductor(
+    conductorId: number,
+    tipoDocumento: TipoDocumentoConductor,
+    archivo: File,
+    periodo?: string
+  ): Observable<DocumentoConductor> {
+    const formData = new FormData();
+    formData.append('archivo', archivo);
+
+    if (periodo) {
+      formData.append('periodo', periodo);
+    }
+
+    return this.http.post<DocumentoConductor>(
+      `${this.apiUrl}/conductor/${conductorId}/documentos/${tipoDocumento}`,
+      formData
+    );
+  }
+
+  descargarDocumentoConductor(
+    conductorId: number,
+    documentoId: number
+  ): Observable<Blob> {
+    return this.http.get(
+      `${this.apiUrl}/conductor/${conductorId}/documentos/${documentoId}`,
+      { responseType: 'blob' }
+    );
+  }
+
+  eliminarDocumentoConductor(
+    conductorId: number,
+    documentoId: number
+  ): Observable<void> {
+    return this.http.delete<void>(
+      `${this.apiUrl}/conductor/${conductorId}/documentos/${documentoId}`
+    );
+  }
+
+  // =========================
   // REMOLQUES
   // =========================
 
@@ -520,6 +573,49 @@ export class ApiService {
       remolque: string;
     }>(
       `${this.apiUrl}/remolque/${patenteRemolque}/camion-habitual`
+    );
+  }
+
+  // =========================
+  // DOCUMENTOS DE REMOLQUES
+  // =========================
+
+  getDocumentosRemolque(remolqueId: number) {
+    return this.http.get<DocumentoRemolque[]>(
+      `${this.apiUrl}/remolque/${remolqueId}/documentos`
+    );
+  }
+
+  subirDocumentoRemolque(
+    remolqueId: number,
+    tipoDocumento: TipoDocumentoRemolque,
+    archivo: File
+  ) {
+    const formData = new FormData();
+    formData.append('archivo', archivo);
+
+    return this.http.post<DocumentoRemolque>(
+      `${this.apiUrl}/remolque/${remolqueId}/documentos/${tipoDocumento}`,
+      formData
+    );
+  }
+
+  descargarDocumentoRemolque(
+    remolqueId: number,
+    documentoId: number
+  ) {
+    return this.http.get(
+      `${this.apiUrl}/remolque/${remolqueId}/documentos/${documentoId}`,
+      { responseType: 'blob' }
+    );
+  }
+
+  eliminarDocumentoRemolque(
+    remolqueId: number,
+    documentoId: number
+  ) {
+    return this.http.delete<void>(
+      `${this.apiUrl}/remolque/${remolqueId}/documentos/${documentoId}`
     );
   }
 
@@ -780,6 +876,45 @@ export class ApiService {
       }
     );
 
+  }
+
+  getDocumentosViaje(viajeId: number) {
+    return this.http.get<DocumentoViaje[]>(
+      `${this.apiUrl}/viaje/${viajeId}/documentos`
+    );
+  }
+
+  subirDocumentoViaje(
+    viajeId: number,
+    tipoDocumento: TipoDocumentoViaje,
+    archivo: File
+  ) {
+    const formData = new FormData();
+    formData.append('archivo', archivo);
+
+    return this.http.post<DocumentoViaje>(
+      `${this.apiUrl}/viaje/${viajeId}/documentos/${tipoDocumento}`,
+      formData
+    );
+  }
+
+  descargarDocumentoViaje(
+    viajeId: number,
+    documentoId: number
+  ) {
+    return this.http.get(
+      `${this.apiUrl}/viaje/${viajeId}/documentos/${documentoId}`,
+      { responseType: 'blob' }
+    );
+  }
+
+  eliminarDocumentoViaje(
+    viajeId: number,
+    documentoId: number
+  ) {
+    return this.http.delete<void>(
+      `${this.apiUrl}/viaje/${viajeId}/documentos/${documentoId}`
+    );
   }
 
   // =========================

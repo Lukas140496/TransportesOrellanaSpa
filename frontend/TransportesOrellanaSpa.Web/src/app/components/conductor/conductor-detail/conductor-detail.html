@@ -1,655 +1,747 @@
 <section class="conductor-detail">
-
   @if (cargando) {
 
-    <div class="estado">
-      <div class="spinner"></div>
-      <p>Cargando información del conductor...</p>
-    </div>
+  <div class="estado">
+    <div class="spinner"></div>
+    <p>Cargando información del conductor...</p>
+  </div>
 
   } @else if (error) {
 
-    <div class="estado error">
-      <h2>No fue posible cargar el conductor</h2>
-      <p>{{ error }}</p>
+  <div class="estado error">
+    <h2>No fue posible cargar el conductor</h2>
+    <p>{{ error }}</p>
 
-      <button
-        type="button"
-        class="btn-volver"
-        (click)="volver()">
-        ← Volver a conductores
-      </button>
-    </div>
+    <button type="button" class="btn-volver" (click)="volver()">← Volver a conductores</button>
+  </div>
 
   } @else if (conductor) {
 
-    <!-- CABECERA -->
+  <!-- CABECERA -->
 
-    <header class="cabecera">
-
-      <div class="cabecera-info">
-
-        <div class="avatar">
-          {{ conductor.nombres.charAt(0) }}
-        </div>
-
-        <div>
-
-          <span class="etiqueta">
-            CONDUCTOR
-          </span>
-
-          <h1>
-            {{ conductor.nombres }}
-            {{ conductor.apellidoPaterno }}
-            {{ conductor.apellidoMaterno }}
-          </h1>
-
-          <p class="rut">
-            RUT: {{ conductor.rut }}
-          </p>
-
-        </div>
-
+  <header class="cabecera">
+    <div class="cabecera-info">
+      <div class="avatar">
+        {{ conductor.nombres.charAt(0) }}
       </div>
 
-      <div class="cabecera-acciones">
+      <div>
+        <span class="etiqueta"> CONDUCTOR </span>
 
-        <div class="cabecera-estados">
+        <h1>
+          {{ conductor.nombres }}
+          {{ conductor.apellidoPaterno }}
+          {{ conductor.apellidoMaterno }}
+        </h1>
 
-          @if (conductor.activo) {
-
-            @if (conductor.licenciaAlDia) {
-
-              <span class="estado-badge activo">
-                ● Licencia al día
-              </span>
-
-            } @else {
-
-              <span class="estado-badge vencido">
-                ● Licencia vencida
-              </span>
-
-            }
-
-            <span class="estado-badge conductor-activo">
-              ● Activo
-            </span>
-
-          } @else {
-
-            <span class="estado-badge inactivo">
-              ● Inactivo
-            </span>
-
-          }
-
-        </div>
-
-        <div class="cabecera-botones">
-
-            @if (permissionService.tienePermiso('CONDUCTORES_EDITAR')) {
-          
-              @if (conductor.activo) {
-          
-                <button
-                  type="button"
-                  class="btn-danger"
-                  [disabled]="procesandoEstado"
-                  (click)="abrirModalEstado()">
-                  Desactivar conductor
-                </button>
-          
-              } @else {
-          
-                <button
-                  type="button"
-                  class="btn-activar"
-                  [disabled]="procesandoEstado"
-                  (click)="abrirModalEstado()">
-                  Activar conductor
-                </button>
-          
-              }
-          
-            }
-          
-            <button
-              type="button"
-              class="btn-volver"
-              (click)="volver()">
-              ← Volver
-            </button>
-          
-        </div>
-
+        <p class="rut">RUT: {{ conductor.rut }}</p>
       </div>
+    </div>
 
-    </header>
+    <div class="cabecera-acciones">
+      <div class="cabecera-estados">
+        @if (conductor.activo) { @if (conductor.licenciaAlDia) {
 
+        <span class="estado-badge activo"> ● Licencia al día </span>
 
-    <!-- INFORMACIÓN PERSONAL -->
+        } @else {
 
-    <section class="bloque">
+        <span class="estado-badge vencido"> ● Licencia vencida </span>
 
-      <div class="bloque-titulo">
-
-        <div class="bloque-titulo-info">
-
-          <span class="icono">
-            👤
-          </span>
-
-          <div>
-
-            <h2>
-              Información personal
-            </h2>
-
-            <p>
-              Datos personales y de contacto del conductor.
-            </p>
-
-          </div>
-
-        </div>
-
-        @if (permissionService.tienePermiso('CONDUCTORES_EDITAR')) {
-
-            <button
-              type="button"
-              class="btn-editar"
-              (click)="editarConductor()">
-          
-              ✎
-              Editar conductor
-          
-            </button>
-          
         }
 
+        <span class="estado-badge conductor-activo"> ● Activo </span>
+
+        } @else {
+
+        <span class="estado-badge inactivo"> ● Inactivo </span>
+
+        }
       </div>
 
+      <div class="cabecera-botones">
+        @if (permissionService.tienePermiso('CONDUCTORES_EDITAR')) { @if (conductor.activo) {
 
-      <div class="datos-grid">
+        <button
+          type="button"
+          class="btn-danger"
+          [disabled]="procesandoEstado"
+          (click)="abrirModalEstado()"
+        >
+          Desactivar conductor
+        </button>
 
-        <div class="dato">
+        } @else {
 
-          <span class="dato-label">
-            Nombres
-          </span>
+        <button
+          type="button"
+          class="btn-activar"
+          [disabled]="procesandoEstado"
+          (click)="abrirModalEstado()"
+        >
+          Activar conductor
+        </button>
 
-          <strong>
-            {{ conductor.nombres }}
-          </strong>
+        } }
 
-        </div>
-
-
-        <div class="dato">
-
-          <span class="dato-label">
-            Apellidos
-          </span>
-
-          <strong>
-            {{ conductor.apellidoPaterno }}
-            {{ conductor.apellidoMaterno }}
-          </strong>
-
-        </div>
-
-
-        <div class="dato">
-
-          <span class="dato-label">
-            RUT
-          </span>
-
-          <strong>
-            {{ conductor.rut }}
-          </strong>
-
-        </div>
-
-
-        <div class="dato">
-
-          <span class="dato-label">
-            Fecha de nacimiento
-          </span>
-
-          <strong>
-            {{ conductor.fechaNacimiento | date:'dd/MM/yyyy' }}
-          </strong>
-
-        </div>
-
-
-        <div class="dato">
-
-          <span class="dato-label">
-            Edad
-          </span>
-
-          <strong>
-            {{ conductor.edad }} años
-          </strong>
-
-        </div>
-
-
-        <div class="dato">
-
-          <span class="dato-label">
-            Teléfono
-          </span>
-
-          <strong>
-            {{ conductor.telefono }}
-          </strong>
-
-        </div>
-
-
-        <div class="dato">
-
-          <span class="dato-label">
-            Fecha de ingreso
-          </span>
-
-          <strong>
-            {{ conductor.fechaIngreso | date:'dd/MM/yyyy' }}
-          </strong>
-
-        </div>
-
+        <button type="button" class="btn-volver" (click)="volver()">← Volver</button>
       </div>
+    </div>
+  </header>
 
-    </section>
+  <!-- INFORMACIÓN PERSONAL -->
 
-
-    <!-- LICENCIA -->
-
-    <section class="bloque">
-
-      <div class="bloque-titulo">
-
-        <span class="icono">
-          📄
-        </span>
+  <section class="bloque">
+    <div class="bloque-titulo">
+      <div class="bloque-titulo-info">
+        <span class="icono"> 👤 </span>
 
         <div>
+          <h2>Información personal</h2>
 
-          <h2>
-            Licencia de conducir
-          </h2>
-
-          <p>
-            Información y estado de la licencia profesional.
-          </p>
-
+          <p>Datos personales y de contacto del conductor.</p>
         </div>
-
       </div>
 
+      @if (permissionService.tienePermiso('CONDUCTORES_EDITAR')) {
 
-      <div class="licencia-card">
-
-        <div class="licencia-principal">
-
-          <span class="dato-label">
-            Tipo de licencia
-          </span>
-
-          <strong class="licencia-tipo">
-            {{ conductor.tipoLicencia }}
-          </strong>
-
-        </div>
-
-
-        <div class="licencia-info">
-
-          <span class="dato-label">
-            Fecha de control
-          </span>
-
-          <strong>
-            {{ conductor.fechaControlLicencia | date:'dd/MM/yyyy' }}
-          </strong>
-
-        </div>
-
-
-        <div class="licencia-estado">
-
-          <span class="dato-label">
-            Estado
-          </span>
-
-          @if (conductor.licenciaAlDia) {
-
-            <strong class="texto-activo">
-              ✓ Vigente
-            </strong>
-
-          } @else {
-
-            <strong class="texto-vencido">
-              ✕ Vencida
-            </strong>
-
-          }
-
-        </div>
-
-      </div>
-
-    </section>
-
-
-    <!-- CAMIONES HABITUALES -->
-
-    <section class="bloque">
-
-      <div class="bloque-titulo">
-
-        <span class="icono">
-          🚛
-        </span>
-
-        <div>
-
-          <h2>
-            Camiones habituales
-          </h2>
-
-          <p>
-            Camiones asociados actualmente a este conductor.
-          </p>
-
-        </div>
-
-      </div>
-
-
-      @if (conductor.camionesHabituales.length > 0) {
-
-        <div class="camiones-grid">
-
-          @for (
-            camion of conductor.camionesHabituales;
-            track camion.id
-          ) {
-
-            <article class="camion-card">
-
-              <div class="camion-icono">
-                🚛
-              </div>
-
-              <div class="camion-info">
-
-                <span class="camion-patente">
-                  {{ camion.patente }}
-                </span>
-
-                <h3>
-                  {{ camion.marca }}
-                </h3>
-
-                <p>
-                  {{ camion.modelo }}
-                </p>
-
-              </div>
-
-            </article>
-
-          }
-
-        </div>
-
-      } @else {
-
-        <div class="sin-camiones">
-
-          <span>
-            🚛
-          </span>
-
-          <div>
-
-            <strong>
-              Sin camiones asignados
-            </strong>
-
-            <p>
-              Este conductor no tiene camiones habituales registrados.
-            </p>
-
-          </div>
-
-        </div>
+      <button type="button" class="btn-editar" (click)="editarConductor()">
+        ✎ Editar conductor
+      </button>
 
       }
+    </div>
 
-    </section>
+    <div class="datos-grid">
+      <div class="dato">
+        <span class="dato-label"> Nombres </span>
 
+        <strong>
+          {{ conductor.nombres }}
+        </strong>
+      </div>
+
+      <div class="dato">
+        <span class="dato-label"> Apellidos </span>
+
+        <strong>
+          {{ conductor.apellidoPaterno }}
+          {{ conductor.apellidoMaterno }}
+        </strong>
+      </div>
+
+      <div class="dato">
+        <span class="dato-label"> RUT </span>
+
+        <strong>
+          {{ conductor.rut }}
+        </strong>
+      </div>
+
+      <div class="dato">
+        <span class="dato-label"> Fecha de nacimiento </span>
+
+        <strong>
+          {{ conductor.fechaNacimiento | date : 'dd/MM/yyyy' }}
+        </strong>
+      </div>
+
+      <div class="dato">
+        <span class="dato-label"> Edad </span>
+
+        <strong> {{ conductor.edad }} años </strong>
+      </div>
+
+      <div class="dato">
+        <span class="dato-label"> Teléfono </span>
+
+        <strong>
+          {{ conductor.telefono }}
+        </strong>
+      </div>
+
+      <div class="dato">
+        <span class="dato-label"> Fecha de ingreso </span>
+
+        <strong>
+          {{ conductor.fechaIngreso | date : 'dd/MM/yyyy' }}
+        </strong>
+      </div>
+    </div>
+  </section>
+
+  <!-- LICENCIA -->
+
+  <section class="bloque">
+    <div class="bloque-titulo">
+      <span class="icono"> 📄 </span>
+
+      <div>
+        <h2>Licencia de conducir</h2>
+
+        <p>Información y estado de la licencia profesional.</p>
+      </div>
+    </div>
+
+    <div class="licencia-card">
+      <div class="licencia-principal">
+        <span class="dato-label"> Tipo de licencia </span>
+
+        <strong class="licencia-tipo">
+          {{ conductor.tipoLicencia }}
+        </strong>
+      </div>
+
+      <div class="licencia-info">
+        <span class="dato-label"> Fecha de control </span>
+
+        <strong>
+          {{ conductor.fechaControlLicencia | date : 'dd/MM/yyyy' }}
+        </strong>
+      </div>
+
+      <div class="licencia-estado">
+        <span class="dato-label"> Estado </span>
+
+        @if (conductor.licenciaAlDia) {
+
+        <strong class="texto-activo"> ✓ Vigente </strong>
+
+        } @else {
+
+        <strong class="texto-vencido"> ✕ Vencida </strong>
+
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================= -->
+  <!-- DOCUMENTACIÓN DEL CONDUCTOR -->
+  <!-- ========================= -->
+  <section class="bloque documentos-bloque">
+    <div class="bloque-titulo">
+      <div class="bloque-titulo-info">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="22"
+          height="22"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          class="icono-svg-titulo"
+        >
+          <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
+          <polyline points="14 2 14 8 20 8" />
+        </svg>
+
+        <div>
+          <h2>Documentación del conductor</h2>
+          <p>Documentos personales, laborales y liquidaciones de sueldo.</p>
+        </div>
+      </div>
+
+      <!-- Botón para desplegar / ocultar el formulario de carga a la derecha -->
+      @if (permissionService.tienePermiso('CONDUCTORES_EDITAR')) {
+        <button
+          type="button"
+          class="btn-toggle-formulario"
+          [class.activo]="mostrarFormularioCargaConductor"
+          (click)="toggleFormularioCargaConductor()"
+          [title]="mostrarFormularioCargaConductor ? 'Ocultar formulario de carga' : 'Cargar nuevo documento'">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="17 8 12 3 7 8"/>
+            <line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+          
+          <span>{{ mostrarFormularioCargaConductor ? 'Cancelar carga' : 'Cargar documento' }}</span>
+
+          <svg
+            xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            class="flecha-toggle">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </button>
+      }
+    </div>
+
+    <!-- FORMULARIO DE CARGA (Oculto por defecto, se despliega con el botón) -->
+    @if (permissionService.tienePermiso('CONDUCTORES_EDITAR') && mostrarFormularioCargaConductor) {
+      <div class="documentos-formulario animar-despliegue">
+        <div class="documentos-campo">
+          <label for="tipo-documento-conductor">Tipo de documento</label>
+          <select
+            id="tipo-documento-conductor"
+            [(ngModel)]="tipoDocumentoSeleccionado"
+            (ngModelChange)="cambiarTipoDocumento()"
+          >
+            @for (tipo of tiposDocumentoDisponibles; track tipo.valor) {
+            <option [value]="tipo.valor">{{ tipo.etiqueta }}</option>
+            }
+          </select>
+        </div>
+
+        @if (tipoDocumentoSeleccionado === 'LiquidacionSueldo') {
+        <div class="documentos-campo">
+          <label for="periodo-liquidacion">Período de liquidación</label>
+          <input id="periodo-liquidacion" type="month" [(ngModel)]="periodoLiquidacion" />
+        </div>
+        }
+
+        <div class="documentos-campo archivo-campo">
+          <label>Archivo (PDF, JPG o PNG; máx. 10 MB)</label>
+
+          @if (!archivoSeleccionado) {
+          <div class="archivo-input-wrapper">
+            <input
+              id="archivo-conductor"
+              type="file"
+              accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png"
+              (change)="seleccionarArchivo($event)"
+            />
+          </div>
+          } @else {
+          <div class="archivo-seleccionado-card">
+            <div class="archivo-seleccionado-info">
+              <span
+                class="badge-formato-icon"
+                [ngClass]="obtenerFormatoArchivo(archivoSeleccionado.name).toLowerCase()"
+              >
+                {{ obtenerFormatoArchivo(archivoSeleccionado.name) }}
+              </span>
+
+              <span class="nombre-archivo-txt" title="{{ archivoSeleccionado.name }}">
+                {{ archivoSeleccionado.name }}
+              </span>
+            </div>
+
+            <button
+              type="button"
+              class="btn-quitar-seleccion-card"
+              (click)="quitarArchivoSeleccionado()"
+              title="Quitar archivo"
+            >
+              ✕
+            </button>
+          </div>
+          }
+        </div>
+
+        <button
+          type="button"
+          class="btn-subir-documento"
+          [disabled]="procesandoDocumento || !archivoSeleccionado"
+          (click)="subirDocumento()"
+        >
+          @if (procesandoDocumento) {
+          <span>Procesando...</span>
+          } @else {
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="17 8 12 3 7 8" />
+            <line x1="12" y1="3" x2="12" y2="15" />
+          </svg>
+          <span>Subir documento</span>
+          }
+        </button>
+      </div>
+    }
+
+    @if (errorDocumentos) {
+    <div class="documentos-mensaje error-documentos">
+      <span>{{ errorDocumentos }}</span>
+      <button type="button" class="btn-reintentar-documentos" (click)="cargarDocumentos()">
+        Reintentar
+      </button>
+    </div>
+    } 
+    
+    @if (cargandoDocumentos) {
+    <div class="documentos-vacio">
+      <div class="spinner"></div>
+      <p>Cargando documentos...</p>
+    </div>
+    } @else if (documentosVisibles.length > 0) {
+    <div class="documentos-lista">
+      @for (documento of documentosVisibles; track documento.id) {
+      <article class="documento-item">
+        <div class="documento-icono">
+            <span class="badge-formato-icon" [ngClass]="obtenerFormatoArchivo(documento.nombreArchivo).toLowerCase()">
+              {{ obtenerFormatoArchivo(documento.nombreArchivo) }}
+            </span>
+        </div>
+
+        <div class="documento-info">
+          <strong>{{ nombreTipoDocumento(documento.tipoDocumento) }}</strong>
+          <span class="documento-nombre">{{ documento.nombreArchivo }}</span>
+
+          @if (documento.periodo) {
+          <span class="documento-periodo">Período: {{ documento.periodo }}</span>
+          }
+
+          <span class="documento-fecha">
+            Cargado: {{ documento.fechaCarga | date : 'dd/MM/yyyy HH:mm' }}
+          </span>
+        </div>
+        <span class="documento-estado cargado"> <span class="punto-estado"></span> Cargado </span>
+        <div class="documento-acciones">
+          <!-- Botón Ver / Previsualizar -->
+          <button
+            type="button"
+            class="btn-documento-accion btn-previsualizar"
+            (click)="previsualizarDocumentoConductor(documento)"
+            title="Previsualizar documento"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="15"
+              height="15"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
+            <span>Ver</span>
+          </button>
+
+          <!-- Botón Descargar -->
+          <button
+            type="button"
+            class="btn-documento-accion btn-descargar-documento"
+            (click)="descargarDocumento(documento)"
+            title="Descargar documento"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="15"
+              height="15"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
+            <span>Descargar</span>
+          </button>
+
+          @if (permissionService.tienePermiso('CONDUCTORES_EDITAR')) {
+          <!-- Botón Eliminar -->
+          <button
+            type="button"
+            class="btn-documento-accion btn-eliminar-documento"
+            [disabled]="procesandoDocumento"
+            (click)="eliminarDocumento(documento)"
+            title="Eliminar documento"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="15"
+              height="15"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <polyline points="3 6 5 6 21 6" />
+              <path
+                d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
+              />
+            </svg>
+          </button>
+          }
+        </div>
+      </article>
+      }
+    </div>
+    } @else if (!errorDocumentos) {
+    <div class="documentos-vacio">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="36"
+        height="36"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="icono-vacio"
+      >
+        <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
+        <polyline points="14 2 14 8 20 8" />
+      </svg>
+      <strong>No hay documentos registrados</strong>
+      <p>Los documentos que cargues aparecerán aquí.</p>
+    </div>
+    } 
+    
+    @if (!conductor.activo) {
+    <p class="documentos-nota">
+      El conductor está inactivo. No se pueden cargar nuevas liquidaciones de sueldo; las
+      liquidaciones históricas se conservan.
+    </p>
+    }
+  </section>
+
+  <!-- ========================= -->
+  <!-- MODAL DE PREVISUALIZACIÓN -->
+  <!-- ========================= -->
+  @if (modalPrevisualizacionVisible) {
+  <div class="modal-overlay-doc" (click)="cerrarModalPrevisualizacion()">
+    <div class="modal-container-doc" (click)="$event.stopPropagation()">
+      <div class="modal-header-doc">
+        <h3>{{ documentoSeleccionadoTitulo }}</h3>
+        <button type="button" class="btn-cerrar-modal-doc" (click)="cerrarModalPrevisualizacion()">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="modal-body-doc">
+        @if (esPdf) {
+        <iframe [src]="documentoSeleccionadoUrl" class="visor-pdf-doc"></iframe>
+        } @else {
+        <img [src]="documentoSeleccionadoUrl" alt="Previsualización" class="visor-imagen-doc" />
+        }
+      </div>
+
+      <!-- <div class="modal-footer-doc">
+        <button
+          type="button"
+          class="btn-documento-accion btn-descargar-documento"
+          (click)="descargarDesdeModal()"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+          </svg>
+          <span>Descargar archivo</span>
+        </button>
+        <button type="button" class="btn-subir-documento" (click)="cerrarModalPrevisualizacion()">
+          Cerrar
+        </button>
+      </div> -->
+    </div>
+  </div>
   }
 
-</section>
+  <!-- CAMIONES HABITUALES -->
 
+  <section class="bloque">
+    <div class="bloque-titulo">
+      <span class="icono"> 🚛 </span>
+
+      <div>
+        <h2>Camiones habituales</h2>
+
+        <p>Camiones asociados actualmente a este conductor.</p>
+      </div>
+    </div>
+
+    @if (conductor.camionesHabituales.length > 0) {
+
+    <div class="camiones-grid">
+      @for ( camion of conductor.camionesHabituales; track camion.id ) {
+
+      <article class="camion-card">
+        <div class="camion-icono">🚛</div>
+
+        <div class="camion-info">
+          <span class="camion-patente">
+            {{ camion.patente }}
+          </span>
+
+          <h3>
+            {{ camion.marca }}
+          </h3>
+
+          <p>
+            {{ camion.modelo }}
+          </p>
+        </div>
+      </article>
+
+      }
+    </div>
+
+    } @else {
+
+    <div class="sin-camiones">
+      <span> 🚛 </span>
+
+      <div>
+        <strong> Sin camiones asignados </strong>
+
+        <p>Este conductor no tiene camiones habituales registrados.</p>
+      </div>
+    </div>
+
+    }
+  </section>
+
+  }
+</section>
 
 <!-- MODAL CONFIRMACIÓN ESTADO -->
 
 @if (modalEstadoVisible && conductor) {
 
-  <div
-    class="modal-overlay"
-    (click)="cerrarModalEstado()">
-
-    <div
-      class="modal"
-      role="alertdialog"
-      aria-modal="true"
-      (click)="$event.stopPropagation()">
-
-      <div
-        class="modal-icon"
-        [class.warning]="conductor.activo"
-        [class.activate]="!conductor.activo">
-
-        @if (conductor.activo) {
-          !
-        } @else {
-          ✓
-        }
-
-      </div>
-
-
-      <h2>
-
-        @if (conductor.activo) {
-          ¿Desactivar conductor?
-        } @else {
-          ¿Activar conductor?
-        }
-
-      </h2>
-
-
-      <p>
-
-        Estás a punto de
-
-        @if (conductor.activo) {
-          desactivar
-        } @else {
-          activar
-        }
-
-        al conductor
-
-        <strong>
-          {{ conductor.nombres }}
-          {{ conductor.apellidoPaterno }}
-        </strong>.
-
-      </p>
-
-
-      <p class="modal-warning">
-
-        @if (conductor.activo) {
-
-          El conductor no será eliminado y su historial se conservará.
-          No podrá utilizarse para nuevos viajes mientras esté inactivo.
-
-        } @else {
-
-          El conductor volverá a estar disponible entre los conductores activos.
-          Su historial y todos sus datos se conservarán.
-
-        }
-
-      </p>
-
-
-      <div class="modal-actions">
-
-        <button
-          type="button"
-          class="btn-secondary"
-          [disabled]="procesandoEstado"
-          (click)="cerrarModalEstado()">
-
-          Cancelar
-
-        </button>
-
-
-        @if (conductor.activo) {
-
-          <button
-            type="button"
-            class="btn-danger"
-            [disabled]="procesandoEstado"
-            (click)="confirmarCambioEstado()">
-
-            @if (procesandoEstado) {
-              Desactivando...
-            } @else {
-              Sí, desactivar
-            }
-
-          </button>
-
-        } @else {
-
-          <button
-            type="button"
-            class="btn-activar"
-            [disabled]="procesandoEstado"
-            (click)="confirmarCambioEstado()">
-
-            @if (procesandoEstado) {
-              Activando...
-            } @else {
-              Sí, activar
-            }
-
-          </button>
-
-        }
-
-      </div>
-
+<div class="modal-overlay" (click)="cerrarModalEstado()">
+  <div class="modal" role="alertdialog" aria-modal="true" (click)="$event.stopPropagation()">
+    <div class="modal-icon" [class.warning]="conductor.activo" [class.activate]="!conductor.activo">
+      @if (conductor.activo) { ! } @else { ✓ }
     </div>
 
+    <h2>@if (conductor.activo) { ¿Desactivar conductor? } @else { ¿Activar conductor? }</h2>
+
+    <p>
+      Estás a punto de @if (conductor.activo) { desactivar } @else { activar } al conductor
+
+      <strong>
+        {{ conductor.nombres }}
+        {{ conductor.apellidoPaterno }} </strong
+      >.
+    </p>
+
+    <p class="modal-warning">
+      @if (conductor.activo) { El conductor no será eliminado y su historial se conservará. No podrá
+      utilizarse para nuevos viajes mientras esté inactivo. } @else { El conductor volverá a estar
+      disponible entre los conductores activos. Su historial y todos sus datos se conservarán. }
+    </p>
+
+    <div class="modal-actions">
+      <button
+        type="button"
+        class="btn-secondary"
+        [disabled]="procesandoEstado"
+        (click)="cerrarModalEstado()"
+      >
+        Cancelar
+      </button>
+
+      @if (conductor.activo) {
+
+      <button
+        type="button"
+        class="btn-danger"
+        [disabled]="procesandoEstado"
+        (click)="confirmarCambioEstado()"
+      >
+        @if (procesandoEstado) { Desactivando... } @else { Sí, desactivar }
+      </button>
+
+      } @else {
+
+      <button
+        type="button"
+        class="btn-activar"
+        [disabled]="procesandoEstado"
+        (click)="confirmarCambioEstado()"
+      >
+        @if (procesandoEstado) { Activando... } @else { Sí, activar }
+      </button>
+
+      }
+    </div>
   </div>
+</div>
 
 }
-
 
 <!-- MODAL ÉXITO -->
 
 @if (modalExitoVisible) {
 
-  <div class="modal-overlay">
+<div class="modal-overlay">
+  <div class="modal">
+    <div class="modal-icon success">✓</div>
 
-    <div class="modal">
+    <h2>
+      {{ modalExitoTitulo }}
+    </h2>
 
-      <div class="modal-icon success">
-        ✓
-      </div>
+    <p>
+      {{ modalExitoMensaje }}
+    </p>
 
-      <h2>
-        {{ modalExitoTitulo }}
-      </h2>
-
-      <p>
-        {{ modalExitoMensaje }}
-      </p>
-
-      <div class="modal-actions">
-
-        <button
-          type="button"
-          class="btn-primary"
-          (click)="cerrarModalExito()">
-
-          Aceptar
-
-        </button>
-
-      </div>
-
+    <div class="modal-actions">
+      <button type="button" class="btn-primary" (click)="cerrarModalExito()">Aceptar</button>
     </div>
-
   </div>
+</div>
 
 }
-
 
 <!-- MODAL ERROR -->
 
 @if (modalErrorVisible) {
 
-  <div class="modal-overlay">
+<div class="modal-overlay">
+  <div class="modal">
+    <div class="modal-icon error">!</div>
 
-    <div class="modal">
+    <h2>
+      {{ modalErrorTitulo }}
+    </h2>
 
-      <div class="modal-icon error">
-        !
-      </div>
+    <p>
+      {{ modalErrorMensaje }}
+    </p>
 
-      <h2>
-        {{ modalErrorTitulo }}
-      </h2>
-
-      <p>
-        {{ modalErrorMensaje }}
-      </p>
-
-      <div class="modal-actions">
-
-        <button
-          type="button"
-          class="btn-primary"
-          (click)="cerrarModalError()">
-
-          Aceptar
-
-        </button>
-
-      </div>
-
+    <div class="modal-actions">
+      <button type="button" class="btn-primary" (click)="cerrarModalError()">Aceptar</button>
     </div>
-
   </div>
+</div>
 
 }

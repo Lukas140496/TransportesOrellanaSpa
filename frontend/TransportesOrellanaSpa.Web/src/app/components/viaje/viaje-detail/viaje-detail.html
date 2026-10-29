@@ -360,6 +360,239 @@
     }
   </div>
 
+
+  <!-- ========================= -->
+  <!-- DOCUMENTACIÓN DEL VIAJE -->
+  <!-- ========================= -->
+
+  <div class="card documentos-viaje-card">
+    <div class="documentos-viaje-encabezado">
+      <div>
+        <h2>Documentación del viaje</h2>
+        <p>Guías de despacho y rendición de guías asociadas al servicio.</p>
+      </div>
+
+      @if (permissionService.tienePermiso('VIAJES_EDITAR')) {
+        <button
+          type="button"
+          class="btn-toggle-formulario"
+          [class.activo]="mostrarFormularioCarga"
+          (click)="toggleFormularioCarga()"
+          [title]="mostrarFormularioCarga ? 'Ocultar formulario de carga' : 'Cargar nuevo documento'">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+            <polyline points="17 8 12 3 7 8"/>
+            <line x1="12" y1="3" x2="12" y2="15"/>
+          </svg>
+          
+          <span>{{ mostrarFormularioCarga ? 'Cancelar carga' : 'Cargar documento' }}</span>
+
+          <svg
+            xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            class="flecha-toggle">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </button>
+      }
+    </div>
+
+    @if (permissionService.tienePermiso('VIAJES_EDITAR') && mostrarFormularioCarga) {
+        <div class="documentos-viaje-formulario animar-despliegue">
+          <div class="documentos-viaje-campo">
+            <label for="tipo-documento-viaje">Tipo de documento</label>
+            <select
+              id="tipo-documento-viaje"
+              [value]="tipoDocumentoViajeSeleccionado"
+              (change)="cambiarTipoDocumentoViaje($any($event.target).value)">
+              <option value="GuiaDespacho">Guía de despacho</option>
+              <option value="RendicionGuias">Rendición de guías</option>
+            </select>
+          </div>
+  
+          <div class="documentos-viaje-campo archivo-viaje-campo">
+            <label>Archivo (PDF, JPG o PNG; máx. 10 MB)</label>
+  
+            @if (!archivoViajeSeleccionado) {
+              <div class="archivo-input-wrapper-viaje">
+                <input
+                  id="archivo-viaje"
+                  type="file"
+                  accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png"
+                  (change)="seleccionarArchivoViaje($event)">
+              </div>
+            } @else {
+              <div class="archivo-seleccionado-card-viaje">
+                <div class="archivo-seleccionado-info-viaje">
+                  <span class="badge-formato-icon-viaje" [ngClass]="obtenerFormatoArchivoViaje(archivoViajeSeleccionado.name).toLowerCase()">
+                    {{ obtenerFormatoArchivoViaje(archivoViajeSeleccionado.name) }}
+                  </span>
+                  <span class="nombre-archivo-txt-viaje" [title]="archivoViajeSeleccionado.name">
+                    {{ archivoViajeSeleccionado.name }}
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  class="btn-quitar-seleccion-card-viaje"
+                  (click)="quitarArchivoViajeSeleccionado()"
+                  title="Quitar archivo">
+                  ✕
+                </button>
+              </div>
+            }
+          </div>
+  
+          <button
+            type="button"
+            class="btn-subir-documento-viaje"
+            [disabled]="procesandoDocumentoViaje || !archivoViajeSeleccionado"
+            (click)="subirDocumentoViaje()">
+            @if (procesandoDocumentoViaje) {
+              <span>Procesando...</span>
+            } @else {
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              <span>Subir documento</span>
+            }
+          </button>
+        </div>
+  
+        @if (tipoDocumentoViajeSeleccionado === 'RendicionGuias' && rendicionGuias) {
+          <p class="documentos-viaje-nota">
+            Ya existe una rendición de guías. Al subir otra, se reemplazará la actual.
+          </p>
+        }
+    }
+
+    @if (errorDocumentosViaje) {
+      <div class="documentos-viaje-error">
+        <span>{{ errorDocumentosViaje }}</span>
+        <button type="button" (click)="cargarDocumentosViaje()">Reintentar</button>
+      </div>
+    }
+
+    @if (cargandoDocumentosViaje) {
+      <p class="documentos-viaje-estado">Cargando documentos...</p>
+    } @else {
+      <!-- GRUPO: GUÍAS DE DESPACHO -->
+      <div class="documentos-viaje-grupo">
+        <h3>Guías de despacho</h3>
+
+        @if (guiasDespacho.length > 0) {
+          <div class="documentos-viaje-lista">
+            @for (documento of guiasDespacho; track documento.id) {
+              <article class="documento-viaje-item">
+                <div class="documento-viaje-icono">
+                  <span class="badge-formato-icon-viaje" [ngClass]="obtenerFormatoArchivoViaje(documento.nombreArchivo).toLowerCase()">
+                    {{ obtenerFormatoArchivoViaje(documento.nombreArchivo) }}
+                  </span>
+                </div>
+
+                <div class="documento-viaje-info">
+                  <strong>{{ documento.nombreArchivo }}</strong>
+                  <span>
+                    Cargado: {{ documento.fechaCarga | date:'dd/MM/yyyy HH:mm' }}
+                  </span>
+                </div>
+                <span class="documento-estado cargado"> <span class="punto-estado"></span> Cargado </span>
+                <div class="documento-viaje-acciones">
+                  <button
+                    type="button"
+                    class="btn-viaje-accion btn-ver"
+                    (click)="previsualizarDocumentoViaje(documento)"
+                    title="Previsualizar documento">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    <span>Ver</span>
+                  </button>
+                  <button
+                    type="button"
+                    class="btn-viaje-accion btn-descargar"
+                    (click)="descargarDocumentoViaje(documento)"
+                    title="Descargar documento">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    <span>Descargar</span>
+                  </button>
+
+                  @if (permissionService.tienePermiso('VIAJES_EDITAR')) {
+                    <button
+                      type="button"
+                      class="btn-viaje-accion btn-eliminar-documento-viaje"
+                      [disabled]="procesandoDocumentoViaje"
+                      (click)="eliminarDocumentoViaje(documento)"
+                      title="Eliminar documento">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                    </button>
+                  }
+                </div>
+              </article>
+            }
+          </div>
+        } @else {
+            <span class="documento-estado pendiente">
+              <span class="punto-estado"></span> Pendiente
+            </span>
+            <p class="documentos-viaje-vacio">No hay guías de despacho cargadas.</p>
+        }
+      </div>
+
+      <!-- GRUPO: RENDICIÓN DE GUÍAS -->
+      <div class="documentos-viaje-grupo">
+        <h3>Rendición de guías</h3>
+
+        @if (rendicionGuias; as rendicion) {
+          <article class="documento-viaje-item">
+            <div class="documento-viaje-icono">
+              <span class="badge-formato-icon-viaje" [ngClass]="obtenerFormatoArchivoViaje(rendicion.nombreArchivo).toLowerCase()">
+                {{ obtenerFormatoArchivoViaje(rendicion.nombreArchivo) }}
+              </span>
+            </div>
+
+            <div class="documento-viaje-info">
+              <strong>{{ rendicion.nombreArchivo }}</strong>
+              <span>
+                Cargado: {{ rendicion.fechaCarga | date:'dd/MM/yyyy HH:mm' }}
+              </span>
+            </div>
+            <span class="documento-estado cargado"> <span class="punto-estado"></span> Cargado </span>
+            <div class="documento-viaje-acciones">
+              <button
+                type="button"
+                class="btn-viaje-accion btn-ver"
+                (click)="previsualizarDocumentoViaje(rendicion)"
+                title="Previsualizar documento">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                <span>Ver</span>
+              </button>
+              <button
+                type="button"
+                class="btn-viaje-accion btn-descargar"
+                (click)="descargarDocumentoViaje(rendicion)"
+                title="Descargar documento">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                <span>Descargar</span>
+              </button>
+
+              @if (permissionService.tienePermiso('VIAJES_EDITAR')) {
+                <button
+                  type="button"
+                  class="btn-viaje-accion btn-eliminar-documento-viaje"
+                  [disabled]="procesandoDocumentoViaje"
+                  (click)="eliminarDocumentoViaje(rendicion)"
+                  title="Eliminar documento">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                </button>
+              }
+            </div>
+          </article>
+        } @else {
+            <span class="documento-estado pendiente">
+              <span class="punto-estado"></span> Pendiente
+            </span>
+            <p class="documentos-viaje-vacio">No hay rendición de guías cargada.</p>
+        }
+      </div>
+    }
+  </div>
+
   <!-- ========================= -->
   <!-- MAPA DEL RECORRIDO -->
   <!-- ========================= -->
@@ -545,3 +778,81 @@
 </div>
 
 }
+
+
+<!-- =============================== -->
+<!-- MODAL PREVISUALIZACIÓN DOCUMENTO -->
+<!-- =============================== -->
+
+@if (modalPrevisualizacionViajeVisible) {
+  <div
+    class="modal-overlay modal-previsualizacion-viaje-overlay"
+    (click)="cerrarPrevisualizacionViaje()">
+
+    <div
+      class="modal-previsualizacion-viaje"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Previsualización del documento"
+      (click)="$event.stopPropagation()">
+
+      <div class="modal-previsualizacion-viaje-header">
+        <div>
+          <h2>Previsualización del documento</h2>
+          <p>{{ tituloPrevisualizacionViaje }}</p>
+        </div>
+
+        <button
+          type="button"
+          class="btn-cerrar-previsualizacion-viaje"
+          aria-label="Cerrar"
+          (click)="cerrarPrevisualizacionViaje()">
+          &times;
+        </button>
+      </div>
+
+      <div class="modal-previsualizacion-viaje-cuerpo">
+        @if (cargandoPrevisualizacionViaje) {
+          <div class="documentos-viaje-estado">
+            Cargando documento...
+          </div>
+        } @else if (esPdfPrevisualizacionViaje && urlPrevisualizacionViaje) {
+          <iframe
+            class="visor-pdf-viaje"
+            [src]="urlPrevisualizacionViaje"
+            [title]="tituloPrevisualizacionViaje">
+          </iframe>
+        } @else if (urlImagenPrevisualizacionViaje) {
+          <div class="visor-imagen-viaje-contenedor">
+            <img
+              class="visor-imagen-viaje"
+              [src]="urlImagenPrevisualizacionViaje"
+              [alt]="tituloPrevisualizacionViaje">
+          </div>
+        } @else {
+          <div class="documentos-viaje-estado">
+            No hay una previsualización disponible.
+          </div>
+        }
+      </div>
+
+      <!-- <div class="modal-previsualizacion-viaje-footer">
+        <button
+          type="button"
+          class="btn-modal-secondary"
+          (click)="cerrarPrevisualizacionViaje()">
+          Cerrar
+        </button>
+
+        <button
+          type="button"
+          class="btn-modal-primary"
+          [disabled]="cargandoPrevisualizacionViaje"
+          (click)="descargarDesdePrevisualizacionViaje()">
+          Descargar documento
+        </button>
+      </div> -->
+    </div>
+  </div>
+}
+

@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, inject } from '@angular/core';
-import { DatePipe, DecimalPipe } from '@angular/common';
+import { DatePipe, DecimalPipe, NgClass } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as L from 'leaflet';
 
@@ -8,12 +8,17 @@ import { Viaje } from '../../../core/models/viaje';
 import { PermissionService } from '../../../core/services/permission.service';
 import { PrecioDieselHistorico } from '../../../core//models/precio-diesel-historico';
 
-// Importación del JSON de clientes frecuentes
 import * as clientesData from '../../../core/assets/json/clientes-frecuentes.json';
+
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import {
+  DocumentoViaje,
+  TipoDocumentoViaje
+} from '../../../core/models/documento-viaje';
 
 @Component({
   selector: 'app-viaje-detail',
-  imports: [DatePipe, DecimalPipe],
+  imports: [DatePipe, DecimalPipe, NgClass],
   templateUrl: './viaje-detail.html',
   styleUrl: './viaje-detail.scss'
 })
@@ -55,6 +60,42 @@ export class ViajeDetail implements OnInit, OnDestroy {
   error = '';
 
   // =========================
+  // DOCUMENTACIÓN DEL VIAJE
+  // =========================
+
+  documentosViaje: DocumentoViaje[] = [];
+  cargandoDocumentosViaje = false;
+  procesandoDocumentoViaje = false;
+  errorDocumentosViaje = '';
+
+  tipoDocumentoViajeSeleccionado: TipoDocumentoViaje = 'GuiaDespacho';
+  archivoViajeSeleccionado: File | null = null;
+
+  modalPrevisualizacionViajeVisible = false;
+  cargandoPrevisualizacionViaje = false;
+  documentoPrevisualizacionViaje: DocumentoViaje | null = null;
+  tituloPrevisualizacionViaje = '';
+  urlPrevisualizacionViaje: SafeResourceUrl | null = null;
+  urlImagenPrevisualizacionViaje: string | null = null;
+  esPdfPrevisualizacionViaje = false;
+  mostrarFormularioCarga = false;
+
+  private readonly sanitizer = inject(DomSanitizer);
+  private urlPrevisualizacionViajeCruda: string | null = null;
+
+  get guiasDespacho(): DocumentoViaje[] {
+    return this.documentosViaje.filter(
+      documento => documento.tipoDocumento === 'GuiaDespacho'
+    );
+  }
+
+  get rendicionGuias(): DocumentoViaje | null {
+    return this.documentosViaje.find(
+      documento => documento.tipoDocumento === 'RendicionGuias'
+    ) ?? null;
+  }
+
+  // =========================
   // MAPA DEL RECORRIDO
   // =========================
 
@@ -91,6 +132,7 @@ export class ViajeDetail implements OnInit, OnDestroy {
 
       next: viaje => {
         this.viaje = viaje;
+        this.cargarDocumentosViaje();
         this.cargarPrecioDieselHistorico(viaje.fecha);
         this.cargando = false;
 
@@ -117,6 +159,7 @@ export class ViajeDetail implements OnInit, OnDestroy {
   // =========================
 
   ngOnDestroy(): void {
+    this.cerrarPrevisualizacionViaje();
 
     if (this.mapaRecorrido) {
       this.mapaRecorrido.remove();
@@ -698,7 +741,6 @@ export class ViajeDetail implements OnInit, OnDestroy {
     });
   }
 
-
   private cargarPrecioDieselHistorico(fechaViaje: string | Date): void {
     this.cargandoPrecioDiesel = true;
 
@@ -748,7 +790,7 @@ export class ViajeDetail implements OnInit, OnDestroy {
   obtenerLineasObservaciones(
     observaciones: string
   ): { titulo: string | null; contenido: string }[] {
-  
+
     const titulos = [
       'Nota de venta',
       'Orden de compra',
@@ -760,63 +802,388 @@ export class ViajeDetail implements OnInit, OnDestroy {
       'Este servicio incluye la guía',
       'Este servicio incluye la guia'
     ];
-  
+
     const lineas = observaciones
       .split(/\r?\n/)
       .map(linea => linea.trim())
       .filter(linea => linea.length > 0);
-  
+
     return lineas.map(linea => {
-  
+
       // Buscar si la línea comienza con alguno de los títulos conocidos
       const tituloEncontrado = titulos.find(titulo => {
-  
+
         const regex = new RegExp(
           `^${titulo.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*: ?`,
           'i'
         );
-  
+
         return regex.test(linea);
       });
-  
+
       if (tituloEncontrado) {
-  
+
         const regex = new RegExp(
           `^${tituloEncontrado.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*: ?`,
           'i'
         );
-  
+
         const contenido = linea
           .replace(regex, '')
           .trim();
-  
+
         return {
           titulo: tituloEncontrado,
           contenido
         };
       }
-  
+
       // Compatibilidad con cualquier otro texto que venga como "Título: contenido"
       const coincidencia = linea.match(
         /^([^:]+):\s*(.*)$/
       );
-  
+
       if (coincidencia) {
-  
+
         return {
           titulo: coincidencia[1].trim(),
           contenido: coincidencia[2].trim()
         };
-  
+
       }
-  
+
       // Línea sin título
       return {
         titulo: null,
         contenido: linea
       };
-  
+
     });
+  }
+
+  cargarDocumentosViaje(): void {
+    if (!this.viaje) {
+      return;
+    }
+
+    this.cargandoDocumentosViaje = true;
+    this.errorDocumentosViaje = '';
+
+    this.api.getDocumentosViaje(this.viaje.id).subscribe({
+      next: documentos => {
+        this.documentosViaje = documentos;
+        this.cargandoDocumentosViaje = false;
+        this.mostrarFormularioCarga = false;
+      },
+      error: error => {
+        console.error('Error al cargar documentos del viaje:', error);
+        this.errorDocumentosViaje =
+          'No fue posible cargar los documentos del viaje.';
+        this.cargandoDocumentosViaje = false;
+      }
+    });
+  }
+
+  cambiarTipoDocumentoViaje(tipo: TipoDocumentoViaje): void {
+    this.tipoDocumentoViajeSeleccionado = tipo;
+    this.archivoViajeSeleccionado = null;
+
+    const input = document.getElementById(
+      'archivo-viaje'
+    ) as HTMLInputElement | null;
+
+    if (input) {
+      input.value = '';
+    }
+  }
+
+  seleccionarArchivoViaje(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const archivo = input.files?.[0] ?? null;
+
+    this.archivoViajeSeleccionado = null;
+
+    if (!archivo) {
+      return;
+    }
+
+    const extensionValida = /\.(pdf|jpe?g|png)$/i.test(archivo.name);
+    const tipoValido = [
+      'application/pdf',
+      'image/jpeg',
+      'image/png'
+    ].includes(archivo.type) || extensionValida;
+
+    if (!tipoValido) {
+      input.value = '';
+      this.mostrarErrorDocumentoViaje(
+        'Formato no permitido',
+        'Selecciona un archivo PDF, JPG, JPEG o PNG.'
+      );
+      return;
+    }
+
+    if (archivo.size > 10 * 1024 * 1024) {
+      input.value = '';
+      this.mostrarErrorDocumentoViaje(
+        'Archivo demasiado grande',
+        'El tamaño máximo permitido es de 10 MB.'
+      );
+      return;
+    }
+
+    this.archivoViajeSeleccionado = archivo;
+  }
+
+  subirDocumentoViaje(): void {
+    if (!this.viaje || !this.archivoViajeSeleccionado) {
+      this.mostrarErrorDocumentoViaje(
+        'Falta seleccionar un archivo',
+        'Selecciona el documento que deseas cargar.'
+      );
+      return;
+    }
+
+    this.procesandoDocumentoViaje = true;
+    this.errorDocumentosViaje = '';
+
+    this.api.subirDocumentoViaje(
+      this.viaje.id,
+      this.tipoDocumentoViajeSeleccionado,
+      this.archivoViajeSeleccionado
+    ).subscribe({
+      next: documento => {
+        this.procesandoDocumentoViaje = false;
+        this.archivoViajeSeleccionado = null;
+
+        const input = document.getElementById(
+          'archivo-viaje'
+        ) as HTMLInputElement | null;
+
+        if (input) {
+          input.value = '';
+        }
+
+        this.cargarDocumentosViaje();
+
+        this.modalExitoTitulo = 'Documento cargado';
+        this.modalExitoMensaje =
+          `El archivo "${documento.nombreArchivo}" se guardó correctamente.`;
+        this.modalExitoVisible = true;
+      },
+      error: error => {
+        console.error('Error al subir documento del viaje:', error);
+        this.procesandoDocumentoViaje = false;
+
+        const mensaje =
+          typeof error?.error === 'string'
+            ? error.error
+            : error?.error?.mensaje ||
+            'No fue posible cargar el documento.';
+
+        this.mostrarErrorDocumentoViaje(
+          'Error al cargar documento',
+          mensaje
+        );
+      }
+    });
+  }
+
+  descargarDocumentoViaje(documento: DocumentoViaje): void {
+    if (!this.viaje) {
+      return;
+    }
+
+    this.api.descargarDocumentoViaje(
+      this.viaje.id,
+      documento.id
+    ).subscribe({
+      next: blob => {
+        const url = URL.createObjectURL(blob);
+        const enlace = document.createElement('a');
+
+        enlace.href = url;
+        enlace.download = documento.nombreArchivo;
+        document.body.appendChild(enlace);
+        enlace.click();
+        enlace.remove();
+
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+      },
+      error: error => {
+        console.error('Error al descargar documento del viaje:', error);
+        this.mostrarErrorDocumentoViaje(
+          'Error al descargar',
+          'No fue posible descargar el documento seleccionado.'
+        );
+      }
+    });
+  }
+
+  eliminarDocumentoViaje(documento: DocumentoViaje): void {
+    if (!this.viaje || this.procesandoDocumentoViaje) {
+      return;
+    }
+
+    const confirmar = window.confirm(
+      `¿Deseas eliminar el documento "${documento.nombreArchivo}"?`
+    );
+
+    if (!confirmar) {
+      return;
+    }
+
+    this.procesandoDocumentoViaje = true;
+
+    this.api.eliminarDocumentoViaje(
+      this.viaje.id,
+      documento.id
+    ).subscribe({
+      next: () => {
+        this.procesandoDocumentoViaje = false;
+        this.documentosViaje = this.documentosViaje.filter(
+          item => item.id !== documento.id
+        );
+
+        this.modalExitoTitulo = 'Documento eliminado';
+        this.modalExitoMensaje =
+          'El documento fue eliminado correctamente.';
+        this.modalExitoVisible = true;
+      },
+      error: error => {
+        console.error('Error al eliminar documento del viaje:', error);
+        this.procesandoDocumentoViaje = false;
+
+        this.mostrarErrorDocumentoViaje(
+          'Error al eliminar',
+          'No fue posible eliminar el documento seleccionado.'
+        );
+      }
+    });
+  }
+
+  quitarArchivoViajeSeleccionado(): void {
+    this.archivoViajeSeleccionado = null;
+    const inputElement = document.getElementById('archivo-viaje') as HTMLInputElement;
+    if (inputElement) {
+      inputElement.value = '';
+    }
+  }
+
+  obtenerFormatoArchivoViaje(nombreArchivo: string | undefined): string {
+    if (!nombreArchivo) return 'DOC';
+    
+    const ext = nombreArchivo.split('.').pop()?.toUpperCase() || '';
+    if (['PDF'].includes(ext)) return 'PDF';
+    if (['JPG', 'JPEG'].includes(ext)) return 'JPG';
+    if (['PNG'].includes(ext)) return 'PNG';
+    
+    return ext.substring(0, 4) || 'DOC';
+  }
+
+  previsualizarDocumentoViaje(documento: DocumentoViaje): void {
+    if (!this.viaje || this.cargandoPrevisualizacionViaje) {
+      return;
+    }
+
+    this.liberarUrlPrevisualizacionViaje();
+
+    this.documentoPrevisualizacionViaje = documento;
+    this.tituloPrevisualizacionViaje = documento.nombreArchivo;
+
+    const contentType = documento.contentType?.toLowerCase() ?? '';
+
+    this.esPdfPrevisualizacionViaje =
+      contentType === 'application/pdf' ||
+      documento.nombreArchivo.toLowerCase().endsWith('.pdf');
+
+    this.modalPrevisualizacionViajeVisible = true;
+    this.cargandoPrevisualizacionViaje = true;
+
+    this.api.descargarDocumentoViaje(
+      this.viaje.id,
+      documento.id
+    ).subscribe({
+      next: blob => {
+        const tipo = contentType || blob.type || 'application/octet-stream';
+        const blobVisualizacion = new Blob([blob], { type: tipo });
+        const url = URL.createObjectURL(blobVisualizacion);
+
+        this.urlPrevisualizacionViajeCruda = url;
+
+        if (this.esPdfPrevisualizacionViaje) {
+          this.urlPrevisualizacionViaje =
+            this.sanitizer.bypassSecurityTrustResourceUrl(url);
+        } else if (
+          tipo.startsWith('image/') ||
+          /\.(jpe?g|png)$/i.test(documento.nombreArchivo)
+        ) {
+          this.urlImagenPrevisualizacionViaje = url;
+        } else {
+          this.cerrarPrevisualizacionViaje();
+
+          this.mostrarErrorDocumentoViaje(
+            'Formato no compatible',
+            'Este archivo no se puede previsualizar. Puedes descargarlo.'
+          );
+          return;
+        }
+
+        this.cargandoPrevisualizacionViaje = false;
+      },
+      error: error => {
+        console.error('Error al previsualizar documento del viaje:', error);
+        this.cerrarPrevisualizacionViaje();
+
+        this.mostrarErrorDocumentoViaje(
+          'Error al previsualizar',
+          'No fue posible cargar el documento. Intenta descargarlo.'
+        );
+      }
+    });
+  }
+
+  cerrarPrevisualizacionViaje(): void {
+    this.modalPrevisualizacionViajeVisible = false;
+    this.cargandoPrevisualizacionViaje = false;
+    this.liberarUrlPrevisualizacionViaje();
+
+    this.documentoPrevisualizacionViaje = null;
+    this.tituloPrevisualizacionViaje = '';
+    this.urlPrevisualizacionViaje = null;
+    this.urlImagenPrevisualizacionViaje = null;
+    this.esPdfPrevisualizacionViaje = false;
+  }
+
+  descargarDesdePrevisualizacionViaje(): void {
+    if (this.documentoPrevisualizacionViaje) {
+      this.descargarDocumentoViaje(
+        this.documentoPrevisualizacionViaje
+      );
+    }
+  }
+
+  toggleFormularioCarga(): void {
+    this.mostrarFormularioCarga = !this.mostrarFormularioCarga;
+  }
+
+  private liberarUrlPrevisualizacionViaje(): void {
+    if (this.urlPrevisualizacionViajeCruda) {
+      URL.revokeObjectURL(this.urlPrevisualizacionViajeCruda);
+      this.urlPrevisualizacionViajeCruda = null;
+    }
+
+    this.urlPrevisualizacionViaje = null;
+    this.urlImagenPrevisualizacionViaje = null;
+  }
+
+  private mostrarErrorDocumentoViaje(
+    titulo: string,
+    mensaje: string
+  ): void {
+    this.modalErrorTitulo = titulo;
+    this.modalErrorMensaje = mensaje;
+    this.modalErrorVisible = true;
   }
 
   // =========================

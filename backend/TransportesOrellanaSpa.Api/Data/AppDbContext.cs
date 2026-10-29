@@ -19,6 +19,9 @@ public class AppDbContext : DbContext
     public DbSet<GastoRemolque> GastosRemolque { get; set; }
     public DbSet<GastoConductor> GastosConductor { get; set; }
     public DbSet<DocumentoCamion> DocumentosCamion { get; set; } = null!;
+    public DbSet<DocumentoViaje> DocumentosViaje { get; set; }
+    public DbSet<DocumentoConductor> DocumentosConductor { get; set; } = null!;
+    public DbSet<DocumentoRemolque> DocumentosRemolque { get; set; } = null!;
 
     // =========================
     // AUTENTICACIÓN Y PERMISOS
@@ -33,6 +36,146 @@ public class AppDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+
+        // ===================================
+        // CONDUCTOR - DOCUMENTOS
+        // ===================================
+
+        modelBuilder.Entity<DocumentoConductor>()
+            .ToTable("DocumentoConductor");
+
+        modelBuilder.Entity<DocumentoConductor>()
+            .HasOne(d => d.Conductor)
+            .WithMany(c => c.Documentos)
+            .HasForeignKey(d => d.ConductorId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<DocumentoConductor>()
+            .Property(d => d.TipoDocumento)
+            .HasMaxLength(50)
+            .IsRequired();
+
+        modelBuilder.Entity<DocumentoConductor>()
+            .Property(d => d.NombreArchivo)
+            .HasMaxLength(255)
+            .IsRequired();
+
+        modelBuilder.Entity<DocumentoConductor>()
+            .Property(d => d.BlobName)
+            .HasMaxLength(500)
+            .IsRequired();
+
+        modelBuilder.Entity<DocumentoConductor>()
+            .Property(d => d.ContentType)
+            .HasMaxLength(150)
+            .IsRequired();
+
+        modelBuilder.Entity<DocumentoConductor>()
+            .Property(d => d.Periodo)
+            .HasMaxLength(7);
+
+        modelBuilder.Entity<DocumentoConductor>()
+            .HasIndex(d => d.BlobName)
+            .IsUnique();
+
+        modelBuilder.Entity<DocumentoConductor>()
+            .HasIndex(d => new
+            {
+                d.ConductorId,
+                d.TipoDocumento,
+                d.Periodo
+            });
+
+
+        // ===================================
+        // REMOLQUE - DOCUMENTOS
+        // ===================================
+
+        modelBuilder.Entity<DocumentoRemolque>()
+            .ToTable("DocumentoRemolque");
+
+        modelBuilder.Entity<DocumentoRemolque>()
+            .HasOne(d => d.Remolque)
+            .WithMany(r => r.Documentos)
+            .HasForeignKey(d => d.RemolqueId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<DocumentoRemolque>()
+            .Property(d => d.TipoDocumento)
+            .HasMaxLength(50)
+            .IsRequired();
+
+        modelBuilder.Entity<DocumentoRemolque>()
+            .Property(d => d.NombreArchivo)
+            .HasMaxLength(255)
+            .IsRequired();
+
+        modelBuilder.Entity<DocumentoRemolque>()
+            .Property(d => d.BlobName)
+            .HasMaxLength(500)
+            .IsRequired();
+
+        modelBuilder.Entity<DocumentoRemolque>()
+            .Property(d => d.ContentType)
+            .HasMaxLength(150)
+            .IsRequired();
+
+        // Un documento por tipo para cada remolque.
+        modelBuilder.Entity<DocumentoRemolque>()
+            .HasIndex(d => new
+            {
+                d.RemolqueId,
+                d.TipoDocumento
+            })
+            .IsUnique();
+
+        modelBuilder.Entity<DocumentoRemolque>()
+            .HasIndex(d => d.BlobName)
+            .IsUnique();
+
+        // =========================
+        // DOCUMENTO - VIAJE
+        // =========================
+
+        modelBuilder.Entity<DocumentoViaje>()
+            .ToTable("DocumentoViaje");
+
+        modelBuilder.Entity<DocumentoViaje>()
+            .HasOne(d => d.Viaje)
+            .WithMany(v => v.Documentos)
+            .HasForeignKey(d => d.ViajeId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<DocumentoViaje>()
+            .Property(d => d.TipoDocumento)
+            .HasConversion<string>();
+
+        modelBuilder.Entity<DocumentoViaje>()
+            .Property(d => d.NombreArchivo)
+            .HasMaxLength(255)
+            .IsRequired();
+
+        modelBuilder.Entity<DocumentoViaje>()
+            .Property(d => d.BlobName)
+            .HasMaxLength(500)
+            .IsRequired();
+
+        modelBuilder.Entity<DocumentoViaje>()
+            .Property(d => d.ContentType)
+            .HasMaxLength(150)
+            .IsRequired();
+
+        modelBuilder.Entity<DocumentoViaje>()
+            .HasIndex(d => d.BlobName)
+            .IsUnique();
+
+        modelBuilder.Entity<DocumentoViaje>()
+            .HasIndex(d => new
+            {
+                d.ViajeId,
+                d.TipoDocumento
+            });
 
         // ===================================
         // CAMIÓN - DOCUMENTOS

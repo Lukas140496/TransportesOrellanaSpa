@@ -1,49 +1,31 @@
 <section class="remolque-detail">
   @if (cargando) {
-
   <div class="estado">
     <p>Cargando información del remolque...</p>
   </div>
-
   } @if (error) {
-
   <div class="estado error">
     <p>{{ error }}</p>
-
     <button type="button" (click)="volver()">Volver a remolques</button>
   </div>
-
   } @if (!cargando && !error && remolque) {
-
   <div class="header">
     <div>
       <span class="eyebrow">Detalle de remolque</span>
-
       <h1>{{ remolque.patente }}</h1>
-
       <p>{{ remolque.marca }} {{ remolque.modelo }}</p>
     </div>
 
     <div class="header-actions">
-        @if (permissionService.tienePermiso('REMOLQUES_EDITAR')) {
-
-            <button
-              type="button"
-              class="btn-editar"
-              (click)="editarRemolque()"
-            >
-              ✎ Editar remolque
-            </button>
-          
-        }
+      @if (permissionService.tienePermiso('REMOLQUES_EDITAR')) {
+      <button type="button" class="btn-editar" (click)="editarRemolque()">✎ Editar remolque</button>
+      }
 
       <button type="button" class="btn-volver" (click)="volver()">← Volver</button>
     </div>
   </div>
 
   <div class="grid">
-    <!-- Información general -->
-
     <article class="card">
       <div class="card-header">
         <h2>Información general</h2>
@@ -82,8 +64,6 @@
       </div>
     </article>
 
-    <!-- Estado -->
-
     <article class="card">
       <div class="card-header">
         <h2>Estado</h2>
@@ -91,22 +71,14 @@
 
       <div class="estado-remolque">
         @if (remolque.activa) {
-
-        <span class="badge activa"> Activo </span>
-
+        <span class="badge activa">Activo</span>
         <p>El remolque se encuentra actualmente activo en el sistema.</p>
-
         } @else {
-
-        <span class="badge inactiva"> Inactivo </span>
-
+        <span class="badge inactiva">Inactivo</span>
         <p>El remolque se encuentra actualmente inactivo.</p>
-
         }
       </div>
     </article>
-
-    <!-- Camión habitual -->
 
     <article class="card camion-card">
       <div class="card-header">
@@ -114,7 +86,6 @@
       </div>
 
       @if (remolque.camionHabitual) {
-
       <div class="camion-info">
         <div class="camion-patente">
           {{ remolque.camionHabitual.patente }}
@@ -125,139 +96,320 @@
             {{ remolque.camionHabitual.marca }}
             {{ remolque.camionHabitual.modelo }}
           </strong>
-
           <p>Camión asignado habitualmente a este remolque.</p>
         </div>
       </div>
-
       } @else {
-
       <div class="sin-camion">
         <span>Sin asignación</span>
-
         <p>Este remolque no tiene un camión habitual asignado.</p>
       </div>
-
       }
     </article>
   </div>
 
+  <!-- DOCUMENTOS DEL REMOLQUE -->
+  <section class="documentos-section">
+    <div class="documentos-header">
+      <div>
+        <span class="eyebrow">Documentación</span>
+        <h2>Documentos del remolque</h2>
+        <p>Administra el permiso de circulación, el seguro y la revisión técnica.</p>
+      </div>
+
+      <button
+        type="button"
+        class="btn-recargar-documentos"
+        [disabled]="cargandoDocumentos"
+        (click)="cargarDocumentos()"
+      >
+        ↻ Actualizar
+      </button>
+    </div>
+
+    @if (cargandoDocumentos) {
+    <div class="documentos-estado">
+      <span class="spinner"></span>
+      <p>Cargando documentos...</p>
+    </div>
+    } @if (errorDocumentos) {
+    <div class="documentos-error">
+      <p>{{ errorDocumentos }}</p>
+      <button type="button" (click)="cargarDocumentos()">Reintentar</button>
+    </div>
+    } @if (!cargandoDocumentos && !errorDocumentos) {
+    <div class="documentos-grid">
+      @for (tipo of tiposDocumentos; track tipo.tipo) {
+      <article class="documento-card">
+        <div class="documento-card-header">
+          <div class="documento-icono">
+            @if (tipo.tipo === 'PermisoCirculacion') {
+            <span>PC</span>
+            } @else if (tipo.tipo === 'Seguro') {
+            <span>SE</span>
+            } @else {
+            <span>RT</span>
+            }
+          </div>
+
+          <div class="documento-titulo">
+            <h3>{{ tipo.titulo }}</h3>
+            <p>{{ tipo.descripcion }}</p>
+          </div>
+        </div>
+
+        @if (obtenerDocumento(tipo.tipo); as documento) {
+        <div class="documento-registrado">
+          <span class="documento-badge disponible">
+            <span class="punto-estado"></span>
+            Documento cargado
+          </span>
+
+          <div class="documento-archivo">
+            <span class="archivo-icono">
+              {{ esPdf(documento) ? 'PDF' : 'IMG' }}
+            </span>
+
+            <div class="archivo-info">
+              <strong [title]="documento.nombreArchivo">
+                {{ documento.nombreArchivo }}
+              </strong>
+              <span> Cargado el {{ documento.fechaCarga | date : 'dd/MM/yyyy' }} </span>
+            </div>
+          </div>
+
+          <div class="documento-acciones">
+            <button
+              type="button"
+              class="btn-documento btn-ver"
+              (click)="abrirVistaPrevia(documento)"
+            >
+              Ver
+            </button>
+
+            <button
+              type="button"
+              class="btn-documento btn-descargar"
+              (click)="descargarDocumento(documento)"
+            >
+              Descargar
+            </button>
+
+            @if (permissionService.tienePermiso('REMOLQUES_EDITAR')) {
+            <button
+              type="button"
+              class="btn-documento btn-reemplazar"
+              [disabled]="documentoSubiendo !== null"
+              (click)="abrirSelectorArchivo(tipo.tipo)"
+            >
+              @if (documentoSubiendo === tipo.tipo) { Subiendo... } @else { Reemplazar }
+            </button>
+
+            <button
+              type="button"
+              class="btn-documento btn-eliminar"
+              [disabled]="documentoEliminando === documento.id"
+              (click)="eliminarDocumento(documento)"
+            >
+              @if (documentoEliminando === documento.id) { Eliminando... } @else { Eliminar }
+            </button>
+            }
+          </div>
+        </div>
+        } @else {
+        <div class="documento-vacio">
+          <span class="documento-badge pendiente">
+            <span class="punto-estado"></span>
+            Sin documento
+          </span>
+
+          <p>Aún no se ha cargado este documento.</p>
+
+          @if (permissionService.tienePermiso('REMOLQUES_EDITAR')) {
+          <button
+            type="button"
+            class="btn-subir-documento"
+            [disabled]="documentoSubiendo !== null"
+            (click)="abrirSelectorArchivo(tipo.tipo)"
+          >
+            @if (documentoSubiendo === tipo.tipo) { Subiendo documento... } @else { + Subir
+            documento }
+          </button>
+          }
+        </div>
+        } @if (permissionService.tienePermiso('REMOLQUES_EDITAR')) {
+        <input
+          type="file"
+          class="input-archivo-oculto"
+          accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png"
+          [disabled]="documentoSubiendo !== null"
+          (change)="seleccionarArchivo(tipo.tipo, $event)"
+        />
+        }
+      </article>
+      }
+    </div>
+
+    <p class="documentos-nota">
+      Formatos permitidos: PDF, JPG, JPEG y PNG. Tamaño máximo: 10 MB por documento. Al subir un
+      documento del mismo tipo, se reemplazará el anterior.
+    </p>
+    }
+  </section>
   }
 </section>
 
-<!-- MODAL CONFIRMACIÓN ESTADO -->
+<!-- MODAL CONFIRMACIÓN DE ESTADO -->
+@if (permissionService.tienePermiso('REMOLQUES_EDITAR')) { @if (modalEstadoVisible && remolque) {
+<div class="modal-overlay" (click)="cerrarModalEstado()">
+  <div class="modal" role="alertdialog" aria-modal="true" (click)="$event.stopPropagation()">
+    <div class="modal-icon" [class.warning]="remolque.activa" [class.activate]="!remolque.activa">
+      @if (remolque.activa) { ! } @else { ✓ }
+    </div>
 
-@if (permissionService.tienePermiso('REMOLQUES_EDITAR')) {
-    
-    @if (modalEstadoVisible && remolque) {
+    <h2>@if (remolque.activa) { ¿Desactivar remolque? } @else { ¿Activar remolque? }</h2>
 
-        <div class="modal-overlay" (click)="cerrarModalEstado()">
-          <div class="modal" role="alertdialog" aria-modal="true" (click)="$event.stopPropagation()">
-            <div class="modal-icon" [class.warning]="remolque.activa" [class.activate]="!remolque.activa">
-              @if (remolque.activa) { ! } @else { ✓ }
-            </div>
-        
-            <h2>@if (remolque.activa) { ¿Desactivar remolque? } @else { ¿Activar remolque? }</h2>
-        
-            <p>
-              Estás a punto de @if (remolque.activa) { desactivar } @else { activar } el remolque
-        
-              <strong>
-                {{ remolque.patente }} </strong
-              >.
-            </p>
-        
-            <p class="modal-secondary-text">
-              @if (remolque.activa) { El remolque no será eliminado y su historial se conservará. No podrá
-              utilizarse para nuevos viajes mientras esté inactivo. } @else { El remolque volverá a estar
-              disponible para nuevos viajes. Su historial y todos sus datos se conservarán. }
-            </p>
-        
-            <div class="modal-actions">
-              <button
-                type="button"
-                class="btn-secondary"
-                [disabled]="procesandoEstado"
-                (click)="cerrarModalEstado()"
-              >
-                Cancelar
-              </button>
-        
-              @if (remolque.activa) {
-        
-              <button
-                type="button"
-                class="btn-danger"
-                [disabled]="procesandoEstado"
-                (click)="confirmarCambioEstado()"
-              >
-                @if (procesandoEstado) { Desactivando... } @else { Sí, desactivar }
-              </button>
-        
-              } @else {
-        
-              <button
-                type="button"
-                class="btn-activar"
-                [disabled]="procesandoEstado"
-                (click)="confirmarCambioEstado()"
-              >
-                @if (procesandoEstado) { Activando... } @else { Sí, activar }
-              </button>
-        
-              }
-            </div>
-          </div>
-        </div>
-        
-    }
+    <p>
+      Estás a punto de @if (remolque.activa) { desactivar } @else { activar } el remolque
+      <strong>{{ remolque.patente }}</strong
+      >.
+    </p>
 
+    <p class="modal-secondary-text">
+      @if (remolque.activa) { El remolque no será eliminado y su historial se conservará. No podrá
+      utilizarse para nuevos viajes mientras esté inactivo. } @else { El remolque volverá a estar
+      disponible para nuevos viajes. Su historial y todos sus datos se conservarán. }
+    </p>
+
+    <div class="modal-actions">
+      <button
+        type="button"
+        class="btn-secondary"
+        [disabled]="procesandoEstado"
+        (click)="cerrarModalEstado()"
+      >
+        Cancelar
+      </button>
+
+      @if (remolque.activa) {
+      <button
+        type="button"
+        class="btn-danger"
+        [disabled]="procesandoEstado"
+        (click)="confirmarCambioEstado()"
+      >
+        @if (procesandoEstado) { Desactivando... } @else { Sí, desactivar }
+      </button>
+      } @else {
+      <button
+        type="button"
+        class="btn-activar"
+        [disabled]="procesandoEstado"
+        (click)="confirmarCambioEstado()"
+      >
+        @if (procesandoEstado) { Activando... } @else { Sí, activar }
+      </button>
+      }
+    </div>
+  </div>
+</div>
+} }
+
+<!-- MODAL VISTA PREVIA DE DOCUMENTO -->
+@if (modalVistaPreviaVisible) {
+<div class="modal-overlay modal-documento-overlay" (click)="cerrarVistaPrevia()">
+  <div
+    class="modal-documento"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Vista previa del documento"
+    (click)="$event.stopPropagation()"
+  >
+    <div class="modal-documento-header">
+      <div class="modal-documento-titulo">
+        <span class="eyebrow">Documento del remolque</span>
+        <h2>{{ documentoVistaPrevia?.nombreArchivo }}</h2>
+      </div>
+
+      <button
+        type="button"
+        class="btn-cerrar-vista"
+        aria-label="Cerrar vista previa"
+        (click)="cerrarVistaPrevia()"
+      >
+        ×
+      </button>
+    </div>
+
+    <div class="modal-documento-contenido">
+      @if (cargandoVistaPrevia) {
+      <div class="documentos-estado">
+        <span class="spinner"></span>
+        <p>Cargando vista previa...</p>
+      </div>
+      } @if (errorVistaPrevia) {
+      <div class="documentos-error">
+        <p>{{ errorVistaPrevia }}</p>
+      </div>
+      } @if (!cargandoVistaPrevia && !errorVistaPrevia && documentoVistaPrevia) { @if
+      (esPdf(documentoVistaPrevia) && urlPdfSegura) {
+      <iframe class="documento-pdf" [src]="urlPdfSegura" title="Vista previa PDF"> </iframe>
+      } @else if (esImagen(documentoVistaPrevia) && urlVistaPrevia) {
+      <img
+        class="documento-imagen"
+        [src]="urlVistaPrevia"
+        [alt]="documentoVistaPrevia.nombreArchivo"
+      />
+      } @else {
+      <div class="documentos-error">
+        <p>Este tipo de archivo no admite vista previa.</p>
+      </div>
+      } }
+    </div>
+
+    <div class="modal-documento-footer">
+      @if (documentoVistaPrevia) {
+      <button
+        type="button"
+        class="btn-descargar-modal"
+        (click)="descargarDocumento(documentoVistaPrevia)"
+      >
+        Descargar archivo
+      </button>
+      }
+
+      <button type="button" class="btn-secondary" (click)="cerrarVistaPrevia()">Cerrar</button>
+    </div>
+  </div>
+</div>
 }
 
 <!-- MODAL ÉXITO -->
-
 @if (modalExitoVisible) {
-
 <div class="modal-overlay">
-  <div class="modal">
+  <div class="modal" role="alertdialog" aria-modal="true">
     <div class="modal-icon success">✓</div>
-
-    <h2>
-      {{ modalExitoTitulo }}
-    </h2>
-
-    <p>
-      {{ modalExitoMensaje }}
-    </p>
+    <h2>{{ modalExitoTitulo }}</h2>
+    <p>{{ modalExitoMensaje }}</p>
 
     <div class="modal-actions">
       <button type="button" class="btn-primary" (click)="cerrarModalExito()">Aceptar</button>
     </div>
   </div>
 </div>
-
 }
 
 <!-- MODAL ERROR -->
-
 @if (modalErrorVisible) {
-
 <div class="modal-overlay">
-  <div class="modal">
+  <div class="modal" role="alertdialog" aria-modal="true">
     <div class="modal-icon error">!</div>
-
-    <h2>
-      {{ modalErrorTitulo }}
-    </h2>
-
-    <p>
-      {{ modalErrorMensaje }}
-    </p>
+    <h2>{{ modalErrorTitulo }}</h2>
+    <p>{{ modalErrorMensaje }}</p>
 
     <div class="modal-actions">
       <button type="button" class="btn-primary" (click)="cerrarModalError()">Aceptar</button>
     </div>
   </div>
 </div>
-
 }

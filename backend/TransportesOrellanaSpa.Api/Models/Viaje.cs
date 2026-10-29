@@ -69,4 +69,6 @@ public class Viaje
     public EstadoPago EstadoPago { get; set; } = EstadoPago.Pendiente;
 
     public ICollection<Gasto> Gastos { get; set; } = new List<Gasto>();
+    public ICollection<DocumentoViaje> Documentos { get; set; }
+        = new List<DocumentoViaje>();
 }
