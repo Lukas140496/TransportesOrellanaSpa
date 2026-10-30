@@ -18,42 +18,87 @@
   <!-- ENCABEZADO -->
 
   <header class="detail-header">
-    <div>
-      <button type="button" class="btn-volver" (click)="volver()">← Volver a camiones</button>
+    <!-- LADO IZQUIERDO: Volver, Icono, Patente y Modelo -->
+    <div class="header-left">
+      <button type="button" class="btn-volver" (click)="volver()">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        Volver a camiones
+      </button>
 
-      <h1>{{ camion.patente }}</h1>
+      <div class="title-with-icon">
+        <div class="header-truck-icon">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="28"
+            height="28"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <rect x="1" y="3" width="15" height="13"></rect>
+            <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+            <circle cx="5.5" cy="18.5" r="2.5"></circle>
+            <circle cx="18.5" cy="18.5" r="2.5"></circle>
+          </svg>
+        </div>
 
-      <p>{{ camion.marca }} {{ camion.modelo }}</p>
+        <div class="title-text-group">
+          <h1>{{ camion.patente }}</h1>
+          <p class="subtitle">{{ camion.marca }} {{ camion.modelo }}</p>
+        </div>
+      </div>
     </div>
 
-    <div class="detail-actions">
-      <div class="detail-status">
-        @if (camion.revisionAlDia && camion.permisoAlDia && camion.seguroAlDia) {
-
-        <span class="estado-ok"> Documentación al día </span>
-
+    <!-- LADO DERECHO: Estados y Botones -->
+    <div class="header-right">
+      <div class="detail-status-badges">
+        @if (camion.activo) {
+        <span class="badge ok">Activo</span>
         } @else {
-
-        <span class="estado-warning"> Documentación pendiente </span>
-
-        } @if (camion.activo) {
-
-        <span class="badge ok"> Activo </span>
-
+        <span class="badge warning">Inactivo</span>
+        } @if (camion.revisionAlDia && camion.permisoAlDia && camion.seguroAlDia) {
+        <span class="estado-ok">Documentación al día</span>
         } @else {
-
-        <span class="badge warning"> Inactivo </span>
-
+        <span class="estado-warning">Documentación pendiente</span>
         }
       </div>
 
       <div class="detail-buttons">
         @if (permissionService.tienePermiso('CAMIONES_EDITAR')) {
-
-        <button type="button" class="btn-editar" (click)="editarCamion()">✎ Editar camión</button>
-
+        <button type="button" class="btn-editar" (click)="editarCamion()">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+          </svg>
+          Editar camión
+        </button>
         } @if (permissionService.tienePermiso('CAMIONES_EDITAR')) { @if (camion.activo) {
-
         <button
           type="button"
           class="btn-danger"
@@ -62,9 +107,7 @@
         >
           Desactivar camión
         </button>
-
         } @else {
-
         <button
           type="button"
           class="btn-success"
@@ -73,131 +116,620 @@
         >
           Activar camión
         </button>
-
         } }
       </div>
     </div>
   </header>
 
   <!-- INFORMACIÓN GENERAL -->
-
   <section class="card">
-    <h2>Información general</h2>
+    <div class="card-header-seccion">
+      <h2>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <rect x="1" y="3" width="15" height="13"></rect>
+          <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+          <circle cx="5.5" cy="18.5" r="2.5"></circle>
+          <circle cx="18.5" cy="18.5" r="2.5"></circle>
+        </svg>
+        Información general
+      </h2>
+      <div class="divider"></div>
+    </div>
 
-    <div class="grid">
-      <div class="dato">
-        <span class="label">Patente</span>
-        <span class="value">{{ camion.patente }}</span>
+    <div class="grid-info-general">
+      <!-- PATENTE -->
+      <div class="info-item">
+        <div class="info-icon">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <rect x="2" y="5" width="20" height="14" rx="2"></rect>
+            <line x1="6" y1="12" x2="18" y2="12"></line>
+          </svg>
+        </div>
+        <div>
+          <span class="label">Patente</span>
+          <strong class="value">{{ camion.patente }}</strong>
+        </div>
       </div>
 
-      <div class="dato">
-        <span class="label">Marca</span>
-        <span class="value">{{ camion.marca }}</span>
+      <!-- MARCA -->
+      <div class="info-item">
+        <div class="info-icon">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M12 2l9 4.9V17L12 22 3 17V6.9z"></path>
+          </svg>
+        </div>
+        <div>
+          <span class="label">Marca</span>
+          <strong class="value">{{ camion.marca }}</strong>
+        </div>
       </div>
 
-      <div class="dato">
-        <span class="label">Modelo</span>
-        <span class="value">{{ camion.modelo }}</span>
+      <!-- MODELO -->
+      <div class="info-item">
+        <div class="info-icon">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M20 7h-9"></path>
+            <path d="M14 17H5"></path>
+            <circle cx="17" cy="17" r="3"></circle>
+            <circle cx="7" cy="7" r="3"></circle>
+          </svg>
+        </div>
+        <div>
+          <span class="label">Modelo</span>
+          <strong class="value">{{ camion.modelo }}</strong>
+        </div>
       </div>
 
-      <div class="dato">
-        <span class="label">Año</span>
-        <span class="value">{{ camion.ano }}</span>
+      <!-- AÑO -->
+      <div class="info-item">
+        <div class="info-icon">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+        </div>
+        <div>
+          <span class="label">Año</span>
+          <strong class="value">{{ camion.ano }}</strong>
+        </div>
       </div>
 
-      <div class="dato">
-        <span class="label">Tipo</span>
-        <span class="value">{{ camion.tipo }}</span>
+      <!-- TIPO -->
+      <div class="info-item">
+        <div class="info-icon">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path
+              d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"
+            ></path>
+          </svg>
+        </div>
+        <div>
+          <span class="label">Tipo</span>
+          <strong class="value">{{ camion.tipo }}</strong>
+        </div>
       </div>
 
-      <div class="dato">
-        <span class="label">Color</span>
-        <span class="value">{{ camion.color }}</span>
+      <!-- COLOR -->
+      <div class="info-item">
+        <div class="info-icon">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="13.5" cy="6.5" r=".5"></circle>
+            <circle cx="17.5" cy="10.5" r=".5"></circle>
+            <circle cx="8.5" cy="7.5" r=".5"></circle>
+            <circle cx="6.5" cy="12.5" r=".5"></circle>
+            <path
+              d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c0-1.5 1-2.5 2.5-2.5 1.2 0 2.2 1 2.5 2.5 3-1.5 5-4.5 5-8 0-5.5-4.5-10-10-10z"
+            ></path>
+          </svg>
+        </div>
+        <div>
+          <span class="label">Color</span>
+          <strong class="value">{{ camion.color }}</strong>
+        </div>
       </div>
 
-      <div class="dato">
-        <span class="label">Capacidad</span>
-        <span class="value">{{ camion.capacidad }}</span>
+      <!-- CAPACIDAD -->
+      <div class="info-item">
+        <div class="info-icon">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path
+              d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"
+            ></path>
+            <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+            <line x1="12" y1="22.08" x2="12" y2="12"></line>
+          </svg>
+        </div>
+        <div>
+          <span class="label">Capacidad</span>
+          <strong class="value">{{ camion.capacidad }}</strong>
+        </div>
       </div>
     </div>
   </section>
 
   <!-- CARACTERÍSTICAS MECÁNICAS -->
-
   <section class="card">
-    <h2>Características mecánicas</h2>
+    <div class="card-header-seccion">
+      <h2>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path
+            d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"
+          ></path>
+        </svg>
+        Características mecánicas
+      </h2>
+      <div class="divider"></div>
+    </div>
 
-    <div class="grid">
-      <div class="dato">
-        <span class="label">Motor</span>
-        <span class="value">{{ camion.motor }}</span>
+    <div class="grid-info-general">
+      <!-- MOTOR -->
+      <div class="info-item">
+        <div class="info-icon">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path
+              d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"
+            ></path>
+          </svg>
+        </div>
+        <div>
+          <span class="label">Motor</span>
+          <strong class="value">{{ camion.motor }}</strong>
+        </div>
       </div>
 
-      <div class="dato">
-        <span class="label">Caballos</span>
-        <span class="value">{{ camion.caballos }}</span>
+      <!-- CABALLOS -->
+      <div class="info-item">
+        <div class="info-icon">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+          </svg>
+        </div>
+        <div>
+          <span class="label">Caballos</span>
+          <strong class="value">{{ camion.caballos }} HP</strong>
+        </div>
       </div>
 
-      <div class="dato">
-        <span class="label">Cilindrada</span>
-        <span class="value">{{ camion.cilindrada }}</span>
+      <!-- CILINDRADA -->
+      <div class="info-item">
+        <div class="info-icon">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M6 2v6h12V2H6z"></path>
+            <path d="M6 10v12h12V10H6z"></path>
+            <line x1="12" y1="6" x2="12" y2="18"></line>
+          </svg>
+        </div>
+        <div>
+          <span class="label">Cilindrada</span>
+          <strong class="value">{{ camion.cilindrada }}</strong>
+        </div>
       </div>
 
-      <div class="dato">
-        <span class="label">Transmisión</span>
-        <span class="value">{{ camion.transmision }}</span>
+      <!-- TRANSMISIÓN -->
+      <div class="info-item">
+        <div class="info-icon">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="12" cy="12" r="3"></circle>
+            <path
+              d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"
+            ></path>
+          </svg>
+        </div>
+        <div>
+          <span class="label">Transmisión</span>
+          <strong class="value">{{ camion.transmision }}</strong>
+        </div>
       </div>
     </div>
   </section>
 
   <!-- DOCUMENTACIÓN -->
-
   <section class="card">
-    <h2>Documentación</h2>
+    <div class="card-header-seccion">
+      <h2>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <polyline points="10 9 9 9 8 9"></polyline>
+        </svg>
+        Documentación
+      </h2>
+      <div class="divider"></div>
+    </div>
 
-    <div class="documentos">
-      <div class="documento">
-        <span class="label"> Revisión técnica </span>
-
-        @if (camion.revisionAlDia) {
-        <span class="badge ok">Al día</span>
-        } @else {
-        <span class="badge warning">Vencida</span>
-        }
-
-        <span class="fecha">
-          {{ camion.fechaRevisionTecnica | date : 'dd/MM/yyyy' }}
-        </span>
+    <div class="grid-info-general">
+      <!-- REVISIÓN TÉCNICA -->
+      <div class="info-item">
+        <div class="info-icon">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </svg>
+        </div>
+        <div style="flex: 1">
+          <span class="label">Revisión técnica</span>
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              margin-top: 4px;
+            "
+          >
+            <strong class="value">
+              {{
+                camion.fechaRevisionTecnica
+                  ? (camion.fechaRevisionTecnica | date : 'dd/MM/yyyy')
+                  : 'Sin registro'
+              }}
+            </strong>
+            @if (camion.revisionAlDia) {
+            <span class="badge ok">Al día</span>
+            } @else {
+            <span class="badge warning">Vencida</span>
+            }
+          </div>
+        </div>
       </div>
 
-      <div class="documento">
-        <span class="label"> Permiso de circulación </span>
-
-        @if (camion.permisoAlDia) {
-        <span class="badge ok">Al día</span>
-        } @else {
-        <span class="badge warning">Vencido</span>
-        }
-
-        <span class="fecha">
-          {{ camion.fechaPermisoCirculacion | date : 'dd/MM/yyyy' }}
-        </span>
+      <!-- PERMISO DE CIRCULACIÓN -->
+      <div class="info-item">
+        <div class="info-icon">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+        </div>
+        <div style="flex: 1">
+          <span class="label">Permiso de circulación</span>
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              margin-top: 4px;
+            "
+          >
+            <strong class="value">
+              {{
+                camion.fechaPermisoCirculacion
+                  ? (camion.fechaPermisoCirculacion | date : 'dd/MM/yyyy')
+                  : 'Sin registro'
+              }}
+            </strong>
+            @if (camion.permisoAlDia) {
+            <span class="badge ok">Al día</span>
+            } @else {
+            <span class="badge warning">Vencido</span>
+            }
+          </div>
+        </div>
       </div>
 
-      <div class="documento">
-        <span class="label"> Seguro obligatorio </span>
-
-        @if (camion.seguroAlDia) {
-        <span class="badge ok">Al día</span>
-        } @else {
-        <span class="badge warning">Vencido</span>
-        }
-
-        <span class="fecha">
-          {{ camion.fechaSeguroObligatorio | date : 'dd/MM/yyyy' }}
-        </span>
+      <!-- SEGURO OBLIGATORIO -->
+      <div class="info-item">
+        <div class="info-icon">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+          </svg>
+        </div>
+        <div style="flex: 1">
+          <span class="label">Seguro obligatorio</span>
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              margin-top: 4px;
+            "
+          >
+            <strong class="value">
+              {{
+                camion.fechaSeguroObligatorio
+                  ? (camion.fechaSeguroObligatorio | date : 'dd/MM/yyyy')
+                  : 'Sin registro'
+              }}
+            </strong>
+            @if (camion.seguroAlDia) {
+            <span class="badge ok">Al día</span>
+            } @else {
+            <span class="badge warning">Vencido</span>
+            }
+          </div>
+        </div>
       </div>
     </div>
+  </section>
+
+  <!-- CONDUCTORES -->
+  <section class="card">
+    <div class="section-header">
+      <div>
+        <h2>Conductores habituales</h2>
+
+        <p>
+          {{ camion.conductoresHabituales.length }}
+          conductor(es) asignado(s)
+        </p>
+      </div>
+    </div>
+
+    @if (camion.conductoresHabituales.length > 0) {
+
+    <div class="personas">
+      @for ( conductor of camion.conductoresHabituales; track conductor.rut ) {
+
+      <div class="persona">
+        <div class="avatar">
+          {{ conductor.nombres.charAt(0) }}
+        </div>
+
+        <div>
+          <strong>
+            {{ conductor.nombres }}
+            {{ conductor.apellidoPaterno }}
+            {{ conductor.apellidoMaterno }}
+          </strong>
+
+          <span> RUT: {{ conductor.rut }} </span>
+        </div>
+      </div>
+
+      }
+    </div>
+
+    } @else {
+
+    <p class="vacio">No hay conductores habituales asignados.</p>
+
+    }
+  </section>
+
+  <!-- REMOLQUES -->
+  <section class="card">
+    <div class="section-header">
+      <div>
+        <h2>Remolques asociados</h2>
+
+        <p>
+          {{ camion.remolques.length }}
+          remolque(s) asociado(s)
+        </p>
+      </div>
+    </div>
+
+    @if (camion.remolques.length > 0) {
+
+    <div class="remolques">
+      @for ( remolque of camion.remolques; track remolque.id ) {
+
+      <div class="remolque">
+        <div class="remolque-icon">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M21 7v8"></path>
+            <line x1="2" y1="15" x2="21" y2="15"></line>
+            <circle cx="5" cy="19" r="2"></circle>
+            <circle cx="10" cy="19" r="2"></circle>
+          </svg>
+        </div>
+
+        <div class="remolque-info">
+          <strong>
+            {{ remolque.patente }}
+          </strong>
+
+          <span>
+            {{ remolque.marca }}
+            {{ remolque.modelo }}
+          </span>
+
+          <span>
+            {{ remolque.tipo }}
+            · {{ remolque.capacidadToneladas }} Ton
+          </span>
+        </div>
+
+        @if (remolque.activa) {
+        <span class="badge ok"> Activo </span>
+        } @else {
+        <span class="badge warning"> Inactivo </span>
+        }
+      </div>
+
+      }
+    </div>
+
+    } @else {
+
+    <p class="vacio">No hay remolques asociados.</p>
+
+    }
   </section>
 
   <!-- ========================= -->
@@ -314,35 +846,32 @@
           </button>
 
           @if (permissionService.tienePermiso('CAMIONES_EDITAR')) {
-            <!-- Botón Eliminar -->
-            <button
-                type="button"
-                class="btn-documento btn-eliminar"
-                (click)="eliminarDocumento(item.tipo)"
-                [disabled]="subiendoDocumento || eliminandoDocumento"
-                title="Eliminar documento"
+          <!-- Botón Eliminar -->
+          <button
+            type="button"
+            class="btn-documento btn-eliminar"
+            (click)="eliminarDocumento(item.tipo)"
+            [disabled]="subiendoDocumento || eliminandoDocumento"
+            title="Eliminar documento"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
             >
-                <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                >
-                <polyline points="3 6 5 6 21 6" />
-                <path
-                    d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
-                />
-                </svg>
-            </button>
-          } 
-        } 
-        
-        @if (permissionService.tienePermiso('CAMIONES_EDITAR')) {
+              <polyline points="3 6 5 6 21 6" />
+              <path
+                d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
+              />
+            </svg>
+          </button>
+          } } @if (permissionService.tienePermiso('CAMIONES_EDITAR')) {
           <!-- Botón Subir / Reemplazar -->
           <label
             class="btn-documento btn-subir"
@@ -373,7 +902,7 @@
               hidden
             />
           </label>
-        }
+          }
         </div>
       </article>
       }
@@ -397,106 +926,6 @@
       </svg>
       <span>Formatos permitidos: PDF, JPG y PNG. Tamaño máximo: 10 MB.</span>
     </div>
-    }
-  </section>
-
-  <!-- CONDUCTORES -->
-
-  <section class="card">
-    <div class="section-header">
-      <div>
-        <h2>Conductores habituales</h2>
-
-        <p>
-          {{ camion.conductoresHabituales.length }}
-          conductor(es) asignado(s)
-        </p>
-      </div>
-    </div>
-
-    @if (camion.conductoresHabituales.length > 0) {
-
-    <div class="personas">
-      @for ( conductor of camion.conductoresHabituales; track conductor.rut ) {
-
-      <div class="persona">
-        <div class="avatar">
-          {{ conductor.nombres.charAt(0) }}
-        </div>
-
-        <div>
-          <strong>
-            {{ conductor.nombres }}
-            {{ conductor.apellidoPaterno }}
-            {{ conductor.apellidoMaterno }}
-          </strong>
-
-          <span> RUT: {{ conductor.rut }} </span>
-        </div>
-      </div>
-
-      }
-    </div>
-
-    } @else {
-
-    <p class="vacio">No hay conductores habituales asignados.</p>
-
-    }
-  </section>
-
-  <!-- REMOLQUES -->
-
-  <section class="card">
-    <div class="section-header">
-      <div>
-        <h2>Remolques asociados</h2>
-
-        <p>
-          {{ camion.remolques.length }}
-          remolque(s) asociado(s)
-        </p>
-      </div>
-    </div>
-
-    @if (camion.remolques.length > 0) {
-
-    <div class="remolques">
-      @for ( remolque of camion.remolques; track remolque.id ) {
-
-      <div class="remolque">
-        <div class="remolque-icon">🛞</div>
-
-        <div class="remolque-info">
-          <strong>
-            {{ remolque.patente }}
-          </strong>
-
-          <span>
-            {{ remolque.marca }}
-            {{ remolque.modelo }}
-          </span>
-
-          <span>
-            {{ remolque.tipo }}
-            · {{ remolque.capacidadToneladas }} Ton
-          </span>
-        </div>
-
-        @if (remolque.activa) {
-        <span class="badge ok"> Activo </span>
-        } @else {
-        <span class="badge warning"> Inactivo </span>
-        }
-      </div>
-
-      }
-    </div>
-
-    } @else {
-
-    <p class="vacio">No hay remolques asociados.</p>
-
     }
   </section>
 

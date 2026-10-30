@@ -105,96 +105,107 @@
 
       <div class="cards inventory-cards">
         <!-- CAMIONES -->
-
-        <div class="card">
+        <div class="card clickable-card" routerLink="/camiones">
           <div class="card-top">
-            <div class="card-icon truck-icon">🚛</div>
+            <div class="card-icon truck-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="1" y="3" width="15" height="13"></rect>
+                <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                <circle cx="18.5" cy="18.5" r="2.5"></circle>
+              </svg>
+            </div>
 
             <span class="card-label"> Camiones </span>
           </div>
 
           @if (cargando) {
-
-          <div class="skeleton-value"></div>
-
+            <div class="skeleton-value"></div>
           } @else {
-
-          <strong class="card-value">
-            {{ resumen?.camiones ?? 0 }}
-          </strong>
-
+            <strong class="card-value">
+              {{ resumen?.camiones ?? 0 }}
+            </strong>
           }
 
           <span class="card-description"> Vehículos registrados </span>
         </div>
 
         <!-- CONDUCTORES -->
-
-        <div class="card">
+        <div class="card clickable-card" routerLink="/conductores">
           <div class="card-top">
-            <div class="card-icon driver-icon">👤</div>
+            <div class="card-icon driver-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                <circle cx="12" cy="7" r="4"></circle>
+              </svg>
+            </div>
 
             <span class="card-label"> Conductores </span>
           </div>
 
           @if (cargando) {
-
-          <div class="skeleton-value"></div>
-
+            <div class="skeleton-value"></div>
           } @else {
-
-          <strong class="card-value">
-            {{ resumen?.conductores ?? 0 }}
-          </strong>
-
+            <strong class="card-value">
+              {{ resumen?.conductores ?? 0 }}
+            </strong>
           }
 
           <span class="card-description"> Conductores registrados </span>
         </div>
 
         <!-- REMOLQUES -->
-
-        <div class="card">
+        <div class="card clickable-card" routerLink="/remolques">
           <div class="card-top">
-            <div class="card-icon trailer-icon">🛞</div>
+            <div class="card-icon trailer-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                
+                <path d="M21 7v8"></path>
+                <line x1="2" y1="15" x2="21" y2="15"></line>
+                <circle cx="5" cy="19" r="2"></circle>
+                <circle cx="10" cy="19" r="2"></circle>
+              </svg>
+            </div>
 
             <span class="card-label"> Remolques </span>
           </div>
 
           @if (cargando) {
-
-          <div class="skeleton-value"></div>
-
+            <div class="skeleton-value"></div>
           } @else {
-
-          <strong class="card-value">
-            {{ resumen?.remolques ?? 0 }}
-          </strong>
-
+            <strong class="card-value">
+              {{ resumen?.remolques ?? 0 }}
+            </strong>
           }
 
           <span class="card-description"> Remolques registrados </span>
         </div>
 
         <!-- CLIENTES -->
-
-        <div class="card">
+        <div class="card clickable-card" routerLink="/clientes">
           <div class="card-top">
-            <div class="card-icon client-icon">🏢</div>
+            <div class="card-icon client-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 21h18"></path>
+                <path d="M9 8h1"></path>
+                <path d="M9 12h1"></path>
+                <path d="M9 16h1"></path>
+                <path d="M14 8h1"></path>
+                <path d="M14 12h1"></path>
+                <path d="M14 16h1"></path>
+                <path d="M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16"></path>
+              </svg>
+            </div>
 
             <span class="card-label"> Clientes </span>
           </div>
 
           @if (cargando) {
-
-          <div class="skeleton-value"></div>
-
+            <div class="skeleton-value"></div>
           } @else {
-
-          <strong class="card-value">
-            {{ resumen?.clientes ?? 0 }}
-          </strong>
-
+            <strong class="card-value">
+              {{ resumen?.clientes ?? 0 }}
+            </strong>
           }
 
           <span class="card-description"> Clientes registrados </span>
@@ -270,7 +281,7 @@
           <div class="metric-icon">−$</div>
 
           <div class="metric-content">
-            <span class="card-label">Total descuentos</span>
+            <span class="card-label">Total Gastos</span>
 
             @if (cargando) {
             <div class="skeleton-value small"></div>
@@ -421,7 +432,14 @@
             <span> Rendimiento durante el período </span>
           </div>
 
-          <div class="chart-header-icon">🚛</div>
+          <div class="chart-header-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="1" y="3" width="15" height="13"></rect>
+              <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+              <circle cx="5.5" cy="18.5" r="2.5"></circle>
+              <circle cx="18.5" cy="18.5" r="2.5"></circle>
+            </svg>
+          </div>
         </div>
 
         @if ( produccionCamiones.length === 0 && !cargando ) {
@@ -490,7 +508,12 @@
             <span> Producción generada durante el período </span>
           </div>
 
-          <div class="chart-header-icon">👤</div>
+          <div class="chart-header-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+          </div>
         </div>
 
         @if ( produccionConductores.length === 0 && !cargando ) {
@@ -563,7 +586,12 @@
             <span> Producción generada durante el período </span>
           </div>
 
-          <div class="chart-header-icon">🏢</div>
+          <div class="chart-header-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+              <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+            </svg>
+          </div>
         </div>
 
         @if ( produccionClientes.length === 0 && !cargando ) {
@@ -632,7 +660,14 @@
             <span> Distancia recorrida durante el período </span>
           </div>
 
-          <div class="chart-header-icon">KM</div>
+          <div class="chart-header-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="1" y="3" width="15" height="13"></rect>
+              <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+              <circle cx="5.5" cy="18.5" r="2.5"></circle>
+              <circle cx="18.5" cy="18.5" r="2.5"></circle>
+            </svg>
+          </div>
         </div>
 
         @if ( kilometrosCamiones.length === 0 && !cargando ) {
@@ -705,7 +740,12 @@
             <span> Distancia recorrida durante el período </span>
           </div>
 
-          <div class="chart-header-icon">👤</div>
+          <div class="chart-header-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+          </div>
         </div>
 
         @if ( kilometrosConductores.length === 0 && !cargando ) {
@@ -779,7 +819,14 @@
             <span> Gasto en combustible durante el período </span>
           </div>
 
-          <div class="chart-header-icon">⛽</div>
+          <div class="chart-header-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 22V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v17"></path>
+              <path d="M15 11h2a2 2 0 0 1 2 2v5a2 2 0 0 0 2 2h0a2 2 0 0 0 2-2V9l-3-3"></path>
+              <path d="M3 22h12"></path>
+              <rect x="6" y="6" width="6" height="4" rx="1"></rect>
+            </svg>
+          </div>
         </div>
 
         @if ( costoCombustibleCamiones.length === 0 && !cargando ) {
@@ -845,7 +892,14 @@
             <h2>Gastos por camión</h2>
             <span>Gastos registrados durante el período</span>
           </div>
-          <div class="chart-header-icon">🚛</div>
+          <div class="chart-header-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="1" y="3" width="15" height="13"></rect>
+              <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+              <circle cx="5.5" cy="18.5" r="2.5"></circle>
+              <circle cx="18.5" cy="18.5" r="2.5"></circle>
+            </svg>
+          </div>
         </div>
 
         @if (gastosCamiones.length === 0 && !cargando) {
@@ -891,7 +945,12 @@
             <h2>Gastos por conductor</h2>
             <span>Gastos asociados a cada conductor</span>
           </div>
-          <div class="chart-header-icon">👤</div>
+          <div class="chart-header-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+          </div>
         </div>
 
         @if (gastosConductores.length === 0 && !cargando) {
@@ -937,7 +996,24 @@
             <h2>Gastos por remolque</h2>
             <span>Gastos asociados a cada remolque</span>
           </div>
-          <div class="chart-header-icon">🛞</div>
+          <div class="chart-header-icon">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M21 7v8"></path>
+              <line x1="2" y1="15" x2="21" y2="15"></line>
+              <circle cx="5" cy="19" r="2"></circle>
+              <circle cx="10" cy="19" r="2"></circle>
+            </svg>
+          </div>
         </div>
 
         @if (gastosRemolques.length === 0 && !cargando) {
@@ -983,7 +1059,23 @@
             <h2>Gastos por tipo</h2>
             <span>Distribución de todos los gastos del período</span>
           </div>
-          <div class="chart-header-icon">📊</div>
+          <div class="chart-header-icon">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="18" y1="20" x2="18" y2="10"></line>
+              <line x1="12" y1="20" x2="12" y2="4"></line>
+              <line x1="6" y1="20" x2="6" y2="14"></line>
+            </svg>
+          </div>
         </div>
 
         @if (gastosPorTipo.length === 0 && !cargando) {

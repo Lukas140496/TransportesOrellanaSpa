@@ -1,5 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 import { ApiService } from '../../../core/services/api.service';
 import { DashboardProduccionCamion } from '../../../core/models/dashboard-produccion-camion';
@@ -25,7 +26,7 @@ interface PeriodoDashboard {
 
 @Component({
   selector: 'app-dashboard',
-  imports: [DecimalPipe],
+  imports: [DecimalPipe, RouterLink],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss'
 })

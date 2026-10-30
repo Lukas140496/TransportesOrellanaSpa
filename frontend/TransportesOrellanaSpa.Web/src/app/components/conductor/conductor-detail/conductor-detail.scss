@@ -353,22 +353,30 @@
 }
 
 .bloque-titulo {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-
+  display: flex !important;
+  align-items: center;
+  justify-content: flex-start !important;
   gap: 1rem;
-
   margin-bottom: 1.5rem;
+
+  > div {
+    margin-left: 0;
+    flex: 0 1 auto;
+  }
 }
 
 .bloque-titulo-info {
   display: flex;
   align-items: center;
-
   gap: 0.9rem;
-
   min-width: 0;
+}
+
+.btn-toggle-formulario {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .btn-editar {
@@ -411,7 +419,11 @@
 }
 
 .icono {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   font-size: 1.5rem;
+  flex-shrink: 0;
 }
 
 .bloque-titulo h2 {
@@ -1572,5 +1584,17 @@
   .modal-container-doc {
     height: 70vh;
     max-width: 100%;
+  }
+
+  .bloque-titulo {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+  }
+
+  .btn-toggle-formulario {
+    margin-left: 0;
+    width: 100%;
+    box-sizing: border-box;
   }
 }

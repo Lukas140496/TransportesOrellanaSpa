@@ -94,11 +94,16 @@
   <section class="bloque">
     <div class="bloque-titulo">
       <div class="bloque-titulo-info">
-        <span class="icono"> 👤 </span>
-
+        <span class="icono">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+        </span>
+      
         <div>
           <h2>Información personal</h2>
-
+      
           <p>Datos personales y de contacto del conductor.</p>
         </div>
       </div>
@@ -174,11 +179,19 @@
 
   <section class="bloque">
     <div class="bloque-titulo">
-      <span class="icono"> 📄 </span>
-
+      <span class="icono">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <polyline points="10 9 9 9 8 9"></polyline>
+        </svg>
+      </span>
+    
       <div>
         <h2>Licencia de conducir</h2>
-
+    
         <p>Información y estado de la licencia profesional.</p>
       </div>
     </div>
@@ -579,53 +592,66 @@
 
   <section class="bloque">
     <div class="bloque-titulo">
-      <span class="icono"> 🚛 </span>
-
+      <div class="header-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="1" y="3" width="15" height="13"></rect>
+          <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+          <circle cx="5.5" cy="18.5" r="2.5"></circle>
+          <circle cx="18.5" cy="18.5" r="2.5"></circle>
+        </svg>
+      </div>
+  
       <div>
         <h2>Camiones habituales</h2>
-
         <p>Camiones asociados actualmente a este conductor.</p>
       </div>
     </div>
-
+    <div class="divider"></div>
+  
     @if (conductor.camionesHabituales.length > 0) {
-
-    <div class="camiones-grid">
-      @for ( camion of conductor.camionesHabituales; track camion.id ) {
-
-      <article class="camion-card">
-        <div class="camion-icono">🚛</div>
-
-        <div class="camion-info">
-          <span class="camion-patente">
-            {{ camion.patente }}
-          </span>
-
-          <h3>
-            {{ camion.marca }}
-          </h3>
-
-          <p>
-            {{ camion.modelo }}
-          </p>
-        </div>
-      </article>
-
-      }
-    </div>
-
-    } @else {
-
-    <div class="sin-camiones">
-      <span> 🚛 </span>
-
-      <div>
-        <strong> Sin camiones asignados </strong>
-
-        <p>Este conductor no tiene camiones habituales registrados.</p>
+      <div class="camiones-grid">
+        @for (camion of conductor.camionesHabituales; track camion.id) {
+          <article class="camion-card">
+            <div class="camion-icono">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="1" y="3" width="15" height="13"></rect>
+                <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                <circle cx="18.5" cy="18.5" r="2.5"></circle>
+              </svg>
+            </div>
+  
+            <div class="camion-info">
+              <span class="camion-patente">
+                {{ camion.patente }}
+              </span>
+  
+              <h3>
+                {{ camion.marca }}
+              </h3>
+  
+              <p>
+                {{ camion.modelo }}
+              </p>
+            </div>
+          </article>
+        }
       </div>
-    </div>
-
+    } @else {
+      <div class="sin-camiones">
+        <div class="sin-camiones-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+        </div>
+  
+        <div>
+          <strong>Sin camiones asignados</strong>
+          <p>Este conductor no tiene camiones habituales registrados.</p>
+        </div>
+      </div>
     }
   </section>
 

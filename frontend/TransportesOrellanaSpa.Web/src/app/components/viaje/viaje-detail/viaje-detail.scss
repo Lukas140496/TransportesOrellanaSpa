@@ -8,32 +8,78 @@
 
 .header {
   display: flex;
-
-  justify-content: space-between;
-
   align-items: center;
-
+  justify-content: space-between;
+  gap: 1rem;
   margin-bottom: 24px;
+  flex-wrap: wrap;
 
   h1 {
     margin: 0;
+    font-size: 1.4rem;
+    color: #0f172a;
   }
 
   p {
-    margin-top: 6px;
-
-    color: #666;
+    margin-top: 4px;
+    color: #64748b;
+    font-size: 0.875rem;
   }
+}
+
+/* Mantiene el icono y el texto siempre en fila horizontal */
+.header-title-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.header-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f1f5f9;
+  color: #334155;
+  border: 1px solid #e2e8f0;
+  padding: 12px;
+  border-radius: 12px;
+  flex-shrink: 0;
 }
 
 .header-actions {
   display: flex;
-
   align-items: center;
-
-  gap: 14px;
-
+  gap: 0.75rem;
+  margin-left: auto;
   flex-wrap: wrap;
+}
+
+.btn-volver {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #334155;
+  font-size: 0.82rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  svg {
+    flex-shrink: 0;
+  }
+
+  &:hover {
+    background: #f8fafc;
+    color: #0f172a;
+    border-color: #94a3b8;
+  }
 }
 
 /* ========================= */
@@ -202,6 +248,138 @@
 
 strong {
   font-size: 16px;
+}
+
+.card-header-seccion {
+  margin-bottom: 1.25rem;
+
+  h2 {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0 0 0.75rem 0;
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: #0f172a;
+
+    svg {
+      color: #64748b;
+    }
+  }
+
+  .divider {
+    height: 1px;
+    width: 100%;
+    background-color: #e2e8f0;
+  }
+}
+
+.grid-info-general {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  transition: border-color 0.2s ease;
+
+  &:hover {
+    border-color: #cbd5e1;
+  }
+
+  .info-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    color: #475569;
+    flex-shrink: 0;
+  }
+
+  .label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: #64748b;
+    margin-bottom: 2px;
+    letter-spacing: 0.025em;
+  }
+
+  .value {
+    font-size: 0.95rem;
+    color: #0f172a;
+    font-weight: 600;
+
+    .text-muted {
+      color: #94a3b8;
+      font-weight: normal;
+      font-style: italic;
+    }
+  }
+
+  .sub-value {
+    display: block;
+    font-size: 0.8rem;
+    color: #64748b;
+    margin-top: 2px;
+  }
+}
+
+.observaciones-container-moderno {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1.25rem;
+}
+
+.observaciones-detalle {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.observacion-linea {
+  font-size: 0.92rem;
+  color: #334155;
+  line-height: 1.5;
+
+  .obs-titulo {
+    color: #0f172a;
+    font-weight: 600;
+  }
+}
+
+.observacion-texto {
+  color: #475569;
+}
+
+.observaciones-vacio {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  border-radius: 12px;
+  color: #64748b;
+  font-size: 0.9rem;
+
+  svg {
+    color: #94a3b8;
+    flex-shrink: 0;
+  }
 }
 
 /* ========================= */
@@ -776,8 +954,7 @@ button {
   font-weight: 600;
   font-family: inherit;
   cursor: pointer;
-  white-space: nowrap;
-  flex-shrink: 0;
+  margin-left: auto; /* Empuja el botón a la derecha en pantallas grandes */
   transition: all 0.2s ease;
 
   svg {
@@ -1238,8 +1415,42 @@ button {
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 520px) {
   .viaje-detail {
     padding: 12px;
+  }
+
+  .documentos-viaje-encabezado {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1rem;
+
+    .btn-toggle-formulario {
+      width: 100%;
+      margin-left: 0;
+      box-sizing: border-box;
+      justify-content: center;
+    }
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1.25rem;
+  }
+
+  .header-actions {
+    margin-left: 0;
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .header-actions button,
+  .header-actions .payment-status {
+    width: 100%;
+    box-sizing: border-box;
+    justify-content: center;
   }
 }
