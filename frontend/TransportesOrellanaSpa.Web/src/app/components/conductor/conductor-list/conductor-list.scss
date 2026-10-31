@@ -29,23 +29,27 @@
 }
 
 .header-icon {
+
   display: flex;
 
   align-items: center;
 
   justify-content: center;
 
-  width: 52px;
+  width: 48px;
 
-  height: 52px;
+  height: 48px;
 
   flex-shrink: 0;
+
+  border: 1px solid #dce9f8;
 
   border-radius: 12px;
 
   background: #edf5ff;
 
-  font-size: 25px;
+  font-size: 21px;
+
 }
 
 .page-header h1 {

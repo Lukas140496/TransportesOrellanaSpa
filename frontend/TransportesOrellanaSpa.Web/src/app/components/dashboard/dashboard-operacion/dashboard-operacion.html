@@ -75,20 +75,35 @@
     <section class="kpi-grid">
       <article class="kpi-card kpi-viajes">
         <div class="kpi-top">
-          <span class="kpi-label">Viajes registrados</span>
-          <span class="kpi-icono">↗</span>
+          <span class="kpi-label">Viajes Registrados</span>
+          <span class="kpi-icono">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+              <polyline points="17 6 23 6 23 12"></polyline>
+            </svg>
+          </span>
         </div>
 
         <div class="kpi-valor">
           {{ formatoNumero(viajesTotales) }}
         </div>
 
-        <div class="kpi-descripcion">Movimientos del periodo</div>
+        <div class="kpi-descripcion">Movimientos del período</div>
       </article>
 
       <article class="kpi-card kpi-rutas">
         <div class="kpi-top">
-          <span class="kpi-label">Rutas realizadas</span>
+          <span class="kpi-label">Rutas Realizadas</span>
           <span class="kpi-icono">⌖</span>
         </div>
 
@@ -101,20 +116,20 @@
 
       <article class="kpi-card kpi-kilometros">
         <div class="kpi-top">
-          <span class="kpi-label">Kilómetros registrados</span>
+          <span class="kpi-label">Kilómetros Recorridos</span>
           <span class="kpi-icono">⇄</span>
         </div>
 
         <div class="kpi-valor">
-          {{ formatoNumero(kilometrosTotales) }}
+          {{ formatoNumero(kilometrosTotales) }} km
         </div>
 
-        <div class="kpi-descripcion">Kilometraje informado en los viajes</div>
+        <div class="kpi-descripcion">Kilometraje registrado en viajes</div>
       </article>
 
       <article class="kpi-card kpi-conductores">
         <div class="kpi-top">
-          <span class="kpi-label">Conductores con actividad</span>
+          <span class="kpi-label">Conductores con Actividad</span>
           <span class="kpi-icono">♙</span>
         </div>
 
@@ -138,7 +153,7 @@
           {{ formatoDecimal(promedioViajesConductor) }}
         </div>
 
-        <div class="kpi-descripcion">Viajes por conductor con actividad</div>
+        <div class="kpi-descripcion">Por conductor con actividad</div>
       </article>
     </section>
 

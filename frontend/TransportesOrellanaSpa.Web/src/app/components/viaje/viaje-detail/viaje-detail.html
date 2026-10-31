@@ -541,7 +541,7 @@
           @for (linea of obtenerLineasObservaciones(viaje.observaciones); track $index) { 
             @if (linea.titulo) {
               <div class="observacion-linea">
-                <strong class="obs-titulo">{{ linea.titulo }}:</strong>
+                <strong class="obs-titulo">{{ linea.titulo }}: </strong>
                 @if (linea.contenido) {
                   <span class="obs-contenido">{{ linea.contenido }}</span>
                 }
