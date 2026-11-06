@@ -31,6 +31,21 @@
   }
 }
 
+.info-periodo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 5px;
+  color: #64748b;
+  font-size: 12px;
+  border-radius: 6px;
+
+  svg {
+    color: #64748b;
+    flex-shrink: 0;
+  }
+}
+
 
 /* =========================================================
    BOTONES

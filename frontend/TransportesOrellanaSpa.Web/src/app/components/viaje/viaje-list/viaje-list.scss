@@ -816,7 +816,6 @@ tbody tr:last-child td {
     margin-top: 17px;
   }
 
-  /* Cerrado por defecto */
   .filtros-grid:not(.filtros-abiertos) {
     display: none;
   }
@@ -854,6 +853,56 @@ tbody tr:last-child td {
   .btn-limpiar {
     height: 30px;
   }
+
+  .header {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    width: 100%;
+  }
+
+  .header-content {
+    order: 1;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+  }
+
+  .header-content > div:last-child {
+    text-align: left;
+    min-width: 0;
+  }
+
+  .header h1 {
+    font-size: 24px;
+    margin: 0 0 4px;
+    text-align: left;
+  }
+
+  .header p {
+    font-size: 13px;
+    text-align: left;
+  }
+
+  .header-icon {
+    width: 42px;
+    height: 42px;
+    min-width: 42px;
+    flex-shrink: 0;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .btn-nuevo {
+    order: 2;
+    width: 100%;
+    margin-left: 0 !important;
+  }
 }
 
 // =========================
@@ -861,6 +910,13 @@ tbody tr:last-child td {
 // =========================
 
 @media (max-width: 480px) {
+  .header h1 {
+    font-size: 22px;
+  }
+
+  .header p {
+    font-size: 12px;
+  }
 
   .filtros-card {
     border-radius: 18px;

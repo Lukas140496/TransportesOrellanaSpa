@@ -221,11 +221,13 @@ export class ViajeList implements OnInit {
     if (this.guiaTimeout) {
       clearTimeout(this.guiaTimeout);
     }
-
+  
+    this.cerrarFiltrosResponsive();
+  
     this.guiaTimeout = setTimeout(() => {
       this.cargarViajes();
     }, 300);
-
+  
   }
 
   // =========================
@@ -236,7 +238,8 @@ export class ViajeList implements OnInit {
 
     this.paginaActual = 1;
     this.cargarViajes();
-
+    this.cerrarFiltrosResponsive();
+  
   }
 
   // =========================
@@ -247,7 +250,8 @@ export class ViajeList implements OnInit {
 
     this.paginaActual = 1;
     this.cargarViajes();
-
+    this.cerrarFiltrosResponsive();
+  
   }
 
   // =========================
@@ -258,7 +262,8 @@ export class ViajeList implements OnInit {
 
     this.paginaActual = 1;
     this.cargarViajes();
-
+    this.cerrarFiltrosResponsive();
+  
   }
 
   // =========================
@@ -285,6 +290,12 @@ export class ViajeList implements OnInit {
 
   toggleFiltros(): void {
     this.filtrosAbiertos = !this.filtrosAbiertos;
+  }
+
+  private cerrarFiltrosResponsive(): void {
+    if (window.innerWidth <= 1100) {
+      this.filtrosAbiertos = false;
+    }
   }
 
   // =========================

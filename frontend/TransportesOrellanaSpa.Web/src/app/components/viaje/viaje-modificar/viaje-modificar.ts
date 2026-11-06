@@ -110,23 +110,41 @@ export class ViajeModificar implements OnInit {
     };
 
     this.api.getViajes().subscribe({
-
       next: viajes => {
-        this.viajes = viajes;
+    
+        const fechaActual = new Date();
+    
+        const fechaLimite = new Date(fechaActual);
+        fechaLimite.setDate(fechaActual.getDate() - 30);
+    
+        this.viajes = viajes.filter(viaje => {
+    
+          const fechaViaje = new Date(viaje.fecha);
+    
+          return (
+            fechaViaje >= fechaLimite &&
+            fechaViaje <= fechaActual
+          );
+    
+        });
+    
+        this.viajes.sort((a, b) =>
+          new Date(b.fecha).getTime() -
+          new Date(a.fecha).getTime()
+        );
+    
         viajesCargados = true;
         comprobarCarga();
       },
-
+    
       error: error => {
         console.error('Error al cargar viajes:', error);
-
-        this.error =
-          'No fue posible cargar los viajes.';
-
+    
+        this.error = 'No fue posible cargar los viajes.';
+    
         viajesCargados = true;
         comprobarCarga();
       }
-
     });
 
     this.api.getClientes().subscribe({

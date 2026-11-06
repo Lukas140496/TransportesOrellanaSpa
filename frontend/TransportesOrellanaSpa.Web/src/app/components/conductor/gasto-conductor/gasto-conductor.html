@@ -145,8 +145,10 @@
     </section>
 
     <div class="resultado-info">
-      Mostrando <strong>{{ primerResultado }}–{{ ultimoResultado }}</strong>
-      de <strong>{{ gastosFiltrados.length }}</strong> gastos
+      <span>
+        Mostrando <strong>{{ gastosPaginados.length }}</strong> de
+        <strong>{{ gastosFiltrados.length }}</strong> gastos
+      </span>
     </div>
 
     <div *ngIf="gastosPaginados.length > 0" class="tabla-container">

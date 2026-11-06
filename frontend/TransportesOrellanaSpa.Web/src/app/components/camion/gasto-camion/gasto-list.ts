@@ -196,39 +196,30 @@ export class GastoList implements OnInit {
 
   get gastosFiltrados(): Gasto[] {
     const texto = this.busqueda.trim().toLowerCase();
-
+  
     return this.gastos.filter(gasto => {
       const coincideBusqueda =
         !texto ||
         gasto.patenteCamion.toLowerCase().includes(texto) ||
         gasto.descripcion.toLowerCase().includes(texto) ||
         (gasto.numeroGuiaDespacho ?? '').toLowerCase().includes(texto);
-
+  
       const coincidePatente =
         this.filtroPatente === 'todos' ||
         gasto.patenteCamion === this.filtroPatente;
-
+  
       const coincideTipo =
         this.filtroTipo === 'todos' ||
-        gasto.tipoGasto === this.filtroTipo ||
-        (
-          this.filtroTipo === 'otros' &&
-          ![
-            'combustible',
-            'peajes',
-            'mantención',
-            'reparación'
-          ].includes(gasto.tipoGasto)
-        );
-
+        gasto.tipoGasto === this.filtroTipo;
+  
       const fechaGasto = gasto.fecha.substring(0, 10);
-
+  
       const coincideFechaDesde =
         !this.fechaDesde || fechaGasto >= this.fechaDesde;
-
+  
       const coincideFechaHasta =
         !this.fechaHasta || fechaGasto <= this.fechaHasta;
-
+  
       return (
         coincideBusqueda &&
         coincidePatente &&
