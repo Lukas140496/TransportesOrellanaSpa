@@ -32,6 +32,10 @@ public class AppDbContext : DbContext
     public DbSet<Permiso> Permisos { get; set; }
     public DbSet<UsuarioRol> UsuariosRoles { get; set; }
     public DbSet<RolPermiso> RolesPermisos { get; set; }
+    public DbSet<EnvioNotificacion> EnviosNotificaciones { get; set; }
+    public DbSet<NotificacionVencimientoDocumentoCamion> NotificacionesVencimientoDocumentosCamion { get; set; }
+    public DbSet<NotificacionVencimientoDocumentoRemolque> NotificacionesVencimientoDocumentosRemolque { get; set; }
+    public DbSet<NotificacionVencimientoDocumentoConductor> NotificacionesVencimientoDocumentosConductor { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -218,6 +222,185 @@ public class AppDbContext : DbContext
                     .OnDelete(DeleteBehavior.Cascade)
             );
 
+        // ===================================
+        // NOTIFICACIONES DE VENCIMIENTO
+        // ===================================
+
+        modelBuilder.Entity<NotificacionVencimientoDocumentoCamion>()
+            .ToTable("NotificacionVencimientoDocumentoCamion");
+
+        modelBuilder.Entity<NotificacionVencimientoDocumentoCamion>()
+            .HasOne(n => n.Camion)
+            .WithMany()
+            .HasForeignKey(n => n.CamionId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<NotificacionVencimientoDocumentoCamion>()
+            .Property(n => n.TipoDocumento)
+            .HasMaxLength(50)
+            .IsRequired();
+
+        modelBuilder.Entity<NotificacionVencimientoDocumentoCamion>()
+            .Property(n => n.FechaVencimiento)
+            .HasColumnType("date")
+            .IsRequired();
+
+        modelBuilder.Entity<NotificacionVencimientoDocumentoCamion>()
+            .Property(n => n.FechaCreacionUtc)
+            .IsRequired();
+
+        // Evitar registrar dos veces la misma notificación
+        // para el mismo camión, documento y fecha de vencimiento.
+        modelBuilder.Entity<NotificacionVencimientoDocumentoCamion>()
+            .HasIndex(n => new
+            {
+                n.CamionId,
+                n.TipoDocumento,
+                n.FechaVencimiento,
+                n.DiasAnticipacion
+            })
+            .IsUnique();
+
+        // ===================================
+        // NOTIFICACIONES DE VENCIMIENTO - REMOLQUES
+        // ===================================
+
+        modelBuilder.Entity<NotificacionVencimientoDocumentoRemolque>()
+            .ToTable("NotificacionVencimientoDocumentoRemolque");
+
+        modelBuilder.Entity<NotificacionVencimientoDocumentoRemolque>()
+            .HasOne(n => n.Remolque)
+            .WithMany()
+            .HasForeignKey(n => n.RemolqueId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<NotificacionVencimientoDocumentoRemolque>()
+            .Property(n => n.TipoDocumento)
+            .HasMaxLength(50)
+            .IsRequired();
+
+        modelBuilder.Entity<NotificacionVencimientoDocumentoRemolque>()
+            .Property(n => n.FechaVencimiento)
+            .HasColumnType("date")
+            .IsRequired();
+
+        modelBuilder.Entity<NotificacionVencimientoDocumentoRemolque>()
+            .Property(n => n.FechaCreacionUtc)
+            .IsRequired();
+
+        modelBuilder.Entity<NotificacionVencimientoDocumentoRemolque>()
+            .HasIndex(n => new
+            {
+                n.RemolqueId,
+                n.TipoDocumento,
+                n.FechaVencimiento,
+                n.DiasAnticipacion
+            })
+            .IsUnique();
+
+
+        // ===================================
+        // NOTIFICACIONES DE VENCIMIENTO - CONDUCTORES
+        // ===================================
+
+        modelBuilder.Entity<NotificacionVencimientoDocumentoConductor>()
+            .ToTable("NotificacionVencimientoDocumentoConductor");
+
+        modelBuilder.Entity<NotificacionVencimientoDocumentoConductor>()
+            .HasOne(n => n.Conductor)
+            .WithMany()
+            .HasForeignKey(n => n.ConductorId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<NotificacionVencimientoDocumentoConductor>()
+            .Property(n => n.TipoDocumento)
+            .HasMaxLength(50)
+            .IsRequired();
+
+        modelBuilder.Entity<NotificacionVencimientoDocumentoConductor>()
+            .Property(n => n.FechaVencimiento)
+            .HasColumnType("date")
+            .IsRequired();
+
+        modelBuilder.Entity<NotificacionVencimientoDocumentoConductor>()
+            .Property(n => n.FechaCreacionUtc)
+            .IsRequired();
+
+        modelBuilder.Entity<NotificacionVencimientoDocumentoConductor>()
+            .HasIndex(n => new
+            {
+                n.ConductorId,
+                n.TipoDocumento,
+                n.FechaVencimiento,
+                n.DiasAnticipacion
+            })
+            .IsUnique();
+
+
+        modelBuilder.Entity<EnvioNotificacion>(entity =>
+        {
+            entity.ToTable("EnvioNotificacion");
+
+            entity.HasKey(e => e.Id);
+
+            entity.Property(e => e.TipoEntidad)
+                .HasMaxLength(30)
+                .IsRequired();
+
+            entity.Property(e => e.TipoDocumento)
+                .HasMaxLength(50)
+                .IsRequired();
+
+            entity.Property(e => e.Destinatario)
+                .HasMaxLength(320)
+                .IsRequired();
+
+            entity.Property(e => e.Estado)
+                .HasMaxLength(20)
+                .IsRequired();
+
+            entity.Property(e => e.FechaVencimiento)
+                .HasColumnType("date")
+                .IsRequired();
+
+            entity.Property(e => e.FechaCreacionUtc)
+                .IsRequired();
+
+            entity.Property(e => e.UltimoError)
+                .HasMaxLength(2000);
+
+            entity.HasIndex(e => new
+            {
+                e.TipoEntidad,
+                e.EntidadId,
+                e.TipoDocumento,
+                e.FechaVencimiento,
+                e.DiasAnticipacion,
+                e.Destinatario
+            })
+            .IsUnique();
+        });
+
+
+        // ===================================
+        // REMOLQUE - FECHAS DE VENCIMIENTO
+        // ===================================
+
+        modelBuilder.Entity<Remolque>()
+            .Property(r => r.FechaPermisoCirculacion)
+            .HasColumnType("date")
+            .IsRequired(false);
+
+        modelBuilder.Entity<Remolque>()
+            .Property(r => r.FechaSeguro)
+            .HasColumnType("date")
+            .IsRequired(false);
+
+        modelBuilder.Entity<Remolque>()
+            .Property(r => r.FechaRevisionTecnica)
+            .HasColumnType("date")
+            .IsRequired(false);
+
         // =========================
         // Remolque - CAMIÓN HABITUAL
         // =========================
@@ -402,15 +585,18 @@ public class AppDbContext : DbContext
         // =========================
         modelBuilder.Entity<Camion>()
             .Property(c => c.FechaRevisionTecnica)
-            .HasColumnType("date");
+            .HasColumnType("date")
+            .IsRequired(false);
 
         modelBuilder.Entity<Camion>()
             .Property(c => c.FechaPermisoCirculacion)
-            .HasColumnType("date");
+            .HasColumnType("date")
+            .IsRequired(false);
 
         modelBuilder.Entity<Camion>()
             .Property(c => c.FechaSeguroObligatorio)
-            .HasColumnType("date");
+            .HasColumnType("date")
+            .IsRequired(false);
 
         // =========================
         // CONDUCTOR - FECHAS

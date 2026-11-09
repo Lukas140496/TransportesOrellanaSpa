@@ -18,7 +18,6 @@
   <!-- ENCABEZADO -->
 
   <header class="detail-header">
-    <!-- LADO IZQUIERDO: Volver, Icono, Patente y Modelo -->
     <div class="header-left">
       <button type="button" class="btn-volver" (click)="volver()">
         <svg
@@ -65,17 +64,20 @@
       </div>
     </div>
 
-    <!-- LADO DERECHO: Estados y Botones -->
+    <!-- ESTADOS Y BOTONES -->
+
     <div class="header-right">
       <div class="detail-status-badges">
         @if (camion.activo) {
         <span class="badge ok">Activo</span>
         } @else {
         <span class="badge warning">Inactivo</span>
-        } @if (camion.revisionAlDia && camion.permisoAlDia && camion.seguroAlDia) {
+        } @if ( camion.revisionTecnica.estado === 'AlDia' && camion.certificadoGases.estado ===
+        'AlDia' && camion.permisoCirculacion.estado === 'AlDia' && camion.seguroObligatorio.estado
+        === 'AlDia' ) {
         <span class="estado-ok">Documentación al día</span>
         } @else {
-        <span class="estado-warning">Documentación pendiente</span>
+        <span class="estado-warning">Documentación con alertas</span>
         }
       </div>
 
@@ -122,6 +124,7 @@
   </header>
 
   <!-- INFORMACIÓN GENERAL -->
+
   <section class="card">
     <div class="card-header-seccion">
       <h2>
@@ -147,7 +150,6 @@
     </div>
 
     <div class="grid-info-general">
-      <!-- PATENTE -->
       <div class="info-item">
         <div class="info-icon">
           <svg
@@ -171,7 +173,6 @@
         </div>
       </div>
 
-      <!-- MARCA -->
       <div class="info-item">
         <div class="info-icon">
           <svg
@@ -194,7 +195,6 @@
         </div>
       </div>
 
-      <!-- MODELO -->
       <div class="info-item">
         <div class="info-icon">
           <svg
@@ -220,7 +220,6 @@
         </div>
       </div>
 
-      <!-- AÑO -->
       <div class="info-item">
         <div class="info-icon">
           <svg
@@ -246,7 +245,6 @@
         </div>
       </div>
 
-      <!-- TIPO -->
       <div class="info-item">
         <div class="info-icon">
           <svg
@@ -271,7 +269,6 @@
         </div>
       </div>
 
-      <!-- COLOR -->
       <div class="info-item">
         <div class="info-icon">
           <svg
@@ -300,7 +297,6 @@
         </div>
       </div>
 
-      <!-- CAPACIDAD -->
       <div class="info-item">
         <div class="info-icon">
           <svg
@@ -330,6 +326,7 @@
   </section>
 
   <!-- CARACTERÍSTICAS MECÁNICAS -->
+
   <section class="card">
     <div class="card-header-seccion">
       <h2>
@@ -354,7 +351,6 @@
     </div>
 
     <div class="grid-info-general">
-      <!-- MOTOR -->
       <div class="info-item">
         <div class="info-icon">
           <svg
@@ -379,7 +375,6 @@
         </div>
       </div>
 
-      <!-- CABALLOS -->
       <div class="info-item">
         <div class="info-icon">
           <svg
@@ -402,7 +397,6 @@
         </div>
       </div>
 
-      <!-- CILINDRADA -->
       <div class="info-item">
         <div class="info-icon">
           <svg
@@ -427,7 +421,6 @@
         </div>
       </div>
 
-      <!-- TRANSMISIÓN -->
       <div class="info-item">
         <div class="info-icon">
           <svg
@@ -456,6 +449,7 @@
   </section>
 
   <!-- DOCUMENTACIÓN -->
+
   <section class="card">
     <div class="card-header-seccion">
       <h2>
@@ -483,6 +477,7 @@
 
     <div class="grid-info-general">
       <!-- REVISIÓN TÉCNICA -->
+
       <div class="info-item">
         <div class="info-icon">
           <svg
@@ -500,8 +495,10 @@
             <polyline points="22 4 12 14.01 9 11.01"></polyline>
           </svg>
         </div>
+
         <div style="flex: 1">
           <span class="label">Revisión técnica</span>
+
           <div
             style="
               display: flex;
@@ -517,16 +514,105 @@
                   : 'Sin registro'
               }}
             </strong>
-            @if (camion.revisionAlDia) {
+
+            @if (camion.revisionTecnica.estado === 'AlDia') {
             <span class="badge ok">Al día</span>
+            } @else if (camion.revisionTecnica.estado === 'PorVencer') { @if
+            (camion.revisionTecnica.diasRestantes === 0) {
+            <span class="badge warning">Vence hoy</span>
             } @else {
+            <span class="badge warning">Por vencer</span>
+            } } @else if (camion.revisionTecnica.estado === 'Vencido') {
             <span class="badge warning">Vencida</span>
+            } @else {
+            <span class="badge warning">Sin registro</span>
             }
           </div>
+
+          @if ( camion.revisionTecnica.estado === 'PorVencer' &&
+          camion.revisionTecnica.diasRestantes !== null && camion.revisionTecnica.diasRestantes > 0
+          ) {
+          <small class="field-hint">
+            Vence en {{ camion.revisionTecnica.diasRestantes }} día(s).
+          </small>
+          } @else if (camion.revisionTecnica.estado === 'Vencido') {
+          <small class="field-hint field-hint--expired">
+            Venció hace {{ (camion.revisionTecnica.diasRestantes ?? 0) * -1 }} día(s).
+          </small>
+          }
+        </div>
+      </div>
+
+      <!-- CERTIFICADO DE GASES -->
+
+      <div class="info-item">
+        <div class="info-icon">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M12 3v2"></path>
+            <path d="M8 5c-2 2-3 4-3 7a7 7 0 0 0 14 0c0-3-1-5-3-7"></path>
+            <path d="M12 12c-2 1-3 3-2 5"></path>
+          </svg>
+        </div>
+
+        <div style="flex: 1">
+          <span class="label">Certificado de gases</span>
+
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              margin-top: 4px;
+            "
+          >
+            <strong class="value">
+              {{
+                camion.fechaRevisionTecnica
+                  ? (camion.fechaRevisionTecnica | date : 'dd/MM/yyyy')
+                  : 'Sin registro'
+              }}
+            </strong>
+
+            @if (camion.certificadoGases.estado === 'AlDia') {
+            <span class="badge ok">Al día</span>
+            } @else if (camion.certificadoGases.estado === 'PorVencer') { @if
+            (camion.certificadoGases.diasRestantes === 0) {
+            <span class="badge warning">Vence hoy</span>
+            } @else {
+            <span class="badge warning">Por vencer</span>
+            } } @else if (camion.certificadoGases.estado === 'Vencido') {
+            <span class="badge warning">Vencido</span>
+            } @else {
+            <span class="badge warning">Sin registro</span>
+            }
+          </div>
+
+          @if ( camion.certificadoGases.estado === 'PorVencer' &&
+          camion.certificadoGases.diasRestantes !== null && camion.certificadoGases.diasRestantes >
+          0 ) {
+          <small class="field-hint">
+            Vence en {{ camion.certificadoGases.diasRestantes }} día(s).
+          </small>
+          } @else if (camion.certificadoGases.estado === 'Vencido') {
+          <small class="field-hint field-hint--expired">
+            Venció hace {{ (camion.certificadoGases.diasRestantes ?? 0) * -1 }} día(s).
+          </small>
+          }
         </div>
       </div>
 
       <!-- PERMISO DE CIRCULACIÓN -->
+
       <div class="info-item">
         <div class="info-icon">
           <svg
@@ -546,8 +632,10 @@
             <line x1="3" y1="10" x2="21" y2="10"></line>
           </svg>
         </div>
+
         <div style="flex: 1">
-          <span class="label">Permiso de circulación</span>
+          <span class="label">Permiso Circulación</span>
+
           <div
             style="
               display: flex;
@@ -563,16 +651,37 @@
                   : 'Sin registro'
               }}
             </strong>
-            @if (camion.permisoAlDia) {
+
+            @if (camion.permisoCirculacion.estado === 'AlDia') {
             <span class="badge ok">Al día</span>
+            } @else if (camion.permisoCirculacion.estado === 'PorVencer') { @if
+            (camion.permisoCirculacion.diasRestantes === 0) {
+            <span class="badge warning">Vence hoy</span>
             } @else {
+            <span class="badge warning">Por vencer</span>
+            } } @else if (camion.permisoCirculacion.estado === 'Vencido') {
             <span class="badge warning">Vencido</span>
+            } @else {
+            <span class="badge warning">Sin registro</span>
             }
           </div>
+
+          @if ( camion.permisoCirculacion.estado === 'PorVencer' &&
+          camion.permisoCirculacion.diasRestantes !== null &&
+          camion.permisoCirculacion.diasRestantes > 0 ) {
+          <small class="field-hint">
+            Vence en {{ camion.permisoCirculacion.diasRestantes }} día(s).
+          </small>
+          } @else if (camion.permisoCirculacion.estado === 'Vencido') {
+          <small class="field-hint field-hint--expired">
+            Venció hace {{ (camion.permisoCirculacion.diasRestantes ?? 0) * -1 }} día(s).
+          </small>
+          }
         </div>
       </div>
 
       <!-- SEGURO OBLIGATORIO -->
+
       <div class="info-item">
         <div class="info-icon">
           <svg
@@ -589,8 +698,10 @@
             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
           </svg>
         </div>
+
         <div style="flex: 1">
-          <span class="label">Seguro obligatorio</span>
+          <span class="label">Seguro Obligatorio</span>
+
           <div
             style="
               display: flex;
@@ -606,23 +717,41 @@
                   : 'Sin registro'
               }}
             </strong>
-            @if (camion.seguroAlDia) {
+
+            @if (camion.seguroObligatorio.estado === 'AlDia') {
             <span class="badge ok">Al día</span>
+            } @else if (camion.seguroObligatorio.estado === 'PorVencer') { @if
+            (camion.seguroObligatorio.diasRestantes === 0) {
+            <span class="badge warning">Vence hoy</span>
             } @else {
+            <span class="badge warning">Por vencer</span>
+            } } @else if (camion.seguroObligatorio.estado === 'Vencido') {
             <span class="badge warning">Vencido</span>
+            } @else {
+            <span class="badge warning">Sin registro</span>
             }
           </div>
+
+          @if (camion.seguroObligatorio.estado === 'PorVencer') {
+          <small class="field-hint">
+            Vence en {{ camion.seguroObligatorio.diasRestantes }} día(s).
+          </small>
+          } @else if (camion.seguroObligatorio.estado === 'Vencido') {
+          <small class="field-hint field-hint--expired">
+            Venció hace {{ (camion.seguroObligatorio.diasRestantes ?? 0) * -1 }} día(s).
+          </small>
+          }
         </div>
       </div>
     </div>
   </section>
 
   <!-- CONDUCTORES -->
+
   <section class="card">
     <div class="section-header">
       <div>
         <h2>Conductores habituales</h2>
-
         <p>
           {{ camion.conductoresHabituales.length }}
           conductor(es) asignado(s)
@@ -631,10 +760,8 @@
     </div>
 
     @if (camion.conductoresHabituales.length > 0) {
-
     <div class="personas">
-      @for ( conductor of camion.conductoresHabituales; track conductor.rut ) {
-
+      @for (conductor of camion.conductoresHabituales; track conductor.rut) {
       <div class="persona">
         <div class="avatar">
           {{ conductor.nombres.charAt(0) }}
@@ -646,27 +773,22 @@
             {{ conductor.apellidoPaterno }}
             {{ conductor.apellidoMaterno }}
           </strong>
-
-          <span> RUT: {{ conductor.rut }} </span>
+          <span>RUT: {{ conductor.rut }}</span>
         </div>
       </div>
-
       }
     </div>
-
     } @else {
-
     <p class="vacio">No hay conductores habituales asignados.</p>
-
     }
   </section>
 
   <!-- REMOLQUES -->
+
   <section class="card">
     <div class="section-header">
       <div>
         <h2>Remolques asociados</h2>
-
         <p>
           {{ camion.remolques.length }}
           remolque(s) asociado(s)
@@ -675,10 +797,8 @@
     </div>
 
     @if (camion.remolques.length > 0) {
-
     <div class="remolques">
-      @for ( remolque of camion.remolques; track remolque.id ) {
-
+      @for (remolque of camion.remolques; track remolque.id) {
       <div class="remolque">
         <div class="remolque-icon">
           <svg
@@ -700,41 +820,26 @@
         </div>
 
         <div class="remolque-info">
-          <strong>
-            {{ remolque.patente }}
-          </strong>
-
-          <span>
-            {{ remolque.marca }}
-            {{ remolque.modelo }}
-          </span>
-
-          <span>
-            {{ remolque.tipo }}
-            · {{ remolque.capacidadToneladas }} Ton
-          </span>
+          <strong>{{ remolque.patente }}</strong>
+          <span>{{ remolque.marca }} {{ remolque.modelo }}</span>
+          <span>{{ remolque.tipo }} · {{ remolque.capacidadToneladas }} Ton</span>
         </div>
 
         @if (remolque.activa) {
-        <span class="badge ok"> Activo </span>
+        <span class="badge ok">Activo</span>
         } @else {
-        <span class="badge warning"> Inactivo </span>
+        <span class="badge warning">Inactivo</span>
         }
       </div>
-
       }
     </div>
-
     } @else {
-
     <p class="vacio">No hay remolques asociados.</p>
-
     }
   </section>
 
-  <!-- ========================= -->
   <!-- DOCUMENTOS DIGITALES -->
-  <!-- ========================= -->
+
   <section class="card-documentos">
     <div class="card-documentos-header">
       <div>
@@ -752,10 +857,8 @@
     <div class="documentos-lista">
       @for (item of tiposDocumentos; track item.tipo) {
       <article class="documento-item" [class.tiene-archivo]="obtenerDocumento(item.tipo)">
-        <!-- Info del documento -->
         <div class="documento-info">
           <div class="documento-icono-titulo">
-            <!-- Icono de documento -->
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="20"
@@ -783,6 +886,7 @@
               Cargado el {{ archivo.fechaCarga | date : 'dd/MM/yyyy HH:mm' }}
             </span>
           </div>
+
           <span class="documento-estado cargado"> <span class="punto-estado"></span> Cargado </span>
           } @else {
           <p class="documento-vacio">Todavía no hay un archivo cargado.</p>
@@ -792,10 +896,10 @@
           }
         </div>
 
-        <!-- Acciones -->
+        <!-- ACCIONES -->
+
         <div class="documento-acciones">
           @if (obtenerDocumento(item.tipo); as archivo) {
-          <!-- Botón Previsualizar / Ver -->
           <button
             type="button"
             class="btn-documento btn-previsualizar"
@@ -819,7 +923,7 @@
             </svg>
             <span>Ver</span>
           </button>
-          <!-- Botón Descargar -->
+
           <button
             type="button"
             class="btn-documento btn-descargar"
@@ -846,7 +950,6 @@
           </button>
 
           @if (permissionService.tienePermiso('CAMIONES_EDITAR')) {
-          <!-- Botón Eliminar -->
           <button
             type="button"
             class="btn-documento btn-eliminar"
@@ -872,7 +975,6 @@
             </svg>
           </button>
           } } @if (permissionService.tienePermiso('CAMIONES_EDITAR')) {
-          <!-- Botón Subir / Reemplazar -->
           <label
             class="btn-documento btn-subir"
             [class.deshabilitado]="subiendoDocumento || eliminandoDocumento"
@@ -892,7 +994,10 @@
               <polyline points="17 8 12 3 7 8" />
               <line x1="12" y1="3" x2="12" y2="15" />
             </svg>
-            <span>{{ obtenerDocumento(item.tipo) ? 'Reemplazar' : 'Subir archivo' }}</span>
+
+            <span>
+              {{ obtenerDocumento(item.tipo) ? 'Reemplazar' : 'Subir archivo' }}
+            </span>
 
             <input
               type="file"
@@ -932,12 +1037,9 @@
   }
 </section>
 
-<!-- =========================
-     MODAL DE CONFIRMACIÓN
-     ========================= -->
+<!-- MODAL DE CONFIRMACIÓN -->
 
 @if (modalConfirmacionVisible && camion) {
-
 <div class="modal-backdrop" (click)="cerrarModalConfirmacion()">
   <div class="modal" role="alertdialog" aria-modal="true" (click)="$event.stopPropagation()">
     <div class="modal-icon" [class.warning]="camion.activo" [class.activate]="!camion.activo">
@@ -969,7 +1071,6 @@
       </button>
 
       @if (camion.activo) {
-
       <button
         type="button"
         class="btn-danger"
@@ -978,9 +1079,7 @@
       >
         @if (procesandoEstado) { Desactivando... } @else { Sí, desactivar }
       </button>
-
       } @else {
-
       <button
         type="button"
         class="btn-success"
@@ -989,75 +1088,54 @@
       >
         @if (procesandoEstado) { Activando... } @else { Sí, activar }
       </button>
-
       }
     </div>
   </div>
 </div>
-
 }
 
-<!-- =========================
-     MODAL DE ERROR
-     ========================= -->
+<!-- MODAL DE ERROR -->
 
 @if (modalErrorVisible) {
-
 <div class="modal-backdrop" (click)="cerrarModalError()">
   <div class="modal" role="alertdialog" aria-modal="true" (click)="$event.stopPropagation()">
     <div class="modal-icon error">!</div>
 
-    <h2>
-      {{ modalErrorTitulo }}
-    </h2>
-
-    <p>
-      {{ modalErrorMensaje }}
-    </p>
+    <h2>{{ modalErrorTitulo }}</h2>
+    <p>{{ modalErrorMensaje }}</p>
 
     <button type="button" class="btn-primary modal-button" (click)="cerrarModalError()">
       Aceptar
     </button>
   </div>
 </div>
-
 }
 
-<!-- =========================
-     MODAL DE ÉXITO
-     ========================= -->
+<!-- MODAL DE ÉXITO -->
 
 @if (modalExitoVisible) {
-
 <div class="modal-backdrop" (click)="cerrarModalExito()">
   <div class="modal" role="dialog" aria-modal="true" (click)="$event.stopPropagation()">
     <div class="modal-icon success">✓</div>
 
-    <h2>
-      {{ modalExitoTitulo }}
-    </h2>
-
-    <p>
-      {{ modalExitoMensaje }}
-    </p>
+    <h2>{{ modalExitoTitulo }}</h2>
+    <p>{{ modalExitoMensaje }}</p>
 
     <button type="button" class="btn-primary modal-button" (click)="cerrarModalExito()">
       Aceptar
     </button>
   </div>
 </div>
-
 }
 
-<!-- ========================= -->
 <!-- MODAL DE PREVISUALIZACIÓN -->
-<!-- ========================= -->
+
 @if (modalPrevisualizacionVisible) {
 <div class="modal-overlay" (click)="cerrarModalPrevisualizacion()">
   <div class="modal-container" (click)="$event.stopPropagation()">
-    <!-- Cabecera del Modal -->
     <div class="modal-header">
       <h3>{{ documentoSeleccionadoTitulo }}</h3>
+
       <button type="button" class="btn-cerrar-modal" (click)="cerrarModalPrevisualizacion()">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -1082,7 +1160,8 @@
         [src]="documentoSeleccionadoUrl"
         class="visor-pdf"
         title="Previsualización del documento PDF"
-      ></iframe>
+      >
+      </iframe>
       } @else {
       <img
         [src]="documentoSeleccionadoUrl"
@@ -1092,9 +1171,7 @@
       }
     </div>
 
-    <!-- Footer del Modal -->
     <div class="modal-footer">
-      <!-- Apuntamos al nuevo método auxiliar que llama a tu descarga real -->
       <button
         type="button"
         class="btn-documento btn-descargar"
@@ -1102,6 +1179,7 @@
       >
         Descargar archivo
       </button>
+
       <button type="button" class="btn-documento btn-subir" (click)="cerrarModalPrevisualizacion()">
         Cerrar
       </button>

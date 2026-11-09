@@ -103,6 +103,10 @@ export class RemolqueForm implements OnInit {
         ]
       ],
 
+      fechaPermisoCirculacion: [null],
+      fechaSeguro: [null],
+      fechaRevisionTecnica: [null],
+
       camionHabitualId: [
         null
       ],
@@ -144,44 +148,44 @@ export class RemolqueForm implements OnInit {
     if (this.guardando) {
       return false;
     }
-  
+
     if (!this.formulario.dirty) {
       return true;
     }
-  
+
     this.modalSalirVisible = true;
-  
+
     return new Promise<boolean>((resolve) => {
       this.resolverSalida = resolve;
     });
   }
-  
+
   seguirEditando(): void {
-  
+
     this.modalSalirVisible = false;
-  
+
     if (this.resolverSalida) {
       this.resolverSalida(false);
       this.resolverSalida = null;
     }
   }
-  
+
   salirSinGuardar(): void {
 
     this.modalSalirVisible = false;
-  
+
     if (this.resolverSalida) {
-  
+
       this.formulario.markAsPristine();
-  
+
       this.resolverSalida(true);
       this.resolverSalida = null;
-  
+
       return;
     }
-  
+
     this.formulario.markAsPristine();
-  
+
     this.router.navigate(['/remolques']);
   }
 
@@ -210,6 +214,9 @@ export class RemolqueForm implements OnInit {
       ano: Number(valor.ano),
       tipo: valor.tipo.trim(),
       capacidadToneladas: Number(valor.capacidadToneladas),
+      fechaPermisoCirculacion: valor.fechaPermisoCirculacion || null,
+      fechaSeguro: valor.fechaSeguro || null,
+      fechaRevisionTecnica: valor.fechaRevisionTecnica || null,
       activa: Boolean(valor.activa),
       camionHabitualId:
         valor.camionHabitualId === null ||
@@ -267,12 +274,12 @@ export class RemolqueForm implements OnInit {
     if (this.guardando) {
       return;
     }
-  
+
     if (this.formulario.dirty) {
       this.modalSalirVisible = true;
       return;
     }
-  
+
     this.router.navigate(['/remolques']);
   }
 

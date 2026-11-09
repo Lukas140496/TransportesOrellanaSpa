@@ -115,7 +115,7 @@ export class CamionList implements OnInit {
   get revisionesAlDia(): number {
 
     return this.camiones.filter(
-      camion => camion.revisionAlDia
+      camion => camion.revisionTecnica.estado === 'AlDia'
     ).length;
 
   }
@@ -123,8 +123,29 @@ export class CamionList implements OnInit {
   get revisionesVencidas(): number {
 
     return this.camiones.filter(
-      camion => !camion.revisionAlDia
+      camion => camion.revisionTecnica.estado === 'Vencido'
     ).length;
+
+  }
+
+  textoEstadoDocumento(estado: string): string {
+
+    switch (estado) {
+
+      case 'AlDia':
+        return 'Al día';
+
+      case 'PorVencer':
+        return 'Por vencer';
+
+      case 'Vencido':
+        return 'Vencido';
+
+      case 'SinRegistro':
+      default:
+        return 'Sin registro';
+
+    }
 
   }
 
@@ -155,7 +176,7 @@ export class CamionList implements OnInit {
   limpiarBusqueda(): void {
 
     this.busqueda = '';
-  
+
   }
 
   verDetalle(patente: string): void {

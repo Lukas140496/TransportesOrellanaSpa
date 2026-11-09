@@ -1,3 +1,4 @@
+
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -191,7 +192,22 @@ export class RemolqueModificar implements OnInit {
       ...remolque,
 
       camionHabitualId:
-        remolque.camionHabitualId ?? null
+        remolque.camionHabitualId ?? null,
+
+      fechaPermisoCirculacion:
+        this.formatearFechaParaInput(
+          remolque.fechaPermisoCirculacion
+        ),
+
+      fechaSeguro:
+        this.formatearFechaParaInput(
+          remolque.fechaSeguro
+        ),
+
+      fechaRevisionTecnica:
+        this.formatearFechaParaInput(
+          remolque.fechaRevisionTecnica
+        )
     };
 
     setTimeout(() => {
@@ -204,6 +220,17 @@ export class RemolqueModificar implements OnInit {
         });
 
     }, 100);
+  }
+
+  private formatearFechaParaInput(
+    fecha: string | null | undefined
+  ): string | null {
+
+    if (!fecha) {
+      return null;
+    }
+
+    return fecha.substring(0, 10);
   }
 
   limpiarSeleccion(): void {
@@ -418,6 +445,16 @@ export class RemolqueModificar implements OnInit {
       capacidadToneladas:
         Number(remolque.capacidadToneladas),
       activa: Boolean(remolque.activa),
+
+      fechaPermisoCirculacion:
+        remolque.fechaPermisoCirculacion || null,
+
+      fechaSeguro:
+        remolque.fechaSeguro || null,
+
+      fechaRevisionTecnica:
+        remolque.fechaRevisionTecnica || null,
+
       camionHabitualId:
         remolque.camionHabitualId === null ||
         remolque.camionHabitualId === undefined
@@ -457,7 +494,22 @@ export class RemolqueModificar implements OnInit {
             ...remolqueActualizado,
 
             camionHabitualId:
-              remolqueActualizado.camionHabitualId ?? null
+              remolqueActualizado.camionHabitualId ?? null,
+
+            fechaPermisoCirculacion:
+              this.formatearFechaParaInput(
+                remolqueActualizado.fechaPermisoCirculacion
+              ),
+
+            fechaSeguro:
+              this.formatearFechaParaInput(
+                remolqueActualizado.fechaSeguro
+              ),
+
+            fechaRevisionTecnica:
+              this.formatearFechaParaInput(
+                remolqueActualizado.fechaRevisionTecnica
+              )
           };
 
           this.modalExitoVisible = true;

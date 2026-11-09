@@ -40,22 +40,21 @@
 
     <div class="cabecera-acciones">
       <div class="cabecera-estados">
-        @if (conductor.activo) { @if (conductor.licenciaAlDia) {
-
-        <span class="estado-badge activo"> ● Licencia al día </span>
-
+        <span
+          class="estado-badge"
+          [ngClass]="obtenerClaseEstadoLicencia()"
+        >
+          ● Licencia {{ obtenerTextoEstadoLicencia() }}
+        </span>
+      
+        @if (conductor.activo) {
+          <span class="estado-badge conductor-activo">
+            ● Activo
+          </span>
         } @else {
-
-        <span class="estado-badge vencido"> ● Licencia vencida </span>
-
-        }
-
-        <span class="estado-badge conductor-activo"> ● Activo </span>
-
-        } @else {
-
-        <span class="estado-badge inactivo"> ● Inactivo </span>
-
+          <span class="estado-badge inactivo">
+            ● Inactivo
+          </span>
         }
       </div>
 
@@ -197,35 +196,45 @@
     </div>
 
     <div class="licencia-card">
-      <div class="licencia-principal">
-        <span class="dato-label"> Tipo de licencia </span>
 
+      <div class="licencia-principal">
+        <span class="dato-label">Tipo de licencia</span>
+    
         <strong class="licencia-tipo">
           {{ conductor.tipoLicencia }}
         </strong>
       </div>
-
+    
       <div class="licencia-info">
-        <span class="dato-label"> Fecha de control </span>
-
+        <span class="dato-label">Fecha de vencimiento</span>
+    
         <strong>
           {{ conductor.fechaControlLicencia | date : 'dd/MM/yyyy' }}
         </strong>
       </div>
-
+    
       <div class="licencia-estado">
-        <span class="dato-label"> Estado </span>
-
-        @if (conductor.licenciaAlDia) {
-
-        <strong class="texto-activo"> ✓ Vigente </strong>
-
-        } @else {
-
-        <strong class="texto-vencido"> ✕ Vencida </strong>
-
-        }
+        <span class="dato-label">Estado</span>
+    
+        <strong
+          class="estado-licencia-texto"
+          [ngClass]="obtenerClaseEstadoLicencia()"
+        >
+          {{ obtenerTextoEstadoLicencia() }}
+        </strong>
       </div>
+    
+      <div class="licencia-dias">
+        <span class="dato-label">Vigencia de licencia</span>
+    
+        <strong
+          class="estado-licencia-texto"
+          [ngClass]="obtenerClaseEstadoLicencia()"
+        >
+          {{ obtenerTextoDiasRestantes() }}
+        </strong>
+      </div>
+    
     </div>
   </section>
 

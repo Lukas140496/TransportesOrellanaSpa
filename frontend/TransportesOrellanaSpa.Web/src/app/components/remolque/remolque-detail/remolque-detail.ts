@@ -5,7 +5,7 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { DatePipe } from '@angular/common';
 
 import { ApiService } from '../../../core/services/api.service';
-import { Remolque } from '../../../core/models/remolque';
+import { EstadoDocumentoRemolque, Remolque } from '../../../core/models/remolque';
 import { PermissionService } from '../../../core/services/permission.service';
 import {
   DocumentoRemolque,
@@ -51,7 +51,7 @@ export class RemolqueDetail implements OnInit, OnDestroy {
   }[] = [
     {
       tipo: 'PermisoCirculacion',
-      titulo: 'Permiso de circulación',
+      titulo: 'Permiso de Circulación',
       descripcion: 'Documento que acredita el permiso de circulación del remolque.'
     },
     {
@@ -61,7 +61,7 @@ export class RemolqueDetail implements OnInit, OnDestroy {
     },
     {
       tipo: 'RevisionTecnica',
-      titulo: 'Revisión técnica',
+      titulo: 'Revisión Técnica',
       descripcion: 'Certificado de revisión técnica del remolque.'
     }
   ];
@@ -259,6 +259,84 @@ export class RemolqueDetail implements OnInit, OnDestroy {
     return this.documentos.find(
       documento => documento.tipoDocumento === tipo
     );
+  }
+
+  obtenerEstadoDocumento(
+    tipo: TipoDocumentoRemolque
+  ): EstadoDocumentoRemolque | null {
+    if (!this.remolque) return null;
+  
+    switch (tipo) {
+      case 'PermisoCirculacion':
+        return this.remolque.permisoCirculacion;
+  
+      case 'Seguro':
+        return this.remolque.seguro;
+  
+      case 'RevisionTecnica':
+        return this.remolque.revisionTecnica;
+  
+      default:
+        return null;
+    }
+  }
+  
+  obtenerFechaVencimiento(tipo: TipoDocumentoRemolque): string {
+    if (!this.remolque) return 'Sin fecha registrada';
+  
+    let fecha: string | null = null;
+  
+    switch (tipo) {
+      case 'PermisoCirculacion':
+        fecha = this.remolque.fechaPermisoCirculacion;
+        break;
+  
+      case 'Seguro':
+        fecha = this.remolque.fechaSeguro;
+        break;
+  
+      case 'RevisionTecnica':
+        fecha = this.remolque.fechaRevisionTecnica;
+        break;
+    }
+  
+    if (!fecha) return 'Sin fecha registrada';
+  
+    const [anio, mes, dia] = fecha.substring(0, 10).split('-');
+  
+    return `${dia}/${mes}/${anio}`;
+  }
+  
+  obtenerTextoEstadoDocumento(tipo: TipoDocumentoRemolque): string {
+    switch (this.obtenerEstadoDocumento(tipo)?.estado) {
+      case 'AlDia':
+        return 'Al día';
+  
+      case 'PorVencer':
+        return 'Por vencer';
+  
+      case 'Vencido':
+        return 'Vencido';
+  
+      default:
+        return 'Sin registro';
+    }
+  }
+  
+  obtenerClaseEstadoDocumento(tipo: TipoDocumentoRemolque): string {
+    switch (this.obtenerEstadoDocumento(tipo)?.estado) {
+      case 'AlDia':
+        return 'estado-al-dia';
+  
+      case 'PorVencer':
+        return 'estado-por-vencer';
+  
+      case 'Vencido':
+        return 'estado-vencido';
+  
+      default:
+        return 'estado-sin-registro';
+    }
   }
 
   seleccionarArchivo(

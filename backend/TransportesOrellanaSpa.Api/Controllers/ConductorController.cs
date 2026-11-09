@@ -1,3 +1,4 @@
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TransportesOrellanaSpa.Api.Data;
@@ -13,50 +14,135 @@ public class ConductorController : ControllerBase
 {
     private readonly AppDbContext _context;
 
+    private static readonly TimeZoneInfo ZonaHorariaChile =
+        TimeZoneInfo.FindSystemTimeZoneById("America/Santiago");
+
     public ConductorController(AppDbContext context)
     {
         _context = context;
     }
 
+    // =========================================
+    // FECHA Y ESTADO DE VENCIMIENTO
+    // =========================================
+
+    private static DateTime ObtenerFechaChile()
+    {
+        return TimeZoneInfo.ConvertTimeFromUtc(
+            DateTime.UtcNow,
+            ZonaHorariaChile
+        ).Date;
+    }
+
+    private static EstadoDocumentoDto CalcularEstadoLicencia(
+        DateTime fechaVencimiento,
+        DateTime fechaActual)
+    {
+        if (fechaVencimiento == default)
+        {
+            return new EstadoDocumentoDto
+            {
+                Estado = "SinRegistro",
+                DiasRestantes = null
+            };
+        }
+
+        var diasRestantes =
+            (fechaVencimiento.Date - fechaActual.Date).Days;
+
+        if (diasRestantes < 0)
+        {
+            return new EstadoDocumentoDto
+            {
+                Estado = "Vencido",
+                DiasRestantes = diasRestantes
+            };
+        }
+
+        if (diasRestantes <= 30)
+        {
+            return new EstadoDocumentoDto
+            {
+                Estado = "PorVencer",
+                DiasRestantes = diasRestantes
+            };
+        }
+
+        return new EstadoDocumentoDto
+        {
+            Estado = "AlDia",
+            DiasRestantes = diasRestantes
+        };
+    }
+
+    // =========================================
+    // MAPEO DE CONDUCTOR A DTO
+    // =========================================
+
+    private static ConductorDto MapearConductor(
+        Conductor conductor,
+        DateTime fechaActual)
+    {
+        return new ConductorDto
+        {
+            Id = conductor.Id,
+            Rut = conductor.Rut,
+            Nombres = conductor.Nombres,
+            ApellidoPaterno = conductor.ApellidoPaterno,
+            ApellidoMaterno = conductor.ApellidoMaterno,
+            FechaNacimiento = conductor.FechaNacimiento,
+            Edad = conductor.Edad,
+            FechaIngreso = conductor.FechaIngreso,
+            Telefono = conductor.Telefono,
+            TipoLicencia = conductor.TipoLicencia,
+            FechaControlLicencia = conductor.FechaControlLicencia,
+            LicenciaAlDia = conductor.LicenciaAlDia,
+
+            LicenciaConducir = CalcularEstadoLicencia(
+                conductor.FechaControlLicencia,
+                fechaActual
+            ),
+
+            Activo = conductor.Activo,
+
+            CamionesHabituales = conductor.CamionesHabituales
+                .Select(cam => new CamionResumenDto
+                {
+                    Id = cam.Id,
+                    Patente = cam.Patente,
+                    Marca = cam.Marca,
+                    Modelo = cam.Modelo
+                })
+                .ToList()
+        };
+    }
+
+    // =========================================
     // GET: api/conductor
+    // =========================================
+
     [RequirePermission("CONDUCTORES_VER")]
     [HttpGet]
     public async Task<ActionResult<IEnumerable<ConductorDto>>> GetAll()
     {
+        var fechaActual = ObtenerFechaChile();
+
         var conductores = await _context.Conductores
             .AsNoTracking()
-            .Select(c => new ConductorDto
-            {
-                Id = c.Id,
-                Rut = c.Rut,
-                Nombres = c.Nombres,
-                ApellidoPaterno = c.ApellidoPaterno,
-                ApellidoMaterno = c.ApellidoMaterno,
-                FechaNacimiento = c.FechaNacimiento,
-                Edad = c.Edad,
-                FechaIngreso = c.FechaIngreso,
-                Telefono = c.Telefono,
-                TipoLicencia = c.TipoLicencia,
-                FechaControlLicencia = c.FechaControlLicencia,
-                LicenciaAlDia = c.LicenciaAlDia,
-                Activo = c.Activo,
-
-                CamionesHabituales = c.CamionesHabituales
-                    .Select(cam => new CamionResumenDto
-                    {
-                        Id = cam.Id,
-                        Patente = cam.Patente,
-                        Marca = cam.Marca,
-                        Modelo = cam.Modelo
-                    })
-                    .ToList()
-            })
+            .Include(c => c.CamionesHabituales)
             .ToListAsync();
 
-        return Ok(conductores);
+        var resultado = conductores
+            .Select(c => MapearConductor(c, fechaActual))
+            .ToList();
+
+        return Ok(resultado);
     }
 
+    // =========================================
     // GET: api/conductor/19.374.867-8
+    // =========================================
+
     [RequirePermission("CONDUCTORES_VER")]
     [HttpGet("{rut}")]
     public async Task<ActionResult<ConductorDto>> GetByRut(string rut)
@@ -65,34 +151,8 @@ public class ConductorController : ControllerBase
 
         var conductor = await _context.Conductores
             .AsNoTracking()
-            .Where(c => c.Rut == rut)
-            .Select(c => new ConductorDto
-            {
-                Id = c.Id,
-                Rut = c.Rut,
-                Nombres = c.Nombres,
-                ApellidoPaterno = c.ApellidoPaterno,
-                ApellidoMaterno = c.ApellidoMaterno,
-                FechaNacimiento = c.FechaNacimiento,
-                Edad = c.Edad,
-                FechaIngreso = c.FechaIngreso,
-                Telefono = c.Telefono,
-                TipoLicencia = c.TipoLicencia,
-                FechaControlLicencia = c.FechaControlLicencia,
-                LicenciaAlDia = c.LicenciaAlDia,
-                Activo = c.Activo,
-
-                CamionesHabituales = c.CamionesHabituales
-                    .Select(cam => new CamionResumenDto
-                    {
-                        Id = cam.Id,
-                        Patente = cam.Patente,
-                        Marca = cam.Marca,
-                        Modelo = cam.Modelo
-                    })
-                    .ToList()
-            })
-            .FirstOrDefaultAsync();
+            .Include(c => c.CamionesHabituales)
+            .FirstOrDefaultAsync(c => c.Rut == rut);
 
         if (conductor == null)
         {
@@ -101,10 +161,18 @@ public class ConductorController : ControllerBase
             );
         }
 
-        return Ok(conductor);
+        var resultado = MapearConductor(
+            conductor,
+            ObtenerFechaChile()
+        );
+
+        return Ok(resultado);
     }
 
+    // =========================================
     // POST: api/conductor
+    // =========================================
+
     [RequirePermission("CONDUCTORES_CREAR")]
     [HttpPost]
     public async Task<ActionResult<ConductorDto>> Create(
@@ -142,28 +210,15 @@ public class ConductorController : ControllerBase
 
         await _context.SaveChangesAsync();
 
-        var resultado = await _context.Conductores
+        var conductorCreado = await _context.Conductores
             .AsNoTracking()
-            .Where(c => c.Id == conductor.Id)
-            .Select(c => new ConductorDto
-            {
-                Id = c.Id,
-                Rut = c.Rut,
-                Nombres = c.Nombres,
-                ApellidoPaterno = c.ApellidoPaterno,
-                ApellidoMaterno = c.ApellidoMaterno,
-                FechaNacimiento = c.FechaNacimiento,
-                Edad = c.Edad,
-                FechaIngreso = c.FechaIngreso,
-                Telefono = c.Telefono,
-                TipoLicencia = c.TipoLicencia,
-                FechaControlLicencia = c.FechaControlLicencia,
-                LicenciaAlDia = c.LicenciaAlDia,
-                Activo = c.Activo,
-                CamionesHabituales =
-                    new List<CamionResumenDto>()
-            })
-            .FirstAsync();
+            .Include(c => c.CamionesHabituales)
+            .FirstAsync(c => c.Id == conductor.Id);
+
+        var resultado = MapearConductor(
+            conductorCreado,
+            ObtenerFechaChile()
+        );
 
         return CreatedAtAction(
             nameof(GetByRut),
@@ -172,7 +227,10 @@ public class ConductorController : ControllerBase
         );
     }
 
+    // =========================================
     // PUT: api/conductor/12.345.678-9
+    // =========================================
+
     [RequirePermission("CONDUCTORES_EDITAR")]
     [HttpPut("{rut}")]
     public async Task<IActionResult> Update(
@@ -281,7 +339,10 @@ public class ConductorController : ControllerBase
         return NoContent();
     }
 
-    // PATCH: api/conductor/12.345.678-9/desactivar
+    // =========================================
+    // PATCH: api/conductor/{rut}/desactivar
+    // =========================================
+
     [RequirePermission("CONDUCTORES_EDITAR")]
     [HttpPatch("{rut}/desactivar")]
     public async Task<IActionResult> Desactivar(string rut)
@@ -315,7 +376,10 @@ public class ConductorController : ControllerBase
         });
     }
 
-    // PATCH: api/conductor/12.345.678-9/activar
+    // =========================================
+    // PATCH: api/conductor/{rut}/activar
+    // =========================================
+
     [RequirePermission("CONDUCTORES_EDITAR")]
     [HttpPatch("{rut}/activar")]
     public async Task<IActionResult> Activar(string rut)
@@ -346,7 +410,10 @@ public class ConductorController : ControllerBase
         return NoContent();
     }
 
-    // PUT: api/conductor/19.374.867-8/camion-habitual
+    // =========================================
+    // PUT: api/conductor/{rut}/camion-habitual
+    // =========================================
+
     [RequirePermission("CONDUCTORES_EDITAR")]
     [HttpPut("{rut}/camion-habitual")]
     public async Task<IActionResult> AsignarCamionHabitual(
@@ -355,10 +422,9 @@ public class ConductorController : ControllerBase
     {
         rut = rut.Trim();
 
-        var patente =
-            dto.Patente
-                .Trim()
-                .ToUpperInvariant();
+        var patente = dto.Patente
+            .Trim()
+            .ToUpperInvariant();
 
         var conductor = await _context.Conductores
             .Include(c => c.CamionesHabituales)
@@ -372,9 +438,7 @@ public class ConductorController : ControllerBase
         }
 
         var camion = await _context.Camiones
-            .FirstOrDefaultAsync(
-                c => c.Patente == patente
-            );
+            .FirstOrDefaultAsync(c => c.Patente == patente);
 
         if (camion == null)
         {
@@ -391,47 +455,22 @@ public class ConductorController : ControllerBase
             await _context.SaveChangesAsync();
         }
 
-        var conductorDto = new ConductorDto
-        {
-            Id = conductor.Id,
-            Rut = conductor.Rut,
-            Nombres = conductor.Nombres,
-            ApellidoPaterno = conductor.ApellidoPaterno,
-            ApellidoMaterno = conductor.ApellidoMaterno,
-            FechaNacimiento = conductor.FechaNacimiento,
-            Edad = conductor.Edad,
-            FechaIngreso = conductor.FechaIngreso,
-            Telefono = conductor.Telefono,
-            TipoLicencia = conductor.TipoLicencia,
-            FechaControlLicencia =
-                conductor.FechaControlLicencia,
-            LicenciaAlDia =
-                conductor.LicenciaAlDia,
-            Activo =
-                conductor.Activo,
-
-            CamionesHabituales =
-                conductor.CamionesHabituales
-                    .Select(cam => new CamionResumenDto
-                    {
-                        Id = cam.Id,
-                        Patente = cam.Patente,
-                        Marca = cam.Marca,
-                        Modelo = cam.Modelo
-                    })
-                    .ToList()
-        };
+        var conductorDto = MapearConductor(
+            conductor,
+            ObtenerFechaChile()
+        );
 
         return Ok(new
         {
-            Mensaje =
-                "Camión asignado al conductor correctamente",
-
+            Mensaje = "Camión asignado al conductor correctamente",
             Conductor = conductorDto
         });
     }
 
-    // PUT: api/conductor/25.522.461-8/desasignar-camion/VZ9625
+    // =========================================
+    // PUT: api/conductor/{rut}/desasignar-camion/{patente}
+    // =========================================
+
     [RequirePermission("CONDUCTORES_EDITAR")]
     [HttpPut("{rut}/desasignar-camion/{patente}")]
     public async Task<IActionResult> DesasignarCamionHabitual(
@@ -440,10 +479,9 @@ public class ConductorController : ControllerBase
     {
         rut = rut.Trim();
 
-        patente =
-            patente
-                .Trim()
-                .ToUpperInvariant();
+        patente = patente
+            .Trim()
+            .ToUpperInvariant();
 
         var conductor = await _context.Conductores
             .Include(c => c.CamionesHabituales)
@@ -456,11 +494,8 @@ public class ConductorController : ControllerBase
             );
         }
 
-        var camionAsociado =
-            conductor.CamionesHabituales
-                .FirstOrDefault(
-                    c => c.Patente == patente
-                );
+        var camionAsociado = conductor.CamionesHabituales
+            .FirstOrDefault(c => c.Patente == patente);
 
         if (camionAsociado == null)
         {
@@ -470,52 +505,26 @@ public class ConductorController : ControllerBase
             );
         }
 
-        conductor.CamionesHabituales
-            .Remove(camionAsociado);
+        conductor.CamionesHabituales.Remove(camionAsociado);
 
         await _context.SaveChangesAsync();
 
-        var conductorDto = new ConductorDto
-        {
-            Id = conductor.Id,
-            Rut = conductor.Rut,
-            Nombres = conductor.Nombres,
-            ApellidoPaterno = conductor.ApellidoPaterno,
-            ApellidoMaterno = conductor.ApellidoMaterno,
-            FechaNacimiento = conductor.FechaNacimiento,
-            Edad = conductor.Edad,
-            FechaIngreso = conductor.FechaIngreso,
-            Telefono = conductor.Telefono,
-            TipoLicencia = conductor.TipoLicencia,
-            FechaControlLicencia =
-                conductor.FechaControlLicencia,
-            LicenciaAlDia =
-                conductor.LicenciaAlDia,
-            Activo =
-                conductor.Activo,
-
-            CamionesHabituales =
-                conductor.CamionesHabituales
-                    .Select(cam => new CamionResumenDto
-                    {
-                        Id = cam.Id,
-                        Patente = cam.Patente,
-                        Marca = cam.Marca,
-                        Modelo = cam.Modelo
-                    })
-                    .ToList()
-        };
+        var conductorDto = MapearConductor(
+            conductor,
+            ObtenerFechaChile()
+        );
 
         return Ok(new
         {
-            Mensaje =
-                "Camión desasignado del conductor correctamente",
-
+            Mensaje = "Camión desasignado del conductor correctamente",
             Conductor = conductorDto
         });
     }
 
+    // =========================================
     // DELETE: api/conductor/12.345.678-9
+    // =========================================
+
     [RequirePermission("CONDUCTORES_ELIMINAR")]
     [HttpDelete("{rut}")]
     public async Task<IActionResult> Delete(string rut)

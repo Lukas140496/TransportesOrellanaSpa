@@ -1,65 +1,60 @@
 <section class="camion-list">
-  <section class="camion-list">
-    <div class="page-header">
-      <div class="header-content">
-        <div class="header-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="1" y="3" width="15" height="13"></rect>
-            <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
-            <circle cx="5.5" cy="18.5" r="2.5"></circle>
-            <circle cx="18.5" cy="18.5" r="2.5"></circle>
-          </svg>
-        </div>
 
-        <div>
-          <h1>Listado Camiones</h1>
-          <p>Administra los camiones registrados en Flota360.</p>
-        </div>
+  <div class="page-header">
+    <div class="header-content">
+      <div class="header-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="1" y="3" width="15" height="13"></rect>
+          <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+          <circle cx="5.5" cy="18.5" r="2.5"></circle>
+          <circle cx="18.5" cy="18.5" r="2.5"></circle>
+        </svg>
       </div>
 
-      @if (permissionService.tienePermiso('CAMIONES_CREAR')) {
-
-        <button
-          type="button"
-          class="btn-nuevo"
-          (click)="nuevoCamion()"
-        >
-          <span class="btn-icon">+</span>
-          Nuevo Camión
-        </button>
-      
-      }
+      <div>
+        <h1>Listado Camiones</h1>
+        <p>Administra los camiones registrados en Flota360.</p>
+      </div>
     </div>
 
-    @if (cargando) {
+    @if (permissionService.tienePermiso('CAMIONES_CREAR')) {
+      <button
+        type="button"
+        class="btn-nuevo"
+        (click)="nuevoCamion()"
+      >
+        <span class="btn-icon">+</span>
+        Nuevo Camión
+      </button>
+    }
+  </div>
 
+  @if (cargando) {
     <div class="estado-container">
       <div class="loading-spinner"></div>
-
       <p>Cargando camiones...</p>
     </div>
+  }
 
-    } @if (error) {
-
+  @if (error) {
     <div class="error-container">
       <div class="error-icon">!</div>
 
       <div>
-        <strong> No fue posible cargar los camiones </strong>
-
-        <p>
-          {{ error }}
-        </p>
+        <strong>No fue posible cargar los camiones</strong>
+        <p>{{ error }}</p>
       </div>
     </div>
+  }
 
-    } @if (!cargando && !error) {
+  @if (!cargando && !error) {
 
     <!-- =====================================================
          RESUMEN
          ===================================================== -->
 
     <div class="resumen">
+
       <!-- TOTAL CAMIONES -->
       <div class="resumen-card">
         <div class="resumen-icon total">
@@ -72,10 +67,8 @@
         </div>
 
         <div>
-          <span> Total Camiones </span>
-          <strong>
-            {{ camiones.length }}
-          </strong>
+          <span>Total Camiones</span>
+          <strong>{{ camiones.length }}</strong>
         </div>
       </div>
 
@@ -89,10 +82,8 @@
         </div>
 
         <div>
-          <span> Activos </span>
-          <strong>
-            {{ cantidadActivos }}
-          </strong>
+          <span>Activos</span>
+          <strong>{{ cantidadActivos }}</strong>
         </div>
       </div>
 
@@ -107,10 +98,8 @@
         </div>
 
         <div>
-          <span> Inactivos </span>
-          <strong>
-            {{ cantidadInactivos }}
-          </strong>
+          <span>Inactivos</span>
+          <strong>{{ cantidadInactivos }}</strong>
         </div>
       </div>
 
@@ -120,15 +109,13 @@
           <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
             <polyline points="14 2 14 8 20 8"></polyline>
-            polyline points="9 15 11 17 15 13">
+            <polyline points="9 15 11 17 15 13"></polyline>
           </svg>
         </div>
 
         <div>
-          <span> Revisión al Día </span>
-          <strong>
-            {{ revisionesAlDia }}
-          </strong>
+          <span>Revisión al Día</span>
+          <strong>{{ revisionesAlDia }}</strong>
         </div>
       </div>
 
@@ -143,12 +130,11 @@
         </div>
 
         <div>
-          <span> Revisión Vencida </span>
-          <strong>
-            {{ revisionesVencidas }}
-          </strong>
+          <span>Revisión Vencida</span>
+          <strong>{{ revisionesVencidas }}</strong>
         </div>
       </div>
+
     </div>
 
     <!-- =====================================================
@@ -156,8 +142,9 @@
          ===================================================== -->
 
     <div class="filtros-card">
+
       <div class="busqueda">
-        <span class="search-icon"> ⌕ </span>
+        <span class="search-icon">⌕</span>
 
         <input
           type="text"
@@ -167,21 +154,19 @@
         />
 
         @if (busqueda) {
-
-        <button
-          type="button"
-          class="btn-limpiar-busqueda"
-          (click)="limpiarBusqueda()"
-          aria-label="Limpiar búsqueda"
-        >
-          ×
-        </button>
-
+          <button
+            type="button"
+            class="btn-limpiar-busqueda"
+            (click)="limpiarBusqueda()"
+            aria-label="Limpiar búsqueda"
+          >
+            ×
+          </button>
         }
       </div>
 
       <div class="filtro-estado">
-        <span class="filtro-label"> Estado: </span>
+        <span class="filtro-label">Estado:</span>
 
         <button
           type="button"
@@ -209,12 +194,15 @@
       </div>
 
       @if (hayFiltrosAplicados()) {
-
-      <button type="button" class="btn-limpiar-filtros" (click)="limpiarFiltros()">
-        Limpiar filtros
-      </button>
-
+        <button
+          type="button"
+          class="btn-limpiar-filtros"
+          (click)="limpiarFiltros()"
+        >
+          Limpiar filtros
+        </button>
       }
+
     </div>
 
     <!-- =====================================================
@@ -224,210 +212,185 @@
     <div class="resultado-info">
       <span>
         Mostrando
-        <strong>
-          {{ camionesFiltrados.length }}
-        </strong>
+        <strong>{{ camionesFiltrados.length }}</strong>
         de
-        <strong>
-          {{ camiones.length }}
-        </strong>
+        <strong>{{ camiones.length }}</strong>
         camiones
       </span>
     </div>
 
     @if (camionesFiltrados.length > 0) {
 
-    <div class="tabla-container">
-      <table>
-        <thead>
-          <tr>
-            <th>Camión</th>
+      <div class="tabla-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Camión</th>
+              <th>Marca</th>
+              <th>Modelo</th>
+              <th>Año</th>
+              <th>Tipo</th>
+              <th>Conductores</th>
+              <th>Remolques</th>
+              <th>Revisión</th>
+              <th>Permiso</th>
+              <th>Estado</th>
+              <th class="columna-acciones">Acción</th>
+            </tr>
+          </thead>
 
-            <th>Marca</th>
+          <tbody>
+            @for (camion of camionesFiltrados; track camion.id) {
 
-            <th>Modelo</th>
+              <tr>
+                <td>
+                  <div class="camion-info">
+                    <div class="camion-avatar">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="1" y="3" width="15" height="13"></rect>
+                        <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                        <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                        <circle cx="18.5" cy="18.5" r="2.5"></circle>
+                      </svg>
+                    </div>
 
-            <th>Año</th>
+                    <div>
+                      <strong>{{ camion.patente }}</strong>
+                      <span>{{ camion.tipo }}</span>
+                    </div>
+                  </div>
+                </td>
 
-            <th>Tipo</th>
+                <td>
+                  <span class="dato-principal">
+                    {{ camion.marca }}
+                  </span>
+                </td>
 
-            <th>Conductores</th>
+                <td>
+                  <span class="dato-principal">
+                    {{ camion.modelo }}
+                  </span>
+                </td>
 
-            <th>Remolques</th>
+                <td>
+                  <span class="dato-secundario">
+                    {{ camion.ano }}
+                  </span>
+                </td>
 
-            <th>Revisión</th>
-
-            <th>Permiso</th>
-
-            <th>Estado</th>
-
-            <th class="columna-acciones">Acción</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          @for ( camion of camionesFiltrados; track camion.id ) {
-
-          <tr>
-            <td>
-              <div class="camion-info">
-                <div class="camion-avatar">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="1" y="3" width="15" height="13"></rect>
-                    <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
-                    <circle cx="5.5" cy="18.5" r="2.5"></circle>
-                    <circle cx="18.5" cy="18.5" r="2.5"></circle>
-                  </svg>
-                </div>
-
-                <div>
-                  <strong>
-                    {{ camion.patente }}
-                  </strong>
-
-                  <span>
+                <td>
+                  <span class="tipo-camion">
                     {{ camion.tipo }}
                   </span>
-                </div>
-              </div>
-            </td>
+                </td>
 
-            <td>
-              <span class="dato-principal">
-                {{ camion.marca }}
-              </span>
-            </td>
+                <td>
+                  <span class="contador">
+                    <span class="contador-icon">👤</span>
+                    {{ camion.conductoresHabituales.length }}
+                  </span>
+                </td>
 
-            <td>
-              <span class="dato-principal">
-                {{ camion.modelo }}
-              </span>
-            </td>
+                <td>
+                  <span class="contador">
+                    <span class="contador-icon">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 7v8"></path>
+                        <line x1="2" y1="15" x2="21" y2="15"></line>
+                        <circle cx="5" cy="19" r="2"></circle>
+                        <circle cx="10" cy="19" r="2"></circle>
+                      </svg>
+                    </span>
 
-            <td>
-              <span class="dato-secundario">
-                {{ camion.ano }}
-              </span>
-            </td>
+                    {{ camion.remolques.length }}
+                  </span>
+                </td>
 
-            <td>
-              <span class="tipo-camion">
-                {{ camion.tipo }}
-              </span>
-            </td>
+                <!-- ESTADO REVISIÓN TÉCNICA -->
+                <td>
+                  <span
+                    class="badge"
+                    [class.al-dia]="camion.revisionTecnica.estado === 'AlDia'"
+                    [class.por-vencer]="camion.revisionTecnica.estado === 'PorVencer'"
+                    [class.vencida]="camion.revisionTecnica.estado === 'Vencido'"
+                    [class.sin-registro]="camion.revisionTecnica.estado === 'SinRegistro'"
+                  >
+                    <span class="badge-dot"></span>
+                    {{ textoEstadoDocumento(camion.revisionTecnica.estado) }}
+                  </span>
+                </td>
 
-            <td>
-              <span class="contador">
-                <span class="contador-icon"> 👤 </span>
+                <!-- ESTADO PERMISO DE CIRCULACIÓN -->
+                <td>
+                  <span
+                    class="badge"
+                    [class.al-dia]="camion.permisoCirculacion.estado === 'AlDia'"
+                    [class.por-vencer]="camion.permisoCirculacion.estado === 'PorVencer'"
+                    [class.vencida]="camion.permisoCirculacion.estado === 'Vencido'"
+                    [class.sin-registro]="camion.permisoCirculacion.estado === 'SinRegistro'"
+                  >
+                    <span class="badge-dot"></span>
+                    {{ textoEstadoDocumento(camion.permisoCirculacion.estado) }}
+                  </span>
+                </td>
 
-                {{ camion.conductoresHabituales.length }}
-              </span>
-            </td>
+                <!-- ESTADO DEL CAMIÓN -->
+                <td>
+                  @if (camion.activo) {
+                    <span class="badge activo">
+                      <span class="badge-dot"></span>
+                      Activo
+                    </span>
+                  } @else {
+                    <span class="badge inactivo">
+                      <span class="badge-dot"></span>
+                      Inactivo
+                    </span>
+                  }
+                </td>
 
-            <td>
-              <span class="contador">
-                <span class="contador-icon">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    
-                    <path d="M21 7v8"></path>
-                    <line x1="2" y1="15" x2="21" y2="15"></line>
-                    <circle cx="5" cy="19" r="2"></circle>
-                    <circle cx="10" cy="19" r="2"></circle>
-                  </svg>
-                </span>
+                <td class="columna-acciones">
+                  <button
+                    type="button"
+                    class="btn-detalle"
+                    (click)="verDetalle(camion.patente)"
+                  >
+                    Ver detalle
+                    <span>→</span>
+                  </button>
+                </td>
+              </tr>
 
-                {{ camion.remolques.length }}
-              </span>
-            </td>
+            }
+          </tbody>
+        </table>
+      </div>
 
-            <td>
-              @if (camion.revisionAlDia) {
+    }
 
-              <span class="badge al-dia">
-                <span class="badge-dot"></span>
+    @if (camionesFiltrados.length === 0) {
 
-                Al día
-              </span>
+      <div class="sin-resultados">
+        <div class="sin-resultados-icon">⌕</div>
 
-              } @else {
+        <h2>No encontramos camiones</h2>
 
-              <span class="badge vencida">
-                <span class="badge-dot"></span>
+        <p>
+          No hay camiones que coincidan con los filtros seleccionados.
+        </p>
 
-                Vencida
-              </span>
+        <button
+          type="button"
+          class="btn-restablecer"
+          (click)="limpiarFiltros()"
+        >
+          Limpiar filtros
+        </button>
+      </div>
 
-              }
-            </td>
+    }
 
-            <td>
-              @if (camion.permisoAlDia) {
+  }
 
-              <span class="badge al-dia">
-                <span class="badge-dot"></span>
-
-                Al día
-              </span>
-
-              } @else {
-
-              <span class="badge vencida">
-                <span class="badge-dot"></span>
-
-                Vencido
-              </span>
-
-              }
-            </td>
-
-            <td>
-              @if (camion.activo) {
-
-              <span class="badge activo">
-                <span class="badge-dot"></span>
-
-                Activo
-              </span>
-
-              } @else {
-
-              <span class="badge inactivo">
-                <span class="badge-dot"></span>
-
-                Inactivo
-              </span>
-
-              }
-            </td>
-
-            <td class="columna-acciones">
-              <button type="button" class="btn-detalle" (click)="verDetalle(camion.patente)">
-                Ver detalle
-
-                <span> → </span>
-              </button>
-            </td>
-          </tr>
-
-          }
-        </tbody>
-      </table>
-    </div>
-
-    } @if (camionesFiltrados.length === 0) {
-
-    <div class="sin-resultados">
-      <div class="sin-resultados-icon">⌕</div>
-
-      <h2>No encontramos camiones</h2>
-
-      <p>No hay camiones que coincidan con los filtros seleccionados.</p>
-
-      <button type="button" class="btn-restablecer" (click)="limpiarFiltros()">
-        Limpiar filtros
-      </button>
-    </div>
-
-    } }
-  </section>
 </section>

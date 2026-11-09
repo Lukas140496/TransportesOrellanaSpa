@@ -55,6 +55,10 @@ export class ConductorModificar implements OnInit {
     tipoLicencia: '',
     fechaControlLicencia: '',
     licenciaAlDia: false,
+    licenciaConducir: {
+      estado: 'SinRegistro',
+      diasRestantes: null
+    },
     activo: true,
     camionesHabituales: []
   };

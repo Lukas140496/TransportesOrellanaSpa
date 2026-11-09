@@ -124,6 +124,20 @@
 .badge.warning {
   background: #fef3c7;
   color: #92400e;
+  margin-left: 9px;
+}
+
+.field-hint {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  font-weight: 400;
+  color: #64748b;
+}
+
+.field-hint--expired {
+  color: #dc6b6b;
 }
 
 /* Tarjetas generales */

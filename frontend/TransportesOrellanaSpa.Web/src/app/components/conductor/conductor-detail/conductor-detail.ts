@@ -376,7 +376,7 @@ export class ConductorDetail implements OnInit {
 
   quitarArchivoSeleccionado(): void {
     this.archivoSeleccionado = null;
-    
+
     const inputElement = document.getElementById('archivo-conductor') as HTMLInputElement;
     if (inputElement) {
       inputElement.value = '';
@@ -385,12 +385,12 @@ export class ConductorDetail implements OnInit {
 
   obtenerFormatoArchivo(nombreArchivo: string | undefined): string {
     if (!nombreArchivo) return 'DOC';
-    
+
     const ext = nombreArchivo.split('.').pop()?.toUpperCase() || '';
     if (['PDF'].includes(ext)) return 'PDF';
     if (['JPG', 'JPEG'].includes(ext)) return 'JPG';
     if (['PNG'].includes(ext)) return 'PNG';
-    
+
     return ext.substring(0, 4) || 'DOC';
   }
 
@@ -500,6 +500,82 @@ export class ConductorDetail implements OnInit {
 
     this.documentoSeleccionadoUrl = null;
     this.documentoSeleccionadoUrlImagen = null;
+  }
+
+  // =========================
+  // ESTADO LICENCIA
+  // =========================
+
+  obtenerClaseEstadoLicencia(): string {
+    if (!this.conductor) {
+      return '';
+    }
+
+    switch (this.conductor.licenciaConducir.estado) {
+      case 'AlDia':
+        return 'estado-al-dia';
+
+      case 'PorVencer':
+        return 'estado-por-vencer';
+
+      case 'Vencido':
+        return 'estado-vencido';
+
+      case 'SinRegistro':
+        return 'estado-sin-registro';
+
+      default:
+        return 'estado-sin-registro';
+    }
+  }
+
+  obtenerTextoEstadoLicencia(): string {
+    if (!this.conductor) {
+      return '';
+    }
+
+    switch (this.conductor.licenciaConducir.estado) {
+      case 'AlDia':
+        return 'Al día';
+
+      case 'PorVencer':
+        return 'Por vencer';
+
+      case 'Vencido':
+        return 'Vencida';
+
+      case 'SinRegistro':
+        return 'Sin registro';
+
+      default:
+        return 'Sin registro';
+    }
+  }
+
+  obtenerTextoDiasRestantes(): string {
+    if (!this.conductor) {
+      return '';
+    }
+
+    const dias = this.conductor.licenciaConducir.diasRestantes;
+
+    if (dias === null || dias === undefined) {
+      return 'Sin fecha registrada';
+    }
+
+    if (dias < 0) {
+      return `Vencida hace ${Math.abs(dias)} días`;
+    }
+
+    if (dias === 0) {
+      return 'Vence hoy';
+    }
+
+    if (dias === 1) {
+      return 'Vence mañana';
+    }
+
+    return `${dias} días restantes`;
   }
 
   // =========================

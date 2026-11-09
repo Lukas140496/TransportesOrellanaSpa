@@ -1,3 +1,4 @@
+
 namespace TransportesOrellanaSpa.Api.DTOs;
 
 public class ActualizarRemolqueDto
@@ -6,12 +7,14 @@ public class ActualizarRemolqueDto
     public string Modelo { get; set; } = string.Empty;
 
     public int Ano { get; set; }
-
     public string Tipo { get; set; } = string.Empty;
-
     public double CapacidadToneladas { get; set; }
 
     public bool Activa { get; set; }
+
+    public DateTime? FechaPermisoCirculacion { get; set; }
+    public DateTime? FechaSeguro { get; set; }
+    public DateTime? FechaRevisionTecnica { get; set; }
 
     public int? CamionHabitualId { get; set; }
 }

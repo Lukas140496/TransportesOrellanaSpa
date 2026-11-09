@@ -14,12 +14,9 @@ public class Camion
     public string Caballos { get; set; } = string.Empty;
     public string Cilindrada { get; set; } = string.Empty;
     public string Transmision { get; set; } = string.Empty;
-    public DateTime FechaRevisionTecnica { get; set; }
-    public DateTime FechaPermisoCirculacion { get; set; }
-    public DateTime FechaSeguroObligatorio { get; set; }
-    public bool RevisionAlDia { get; set; }
-    public bool PermisoAlDia { get; set; }
-    public bool SeguroAlDia { get; set; }
+    public DateTime? FechaRevisionTecnica { get; set; }
+    public DateTime? FechaPermisoCirculacion { get; set; }
+    public DateTime? FechaSeguroObligatorio { get; set; }
     public bool Activo { get; set; } = true;
     public virtual ICollection<Conductor> ConductoresHabituales { get; set; } = new List<Conductor>();
     public ICollection<Remolque> Remolques { get; set; } = new List<Remolque>();

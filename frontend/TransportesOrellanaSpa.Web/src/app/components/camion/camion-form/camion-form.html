@@ -1,3 +1,4 @@
+
 <div class="form-page">
   <!-- ========================= -->
   <!-- ENCABEZADO -->
@@ -179,7 +180,6 @@
 
     </section>
 
-
     <!-- ========================= -->
     <!-- CARACTERÍSTICAS -->
     <!-- ========================= -->
@@ -306,192 +306,72 @@
 
     </section>
 
-
     <!-- ========================= -->
     <!-- DOCUMENTACIÓN -->
     <!-- ========================= -->
 
     <section class="form-section">
-
       <div class="section-header">
-
-        <div class="section-icon">
-          📄
-        </div>
+        <div class="section-icon">📄</div>
 
         <div>
           <h2>Documentación</h2>
-
           <p>Fechas de vencimiento de la documentación.</p>
         </div>
-
       </div>
 
       <div class="form-grid">
 
-        <!-- REVISIÓN TÉCNICA -->
         <div class="form-group">
-
-          <label for="revisionTecnica">
-            Revisión técnica
-          </label>
+          <label for="revisionTecnica">Revisión Técnica</label>
 
           <input
             id="revisionTecnica"
             type="date"
             [(ngModel)]="camion.fechaRevisionTecnica"
-            (ngModelChange)="marcarFormularioModificado()"
             name="fechaRevisionTecnica"
             [disabled]="guardando"
-            [class.campo-invalido]="campoInvalido('fechaRevisionTecnica')"
           />
 
+          <span class="field-hint">
+            Esta fecha también determina el vencimiento del certificado de gases.
+          </span>
         </div>
 
-        <!-- PERMISO DE CIRCULACIÓN -->
         <div class="form-group">
-
-          <label for="permisoCirculacion">
-            Permiso de circulación
-          </label>
+          <label for="permisoCirculacion">Permiso de Circulación</label>
 
           <input
             id="permisoCirculacion"
             type="date"
             [(ngModel)]="camion.fechaPermisoCirculacion"
-            (ngModelChange)="marcarFormularioModificado()"
             name="fechaPermisoCirculacion"
             [disabled]="guardando"
-            [class.campo-invalido]="campoInvalido('fechaPermisoCirculacion')"
           />
 
+          <span class="field-hint">
+            Puedes dejar este campo vacío si todavía no tienes una fecha registrada.
+          </span>
         </div>
 
-        <!-- SOAP -->
         <div class="form-group">
-
-          <label for="seguroObligatorio">
-            Seguro obligatorio (SOAP)
-          </label>
+          <label for="seguroObligatorio">Seguro Obligatorio (SOAP)</label>
 
           <input
             id="seguroObligatorio"
             type="date"
             [(ngModel)]="camion.fechaSeguroObligatorio"
-            (ngModelChange)="marcarFormularioModificado()"
             name="fechaSeguroObligatorio"
             [disabled]="guardando"
-            [class.campo-invalido]="campoInvalido('fechaSeguroObligatorio')"
           />
 
+          <span class="field-hint">
+            Puedes dejar este campo vacío si todavía no tienes una fecha registrada.
+          </span>
         </div>
 
       </div>
-
     </section>
-
-
-    <!-- ========================= -->
-    <!-- ESTADO DOCUMENTAL -->
-    <!-- ========================= -->
-
-    <section class="form-section">
-
-      <div class="section-header">
-
-        <div class="section-icon">
-          ✓
-        </div>
-
-        <div>
-          <h2>Estado documental</h2>
-
-          <p>Indica si cada documento se encuentra vigente.</p>
-        </div>
-
-      </div>
-
-      <div class="status-grid">
-
-        <!-- REVISIÓN -->
-        <label class="status-option">
-
-          <input
-            type="checkbox"
-            [(ngModel)]="camion.revisionAlDia"
-            (ngModelChange)="marcarFormularioModificado()"
-            name="revisionAlDia"
-            [disabled]="guardando"
-          />
-
-          <span class="status-content">
-
-            <strong>
-              Revisión técnica
-            </strong>
-
-            <small>
-              Se encuentra al día
-            </small>
-
-          </span>
-
-        </label>
-
-        <!-- PERMISO -->
-        <label class="status-option">
-
-          <input
-            type="checkbox"
-            [(ngModel)]="camion.permisoAlDia"
-            (ngModelChange)="marcarFormularioModificado()"
-            name="permisoAlDia"
-            [disabled]="guardando"
-          />
-
-          <span class="status-content">
-
-            <strong>
-              Permiso de circulación
-            </strong>
-
-            <small>
-              Se encuentra al día
-            </small>
-
-          </span>
-
-        </label>
-
-        <!-- SOAP -->
-        <label class="status-option">
-
-          <input
-            type="checkbox"
-            [(ngModel)]="camion.seguroAlDia"
-            (ngModelChange)="marcarFormularioModificado()"
-            name="seguroAlDia"
-            [disabled]="guardando"
-          />
-
-          <span class="status-content">
-
-            <strong>
-              Seguro obligatorio
-            </strong>
-
-            <small>
-              Se encuentra al día
-            </small>
-
-          </span>
-
-        </label>
-
-      </div>
-
-    </section>
-
 
     <!-- ========================= -->
     <!-- ACCIONES -->
@@ -530,7 +410,6 @@
     </div>
 
   </div>
-
 
   <!-- ========================= -->
   <!-- MODAL ÉXITO -->
@@ -607,7 +486,6 @@
 
   }
 
-
   <!-- ========================= -->
   <!-- MODAL FORMULARIO INCOMPLETO -->
   <!-- ========================= -->
@@ -646,7 +524,6 @@
 
   }
 
-
   <!-- ========================= -->
   <!-- MODAL ERROR -->
   <!-- ========================= -->
@@ -681,7 +558,6 @@
     </div>
 
   }
-
 
   <!-- ========================= -->
   <!-- MODAL CAMBIOS SIN GUARDAR -->

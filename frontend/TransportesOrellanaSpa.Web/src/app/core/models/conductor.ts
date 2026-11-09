@@ -1,4 +1,5 @@
 import { CamionResumen } from './camion-resumen';
+import { EstadoDocumento } from './estado-documento';
 
 export interface Conductor {
   id: number;
@@ -13,6 +14,7 @@ export interface Conductor {
   tipoLicencia: string;
   fechaControlLicencia: string;
   licenciaAlDia: boolean;
+  licenciaConducir: EstadoDocumento;
   activo: boolean;
   camionesHabituales: CamionResumen[];
 }

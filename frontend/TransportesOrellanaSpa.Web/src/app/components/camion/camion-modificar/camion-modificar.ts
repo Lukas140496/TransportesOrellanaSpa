@@ -218,10 +218,7 @@ export class CamionModificar implements OnInit {
       camion.motor.trim().length > 0 &&
       camion.caballos.trim().length > 0 &&
       camion.cilindrada.trim().length > 0 &&
-      camion.transmision.trim().length > 0 &&
-      !!camion.fechaRevisionTecnica &&
-      !!camion.fechaPermisoCirculacion &&
-      !!camion.fechaSeguroObligatorio
+      camion.transmision.trim().length > 0
     );
 
   }
@@ -283,15 +280,6 @@ export class CamionModificar implements OnInit {
       case 'transmision':
         return !camion.transmision.trim();
 
-      case 'fechaRevisionTecnica':
-        return !camion.fechaRevisionTecnica;
-
-      case 'fechaPermisoCirculacion':
-        return !camion.fechaPermisoCirculacion;
-
-      case 'fechaSeguroObligatorio':
-        return !camion.fechaSeguroObligatorio;
-
       default:
         return false;
 
@@ -341,18 +329,6 @@ export class CamionModificar implements OnInit {
       {
         nombre: 'transmision',
         id: 'transmision'
-      },
-      {
-        nombre: 'fechaRevisionTecnica',
-        id: 'revisionTecnica'
-      },
-      {
-        nombre: 'fechaPermisoCirculacion',
-        id: 'permisoCirculacion'
-      },
-      {
-        nombre: 'fechaSeguroObligatorio',
-        id: 'seguroObligatorio'
       }
     ];
 
@@ -425,10 +401,29 @@ export class CamionModificar implements OnInit {
       modelo: camion.modelo
     };
 
+    /*
+     * Las fechas documentales son opcionales.
+     * Si el usuario deja un campo vacío, enviamos null
+     * para que el backend lo registre como SinRegistro.
+     */
+
+    const camionActualizado: Camion = {
+      ...camion,
+
+      fechaRevisionTecnica:
+        camion.fechaRevisionTecnica || null,
+
+      fechaPermisoCirculacion:
+        camion.fechaPermisoCirculacion || null,
+
+      fechaSeguroObligatorio:
+        camion.fechaSeguroObligatorio || null
+    };
+
     this.api
       .actualizarCamion(
         camion.patente,
-        camion
+        camionActualizado
       )
       .subscribe({
 
@@ -443,26 +438,26 @@ export class CamionModificar implements OnInit {
            * Por lo tanto, no debemos intentar leer
            * propiedades de una respuesta que viene null.
            *
-           * El objeto "camion" ya contiene los valores
+           * El objeto enviado ya contiene los valores
            * que acabamos de guardar.
            */
 
           this.camionSeleccionado = {
-            ...camion,
+            ...camionActualizado,
 
             fechaRevisionTecnica:
               this.convertirFechaParaInput(
-                camion.fechaRevisionTecnica
+                camionActualizado.fechaRevisionTecnica
               ),
 
             fechaPermisoCirculacion:
               this.convertirFechaParaInput(
-                camion.fechaPermisoCirculacion
+                camionActualizado.fechaPermisoCirculacion
               ),
 
             fechaSeguroObligatorio:
               this.convertirFechaParaInput(
-                camion.fechaSeguroObligatorio
+                camionActualizado.fechaSeguroObligatorio
               )
           };
 

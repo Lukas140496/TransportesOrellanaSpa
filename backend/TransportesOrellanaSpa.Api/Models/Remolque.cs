@@ -10,6 +10,9 @@ public class Remolque
     public string Tipo { get; set; } = string.Empty;
     public double CapacidadToneladas { get; set; }
     public bool Activa { get; set; } = true;
+    public DateTime? FechaPermisoCirculacion { get; set; }
+    public DateTime? FechaSeguro { get; set; }
+    public DateTime? FechaRevisionTecnica { get; set; }
     public int? CamionHabitualId { get; set; }
     public Camion? CamionHabitual { get; set; }
     public ICollection<Viaje> Viajes { get; set; } = new List<Viaje>();

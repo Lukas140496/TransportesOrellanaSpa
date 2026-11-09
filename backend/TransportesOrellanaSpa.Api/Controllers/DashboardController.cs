@@ -1,3 +1,4 @@
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TransportesOrellanaSpa.Api.Data;
@@ -52,6 +53,20 @@ public class DashboardController : ControllerBase
         return (inicio, fin);
     }
 
+    // =========================================================
+    // OBTENER FECHA ACTUAL DE CHILE
+    // =========================================================
+
+    private static DateTime ObtenerFechaActualChile()
+    {
+        var zonaHorariaChile =
+            TimeZoneInfo.FindSystemTimeZoneById("America/Santiago");
+
+        return TimeZoneInfo.ConvertTimeFromUtc(
+            DateTime.UtcNow,
+            zonaHorariaChile
+        ).Date;
+    }
 
     // =========================================================
     // GET: api/dashboard/resumen
@@ -77,20 +92,40 @@ public class DashboardController : ControllerBase
             var camiones = await camionesActivos
                 .CountAsync();
 
+            // ===================================
+            // DOCUMENTACIÓN DE LA FLOTA
+            // ===================================
+
+            var hoy = ObtenerFechaActualChile();
+
             var camionesRevisionVencida = await camionesActivos
-                .CountAsync(c => !c.RevisionAlDia);
+                .CountAsync(c =>
+                    c.FechaRevisionTecnica.HasValue &&
+                    c.FechaRevisionTecnica.Value < hoy
+                );
 
             var camionesPermisoVencido = await camionesActivos
-                .CountAsync(c => !c.PermisoAlDia);
+                .CountAsync(c =>
+                    c.FechaPermisoCirculacion.HasValue &&
+                    c.FechaPermisoCirculacion.Value < hoy
+                );
 
             var camionesSeguroVencido = await camionesActivos
-                .CountAsync(c => !c.SeguroAlDia);
+                .CountAsync(c =>
+                    c.FechaSeguroObligatorio.HasValue &&
+                    c.FechaSeguroObligatorio.Value < hoy
+                );
 
             var camionesDocumentacionVencida = await camionesActivos
                 .CountAsync(c =>
-                    !c.RevisionAlDia ||
-                    !c.PermisoAlDia ||
-                    !c.SeguroAlDia
+                    (c.FechaRevisionTecnica.HasValue &&
+                     c.FechaRevisionTecnica.Value < hoy) ||
+
+                    (c.FechaPermisoCirculacion.HasValue &&
+                     c.FechaPermisoCirculacion.Value < hoy) ||
+
+                    (c.FechaSeguroObligatorio.HasValue &&
+                     c.FechaSeguroObligatorio.Value < hoy)
                 );
 
             var conductores = await _context.Conductores
@@ -199,7 +234,6 @@ public class DashboardController : ControllerBase
         }
     }
 
-
     // =========================================================
     // GET: api/dashboard/produccion-por-camion
     // =========================================================
@@ -259,7 +293,6 @@ public class DashboardController : ControllerBase
         }
     }
 
-
     // =========================================================
     // GET: api/dashboard/produccion-por-conductor
     // =========================================================
@@ -307,7 +340,6 @@ public class DashboardController : ControllerBase
         }
     }
 
-
     // =========================================================
     // GET: api/dashboard/produccion-por-cliente
     // =========================================================
@@ -337,9 +369,7 @@ public class DashboardController : ControllerBase
                 .Select(grupo => new DashboardProduccionClienteDto
                 {
                     ClienteId = grupo.Key.ClienteId,
-
                     Nombre = grupo.Key.Nombre,
-
                     Rut = grupo.Key.Rut,
 
                     Viajes = grupo.Count(),
@@ -358,7 +388,6 @@ public class DashboardController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
-
 
     // =========================================================
     // GET: api/dashboard/costo-combustible-por-camion
@@ -388,7 +417,6 @@ public class DashboardController : ControllerBase
                 .Select(grupo => new DashboardCostoCombustibleCamionDto
                 {
                     CamionId = grupo.Key.CamionId,
-
                     Patente = grupo.Key.Patente,
 
                     Viajes = grupo.Count(),
@@ -401,9 +429,7 @@ public class DashboardController : ControllerBase
                         v => v.CostoCombustible
                     )
                 })
-                .OrderByDescending(
-                    x => x.CostoCombustible
-                )
+                .OrderByDescending(x => x.CostoCombustible)
                 .ToListAsync();
 
             return Ok(costos);
@@ -413,7 +439,6 @@ public class DashboardController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
-
 
     // =========================================================
     // GET: api/dashboard/kilometros-por-camion
@@ -443,7 +468,6 @@ public class DashboardController : ControllerBase
                 .Select(grupo => new DashboardKilometrosCamionDto
                 {
                     CamionId = grupo.Key.CamionId,
-
                     Patente = grupo.Key.Patente,
 
                     Viajes = grupo.Count(),
@@ -452,9 +476,7 @@ public class DashboardController : ControllerBase
                         v => v.Kilometros ?? 0
                     )
                 })
-                .OrderByDescending(
-                    x => x.Kilometros
-                )
+                .OrderByDescending(x => x.Kilometros)
                 .ToListAsync();
 
             return Ok(kilometros);
@@ -493,7 +515,6 @@ public class DashboardController : ControllerBase
                 .Select(grupo => new DashboardKilometrosConductorDto
                 {
                     ConductorId = grupo.Key.ConductorId,
-
                     Nombre = grupo.Key.Nombres,
 
                     Viajes = grupo.Count(),
@@ -502,9 +523,7 @@ public class DashboardController : ControllerBase
                         v => v.Kilometros ?? 0
                     )
                 })
-                .OrderByDescending(
-                    x => x.Kilometros
-                )
+                .OrderByDescending(x => x.Kilometros)
                 .ToListAsync();
 
             return Ok(kilometros);
@@ -514,7 +533,6 @@ public class DashboardController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
-
 
     // =========================================================
     // GET: api/dashboard/gastos-por-camion
@@ -558,7 +576,6 @@ public class DashboardController : ControllerBase
         }
     }
 
-
     // =========================================================
     // GET: api/dashboard/gastos-por-conductor
     // =========================================================
@@ -601,7 +618,6 @@ public class DashboardController : ControllerBase
         }
     }
 
-
     // =========================================================
     // GET: api/dashboard/gastos-por-remolque
     // =========================================================
@@ -643,7 +659,6 @@ public class DashboardController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
-
 
     // =========================================================
     // GET: api/dashboard/gastos-por-tipo
@@ -719,7 +734,6 @@ public class DashboardController : ControllerBase
         }
     }
 
-
     // =========================================================
     // GET: api/dashboard/estado-pagos
     // =========================================================
@@ -737,10 +751,6 @@ public class DashboardController : ControllerBase
 
             // ===================================
             // VIAJES PAGADOS
-            //
-            // Se consideran los viajes cuya
-            // Fecha pertenece al período seleccionado
-            // y cuyo estado de pago es Pagado.
             // ===================================
 
             var viajesPagadosQuery = _context.Viajes
@@ -759,10 +769,6 @@ public class DashboardController : ControllerBase
 
             // ===================================
             // VIAJES PENDIENTES
-            //
-            // Se consideran los viajes cuya
-            // Fecha pertenece al período seleccionado
-            // y cuyo estado de pago es Pendiente.
             // ===================================
 
             var viajesPendientesPagoQuery = _context.Viajes
@@ -782,14 +788,9 @@ public class DashboardController : ControllerBase
             var resultado = new DashboardEstadoPagosDto
             {
                 ViajesPagados = viajesPagados,
-
                 MontoPagado = montoPagado,
-
-                ViajesPendientesPago =
-                    viajesPendientesPago,
-
-                MontoPendientePago =
-                    montoPendientePago
+                ViajesPendientesPago = viajesPendientesPago,
+                MontoPendientePago = montoPendientePago
             };
 
             return Ok(resultado);

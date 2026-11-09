@@ -91,6 +91,10 @@ builder.Services.AddHttpClient("BencinaEnLinea", client =>
 
 builder.Services.AddHostedService<PrecioDieselActualBackgroundService>();
 
+builder.Services.AddHostedService<NotificacionVencimientoDocumentosBackgroundService>();
+
+builder.Services.AddHostedService<EnvioNotificacionesBackgroundService>();
+
 builder.Services.AddScoped<IAuthorizationHandler, PermissionHandler>();
 
 builder.Services.AddSingleton<

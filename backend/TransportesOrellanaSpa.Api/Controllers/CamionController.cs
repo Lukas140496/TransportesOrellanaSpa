@@ -1,3 +1,4 @@
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TransportesOrellanaSpa.Api.Data;
@@ -18,132 +19,57 @@ public class CamionController : ControllerBase
         _context = context;
     }
 
+    // =========================================
     // GET: api/camion
+    // =========================================
     [RequirePermission("CAMIONES_VER")]
     [HttpGet]
     public async Task<ActionResult<IEnumerable<CamionDto>>> GetAll()
     {
         var camiones = await _context.Camiones
             .AsNoTracking()
-            .Select(c => new CamionDto
-            {
-                Id = c.Id,
-                Patente = c.Patente,
-                Marca = c.Marca,
-                Modelo = c.Modelo,
-                Ano = c.Ano,
-                Tipo = c.Tipo,
-                Color = c.Color,
-                Capacidad = c.Capacidad,
-                Motor = c.Motor,
-                Caballos = c.Caballos,
-                Cilindrada = c.Cilindrada,
-                Transmision = c.Transmision,
-                FechaRevisionTecnica = c.FechaRevisionTecnica,
-                FechaPermisoCirculacion = c.FechaPermisoCirculacion,
-                FechaSeguroObligatorio = c.FechaSeguroObligatorio,
-                RevisionAlDia = c.RevisionAlDia,
-                PermisoAlDia = c.PermisoAlDia,
-                SeguroAlDia = c.SeguroAlDia,
-                Activo = c.Activo,
-
-                ConductoresHabituales = c.ConductoresHabituales
-                    .Select(cond => new ConductorResumenDto
-                    {
-                        Rut = cond.Rut,
-                        Nombres = cond.Nombres,
-                        ApellidoPaterno = cond.ApellidoPaterno,
-                        ApellidoMaterno = cond.ApellidoMaterno
-                    })
-                    .ToList(),
-
-                Remolques = c.Remolques
-                    .Select(r => new RemolqueResumenDto
-                    {
-                        Id = r.Id,
-                        Patente = r.Patente,
-                        Marca = r.Marca,
-                        Modelo = r.Modelo,
-                        Tipo = r.Tipo,
-                        CapacidadToneladas = r.CapacidadToneladas,
-                        Activa = r.Activa
-                    })
-                    .ToList()
-            })
+            .Include(c => c.ConductoresHabituales)
+            .Include(c => c.Remolques)
             .ToListAsync();
 
-        return Ok(camiones);
+        var resultado = camiones
+            .Select(MapearCamion)
+            .ToList();
+
+        return Ok(resultado);
     }
 
+    // =========================================
     // GET: api/camion/VJ8427
+    // =========================================
     [RequirePermission("CAMIONES_VER")]
     [HttpGet("{patente}")]
-    public async Task<ActionResult<CamionDto>> GetByPatente(string patente)
+    public async Task<ActionResult<CamionDto>> GetByPatente(
+        string patente)
     {
         patente = patente.Trim().ToUpperInvariant();
 
         var camion = await _context.Camiones
             .AsNoTracking()
-            .Where(c => c.Patente == patente)
-            .Select(c => new CamionDto
-            {
-                Id = c.Id,
-                Patente = c.Patente,
-                Marca = c.Marca,
-                Modelo = c.Modelo,
-                Ano = c.Ano,
-                Tipo = c.Tipo,
-                Color = c.Color,
-                Capacidad = c.Capacidad,
-                Motor = c.Motor,
-                Caballos = c.Caballos,
-                Cilindrada = c.Cilindrada,
-                Transmision = c.Transmision,
-                FechaRevisionTecnica = c.FechaRevisionTecnica,
-                FechaPermisoCirculacion = c.FechaPermisoCirculacion,
-                FechaSeguroObligatorio = c.FechaSeguroObligatorio,
-                RevisionAlDia = c.RevisionAlDia,
-                PermisoAlDia = c.PermisoAlDia,
-                SeguroAlDia = c.SeguroAlDia,
-                Activo = c.Activo,
-
-                ConductoresHabituales = c.ConductoresHabituales
-                    .Select(cond => new ConductorResumenDto
-                    {
-                        Rut = cond.Rut,
-                        Nombres = cond.Nombres,
-                        ApellidoPaterno = cond.ApellidoPaterno,
-                        ApellidoMaterno = cond.ApellidoMaterno
-                    })
-                    .ToList(),
-
-                Remolques = c.Remolques
-                    .Select(r => new RemolqueResumenDto
-                    {
-                        Id = r.Id,
-                        Patente = r.Patente,
-                        Marca = r.Marca,
-                        Modelo = r.Modelo,
-                        Tipo = r.Tipo,
-                        CapacidadToneladas = r.CapacidadToneladas,
-                        Activa = r.Activa
-                    })
-                    .ToList()
-            })
-            .FirstOrDefaultAsync();
+            .Include(c => c.ConductoresHabituales)
+            .Include(c => c.Remolques)
+            .FirstOrDefaultAsync(c => c.Patente == patente);
 
         if (camion == null)
         {
             return NotFound();
         }
 
-        return Ok(camion);
+        return Ok(MapearCamion(camion));
     }
 
+    // =========================================
     // POST: api/camion
+    // =========================================
     [RequirePermission("CAMIONES_CREAR")]
     [HttpPost]
-    public async Task<ActionResult<CamionDto>> Create(CrearCamionDto dto)
+    public async Task<ActionResult<CamionDto>> Create(
+        CrearCamionDto dto)
     {
         var patente = dto.Patente.Trim().ToUpperInvariant();
 
@@ -169,12 +95,11 @@ public class CamionController : ControllerBase
             Caballos = dto.Caballos,
             Cilindrada = dto.Cilindrada,
             Transmision = dto.Transmision,
+
             FechaRevisionTecnica = dto.FechaRevisionTecnica,
             FechaPermisoCirculacion = dto.FechaPermisoCirculacion,
             FechaSeguroObligatorio = dto.FechaSeguroObligatorio,
-            RevisionAlDia = dto.RevisionAlDia,
-            PermisoAlDia = dto.PermisoAlDia,
-            SeguroAlDia = dto.SeguroAlDia,
+
             Activo = true
         };
 
@@ -184,49 +109,22 @@ public class CamionController : ControllerBase
 
         var resultado = await _context.Camiones
             .AsNoTracking()
-            .Where(c => c.Id == camion.Id)
-            .Select(c => new CamionDto
-            {
-                Id = c.Id,
-                Patente = c.Patente,
-                Marca = c.Marca,
-                Modelo = c.Modelo,
-                Ano = c.Ano,
-                Tipo = c.Tipo,
-                Color = c.Color,
-                Capacidad = c.Capacidad,
-                Motor = c.Motor,
-                Caballos = c.Caballos,
-                Cilindrada = c.Cilindrada,
-                Transmision = c.Transmision,
-                FechaRevisionTecnica = c.FechaRevisionTecnica,
-                FechaPermisoCirculacion = c.FechaPermisoCirculacion,
-                FechaSeguroObligatorio = c.FechaSeguroObligatorio,
-                RevisionAlDia = c.RevisionAlDia,
-                PermisoAlDia = c.PermisoAlDia,
-                SeguroAlDia = c.SeguroAlDia,
-                Activo = c.Activo,
+            .Include(c => c.ConductoresHabituales)
+            .Include(c => c.Remolques)
+            .FirstAsync(c => c.Id == camion.Id);
 
-                ConductoresHabituales = c.ConductoresHabituales
-                    .Select(cond => new ConductorResumenDto
-                    {
-                        Rut = cond.Rut,
-                        Nombres = cond.Nombres,
-                        ApellidoPaterno = cond.ApellidoPaterno,
-                        ApellidoMaterno = cond.ApellidoMaterno
-                    })
-                    .ToList()
-            })
-            .FirstAsync();
+        var camionDto = MapearCamion(resultado);
 
         return CreatedAtAction(
             nameof(GetByPatente),
             new { patente = camion.Patente },
-            resultado
+            camionDto
         );
     }
 
+    // =========================================
     // PUT: api/camion/VJ8427
+    // =========================================
     [RequirePermission("CAMIONES_EDITAR")]
     [HttpPut("{patente}")]
     public async Task<IActionResult> Update(
@@ -253,19 +151,19 @@ public class CamionController : ControllerBase
         camion.Caballos = dto.Caballos;
         camion.Cilindrada = dto.Cilindrada;
         camion.Transmision = dto.Transmision;
+
         camion.FechaRevisionTecnica = dto.FechaRevisionTecnica;
         camion.FechaPermisoCirculacion = dto.FechaPermisoCirculacion;
         camion.FechaSeguroObligatorio = dto.FechaSeguroObligatorio;
-        camion.RevisionAlDia = dto.RevisionAlDia;
-        camion.PermisoAlDia = dto.PermisoAlDia;
-        camion.SeguroAlDia = dto.SeguroAlDia;
 
         await _context.SaveChangesAsync();
 
         return NoContent();
     }
 
+    // =========================================
     // PATCH: api/camion/VJ8427/desactivar
+    // =========================================
     [RequirePermission("CAMIONES_EDITAR")]
     [HttpPatch("{patente}/desactivar")]
     public async Task<ActionResult<CamionDto>> Desactivar(
@@ -294,58 +192,16 @@ public class CamionController : ControllerBase
 
         var resultado = await _context.Camiones
             .AsNoTracking()
-            .Where(c => c.Id == camion.Id)
-            .Select(c => new CamionDto
-            {
-                Id = c.Id,
-                Patente = c.Patente,
-                Marca = c.Marca,
-                Modelo = c.Modelo,
-                Ano = c.Ano,
-                Tipo = c.Tipo,
-                Color = c.Color,
-                Capacidad = c.Capacidad,
-                Motor = c.Motor,
-                Caballos = c.Caballos,
-                Cilindrada = c.Cilindrada,
-                Transmision = c.Transmision,
-                FechaRevisionTecnica = c.FechaRevisionTecnica,
-                FechaPermisoCirculacion = c.FechaPermisoCirculacion,
-                FechaSeguroObligatorio = c.FechaSeguroObligatorio,
-                RevisionAlDia = c.RevisionAlDia,
-                PermisoAlDia = c.PermisoAlDia,
-                SeguroAlDia = c.SeguroAlDia,
-                Activo = c.Activo,
+            .Include(c => c.ConductoresHabituales)
+            .Include(c => c.Remolques)
+            .FirstAsync(c => c.Id == camion.Id);
 
-                ConductoresHabituales = c.ConductoresHabituales
-                    .Select(cond => new ConductorResumenDto
-                    {
-                        Rut = cond.Rut,
-                        Nombres = cond.Nombres,
-                        ApellidoPaterno = cond.ApellidoPaterno,
-                        ApellidoMaterno = cond.ApellidoMaterno
-                    })
-                    .ToList(),
-
-                Remolques = c.Remolques
-                    .Select(r => new RemolqueResumenDto
-                    {
-                        Id = r.Id,
-                        Patente = r.Patente,
-                        Marca = r.Marca,
-                        Modelo = r.Modelo,
-                        Tipo = r.Tipo,
-                        CapacidadToneladas = r.CapacidadToneladas,
-                        Activa = r.Activa
-                    })
-                    .ToList()
-            })
-            .FirstAsync();
-
-        return Ok(resultado);
+        return Ok(MapearCamion(resultado));
     }
 
+    // =========================================
     // PATCH: api/camion/VJ8427/activar
+    // =========================================
     [RequirePermission("CAMIONES_EDITAR")]
     [HttpPatch("{patente}/activar")]
     public async Task<ActionResult<CamionDto>> Activar(
@@ -374,58 +230,16 @@ public class CamionController : ControllerBase
 
         var resultado = await _context.Camiones
             .AsNoTracking()
-            .Where(c => c.Id == camion.Id)
-            .Select(c => new CamionDto
-            {
-                Id = c.Id,
-                Patente = c.Patente,
-                Marca = c.Marca,
-                Modelo = c.Modelo,
-                Ano = c.Ano,
-                Tipo = c.Tipo,
-                Color = c.Color,
-                Capacidad = c.Capacidad,
-                Motor = c.Motor,
-                Caballos = c.Caballos,
-                Cilindrada = c.Cilindrada,
-                Transmision = c.Transmision,
-                FechaRevisionTecnica = c.FechaRevisionTecnica,
-                FechaPermisoCirculacion = c.FechaPermisoCirculacion,
-                FechaSeguroObligatorio = c.FechaSeguroObligatorio,
-                RevisionAlDia = c.RevisionAlDia,
-                PermisoAlDia = c.PermisoAlDia,
-                SeguroAlDia = c.SeguroAlDia,
-                Activo = c.Activo,
+            .Include(c => c.ConductoresHabituales)
+            .Include(c => c.Remolques)
+            .FirstAsync(c => c.Id == camion.Id);
 
-                ConductoresHabituales = c.ConductoresHabituales
-                    .Select(cond => new ConductorResumenDto
-                    {
-                        Rut = cond.Rut,
-                        Nombres = cond.Nombres,
-                        ApellidoPaterno = cond.ApellidoPaterno,
-                        ApellidoMaterno = cond.ApellidoMaterno
-                    })
-                    .ToList(),
-
-                Remolques = c.Remolques
-                    .Select(r => new RemolqueResumenDto
-                    {
-                        Id = r.Id,
-                        Patente = r.Patente,
-                        Marca = r.Marca,
-                        Modelo = r.Modelo,
-                        Tipo = r.Tipo,
-                        CapacidadToneladas = r.CapacidadToneladas,
-                        Activa = r.Activa
-                    })
-                    .ToList()
-            })
-            .FirstAsync();
-
-        return Ok(resultado);
+        return Ok(MapearCamion(resultado));
     }
 
+    // =========================================
     // PUT: api/camion/VJ8427/conductor-habitual
+    // =========================================
     [RequirePermission("CAMIONES_EDITAR")]
     [HttpPut("{patente}/conductor-habitual")]
     public async Task<IActionResult> AsignarConductorHabitual(
@@ -459,54 +273,11 @@ public class CamionController : ControllerBase
             .Any(cond => cond.Id == conductor.Id))
         {
             camion.ConductoresHabituales.Add(conductor);
+
             await _context.SaveChangesAsync();
         }
 
-        var camionDto = new CamionDto
-        {
-            Id = camion.Id,
-            Patente = camion.Patente,
-            Marca = camion.Marca,
-            Modelo = camion.Modelo,
-            Ano = camion.Ano,
-            Tipo = camion.Tipo,
-            Color = camion.Color,
-            Capacidad = camion.Capacidad,
-            Motor = camion.Motor,
-            Caballos = camion.Caballos,
-            Cilindrada = camion.Cilindrada,
-            Transmision = camion.Transmision,
-            FechaRevisionTecnica = camion.FechaRevisionTecnica,
-            FechaPermisoCirculacion = camion.FechaPermisoCirculacion,
-            FechaSeguroObligatorio = camion.FechaSeguroObligatorio,
-            RevisionAlDia = camion.RevisionAlDia,
-            PermisoAlDia = camion.PermisoAlDia,
-            SeguroAlDia = camion.SeguroAlDia,
-            Activo = camion.Activo,
-
-            ConductoresHabituales = camion.ConductoresHabituales
-                .Select(cond => new ConductorResumenDto
-                {
-                    Rut = cond.Rut,
-                    Nombres = cond.Nombres,
-                    ApellidoPaterno = cond.ApellidoPaterno,
-                    ApellidoMaterno = cond.ApellidoMaterno
-                })
-                .ToList(),
-
-            Remolques = camion.Remolques
-                .Select(r => new RemolqueResumenDto
-                {
-                    Id = r.Id,
-                    Patente = r.Patente,
-                    Marca = r.Marca,
-                    Modelo = r.Modelo,
-                    Tipo = r.Tipo,
-                    CapacidadToneladas = r.CapacidadToneladas,
-                    Activa = r.Activa
-                })
-                .ToList()
-        };
+        var camionDto = MapearCamion(camion);
 
         return Ok(new
         {
@@ -515,7 +286,9 @@ public class CamionController : ControllerBase
         });
     }
 
+    // =========================================
     // PUT: api/camion/VJ8427/remolque-habitual
+    // =========================================
     [RequirePermission("CAMIONES_EDITAR")]
     [HttpPut("{patente}/remolque-habitual")]
     public async Task<IActionResult> AsignarRemolqueHabitual(
@@ -556,7 +329,9 @@ public class CamionController : ControllerBase
         });
     }
 
+    // =========================================
     // DELETE: api/camion/VJ8427/conductor-habitual/RUT
+    // =========================================
     [RequirePermission("CAMIONES_EDITAR")]
     [HttpDelete("{patente}/conductor-habitual/{rut}")]
     public async Task<IActionResult> DesasignarConductorHabitual(
@@ -597,7 +372,9 @@ public class CamionController : ControllerBase
         });
     }
 
+    // =========================================
     // DELETE: api/camion/VJ8427/remolque-habitual
+    // =========================================
     [RequirePermission("CAMIONES_EDITAR")]
     [HttpDelete("{patente}/remolque-habitual")]
     public async Task<IActionResult> DesasignarRemolqueHabitual(
@@ -629,7 +406,9 @@ public class CamionController : ControllerBase
         });
     }
 
+    // =========================================
     // DELETE: api/camion/VJ8427
+    // =========================================
     [RequirePermission("CAMIONES_ELIMINAR")]
     [HttpDelete("{patente}")]
     public async Task<IActionResult> Delete(string patente)
@@ -649,5 +428,111 @@ public class CamionController : ControllerBase
         await _context.SaveChangesAsync();
 
         return NoContent();
+    }
+
+    // =========================================
+    // MAPEO DE CAMIÓN A DTO
+    // =========================================
+    private static CamionDto MapearCamion(Camion camion)
+    {
+        return new CamionDto
+        {
+            Id = camion.Id,
+            Patente = camion.Patente,
+            Marca = camion.Marca,
+            Modelo = camion.Modelo,
+            Ano = camion.Ano,
+            Tipo = camion.Tipo,
+            Color = camion.Color,
+            Capacidad = camion.Capacidad,
+            Motor = camion.Motor,
+            Caballos = camion.Caballos,
+            Cilindrada = camion.Cilindrada,
+            Transmision = camion.Transmision,
+
+            FechaRevisionTecnica = camion.FechaRevisionTecnica,
+            FechaPermisoCirculacion = camion.FechaPermisoCirculacion,
+            FechaSeguroObligatorio = camion.FechaSeguroObligatorio,
+
+            RevisionTecnica = CalcularEstadoDocumento(
+                camion.FechaRevisionTecnica),
+
+            // El certificado de gases comparte la fecha
+            // y vigencia de la revisión técnica.
+            CertificadoGases = CalcularEstadoDocumento(
+                camion.FechaRevisionTecnica),
+
+            PermisoCirculacion = CalcularEstadoDocumento(
+                camion.FechaPermisoCirculacion),
+
+            SeguroObligatorio = CalcularEstadoDocumento(
+                camion.FechaSeguroObligatorio),
+
+            Activo = camion.Activo,
+
+            ConductoresHabituales = camion.ConductoresHabituales
+                .Select(cond => new ConductorResumenDto
+                {
+                    Rut = cond.Rut,
+                    Nombres = cond.Nombres,
+                    ApellidoPaterno = cond.ApellidoPaterno,
+                    ApellidoMaterno = cond.ApellidoMaterno
+                })
+                .ToList(),
+
+            Remolques = camion.Remolques
+                .Select(r => new RemolqueResumenDto
+                {
+                    Id = r.Id,
+                    Patente = r.Patente,
+                    Marca = r.Marca,
+                    Modelo = r.Modelo,
+                    Tipo = r.Tipo,
+                    CapacidadToneladas = r.CapacidadToneladas,
+                    Activa = r.Activa
+                })
+                .ToList()
+        };
+    }
+
+    // =========================================
+    // CÁLCULO AUTOMÁTICO DE VIGENCIA
+    // =========================================
+    private static EstadoDocumentoDto CalcularEstadoDocumento(
+        DateTime? fechaVencimiento)
+    {
+        if (!fechaVencimiento.HasValue)
+        {
+            return new EstadoDocumentoDto
+            {
+                Estado = "SinRegistro",
+                DiasRestantes = null
+            };
+        }
+
+        var diasRestantes = (
+            fechaVencimiento.Value.Date - DateTime.Today
+        ).Days;
+
+        string estado;
+
+        if (diasRestantes < 0)
+        {
+            estado = "Vencido";
+        }
+        else if (diasRestantes <= 30)
+        {
+            estado = "PorVencer";
+        }
+        else
+        {
+            estado = "AlDia";
+        }
+
+        return new EstadoDocumentoDto
+        {
+            Estado = estado,
+            DiasRestantes = diasRestantes
+        };
     }
 }

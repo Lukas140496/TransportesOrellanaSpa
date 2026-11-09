@@ -158,7 +158,32 @@
           </div>
         </div>
 
-        @if (obtenerDocumento(tipo.tipo); as documento) {
+        @if (obtenerEstadoDocumento(tipo.tipo); as estadoDocumento) {
+        <div class="documento-vigencia">
+          <div
+            class="estado-documento"
+            [class.estado-al-dia]="estadoDocumento.estado === 'AlDia'"
+            [class.estado-por-vencer]="estadoDocumento.estado === 'PorVencer'"
+            [class.estado-vencido]="estadoDocumento.estado === 'Vencido'"
+            [class.estado-sin-registro]="estadoDocumento.estado === 'SinRegistro'"
+          >
+            <span class="punto-estado"></span>
+            {{ obtenerTextoEstadoDocumento(tipo.tipo) }}
+          </div>
+
+          <strong>{{ obtenerFechaVencimiento(tipo.tipo) }}</strong>
+
+          @if (estadoDocumento.diasRestantes !== null) { @if (estadoDocumento.diasRestantes > 0) {
+          <small class="field-hint"> Vence en {{ estadoDocumento.diasRestantes }} día(s). </small>
+          } @else if (estadoDocumento.diasRestantes === 0) {
+          <small class="field-hint field-hint--expired"> Vence hoy. </small>
+          } @else {
+          <small class="field-hint field-hint--expired">
+            Venció hace {{ estadoDocumento.diasRestantes * -1 }} día(s).
+          </small>
+          } }
+        </div>
+        } @if (obtenerDocumento(tipo.tipo); as documento) {
         <div class="documento-registrado">
           <span class="documento-badge disponible">
             <span class="punto-estado"></span>

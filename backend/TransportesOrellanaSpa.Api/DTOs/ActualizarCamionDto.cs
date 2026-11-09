@@ -13,11 +13,7 @@ public class ActualizarCamionDto
     public string Cilindrada { get; set; } = string.Empty;
     public string Transmision { get; set; } = string.Empty;
 
-    public DateTime FechaRevisionTecnica { get; set; }
-    public DateTime FechaPermisoCirculacion { get; set; }
-    public DateTime FechaSeguroObligatorio { get; set; }
-
-    public bool RevisionAlDia { get; set; }
-    public bool PermisoAlDia { get; set; }
-    public bool SeguroAlDia { get; set; }
+    public DateTime? FechaRevisionTecnica { get; set; }
+    public DateTime? FechaPermisoCirculacion { get; set; }
+    public DateTime? FechaSeguroObligatorio { get; set; }
 }

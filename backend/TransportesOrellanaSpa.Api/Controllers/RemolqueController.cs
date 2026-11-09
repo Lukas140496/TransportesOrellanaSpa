@@ -21,36 +21,24 @@ public class RemolqueController : ControllerBase
     // GET: api/remolque
     [RequirePermission("REMOLQUES_VER")]
     [HttpGet]
+
+    [RequirePermission("REMOLQUES_VER")]
+    [HttpGet]
     public async Task<ActionResult<IEnumerable<RemolqueDto>>> GetAll()
     {
         var remolques = await _context.Remolques
             .AsNoTracking()
+            .Include(r => r.CamionHabitual)
             .Where(r => r.Patente != "NA")
-            .Select(r => new RemolqueDto
-            {
-                Id = r.Id,
-                Patente = r.Patente,
-                Marca = r.Marca,
-                Modelo = r.Modelo,
-                Ano = r.Ano,
-                Tipo = r.Tipo,
-                CapacidadToneladas = r.CapacidadToneladas,
-                Activa = r.Activa,
-                CamionHabitualId = r.CamionHabitualId,
-
-                CamionHabitual = r.CamionHabitual == null
-                    ? null
-                    : new CamionResumenDto
-                    {
-                        Id = r.CamionHabitual.Id,
-                        Patente = r.CamionHabitual.Patente,
-                        Marca = r.CamionHabitual.Marca,
-                        Modelo = r.CamionHabitual.Modelo
-                    }
-            })
             .ToListAsync();
 
-        return Ok(remolques);
+        var fechaActual = ObtenerFechaChile();
+
+        var resultado = remolques
+            .Select(r => MapearRemolque(r, fechaActual))
+            .ToList();
+
+        return Ok(resultado);
     }
 
     // GET: api/remolque/ABC123
@@ -62,37 +50,20 @@ public class RemolqueController : ControllerBase
 
         var remolque = await _context.Remolques
             .AsNoTracking()
-            .Where(r => r.Patente == patente)
-            .Select(r => new RemolqueDto
-            {
-                Id = r.Id,
-                Patente = r.Patente,
-                Marca = r.Marca,
-                Modelo = r.Modelo,
-                Ano = r.Ano,
-                Tipo = r.Tipo,
-                CapacidadToneladas = r.CapacidadToneladas,
-                Activa = r.Activa,
-                CamionHabitualId = r.CamionHabitualId,
-
-                CamionHabitual = r.CamionHabitual == null
-                    ? null
-                    : new CamionResumenDto
-                    {
-                        Id = r.CamionHabitual.Id,
-                        Patente = r.CamionHabitual.Patente,
-                        Marca = r.CamionHabitual.Marca,
-                        Modelo = r.CamionHabitual.Modelo
-                    }
-            })
-            .FirstOrDefaultAsync();
+            .Include(r => r.CamionHabitual)
+            .FirstOrDefaultAsync(r => r.Patente == patente);
 
         if (remolque == null)
         {
             return NotFound();
         }
 
-        return Ok(remolque);
+        var resultado = MapearRemolque(
+            remolque,
+            ObtenerFechaChile()
+        );
+
+        return Ok(resultado);
     }
 
     // POST: api/remolque
@@ -133,25 +104,20 @@ public class RemolqueController : ControllerBase
             Tipo = dto.Tipo,
             CapacidadToneladas = dto.CapacidadToneladas,
             Activa = dto.Activa,
-            CamionHabitualId = dto.CamionHabitualId
+            CamionHabitualId = dto.CamionHabitualId,
+            FechaPermisoCirculacion = dto.FechaPermisoCirculacion,
+            FechaSeguro = dto.FechaSeguro,
+            FechaRevisionTecnica = dto.FechaRevisionTecnica,
         };
 
         _context.Remolques.Add(remolque);
 
         await _context.SaveChangesAsync();
 
-        var resultado = new RemolqueDto
-        {
-            Id = remolque.Id,
-            Patente = remolque.Patente,
-            Marca = remolque.Marca,
-            Modelo = remolque.Modelo,
-            Ano = remolque.Ano,
-            Tipo = remolque.Tipo,
-            CapacidadToneladas = remolque.CapacidadToneladas,
-            Activa = remolque.Activa,
-            CamionHabitualId = remolque.CamionHabitualId
-        };
+        var resultado = MapearRemolque(
+            remolque,
+            ObtenerFechaChile()
+        );
 
         return CreatedAtAction(
             nameof(GetByPatente),
@@ -195,36 +161,21 @@ public class RemolqueController : ControllerBase
         remolque.Tipo = dto.Tipo;
         remolque.CapacidadToneladas = dto.CapacidadToneladas;
         remolque.Activa = dto.Activa;
+        remolque.FechaPermisoCirculacion = dto.FechaPermisoCirculacion;
+        remolque.FechaSeguro = dto.FechaSeguro;
+        remolque.FechaRevisionTecnica = dto.FechaRevisionTecnica;
         remolque.CamionHabitualId = dto.CamionHabitualId;
 
         await _context.SaveChangesAsync();
 
-        var resultado = await _context.Remolques
-            .AsNoTracking()
-            .Where(r => r.Patente == patente)
-            .Select(r => new RemolqueDto
-            {
-                Id = r.Id,
-                Patente = r.Patente,
-                Marca = r.Marca,
-                Modelo = r.Modelo,
-                Ano = r.Ano,
-                Tipo = r.Tipo,
-                CapacidadToneladas = r.CapacidadToneladas,
-                Activa = r.Activa,
-                CamionHabitualId = r.CamionHabitualId,
+        await _context.Entry(remolque)
+            .Reference(r => r.CamionHabitual)
+            .LoadAsync();
 
-                CamionHabitual = r.CamionHabitual == null
-                    ? null
-                    : new CamionResumenDto
-                    {
-                        Id = r.CamionHabitual.Id,
-                        Patente = r.CamionHabitual.Patente,
-                        Marca = r.CamionHabitual.Marca,
-                        Modelo = r.CamionHabitual.Modelo
-                    }
-            })
-            .FirstOrDefaultAsync();
+        var resultado = MapearRemolque(
+            remolque,
+            ObtenerFechaChile()
+        );
 
         return Ok(resultado);
     }
@@ -256,32 +207,14 @@ public class RemolqueController : ControllerBase
 
         await _context.SaveChangesAsync();
 
-        var resultado = await _context.Remolques
-            .AsNoTracking()
-            .Where(r => r.Patente == patente)
-            .Select(r => new RemolqueDto
-            {
-                Id = r.Id,
-                Patente = r.Patente,
-                Marca = r.Marca,
-                Modelo = r.Modelo,
-                Ano = r.Ano,
-                Tipo = r.Tipo,
-                CapacidadToneladas = r.CapacidadToneladas,
-                Activa = r.Activa,
-                CamionHabitualId = r.CamionHabitualId,
+        await _context.Entry(remolque)
+            .Reference(r => r.CamionHabitual)
+            .LoadAsync();
 
-                CamionHabitual = r.CamionHabitual == null
-                    ? null
-                    : new CamionResumenDto
-                    {
-                        Id = r.CamionHabitual.Id,
-                        Patente = r.CamionHabitual.Patente,
-                        Marca = r.CamionHabitual.Marca,
-                        Modelo = r.CamionHabitual.Modelo
-                    }
-            })
-            .FirstOrDefaultAsync();
+        var resultado = MapearRemolque(
+            remolque,
+            ObtenerFechaChile()
+        );
 
         return Ok(resultado);
     }
@@ -313,32 +246,14 @@ public class RemolqueController : ControllerBase
 
         await _context.SaveChangesAsync();
 
-        var resultado = await _context.Remolques
-            .AsNoTracking()
-            .Where(r => r.Patente == patente)
-            .Select(r => new RemolqueDto
-            {
-                Id = r.Id,
-                Patente = r.Patente,
-                Marca = r.Marca,
-                Modelo = r.Modelo,
-                Ano = r.Ano,
-                Tipo = r.Tipo,
-                CapacidadToneladas = r.CapacidadToneladas,
-                Activa = r.Activa,
-                CamionHabitualId = r.CamionHabitualId,
+        await _context.Entry(remolque)
+            .Reference(r => r.CamionHabitual)
+            .LoadAsync();
 
-                CamionHabitual = r.CamionHabitual == null
-                    ? null
-                    : new CamionResumenDto
-                    {
-                        Id = r.CamionHabitual.Id,
-                        Patente = r.CamionHabitual.Patente,
-                        Marca = r.CamionHabitual.Marca,
-                        Modelo = r.CamionHabitual.Modelo
-                    }
-            })
-            .FirstOrDefaultAsync();
+        var resultado = MapearRemolque(
+            remolque,
+            ObtenerFechaChile()
+        );
 
         return Ok(resultado);
     }
@@ -432,5 +347,93 @@ public class RemolqueController : ControllerBase
         await _context.SaveChangesAsync();
 
         return NoContent();
+    }
+
+    private static readonly TimeZoneInfo ZonaHorariaChile =
+        TimeZoneInfo.FindSystemTimeZoneById("America/Santiago");
+
+    private static DateTime ObtenerFechaChile()
+    {
+        return TimeZoneInfo.ConvertTimeFromUtc(
+            DateTime.UtcNow,
+            ZonaHorariaChile
+        ).Date;
+    }
+
+    private static EstadoDocumentoDto CalcularEstadoDocumento(
+        DateTime? fechaVencimiento,
+        DateTime fechaActual)
+    {
+        if (!fechaVencimiento.HasValue)
+        {
+            return new EstadoDocumentoDto
+            {
+                Estado = "SinRegistro",
+                DiasRestantes = null
+            };
+        }
+
+        int diasRestantes =
+            (fechaVencimiento.Value.Date - fechaActual.Date).Days;
+
+        string estado = diasRestantes < 0
+            ? "Vencido"
+            : diasRestantes <= 30
+                ? "PorVencer"
+                : "AlDia";
+
+        return new EstadoDocumentoDto
+        {
+            Estado = estado,
+            DiasRestantes = diasRestantes
+        };
+    }
+
+    private static RemolqueDto MapearRemolque(
+        Remolque remolque,
+        DateTime fechaActual)
+    {
+        return new RemolqueDto
+        {
+            Id = remolque.Id,
+            Patente = remolque.Patente,
+            Marca = remolque.Marca,
+            Modelo = remolque.Modelo,
+            Ano = remolque.Ano,
+            Tipo = remolque.Tipo,
+            CapacidadToneladas = remolque.CapacidadToneladas,
+            Activa = remolque.Activa,
+
+            FechaPermisoCirculacion = remolque.FechaPermisoCirculacion,
+            FechaSeguro = remolque.FechaSeguro,
+            FechaRevisionTecnica = remolque.FechaRevisionTecnica,
+
+            PermisoCirculacion = CalcularEstadoDocumento(
+                remolque.FechaPermisoCirculacion,
+                fechaActual
+            ),
+
+            Seguro = CalcularEstadoDocumento(
+                remolque.FechaSeguro,
+                fechaActual
+            ),
+
+            RevisionTecnica = CalcularEstadoDocumento(
+                remolque.FechaRevisionTecnica,
+                fechaActual
+            ),
+
+            CamionHabitualId = remolque.CamionHabitualId,
+
+            CamionHabitual = remolque.CamionHabitual == null
+                ? null
+                : new CamionResumenDto
+                {
+                    Id = remolque.CamionHabitual.Id,
+                    Patente = remolque.CamionHabitual.Patente,
+                    Marca = remolque.CamionHabitual.Marca,
+                    Modelo = remolque.CamionHabitual.Modelo
+                }
+        };
     }
 }

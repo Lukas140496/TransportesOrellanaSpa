@@ -67,13 +67,13 @@ namespace TransportesOrellanaSpa.Api.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("FechaPermisoCirculacion")
+                    b.Property<DateTime?>("FechaPermisoCirculacion")
                         .HasColumnType("date");
 
-                    b.Property<DateTime>("FechaRevisionTecnica")
+                    b.Property<DateTime?>("FechaRevisionTecnica")
                         .HasColumnType("date");
 
-                    b.Property<DateTime>("FechaSeguroObligatorio")
+                    b.Property<DateTime?>("FechaSeguroObligatorio")
                         .HasColumnType("date");
 
                     b.Property<string>("Marca")
@@ -91,15 +91,6 @@ namespace TransportesOrellanaSpa.Api.Migrations
                     b.Property<string>("Patente")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<bool>("PermisoAlDia")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("RevisionAlDia")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("SeguroAlDia")
-                        .HasColumnType("boolean");
 
                     b.Property<string>("Tipo")
                         .IsRequired()
@@ -406,6 +397,70 @@ namespace TransportesOrellanaSpa.Api.Migrations
                     b.ToTable("DocumentoViaje", (string)null);
                 });
 
+            modelBuilder.Entity("TransportesOrellanaSpa.Api.Models.EnvioNotificacion", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Destinatario")
+                        .IsRequired()
+                        .HasMaxLength(320)
+                        .HasColumnType("character varying(320)");
+
+                    b.Property<int>("DiasAnticipacion")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("EntidadId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Estado")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)");
+
+                    b.Property<DateTime>("FechaCreacionUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("FechaEnvioUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("FechaProximoIntentoUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("FechaUltimoIntentoUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("FechaVencimiento")
+                        .HasColumnType("date");
+
+                    b.Property<int>("Intentos")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("TipoDocumento")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<string>("TipoEntidad")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)");
+
+                    b.Property<string>("UltimoError")
+                        .HasMaxLength(2000)
+                        .HasColumnType("character varying(2000)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TipoEntidad", "EntidadId", "TipoDocumento", "FechaVencimiento", "DiasAnticipacion", "Destinatario")
+                        .IsUnique();
+
+                    b.ToTable("EnvioNotificacion", (string)null);
+                });
+
             modelBuilder.Entity("TransportesOrellanaSpa.Api.Models.Gasto", b =>
                 {
                     b.Property<int>("Id")
@@ -550,6 +605,105 @@ namespace TransportesOrellanaSpa.Api.Migrations
                     b.ToTable("Modulos");
                 });
 
+            modelBuilder.Entity("TransportesOrellanaSpa.Api.Models.NotificacionVencimientoDocumentoCamion", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CamionId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("DiasAnticipacion")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("FechaCreacionUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("FechaVencimiento")
+                        .HasColumnType("date");
+
+                    b.Property<string>("TipoDocumento")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CamionId", "TipoDocumento", "FechaVencimiento", "DiasAnticipacion")
+                        .IsUnique();
+
+                    b.ToTable("NotificacionVencimientoDocumentoCamion", (string)null);
+                });
+
+            modelBuilder.Entity("TransportesOrellanaSpa.Api.Models.NotificacionVencimientoDocumentoConductor", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ConductorId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("DiasAnticipacion")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("FechaCreacionUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("FechaVencimiento")
+                        .HasColumnType("date");
+
+                    b.Property<string>("TipoDocumento")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ConductorId", "TipoDocumento", "FechaVencimiento", "DiasAnticipacion")
+                        .IsUnique();
+
+                    b.ToTable("NotificacionVencimientoDocumentoConductor", (string)null);
+                });
+
+            modelBuilder.Entity("TransportesOrellanaSpa.Api.Models.NotificacionVencimientoDocumentoRemolque", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("DiasAnticipacion")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("FechaCreacionUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("FechaVencimiento")
+                        .HasColumnType("date");
+
+                    b.Property<int>("RemolqueId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("TipoDocumento")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RemolqueId", "TipoDocumento", "FechaVencimiento", "DiasAnticipacion")
+                        .IsUnique();
+
+                    b.ToTable("NotificacionVencimientoDocumentoRemolque", (string)null);
+                });
+
             modelBuilder.Entity("TransportesOrellanaSpa.Api.Models.Permiso", b =>
                 {
                     b.Property<int>("Id")
@@ -598,6 +752,15 @@ namespace TransportesOrellanaSpa.Api.Migrations
 
                     b.Property<double>("CapacidadToneladas")
                         .HasColumnType("double precision");
+
+                    b.Property<DateTime?>("FechaPermisoCirculacion")
+                        .HasColumnType("date");
+
+                    b.Property<DateTime?>("FechaRevisionTecnica")
+                        .HasColumnType("date");
+
+                    b.Property<DateTime?>("FechaSeguro")
+                        .HasColumnType("date");
 
                     b.Property<string>("Marca")
                         .IsRequired()
@@ -920,6 +1083,39 @@ namespace TransportesOrellanaSpa.Api.Migrations
                         .WithMany("Gastos")
                         .HasForeignKey("RemolqueId")
                         .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Remolque");
+                });
+
+            modelBuilder.Entity("TransportesOrellanaSpa.Api.Models.NotificacionVencimientoDocumentoCamion", b =>
+                {
+                    b.HasOne("TransportesOrellanaSpa.Api.Models.Camion", "Camion")
+                        .WithMany()
+                        .HasForeignKey("CamionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Camion");
+                });
+
+            modelBuilder.Entity("TransportesOrellanaSpa.Api.Models.NotificacionVencimientoDocumentoConductor", b =>
+                {
+                    b.HasOne("TransportesOrellanaSpa.Api.Models.Conductor", "Conductor")
+                        .WithMany()
+                        .HasForeignKey("ConductorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Conductor");
+                });
+
+            modelBuilder.Entity("TransportesOrellanaSpa.Api.Models.NotificacionVencimientoDocumentoRemolque", b =>
+                {
+                    b.HasOne("TransportesOrellanaSpa.Api.Models.Remolque", "Remolque")
+                        .WithMany()
+                        .HasForeignKey("RemolqueId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Remolque");

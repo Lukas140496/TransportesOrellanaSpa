@@ -862,6 +862,74 @@
   background: currentColor;
 }
 
+
+/* =========================
+   VIGENCIA DE DOCUMENTOS
+========================= */
+
+.documento-vigencia {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 7px;
+  margin-bottom: 1rem;
+  padding: 0.85rem;
+  box-sizing: border-box;
+  border: 1px solid #e6ebf1;
+  border-radius: 9px;
+  background: #f8fafc;
+
+  > strong {
+    color: #34495e;
+    font-size: 1rem;
+    font-weight: 700;
+  }
+}
+
+.estado-documento {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 9px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.estado-al-dia {
+  background: #eaf7ef;
+  color: #237344;
+}
+
+.estado-por-vencer {
+  background: #fff5e5;
+  color: #986515;
+}
+
+.estado-vencido {
+  background: #fff0f0;
+  color: #b42323;
+}
+
+.estado-sin-registro {
+  background: #edf1f5;
+  color: #64748b;
+}
+
+.field-hint {
+  display: block;
+  margin-top: 2px;
+  color: #64748b;
+  font-size: 0.75rem;
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+.field-hint--expired {
+  color: #dc6b6b;
+}
+
 .documento-archivo {
   display: flex;
   width: 100%;

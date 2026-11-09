@@ -1,3 +1,4 @@
+
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -55,21 +56,16 @@ export class CamionForm {
     transmision: '',
     fechaRevisionTecnica: '',
     fechaPermisoCirculacion: '',
-    fechaSeguroObligatorio: '',
-    revisionAlDia: true,
-    permisoAlDia: true,
-    seguroAlDia: true
+    fechaSeguroObligatorio: ''
   };
 
   /**
    * Se ejecuta cuando el usuario modifica cualquier campo.
    */
   marcarFormularioModificado(): void {
-
     if (!this.guardando) {
       this.formularioModificado = true;
     }
-
   }
 
   /**
@@ -77,7 +73,6 @@ export class CamionForm {
    * Lo utiliza unsavedChangesGuard.
    */
   puedeSalir(): boolean | Promise<boolean> {
-
     if (this.guardando) {
       return false;
     }
@@ -89,15 +84,11 @@ export class CamionForm {
     this.modalSalirVisible = true;
 
     return new Promise<boolean>((resolve) => {
-
       this.resolverSalida = resolve;
-
     });
-
   }
 
   guardarCamion(): void {
-
     if (this.guardando) {
       return;
     }
@@ -108,11 +99,8 @@ export class CamionForm {
      * Validamos antes de intentar guardar.
      */
     if (!this.formularioValido()) {
-
       this.marcarCamposInvalidos();
-
       this.modalIncompletoVisible = true;
-
       return;
     }
 
@@ -133,209 +121,127 @@ export class CamionForm {
       motor: this.camion.motor.trim(),
       caballos: this.camion.caballos.trim(),
       cilindrada: this.camion.cilindrada.trim(),
-      transmision: this.camion.transmision.trim()
+      transmision: this.camion.transmision.trim(),
+
+      // Las fechas son opcionales.
+      // Si están vacías, enviamos null al backend.
+      fechaRevisionTecnica:
+        this.camion.fechaRevisionTecnica || null,
+
+      fechaPermisoCirculacion:
+        this.camion.fechaPermisoCirculacion || null,
+
+      fechaSeguroObligatorio:
+        this.camion.fechaSeguroObligatorio || null
     };
 
     this.api.crearCamion(camion).subscribe({
-
       next: () => {
-
         this.guardando = false;
-
-        // El formulario ya fue guardado correctamente
         this.formularioModificado = false;
-
         this.modalExitoVisible = true;
-
       },
-
       error: error => {
-
-        console.error(
-          'Error al crear camión:',
-          error
-        );
-
+        console.error('Error al crear camión:', error);
         this.guardando = false;
-
-        this.modalErrorTitulo =
-          'No fue posible guardar el camión';
+        this.modalErrorTitulo = 'No fue posible guardar el camión';
 
         if (error.status === 409) {
-
           this.modalErrorMensaje =
             error.error ||
             'Ya existe un camión con esa patente.';
-
         } else {
-
           this.modalErrorMensaje =
             'Ocurrió un error al intentar guardar el camión.';
-
         }
 
         this.modalErrorVisible = true;
-
       }
-
     });
-
   }
 
-  /*
-   * Valida los campos obligatorios antes de enviar
-   * la información al backend.
-   */
   private formularioValido(): boolean {
-
     return (
-
       this.camion.patente.trim() !== '' &&
-
       this.camion.marca.trim() !== '' &&
-
       this.camion.modelo.trim() !== '' &&
-
       !!this.camion.ano &&
-
       this.camion.tipo.trim() !== '' &&
-
       this.camion.color.trim() !== '' &&
-
       this.camion.capacidad.trim() !== '' &&
-
       this.camion.motor.trim() !== '' &&
-
       this.camion.caballos.trim() !== '' &&
-
       this.camion.cilindrada.trim() !== '' &&
-
-      this.camion.transmision.trim() !== '' &&
-
-      this.camion.fechaRevisionTecnica !== '' &&
-
-      this.camion.fechaPermisoCirculacion !== '' &&
-
-      this.camion.fechaSeguroObligatorio !== ''
-
+      this.camion.transmision.trim() !== ''
     );
-
   }
 
-  /*
-   * Marca los campos obligatorios que estén vacíos.
-   */
   private marcarCamposInvalidos(): void {
-
     this.camposTocados = {
-
       patente: this.camion.patente.trim() === '',
-
       marca: this.camion.marca.trim() === '',
-
       modelo: this.camion.modelo.trim() === '',
-
       ano: !this.camion.ano,
-
       tipo: this.camion.tipo.trim() === '',
-
       color: this.camion.color.trim() === '',
-
       capacidad: this.camion.capacidad.trim() === '',
-
       motor: this.camion.motor.trim() === '',
-
       caballos: this.camion.caballos.trim() === '',
-
       cilindrada: this.camion.cilindrada.trim() === '',
-
-      transmision: this.camion.transmision.trim() === '',
-
-      fechaRevisionTecnica:
-        this.camion.fechaRevisionTecnica === '',
-
-      fechaPermisoCirculacion:
-        this.camion.fechaPermisoCirculacion === '',
-
-      fechaSeguroObligatorio:
-        this.camion.fechaSeguroObligatorio === ''
-
+      transmision: this.camion.transmision.trim() === ''
     };
-
   }
 
   campoInvalido(nombre: string): boolean {
-
     return this.camposTocados[nombre] === true;
-
   }
 
   cerrarModalIncompleto(): void {
-
     this.modalIncompletoVisible = false;
-
   }
 
   cancelar(): void {
-
     if (this.guardando) {
       return;
     }
-  
+
     if (this.formularioModificado) {
       this.modalSalirVisible = true;
       return;
     }
-  
+
     this.router.navigate(['/camiones']);
   }
 
   seguirEditando(): void {
-
     this.modalSalirVisible = false;
 
-    // Si el modal fue abierto por el guard,
-    // cancelamos la navegación.
     if (this.resolverSalida) {
-
       this.resolverSalida(false);
       this.resolverSalida = null;
-
     }
-
   }
 
   salirSinGuardar(): void {
-
     this.modalSalirVisible = false;
-  
+
     if (this.resolverSalida) {
-  
       this.formularioModificado = false;
-  
       this.resolverSalida(true);
       this.resolverSalida = null;
-  
       return;
     }
-  
+
     this.formularioModificado = false;
-  
     this.router.navigate(['/camiones']);
   }
 
   cerrarModalExito(): void {
-
     this.modalExitoVisible = false;
-
     this.router.navigate(['/camiones']);
-
   }
 
   cerrarModalError(): void {
-
     this.modalErrorVisible = false;
-
   }
-
 }

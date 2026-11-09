@@ -186,11 +186,7 @@
 
   cursor: pointer;
 
-  transition:
-    background 0.2s ease,
-    border-color 0.2s ease,
-    transform 0.2s ease,
-    opacity 0.2s ease;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease, opacity 0.2s ease;
 }
 
 .btn-volver {
@@ -404,10 +400,7 @@
 
   flex-shrink: 0;
 
-  transition:
-    background 0.2s ease,
-    border-color 0.2s ease,
-    transform 0.15s ease;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
 }
 
 .btn-editar:hover {
@@ -487,26 +480,74 @@
 
 .licencia-card {
   display: grid;
-
-  grid-template-columns: 1fr 1fr 1fr;
-
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 1rem;
 }
 
 .licencia-card > div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  min-width: 0;
   padding: 1.25rem;
 
   background: #f9fafb;
-
+  border: 1px solid #e5e7eb;
   border-radius: 10px;
 }
 
 .licencia-tipo {
   font-size: 1.8rem;
-
   color: #2563eb;
 }
 
+.estado-licencia-texto {
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+/* Estado: al día */
+.estado-badge.estado-al-dia {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.estado-licencia-texto.estado-al-dia {
+  color: #15803d;
+}
+
+/* Estado: por vencer */
+.estado-badge.estado-por-vencer {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.estado-licencia-texto.estado-por-vencer {
+  color: #b45309;
+}
+
+/* Estado: vencida */
+.estado-badge.estado-vencido {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.estado-licencia-texto.estado-vencido {
+  color: #dc2626;
+}
+
+/* Estado: sin registro */
+.estado-badge.estado-sin-registro {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.estado-licencia-texto.estado-sin-registro {
+  color: #64748b;
+}
+
+/* Compatibilidad con estilos anteriores */
 .texto-activo {
   color: #15803d;
 }
@@ -542,9 +583,7 @@
 
   border-radius: 12px;
 
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .camion-card:hover {
@@ -657,8 +696,7 @@
 
   background: #ffffff;
 
-  box-shadow:
-    0 20px 60px rgba(15, 39, 71, 0.20);
+  box-shadow: 0 20px 60px rgba(15, 39, 71, 0.2);
 
   text-align: center;
 }
@@ -755,7 +793,6 @@
   min-width: 155px;
 }
 
-
 /* =========================================
    DOCUMENTOS DEL CONDUCTOR (REDISEÑADO)
 ========================================= */
@@ -804,7 +841,7 @@
   font-size: 0.85rem;
 }
 
-.documentos-campo input[type="file"] {
+.documentos-campo input[type='file'] {
   padding: 0.4rem;
 }
 
@@ -1214,7 +1251,7 @@
   align-items: center;
   width: 100%;
 
-  input[type="file"] {
+  input[type='file'] {
     width: 100%;
     box-sizing: border-box;
     min-height: 42px;
@@ -1458,14 +1495,18 @@
     background: #f0fdf4;
     color: #166534;
     border: 1px solid #dcfce7;
-    .punto-estado { background: #22c55e; }
+    .punto-estado {
+      background: #22c55e;
+    }
   }
 
   &.pendiente {
     background: #fffbeb;
     color: #b45309;
     border: 1px solid #fef3c7;
-    .punto-estado { background: #f59e0b; }
+    .punto-estado {
+      background: #f59e0b;
+    }
   }
 }
 
@@ -1474,7 +1515,6 @@
 ========================= */
 
 @media (max-width: 900px) {
-
   .datos-grid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -1495,23 +1535,21 @@
 
   .cabecera-acciones {
     width: 100%;
-  
+
     align-items: flex-start;
   }
-  
+
   .cabecera-estados {
     justify-content: flex-start;
   }
-  
+
   .cabecera-botones {
     width: 100%;
     justify-content: space-between;
   }
-
 }
 
 @media (max-width: 600px) {
-
   .conductor-detail {
     padding: 1rem;
   }
@@ -1536,17 +1574,17 @@
     align-items: flex-start;
     flex-direction: column;
   }
-  
+
   .cabecera-estados {
     width: 100%;
     justify-content: flex-start;
   }
-  
+
   .cabecera-botones {
     width: 100%;
     flex-direction: column;
   }
-  
+
   .cabecera-botones .btn-activar,
   .cabecera-botones .btn-danger,
   .cabecera-botones .btn-volver {
@@ -1569,19 +1607,17 @@
     align-items: stretch;
     flex-direction: column;
   }
-  
+
   .bloque-titulo-info {
     width: 100%;
   }
-  
+
   .btn-editar {
     width: 100%;
   }
-
 }
 
 @media (max-width: 520px) {
-  
   .modal-container-doc {
     height: 70vh;
     max-width: 100%;
