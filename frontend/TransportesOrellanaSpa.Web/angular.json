@@ -22,7 +22,8 @@
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "allowedCommonJsDependencies": [
-              "leaflet"
+              "leaflet",
+              "exceljs"
             ],
             "assets": [
               {

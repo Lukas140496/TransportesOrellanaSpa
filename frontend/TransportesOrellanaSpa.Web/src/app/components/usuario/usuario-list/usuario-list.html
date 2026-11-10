@@ -1,37 +1,49 @@
 <section class="usuario-list">
-
-  <!-- =====================================================
-       HEADER
-       ===================================================== -->
-
   <div class="page-header">
-
     <div class="header-content">
-
       <div class="header-icon">👤</div>
 
       <div>
         <h1>Usuarios</h1>
 
-        <p>
-          Administra los usuarios y accesos de Flota360.
-        </p>
+        <p>Administra los usuarios y accesos de Flota360.</p>
       </div>
-
     </div>
 
-    <button
-      type="button"
-      class="btn-nuevo"
-      (click)="nuevoUsuario()"
-    >
-      <span class="btn-icon">+</span>
+    <div class="header-acciones">
+      <button type="button" class="btn-nuevo" (click)="nuevoUsuario()">
+        <span class="btn-icon">+</span>
+        Nuevo Usuario
+      </button>
+      
+      <button
+        type="button"
+        class="btn-exportar"
+        (click)="exportarExcel()"
+        [disabled]="cargando || exportando || usuariosFiltrados.length === 0"
+        title="Exportar todos los remolques filtrados a Excel"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="17"
+          height="17"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="8" y1="13" x2="16" y2="13"></line>
+          <line x1="8" y1="17" x2="16" y2="17"></line>
+        </svg>
 
-      Nuevo Usuario
-    </button>
-
+        {{ exportando ? 'Exportando...' : 'Exportar Excel' }}
+      </button>
+    </div>
   </div>
-
 
   <!-- =====================================================
        CARGANDO
@@ -39,16 +51,13 @@
 
   @if (cargando) {
 
-    <div class="estado-container">
+  <div class="estado-container">
+    <div class="loading-spinner"></div>
 
-      <div class="loading-spinner"></div>
-
-      <p>Cargando usuarios...</p>
-
-    </div>
+    <p>Cargando usuarios...</p>
+  </div>
 
   }
-
 
   <!-- =====================================================
        ERROR
@@ -56,454 +65,310 @@
 
   @if (error) {
 
-    <div class="error-container">
+  <div class="error-container">
+    <div class="error-icon">!</div>
 
-      <div class="error-icon">!</div>
+    <div>
+      <strong> No fue posible cargar los usuarios </strong>
 
-      <div>
-
-        <strong>
-          No fue posible cargar los usuarios
-        </strong>
-
-        <p>
-          {{ error }}
-        </p>
-
-      </div>
-
+      <p>
+        {{ error }}
+      </p>
     </div>
+  </div>
 
-  }
+  } @if (!cargando && !error) {
 
-
-  @if (!cargando && !error) {
-
-    <!-- =====================================================
+  <!-- =====================================================
          RESUMEN
          ===================================================== -->
 
-    <div class="resumen">
+  <div class="resumen">
+    <div class="resumen-card">
+      <div class="resumen-icon total">👤</div>
 
-      <div class="resumen-card">
-
-        <div class="resumen-icon total">
-          👤
-        </div>
-
-        <div>
-
-          <span>
-            Total usuarios
-          </span>
-
-          <strong>
-            {{ usuarios.length }}
-          </strong>
-
-        </div>
-
-      </div>
-
-
-      <div class="resumen-card">
-
-        <div class="resumen-icon activo">
-          ✓
-        </div>
-
-        <div>
-
-          <span>
-            Usuarios activos
-          </span>
-
-          <strong>
-            {{ cantidadActivos }}
-          </strong>
-
-        </div>
-
-      </div>
-
-
-      <div class="resumen-card">
-
-        <div class="resumen-icon inactivo">
-          !
-        </div>
-
-        <div>
-
-          <span>
-            Usuarios inactivos
-          </span>
-
-          <strong>
-            {{ cantidadInactivos }}
-          </strong>
-
-        </div>
-
-      </div>
-
-    </div>
-
-
-    <!-- =====================================================
-         FILTROS
-         ===================================================== -->
-
-    <div class="filtros-card">
-
-      <div class="busqueda">
-
-        <span class="search-icon">
-          ⌕
-        </span>
-
-        <input
-          type="text"
-          [(ngModel)]="busqueda"
-          placeholder="Buscar por Rut, nombre, correo o rol..."
-          aria-label="Buscar usuarios"
-        />
-
-        @if (busqueda) {
-
-          <button
-            type="button"
-            class="btn-limpiar-busqueda"
-            (click)="limpiarBusqueda()"
-            aria-label="Limpiar búsqueda"
-          >
-            ×
-          </button>
-
-        }
-
-      </div>
-
-
-      <div class="filtro-estado">
-
-        <span class="filtro-label">
-          Estado:
-        </span>
-
-        <button
-          type="button"
-          [class.active]="filtroEstado === 'todos'"
-          (click)="cambiarFiltroEstado('todos')"
-        >
-          Todos
-        </button>
-
-        <button
-          type="button"
-          [class.active]="filtroEstado === 'activos'"
-          (click)="cambiarFiltroEstado('activos')"
-        >
-          Activos
-        </button>
-
-        <button
-          type="button"
-          [class.active]="filtroEstado === 'inactivos'"
-          (click)="cambiarFiltroEstado('inactivos')"
-        >
-          Inactivos
-        </button>
-
-      </div>
-
-
-      @if (hayFiltrosAplicados()) {
-
-        <button
-          type="button"
-          class="btn-limpiar-filtros"
-          (click)="limpiarFiltros()"
-        >
-          Limpiar filtros
-        </button>
-
-      }
-
-    </div>
-
-
-    <!-- =====================================================
-         RESULTADOS
-         ===================================================== -->
-
-    <div class="resultado-info">
-
-      <span>
-
-        Mostrando
-
-        <strong>
-          {{ usuariosFiltrados.length }}
-        </strong>
-
-        de
+      <div>
+        <span> Total usuarios </span>
 
         <strong>
           {{ usuarios.length }}
         </strong>
-
-        usuarios
-
-      </span>
-
+      </div>
     </div>
 
+    <div class="resumen-card">
+      <div class="resumen-icon activo">✓</div>
 
-    <!-- =====================================================
+      <div>
+        <span> Usuarios activos </span>
+
+        <strong>
+          {{ cantidadActivos }}
+        </strong>
+      </div>
+    </div>
+
+    <div class="resumen-card">
+      <div class="resumen-icon inactivo">!</div>
+
+      <div>
+        <span> Usuarios inactivos </span>
+
+        <strong>
+          {{ cantidadInactivos }}
+        </strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- =====================================================
+         FILTROS
+         ===================================================== -->
+
+  <div class="filtros-card">
+    <div class="busqueda">
+      <span class="search-icon"> ⌕ </span>
+
+      <input
+        type="text"
+        [(ngModel)]="busqueda"
+        placeholder="Buscar por Rut, nombre, correo o rol..."
+        aria-label="Buscar usuarios"
+      />
+
+      @if (busqueda) {
+
+      <button
+        type="button"
+        class="btn-limpiar-busqueda"
+        (click)="limpiarBusqueda()"
+        aria-label="Limpiar búsqueda"
+      >
+        ×
+      </button>
+
+      }
+    </div>
+
+    <div class="filtro-estado">
+      <span class="filtro-label"> Estado: </span>
+
+      <button
+        type="button"
+        [class.active]="filtroEstado === 'todos'"
+        (click)="cambiarFiltroEstado('todos')"
+      >
+        Todos
+      </button>
+
+      <button
+        type="button"
+        [class.active]="filtroEstado === 'activos'"
+        (click)="cambiarFiltroEstado('activos')"
+      >
+        Activos
+      </button>
+
+      <button
+        type="button"
+        [class.active]="filtroEstado === 'inactivos'"
+        (click)="cambiarFiltroEstado('inactivos')"
+      >
+        Inactivos
+      </button>
+    </div>
+
+    @if (hayFiltrosAplicados()) {
+
+    <button type="button" class="btn-limpiar-filtros" (click)="limpiarFiltros()">
+      Limpiar filtros
+    </button>
+
+    }
+  </div>
+
+  <!-- =====================================================
+         RESULTADOS
+         ===================================================== -->
+
+  <div class="resultado-info">
+    <span>
+      Mostrando
+
+      <strong>
+        {{ usuariosFiltrados.length }}
+      </strong>
+
+      de
+
+      <strong>
+        {{ usuarios.length }}
+      </strong>
+
+      usuarios
+    </span>
+  </div>
+
+  <!-- =====================================================
          TABLA
          ===================================================== -->
 
-    @if (usuariosFiltrados.length > 0) {
+  @if (usuariosFiltrados.length > 0) {
 
-      <div class="tabla-container">
+  <div class="tabla-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Usuario</th>
 
-        <table>
+          <th>RUT</th>
 
-          <thead>
+          <th>Correo</th>
 
-            <tr>
+          <th>Rol</th>
 
-              <th>Usuario</th>
+          <th>Fecha creación</th>
 
-              <th>RUT</th>
+          <th>Último acceso</th>
 
-              <th>Correo</th>
+          <th>Estado</th>
 
-              <th>Rol</th>
+          <th class="columna-acciones">Acción</th>
+        </tr>
+      </thead>
 
-              <th>Fecha creación</th>
+      <tbody>
+        @for ( usuario of usuariosFiltrados; track usuario.usuarioId ) {
 
-              <th>Último acceso</th>
+        <tr>
+          <!-- USUARIO -->
 
-              <th>Estado</th>
+          <td>
+            <div class="usuario-info">
+              <div class="usuario-avatar">
+                {{ usuario.nombres.charAt(0).toUpperCase() }}
+              </div>
 
-              <th class="columna-acciones">
-                Acción
-              </th>
+              <div>
+                <strong>
+                  {{ usuario.nombreCompleto }}
+                </strong>
 
-            </tr>
+                <span> Usuario del sistema </span>
+              </div>
+            </div>
+          </td>
 
-          </thead>
+          <!-- RUT -->
 
+          <td>
+            <span class="rut">
+              {{ usuario.rut }}
+            </span>
+          </td>
 
-          <tbody>
+          <!-- EMAIL -->
 
-            @for (
-              usuario of usuariosFiltrados;
-              track usuario.usuarioId
-            ) {
+          <td>
+            <span class="dato-principal">
+              {{ usuario.email }}
+            </span>
+          </td>
 
-              <tr>
+          <!-- ROL -->
 
-                <!-- USUARIO -->
+          <td>
+            <div class="roles">
+              @for ( rol of usuario.roles; track rol ) {
 
-                <td>
+              <span class="rol-badge">
+                {{ rol }}
+              </span>
 
-                  <div class="usuario-info">
+              }
+            </div>
+          </td>
 
-                    <div class="usuario-avatar">
+          <!-- FECHA CREACIÓN -->
 
-                      {{ usuario.nombres.charAt(0).toUpperCase() }}
+          <td>
+            <span class="fecha">
+              {{ usuario.fechaCreacion | date : 'dd/MM/yyyy' }}
+            </span>
+          </td>
 
-                    </div>
+          <!-- ÚLTIMO ACCESO -->
 
-                    <div>
+          <td>
+            @if (usuario.ultimoAcceso) {
 
-                      <strong>
-                        {{ usuario.nombreCompleto }}
-                      </strong>
+            <span class="fecha">
+              {{ usuario.ultimoAcceso | date : 'dd/MM/yyyy HH:mm' }}
+            </span>
 
-                      <span>
-                        Usuario del sistema
-                      </span>
+            } @else {
 
-                    </div>
-
-                  </div>
-
-                </td>
-
-
-                <!-- RUT -->
-
-                <td>
-
-                  <span class="rut">
-                    {{ usuario.rut }}
-                  </span>
-
-                </td>
-
-
-                <!-- EMAIL -->
-
-                <td>
-
-                  <span class="dato-principal">
-                    {{ usuario.email }}
-                  </span>
-
-                </td>
-
-
-                <!-- ROL -->
-
-                <td>
-
-                  <div class="roles">
-
-                    @for (
-                      rol of usuario.roles;
-                      track rol
-                    ) {
-
-                      <span class="rol-badge">
-                        {{ rol }}
-                      </span>
-
-                    }
-
-                  </div>
-
-                </td>
-
-
-                <!-- FECHA CREACIÓN -->
-
-                <td>
-
-                  <span class="fecha">
-
-                    {{ usuario.fechaCreacion | date : 'dd/MM/yyyy' }}
-
-                  </span>
-
-                </td>
-
-
-                <!-- ÚLTIMO ACCESO -->
-
-                <td>
-
-                  @if (usuario.ultimoAcceso) {
-
-                    <span class="fecha">
-
-                      {{ usuario.ultimoAcceso | date : 'dd/MM/yyyy HH:mm' }}
-
-                    </span>
-
-                  } @else {
-
-                    <span class="sin-acceso">
-                      Nunca
-                    </span>
-
-                  }
-
-                </td>
-
-
-                <!-- ESTADO -->
-
-                <td>
-
-                  @if (usuario.activo) {
-
-                    <span class="badge activo">
-
-                      <span class="badge-dot"></span>
-
-                      Activo
-
-                    </span>
-
-                  } @else {
-
-                    <span class="badge inactivo">
-
-                      <span class="badge-dot"></span>
-
-                      Inactivo
-
-                    </span>
-
-                  }
-
-                </td>
-
-
-                <!-- ACCIÓN -->
-
-                <td class="columna-acciones">
-
-                    <button
-                    type="button"
-                    class="btn-detalle"
-                    (click)="gestionarUsuario(usuario.usuarioId)"
-                  >
-                    Gestionar
-                    <span>→</span>
-                  </button>
-
-                </td>
-
-              </tr>
+            <span class="sin-acceso"> Nunca </span>
 
             }
+          </td>
 
-          </tbody>
+          <!-- ESTADO -->
 
-        </table>
+          <td>
+            @if (usuario.activo) {
 
-      </div>
+            <span class="badge activo">
+              <span class="badge-dot"></span>
 
-    }
+              Activo
+            </span>
 
+            } @else {
 
-    <!-- =====================================================
-         SIN RESULTADOS
-         ===================================================== -->
+            <span class="badge inactivo">
+              <span class="badge-dot"></span>
 
-    @if (usuariosFiltrados.length === 0) {
+              Inactivo
+            </span>
 
-      <div class="sin-resultados">
+            }
+          </td>
 
-        <div class="sin-resultados-icon">
-          ⌕
-        </div>
+          <!-- ACCIÓN -->
 
-        <h2>
-          No encontramos usuarios
-        </h2>
+          <td class="columna-acciones">
+            <button type="button" class="btn-detalle" (click)="gestionarUsuario(usuario.usuarioId)">
+              Gestionar
+              <span>→</span>
+            </button>
+          </td>
+        </tr>
 
-        <p>
-          No hay usuarios que coincidan con los filtros seleccionados.
-        </p>
-
-        <button
-          type="button"
-          class="btn-restablecer"
-          (click)="limpiarFiltros()"
-        >
-          Limpiar filtros
-        </button>
-
-      </div>
-
-    }
+        }
+      </tbody>
+    </table>
+  </div>
 
   }
 
+  <!-- =====================================================
+         SIN RESULTADOS
+         ===================================================== -->
+
+  @if (usuariosFiltrados.length === 0) {
+
+  <div class="sin-resultados">
+    <div class="sin-resultados-icon">⌕</div>
+
+    <h2>No encontramos usuarios</h2>
+
+    <p>No hay usuarios que coincidan con los filtros seleccionados.</p>
+
+    <button type="button" class="btn-restablecer" (click)="limpiarFiltros()">
+      Limpiar filtros
+    </button>
+  </div>
+
+  } }
 </section>

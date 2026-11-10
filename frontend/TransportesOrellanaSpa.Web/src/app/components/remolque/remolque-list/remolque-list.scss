@@ -1,5 +1,4 @@
 .remolque-list {
-
   max-width: 1400px;
 
   margin: 0 auto;
@@ -7,7 +6,6 @@
   padding: 32px;
 
   padding-top: 10px;
-
 }
 
 .page-header {
@@ -19,17 +17,14 @@
 }
 
 .header-content {
-
   display: flex;
 
   align-items: center;
 
   gap: 16px;
-
 }
 
 .header-icon {
-
   display: flex;
 
   align-items: center;
@@ -49,11 +44,9 @@
   background: #edf5ff;
 
   font-size: 21px;
-
 }
 
 .page-header h1 {
-
   margin: 0 0 5px;
 
   color: #172b4d;
@@ -61,17 +54,59 @@
   font-size: 28px;
 
   font-weight: 700;
-
 }
 
 .page-header p {
-
   margin: 0;
 
   color: #6b778c;
 
   font-size: 14px;
+}
 
+.header-acciones {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.btn-exportar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 42px;
+  padding: 0 16px;
+  border: 1px solid #15803d;
+  border-radius: 8px;
+  background: #15803d;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease,
+    transform 0.15s ease;
+
+  &:hover:not(:disabled) {
+    background: #185c37;
+    border-color: #185c37;
+    box-shadow: 0 4px 10px rgba(33, 115, 70, 0.2);
+    transform: translateY(-1px);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+  }
 }
 
 /* =====================================================
@@ -91,10 +126,7 @@
   font-weight: 600;
   cursor: pointer;
   white-space: nowrap;
-  transition:
-    background 0.2s ease,
-    border-color 0.2s ease,
-    box-shadow 0.2s ease,
+  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease,
     transform 0.15s ease;
 }
 
@@ -118,7 +150,6 @@
    ========================= */
 
 .resumen {
-
   display: grid;
 
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -126,11 +157,9 @@
   gap: 18px;
 
   margin-bottom: 22px;
-
 }
 
 .resumen-card {
-
   display: flex;
 
   align-items: center;
@@ -145,14 +174,10 @@
 
   border-radius: 12px;
 
-  box-shadow:
-
-    0 4px 18px rgba(15, 39, 71, 0.04);
-
+  box-shadow: 0 4px 18px rgba(15, 39, 71, 0.04);
 }
 
 .resumen-icon {
-
   display: flex;
 
   align-items: center;
@@ -168,33 +193,25 @@
   border-radius: 10px;
 
   font-size: 21px;
-
 }
 
 .resumen-icon.total {
-
   background: #edf5ff;
-
 }
 
 .resumen-icon.activo {
-
   background: #edf8f1;
 
   color: #18794e;
-
 }
 
 .resumen-icon.inactivo {
-
   background: #fff6e8;
 
   color: #b76e00;
-
 }
 
 .resumen-card span {
-
   display: block;
 
   margin-bottom: 4px;
@@ -204,17 +221,14 @@
   font-size: 12px;
 
   font-weight: 600;
-
 }
 
 .resumen-card strong {
-
   color: #172b4d;
 
   font-size: 24px;
 
   font-weight: 700;
-
 }
 
 /* =========================
@@ -224,7 +238,6 @@
    ========================= */
 
 .filtros-card {
-
   display: flex;
 
   align-items: center;
@@ -241,14 +254,10 @@
 
   border-radius: 12px;
 
-  box-shadow:
-
-    0 4px 18px rgba(15, 39, 71, 0.04);
-
+  box-shadow: 0 4px 18px rgba(15, 39, 71, 0.04);
 }
 
 .busqueda {
-
   position: relative;
 
   display: flex;
@@ -258,11 +267,9 @@
   flex: 1;
 
   min-width: 280px;
-
 }
 
 .search-icon {
-
   position: absolute;
 
   left: 14px;
@@ -274,11 +281,9 @@
   line-height: 1;
 
   pointer-events: none;
-
 }
 
 .busqueda input {
-
   width: 100%;
 
   height: 44px;
@@ -301,32 +306,20 @@
 
   outline: none;
 
-  transition:
-
-    border-color 0.2s ease,
-
-    box-shadow 0.2s ease;
-
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .busqueda input::placeholder {
-
   color: #a5adba;
-
 }
 
 .busqueda input:focus {
-
   border-color: #2f80ed;
 
-  box-shadow:
-
-    0 0 0 3px rgba(47, 128, 237, 0.1);
-
+  box-shadow: 0 0 0 3px rgba(47, 128, 237, 0.1);
 }
 
 .btn-limpiar-busqueda {
-
   position: absolute;
 
   right: 10px;
@@ -355,20 +348,13 @@
 
   cursor: pointer;
 
-  transition:
-
-    background 0.2s ease,
-
-    color 0.2s ease;
-
+  transition: background 0.2s ease, color 0.2s ease;
 }
 
 .btn-limpiar-busqueda:hover {
-
   background: #dfe4eb;
 
   color: #172b4d;
-
 }
 
 /* =========================
@@ -378,7 +364,6 @@
    ========================= */
 
 .filtro-estado {
-
   display: flex;
 
   align-items: center;
@@ -386,11 +371,9 @@
   gap: 6px;
 
   flex-shrink: 0;
-
 }
 
 .filtro-label {
-
   margin-right: 4px;
 
   color: #6b778c;
@@ -398,11 +381,9 @@
   font-size: 12px;
 
   font-weight: 600;
-
 }
 
 .filtro-estado button {
-
   height: 36px;
 
   padding: 0 13px;
@@ -423,40 +404,25 @@
 
   cursor: pointer;
 
-  transition:
-
-    background 0.2s ease,
-
-    border-color 0.2s ease,
-
-    color 0.2s ease,
-
-    box-shadow 0.2s ease;
-
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .filtro-estado button:hover {
-
   border-color: #c5cfdb;
 
   background: #f8fafc;
 
   color: #344563;
-
 }
 
 .filtro-estado button.active {
-
   border-color: #2f80ed;
 
   background: #edf5ff;
 
   color: #1f6fc5;
 
-  box-shadow:
-
-    0 1px 3px rgba(47, 128, 237, 0.08);
-
+  box-shadow: 0 1px 3px rgba(47, 128, 237, 0.08);
 }
 
 /* =========================
@@ -466,7 +432,6 @@
    ========================= */
 
 .btn-limpiar-filtros {
-
   height: 36px;
 
   padding: 0 14px;
@@ -489,24 +454,15 @@
 
   cursor: pointer;
 
-  transition:
-
-    background 0.2s ease,
-
-    border-color 0.2s ease,
-
-    color 0.2s ease;
-
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
 .btn-limpiar-filtros:hover {
-
   background: #f8fafc;
 
   border-color: #c5ccd7;
 
   color: #344563;
-
 }
 
 /* =========================
@@ -516,7 +472,6 @@
    ========================= */
 
 .resultado-info {
-
   display: flex;
 
   justify-content: space-between;
@@ -528,13 +483,10 @@
   color: #7a869a;
 
   font-size: 13px;
-
 }
 
 .resultado-info strong {
-
   color: #344563;
-
 }
 
 /* =========================
@@ -544,7 +496,6 @@
    ========================= */
 
 .tabla-container {
-
   overflow-x: auto;
 
   background: #fff;
@@ -553,30 +504,22 @@
 
   border-radius: 14px;
 
-  box-shadow:
-
-    0 4px 18px rgba(15, 39, 71, 0.05);
-
+  box-shadow: 0 4px 18px rgba(15, 39, 71, 0.05);
 }
 
 table {
-
   width: 100%;
 
   min-width: 1100px;
 
   border-collapse: collapse;
-
 }
 
 thead {
-
   background: #f8fafc;
-
 }
 
 th {
-
   padding: 14px 18px;
 
   border-bottom: 1px solid #e5eaf0;
@@ -594,11 +537,9 @@ th {
   letter-spacing: 0.35px;
 
   white-space: nowrap;
-
 }
 
 td {
-
   padding: 16px 18px;
 
   border-bottom: 1px solid #edf0f4;
@@ -608,27 +549,18 @@ td {
   font-size: 13px;
 
   vertical-align: middle;
-
 }
 
 tbody tr {
-
-  transition:
-
-    background 0.15s ease;
-
+  transition: background 0.15s ease;
 }
 
 tbody tr:hover {
-
   background: #fbfcfe;
-
 }
 
 tbody tr:last-child td {
-
   border-bottom: 0;
-
 }
 
 /* =========================
@@ -638,17 +570,14 @@ tbody tr:last-child td {
    ========================= */
 
 .remolque-info {
-
   display: flex;
 
   align-items: center;
 
   gap: 11px;
-
 }
 
 .remolque-avatar {
-
   display: flex;
 
   align-items: center;
@@ -666,11 +595,9 @@ tbody tr:last-child td {
   background: #edf5ff;
 
   font-size: 18px;
-
 }
 
 .remolque-info strong {
-
   display: block;
 
   margin-bottom: 3px;
@@ -682,17 +609,14 @@ tbody tr:last-child td {
   font-weight: 700;
 
   white-space: nowrap;
-
 }
 
 .remolque-info span {
-
   display: block;
 
   color: #8a94a6;
 
   font-size: 11px;
-
 }
 
 /* =========================
@@ -702,25 +626,20 @@ tbody tr:last-child td {
    ========================= */
 
 .dato-principal {
-
   color: #344563;
 
   font-weight: 600;
 
   white-space: nowrap;
-
 }
 
 .dato-secundario {
-
   color: #5e6c84;
 
   white-space: nowrap;
-
 }
 
 .tipo-remolque {
-
   display: inline-flex;
 
   align-items: center;
@@ -738,7 +657,6 @@ tbody tr:last-child td {
   font-weight: 700;
 
   white-space: nowrap;
-
 }
 
 /* =========================
@@ -748,19 +666,15 @@ tbody tr:last-child td {
    ========================= */
 
 .capacidad {
-
   color: #5e6c84;
 
   white-space: nowrap;
-
 }
 
 .capacidad strong {
-
   color: #172b4d;
 
   font-size: 13px;
-
 }
 
 /* =========================
@@ -770,7 +684,6 @@ tbody tr:last-child td {
    ========================= */
 
 .camion-asignado {
-
   display: inline-flex;
 
   align-items: center;
@@ -780,25 +693,19 @@ tbody tr:last-child td {
   color: #344563;
 
   white-space: nowrap;
-
 }
 
 .camion-icon {
-
   font-size: 15px;
-
 }
 
 .camion-asignado strong {
-
   color: #172b4d;
 
   font-size: 12px;
-
 }
 
 .sin-asignar {
-
   display: inline-flex;
 
   align-items: center;
@@ -816,7 +723,6 @@ tbody tr:last-child td {
   font-weight: 600;
 
   white-space: nowrap;
-
 }
 
 /* =========================
@@ -826,7 +732,6 @@ tbody tr:last-child td {
    ========================= */
 
 .badge {
-
   display: inline-flex;
 
   align-items: center;
@@ -842,45 +747,34 @@ tbody tr:last-child td {
   font-weight: 700;
 
   white-space: nowrap;
-
 }
 
 .badge-dot {
-
   width: 6px;
 
   height: 6px;
 
   border-radius: 50%;
-
 }
 
 .badge.activo {
-
   background: #edf8f1;
 
   color: #18794e;
-
 }
 
 .badge.activo .badge-dot {
-
   background: #2e9d68;
-
 }
 
 .badge.inactivo {
-
   background: #fff4e8;
 
   color: #b76e00;
-
 }
 
 .badge.inactivo .badge-dot {
-
   background: #d98a16;
-
 }
 
 /* =========================
@@ -890,13 +784,10 @@ tbody tr:last-child td {
    ========================= */
 
 .columna-acciones {
-
   text-align: right;
-
 }
 
 .btn-detalle {
-
   display: inline-flex;
 
   align-items: center;
@@ -927,36 +818,21 @@ tbody tr:last-child td {
 
   cursor: pointer;
 
-  transition:
-
-    background 0.2s ease,
-
-    border-color 0.2s ease,
-
-    box-shadow 0.2s ease,
-
-    color 0.2s ease;
-
+  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
 }
 
 .btn-detalle span {
-
   font-size: 15px;
 
   line-height: 1;
-
 }
 
 .btn-detalle:hover {
-
   border-color: #2f80ed;
 
   background: #edf5ff;
 
-  box-shadow:
-
-    0 2px 6px rgba(47, 128, 237, 0.1);
-
+  box-shadow: 0 2px 6px rgba(47, 128, 237, 0.1);
 }
 
 /* =========================
@@ -966,7 +842,6 @@ tbody tr:last-child td {
    ========================= */
 
 .estado-container {
-
   display: flex;
 
   flex-direction: column;
@@ -986,11 +861,9 @@ tbody tr:last-child td {
   border-radius: 14px;
 
   color: #6b778c;
-
 }
 
 .loading-spinner {
-
   width: 30px;
 
   height: 30px;
@@ -1004,25 +877,18 @@ tbody tr:last-child td {
   border-radius: 50%;
 
   animation: spinner 0.8s linear infinite;
-
 }
 
 .estado-container p {
-
   margin: 0;
 
   font-size: 14px;
-
 }
 
 @keyframes spinner {
-
   to {
-
     transform: rotate(360deg);
-
   }
-
 }
 
 /* =========================
@@ -1032,7 +898,6 @@ tbody tr:last-child td {
    ========================= */
 
 .error-container {
-
   display: flex;
 
   align-items: flex-start;
@@ -1046,11 +911,9 @@ tbody tr:last-child td {
   border-radius: 12px;
 
   background: #fff7f7;
-
 }
 
 .error-icon {
-
   display: flex;
 
   align-items: center;
@@ -1070,11 +933,9 @@ tbody tr:last-child td {
   color: #c93737;
 
   font-weight: 700;
-
 }
 
 .error-container strong {
-
   display: block;
 
   margin-bottom: 4px;
@@ -1082,17 +943,14 @@ tbody tr:last-child td {
   color: #8f2929;
 
   font-size: 14px;
-
 }
 
 .error-container p {
-
   margin: 0;
 
   color: #a34a4a;
 
   font-size: 13px;
-
 }
 
 /* =========================
@@ -1102,7 +960,6 @@ tbody tr:last-child td {
    ========================= */
 
 .sin-resultados {
-
   display: flex;
 
   flex-direction: column;
@@ -1118,11 +975,9 @@ tbody tr:last-child td {
   border-radius: 14px;
 
   text-align: center;
-
 }
 
 .sin-resultados-icon {
-
   display: flex;
 
   align-items: center;
@@ -1142,31 +997,25 @@ tbody tr:last-child td {
   color: #7a869a;
 
   font-size: 25px;
-
 }
 
 .sin-resultados h2 {
-
   margin: 0 0 7px;
 
   color: #172b4d;
 
   font-size: 18px;
-
 }
 
 .sin-resultados p {
-
   margin: 0 0 20px;
 
   color: #7a869a;
 
   font-size: 13px;
-
 }
 
 .btn-restablecer {
-
   height: 38px;
 
   padding: 0 16px;
@@ -1187,20 +1036,13 @@ tbody tr:last-child td {
 
   cursor: pointer;
 
-  transition:
-
-    background 0.2s ease,
-
-    border-color 0.2s ease;
-
+  transition: background 0.2s ease, border-color 0.2s ease;
 }
 
 .btn-restablecer:hover {
-
   background: #f8fafc;
 
   border-color: #c5ccd7;
-
 }
 
 /* =========================
@@ -1210,43 +1052,30 @@ tbody tr:last-child td {
    ========================= */
 
 @media (max-width: 1000px) {
-
   .remolque-list {
-
     padding: 24px;
-
   }
 
   .resumen {
-
     grid-template-columns: 1fr;
-
   }
 
   .filtros-card {
-
     flex-wrap: wrap;
-
   }
 
   .busqueda {
-
     width: 100%;
 
     min-width: 100%;
 
     flex-basis: 100%;
-
   }
-
 }
 
 @media (max-width: 700px) {
-
   .remolque-list {
-
     padding: 18px;
-
   }
 
   .page-header {
@@ -1264,7 +1093,7 @@ tbody tr:last-child td {
     align-items: center;
     gap: 16px;
     width: 100%;
-    
+
     > div {
       text-align: left;
     }
@@ -1283,11 +1112,9 @@ tbody tr:last-child td {
   }
 
   .header-icon {
-
     width: 46px;
 
     height: 46px;
-
   }
 
   .btn-nuevo {
@@ -1299,7 +1126,6 @@ tbody tr:last-child td {
   }
 
   .filtros-card {
-
     align-items: stretch;
 
     flex-direction: column;
@@ -1307,105 +1133,89 @@ tbody tr:last-child td {
     padding: 12px;
 
     gap: 12px;
-
   }
 
   .busqueda {
-
     width: 100%;
 
     min-width: 0;
-
   }
 
   .filtro-estado {
-
     width: 100%;
 
     flex-wrap: wrap;
-
   }
 
   .filtro-estado button {
-
     flex: 1;
-
   }
 
   .btn-limpiar-filtros {
-
     width: 100%;
-
   }
 
   .resultado-info {
-
     font-size: 12px;
-
   }
 
+  .header-acciones {
+    order: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    gap: 10px;
+  }
+
+  .header-acciones .btn-nuevo,
+  .header-acciones .btn-exportar {
+    width: 100%;
+    justify-content: center;
+    margin: 0 !important;
+  }
 }
 
 @media (max-width: 480px) {
-
   .remolque-list {
-
     padding: 14px;
-
   }
 
   .header-content {
-
     align-items: flex-start;
-
   }
 
   .header-icon {
-
     width: 42px;
 
     height: 42px;
 
     font-size: 21px;
-
   }
 
   .page-header h1 {
-
     font-size: 22px;
-
   }
 
   .page-header p {
-
     font-size: 13px;
-
   }
 
   .resumen-card {
-
     padding: 16px;
-
   }
 
   .filtro-estado {
-
     align-items: stretch;
-
   }
 
   .filtro-label {
-
     width: 100%;
 
     margin-right: 0;
-
   }
 
   .filtro-estado button {
-
     flex: 1;
-
   }
-
 }

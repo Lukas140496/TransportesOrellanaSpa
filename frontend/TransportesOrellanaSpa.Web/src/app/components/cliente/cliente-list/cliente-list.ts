@@ -1,3 +1,4 @@
+
 import { Component, OnInit, inject } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -26,6 +27,7 @@ export class ClienteList implements OnInit {
   clientes: Cliente[] = [];
 
   cargando = true;
+  exportando = false;
   error = '';
 
   busqueda = '';
@@ -161,6 +163,183 @@ export class ClienteList implements OnInit {
       '/clientes',
       id
     ]);
+
+  }
+
+  async exportarExcel(): Promise<void> {
+
+    if (
+      this.exportando ||
+      this.cargando ||
+      this.clientesFiltrados.length === 0
+    ) {
+      return;
+    }
+
+    this.exportando = true;
+
+    try {
+
+      const ExcelJS = await import('exceljs');
+
+      const workbook = new ExcelJS.Workbook();
+
+      workbook.creator = 'Flota360';
+      workbook.created = new Date();
+
+      const worksheet = workbook.addWorksheet('Clientes');
+
+      worksheet.columns = [
+        { header: 'Nombre / Razón social', key: 'nombre', width: 32 },
+        { header: 'RUT', key: 'rut', width: 18 },
+        { header: 'Dirección', key: 'direccion', width: 38 },
+        { header: 'Comuna', key: 'comuna', width: 22 },
+        { header: 'Ciudad', key: 'ciudad', width: 22 },
+        { header: 'Tarifa', key: 'tarifa', width: 18 },
+        { header: 'Tipo de carga', key: 'tipoCarga', width: 24 },
+        { header: 'Estado', key: 'estado', width: 16 },
+        { header: 'Observaciones', key: 'observaciones', width: 40 }
+      ];
+
+      const clientes = this.clientesFiltrados;
+
+      clientes.forEach(cliente => {
+
+        worksheet.addRow({
+          nombre: cliente.nombre,
+          rut: cliente.rut,
+          direccion: cliente.direccion || '',
+          comuna: cliente.comuna,
+          ciudad: cliente.ciudad,
+          tarifa: cliente.tarifa,
+          tipoCarga: cliente.tipoCarga,
+          estado: cliente.activo ? 'Activo' : 'Inactivo',
+          observaciones: cliente.observaciones || ''
+        });
+
+      });
+
+      // Estilo del encabezado
+      const encabezado = worksheet.getRow(1);
+
+      encabezado.height = 28;
+
+      encabezado.eachCell(cell => {
+
+        cell.font = {
+          bold: true,
+          color: { argb: 'FFFFFFFF' },
+          size: 11
+        };
+
+        cell.fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: { argb: 'FF1E3A5F' }
+        };
+
+        cell.alignment = {
+          vertical: 'middle',
+          horizontal: 'center'
+        };
+
+        cell.border = {
+          bottom: {
+            style: 'medium',
+            color: { argb: 'FF16304F' }
+          }
+        };
+
+      });
+
+      // Formato de las filas
+      worksheet.eachRow((row, rowNumber) => {
+
+        if (rowNumber > 1) {
+
+          row.height = 22;
+
+          row.eachCell(cell => {
+
+            cell.alignment = {
+              vertical: 'middle'
+            };
+
+            if (rowNumber % 2 === 0) {
+
+              cell.fill = {
+                type: 'pattern',
+                pattern: 'solid',
+                fgColor: { argb: 'FFF1F5F9' }
+              };
+
+            }
+
+          });
+
+        }
+
+      });
+
+      // Formato de tarifa
+      worksheet.getColumn('tarifa').numFmt = '$#,##0';
+
+      // Filtros y encabezado congelado
+      worksheet.autoFilter = {
+        from: 'A1',
+        to: 'I1'
+      };
+
+      worksheet.views = [
+        {
+          state: 'frozen',
+          ySplit: 1
+        }
+      ];
+
+      // Generar archivo
+      const buffer = await workbook.xlsx.writeBuffer();
+
+      const blob = new Blob(
+        [buffer],
+        {
+          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        }
+      );
+
+      const url = window.URL.createObjectURL(blob);
+
+      const enlace = document.createElement('a');
+
+      const fecha = new Date()
+        .toISOString()
+        .slice(0, 10);
+
+      enlace.href = url;
+      enlace.download = `Clientes_Flota360_${fecha}.xlsx`;
+
+      document.body.appendChild(enlace);
+      enlace.click();
+
+      document.body.removeChild(enlace);
+
+      window.URL.revokeObjectURL(url);
+
+    } catch (error) {
+
+      console.error(
+        'Error al exportar clientes:',
+        error
+      );
+
+      this.error =
+        'No fue posible generar el archivo Excel.';
+
+    } finally {
+
+      this.exportando = false;
+
+    }
 
   }
 

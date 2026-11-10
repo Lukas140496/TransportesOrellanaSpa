@@ -6,7 +6,6 @@
   color: #172b4d;
 }
 
-
 // =====================================================
 // HEADER
 // =====================================================
@@ -59,6 +58,50 @@
   font-size: 14px;
 }
 
+.header-acciones {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.btn-exportar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 42px;
+  padding: 0 16px;
+  border: 1px solid #15803d;
+  border-radius: 8px;
+  background: #15803d;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease,
+    transform 0.15s ease;
+
+  &:hover:not(:disabled) {
+    background: #185c37;
+    border-color: #185c37;
+    box-shadow: 0 4px 10px rgba(33, 115, 70, 0.2);
+    transform: translateY(-1px);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+  }
+}
 
 // =====================================================
 // BOTÓN NUEVO
@@ -83,10 +126,7 @@
 
   cursor: pointer;
 
-  transition:
-    background 0.2s ease,
-    border-color 0.2s ease,
-    box-shadow 0.2s ease,
+  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease,
     transform 0.15s ease;
 }
 
@@ -94,8 +134,7 @@
   background: #2674dc;
   border-color: #2674dc;
 
-  box-shadow:
-    0 4px 10px rgba(47, 128, 237, 0.2);
+  box-shadow: 0 4px 10px rgba(47, 128, 237, 0.2);
 
   transform: translateY(-1px);
 }
@@ -105,7 +144,6 @@
   font-weight: 400;
   line-height: 1;
 }
-
 
 // =====================================================
 // RESUMEN
@@ -132,8 +170,7 @@
 
   background: #fff;
 
-  box-shadow:
-    0 3px 14px rgba(15, 39, 71, 0.04);
+  box-shadow: 0 3px 14px rgba(15, 39, 71, 0.04);
 }
 
 .resumen-icon {
@@ -186,7 +223,6 @@
   font-weight: 700;
 }
 
-
 // =====================================================
 // FILTROS
 // =====================================================
@@ -204,8 +240,7 @@
 
   background: #fff;
 
-  box-shadow:
-    0 3px 14px rgba(15, 39, 71, 0.04);
+  box-shadow: 0 3px 14px rgba(15, 39, 71, 0.04);
 }
 
 .busqueda {
@@ -248,16 +283,13 @@
 
   outline: none;
 
-  transition:
-    border-color 0.2s ease,
-    box-shadow 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .busqueda input:focus {
   border-color: #2f80ed;
 
-  box-shadow:
-    0 0 0 3px rgba(47, 128, 237, 0.1);
+  box-shadow: 0 0 0 3px rgba(47, 128, 237, 0.1);
 }
 
 .busqueda input::placeholder {
@@ -291,7 +323,6 @@
   background: #e2e7ee;
   color: #344563;
 }
-
 
 // =====================================================
 // FILTRO ESTADO
@@ -329,10 +360,7 @@
 
   cursor: pointer;
 
-  transition:
-    background 0.2s ease,
-    color 0.2s ease,
-    border-color 0.2s ease;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
 
 .filtro-estado button:hover {
@@ -362,10 +390,7 @@
 
   cursor: pointer;
 
-  transition:
-    background 0.2s ease,
-    border-color 0.2s ease,
-    color 0.2s ease;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 }
 
 .btn-limpiar-filtros:hover {
@@ -373,7 +398,6 @@
   background: #f8fafc;
   color: #344563;
 }
-
 
 // =====================================================
 // RESULTADOS
@@ -395,7 +419,6 @@
   font-weight: 700;
 }
 
-
 // =====================================================
 // TABLA
 // =====================================================
@@ -408,8 +431,7 @@
 
   background: #fff;
 
-  box-shadow:
-    0 4px 18px rgba(15, 39, 71, 0.05);
+  box-shadow: 0 4px 18px rgba(15, 39, 71, 0.05);
 }
 
 table {
@@ -458,14 +480,12 @@ tbody tr:last-child td {
 }
 
 tbody tr {
-  transition:
-    background 0.15s ease;
+  transition: background 0.15s ease;
 }
 
 tbody tr:hover {
   background: #fbfcfe;
 }
-
 
 // =====================================================
 // CLIENTE
@@ -529,7 +549,6 @@ tbody tr:hover {
   white-space: nowrap;
 }
 
-
 // =====================================================
 // RUT
 // =====================================================
@@ -541,7 +560,6 @@ tbody tr:hover {
   font-weight: 500;
   white-space: nowrap;
 }
-
 
 // =====================================================
 // UBICACIÓN
@@ -566,7 +584,6 @@ tbody tr:hover {
   font-size: 11px;
 }
 
-
 // =====================================================
 // TARIFA
 // =====================================================
@@ -579,7 +596,6 @@ tbody tr:hover {
 
   white-space: nowrap;
 }
-
 
 // =====================================================
 // TIPO DE CARGA
@@ -602,7 +618,6 @@ tbody tr:hover {
 
   white-space: nowrap;
 }
-
 
 // =====================================================
 // BADGES
@@ -646,7 +661,6 @@ tbody tr:hover {
   background: #d9901a;
 }
 
-
 // =====================================================
 // ACCIONES
 // =====================================================
@@ -674,11 +688,7 @@ tbody tr:hover {
 
   cursor: pointer;
 
-  transition:
-    background 0.2s ease,
-    border-color 0.2s ease,
-    color 0.2s ease,
-    transform 0.15s ease;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.15s ease;
 }
 
 .btn-detalle span {
@@ -686,8 +696,7 @@ tbody tr:hover {
 
   font-size: 14px;
 
-  transition:
-    transform 0.15s ease;
+  transition: transform 0.15s ease;
 }
 
 .btn-detalle:hover {
@@ -704,7 +713,6 @@ tbody tr:hover {
 
   transform: translateX(2px);
 }
-
 
 // =====================================================
 // SIN RESULTADOS
@@ -724,8 +732,7 @@ tbody tr:hover {
 
   text-align: center;
 
-  box-shadow:
-    0 4px 18px rgba(15, 39, 71, 0.04);
+  box-shadow: 0 4px 18px rgba(15, 39, 71, 0.04);
 }
 
 .sin-resultados-icon {
@@ -777,16 +784,13 @@ tbody tr:hover {
 
   cursor: pointer;
 
-  transition:
-    background 0.2s ease,
-    border-color 0.2s ease;
+  transition: background 0.2s ease, border-color 0.2s ease;
 }
 
 .btn-restablecer:hover {
   background: #f8fafc;
   border-color: #c5ccd7;
 }
-
 
 // =====================================================
 // CARGANDO
@@ -805,8 +809,7 @@ tbody tr:hover {
 
   background: #fff;
 
-  box-shadow:
-    0 4px 18px rgba(15, 39, 71, 0.04);
+  box-shadow: 0 4px 18px rgba(15, 39, 71, 0.04);
 }
 
 .estado-container p {
@@ -834,7 +837,6 @@ tbody tr:hover {
     transform: rotate(360deg);
   }
 }
-
 
 // =====================================================
 // ERROR
@@ -889,13 +891,11 @@ tbody tr:hover {
   font-size: 12px;
 }
 
-
 // =====================================================
 // RESPONSIVE
 // =====================================================
 
 @media (max-width: 1000px) {
-
   .resumen {
     grid-template-columns: 1fr;
   }
@@ -912,12 +912,9 @@ tbody tr:hover {
   .filtro-estado {
     overflow-x: auto;
   }
-
 }
 
-
 @media (max-width: 700px) {
-
   .cliente-list {
     padding: 20px 16px;
   }
@@ -940,7 +937,7 @@ tbody tr:hover {
     align-items: center;
     gap: 16px;
     width: 100%;
-    
+
     > div {
       text-align: left;
     }
@@ -980,11 +977,25 @@ tbody tr:hover {
   td {
     padding: 13px 14px;
   }
+
+  .header-acciones {
+    order: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    gap: 10px;
+  }
+
+  .header-acciones .btn-nuevo,
+  .header-acciones .btn-exportar {
+    width: 100%;
+    justify-content: center;
+    margin: 0 !important;
+  }
 }
 
-
 @media (max-width: 480px) {
-
   .cliente-list {
     padding: 16px 12px;
   }
@@ -1022,5 +1033,4 @@ tbody tr:hover {
   .btn-limpiar-filtros {
     width: 100%;
   }
-
 }

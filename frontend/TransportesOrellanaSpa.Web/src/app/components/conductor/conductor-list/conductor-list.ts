@@ -1,3 +1,4 @@
+
 import { Component, OnInit, inject } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -26,6 +27,7 @@ export class ConductorList implements OnInit {
   conductores: Conductor[] = [];
 
   cargando = true;
+  exportando = false;
   error = '';
 
   busqueda = '';
@@ -70,10 +72,6 @@ export class ConductorList implements OnInit {
 
     return this.conductores.filter(conductor => {
 
-      // =====================================================
-      // FILTRO POR ESTADO
-      // =====================================================
-
       const coincideEstado =
         this.filtroEstado === 'todos' ||
         (
@@ -88,11 +86,6 @@ export class ConductorList implements OnInit {
       if (!coincideEstado) {
         return false;
       }
-
-
-      // =====================================================
-      // FILTRO DE BÚSQUEDA
-      // =====================================================
 
       if (!texto) {
         return true;
@@ -187,6 +180,225 @@ export class ConductorList implements OnInit {
       this.busqueda.trim().length > 0 ||
       this.filtroEstado !== 'todos'
     );
+
+  }
+
+  async exportarExcel(): Promise<void> {
+
+    if (this.exportando || this.conductoresFiltrados.length === 0) {
+      return;
+    }
+
+    this.exportando = true;
+
+    try {
+
+      const ExcelJS = await import('exceljs');
+
+      const workbook = new ExcelJS.Workbook();
+
+      workbook.creator = 'Flota360';
+      workbook.created = new Date();
+
+      const worksheet = workbook.addWorksheet('Conductores');
+
+      worksheet.columns = [
+        { header: 'RUT', key: 'rut', width: 16 },
+        { header: 'Nombres', key: 'nombres', width: 22 },
+        { header: 'Apellido paterno', key: 'apellidoPaterno', width: 20 },
+        { header: 'Apellido materno', key: 'apellidoMaterno', width: 20 },
+        { header: 'Fecha de nacimiento', key: 'fechaNacimiento', width: 20 },
+        { header: 'Edad', key: 'edad', width: 10 },
+        { header: 'Fecha de ingreso', key: 'fechaIngreso', width: 18 },
+        { header: 'Teléfono', key: 'telefono', width: 16 },
+        { header: 'Tipo de licencia', key: 'tipoLicencia', width: 18 },
+        { header: 'Fecha control licencia', key: 'fechaControlLicencia', width: 22 },
+        { header: 'Control licencia', key: 'controlLicencia', width: 18 },
+        { header: 'Estado licencia', key: 'estadoLicencia', width: 18 },
+        { header: 'Días restantes licencia', key: 'diasRestantes', width: 22 },
+        { header: 'Camiones habituales', key: 'camiones', width: 35 },
+        { header: 'Cantidad de camiones', key: 'cantidadCamiones', width: 22 },
+        { header: 'Estado conductor', key: 'estado', width: 18 }
+      ];
+
+      const convertirFecha = (fecha: string | null | undefined): Date | null => {
+
+        if (!fecha) {
+          return null;
+        }
+
+        const fechaTexto = fecha.substring(0, 10);
+
+        const fechaConvertida = new Date(`${fechaTexto}T00:00:00`);
+
+        return Number.isNaN(fechaConvertida.getTime())
+          ? null
+          : fechaConvertida;
+
+      };
+
+      this.conductoresFiltrados.forEach(conductor => {
+
+        worksheet.addRow({
+
+          rut: conductor.rut,
+          nombres: conductor.nombres,
+          apellidoPaterno: conductor.apellidoPaterno,
+          apellidoMaterno: conductor.apellidoMaterno,
+
+          fechaNacimiento: convertirFecha(conductor.fechaNacimiento),
+          edad: conductor.edad,
+
+          fechaIngreso: convertirFecha(conductor.fechaIngreso),
+          telefono: conductor.telefono,
+
+          tipoLicencia: conductor.tipoLicencia,
+          fechaControlLicencia: convertirFecha(conductor.fechaControlLicencia),
+
+          controlLicencia: conductor.licenciaAlDia
+            ? 'Al día'
+            : 'Vencida',
+
+          estadoLicencia: conductor.licenciaConducir.estado,
+
+          diasRestantes: conductor.licenciaConducir.diasRestantes,
+
+          camiones: conductor.camionesHabituales
+            .map(camion => camion.patente)
+            .join(', '),
+
+          cantidadCamiones: conductor.camionesHabituales.length,
+
+          estado: conductor.activo
+            ? 'Activo'
+            : 'Inactivo'
+
+        });
+
+      });
+
+      // Encabezado
+      const header = worksheet.getRow(1);
+
+      header.height = 24;
+
+      header.eachCell(cell => {
+
+        cell.fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: { argb: 'FF1E3A5F' }
+        };
+
+        cell.font = {
+          name: 'Arial',
+          size: 10,
+          bold: true,
+          color: { argb: 'FFFFFFFF' }
+        };
+
+        cell.alignment = {
+          vertical: 'middle',
+          horizontal: 'center'
+        };
+
+        cell.border = {
+          bottom: {
+            style: 'medium',
+            color: { argb: 'FF16304F' }
+          }
+        };
+
+      });
+
+      // Filas y formatos
+      worksheet.eachRow((row, rowNumber) => {
+
+        if (rowNumber > 1) {
+
+          row.height = 21;
+
+          row.eachCell(cell => {
+
+            cell.font = {
+              name: 'Arial',
+              size: 10,
+              color: { argb: 'FF334155' }
+            };
+
+            cell.alignment = {
+              vertical: 'middle'
+            };
+
+            if (rowNumber % 2 === 0) {
+
+              cell.fill = {
+                type: 'pattern',
+                pattern: 'solid',
+                fgColor: { argb: 'FFF1F5F9' }
+              };
+
+            }
+
+          });
+
+        }
+
+      });
+
+      // Formato de fechas
+      [
+        'E',
+        'G',
+        'J'
+      ].forEach(columna => {
+
+        worksheet.getColumn(columna).numFmt = 'dd/mm/yyyy';
+
+      });
+
+      // Filtros y encabezado fijo
+      worksheet.autoFilter = 'A1:P1';
+
+      worksheet.views = [
+        {
+          state: 'frozen',
+          ySplit: 1
+        }
+      ];
+
+      // Descargar archivo
+      const buffer = await workbook.xlsx.writeBuffer();
+
+      const blob = new Blob(
+        [buffer],
+        {
+          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        }
+      );
+
+      const url = window.URL.createObjectURL(blob);
+
+      const enlace = document.createElement('a');
+
+      enlace.href = url;
+      enlace.download = `Conductores_Flota360_${new Date().toISOString().slice(0, 10)}.xlsx`;
+
+      enlace.click();
+
+      window.URL.revokeObjectURL(url);
+
+    } catch (error) {
+
+      console.error('Error al exportar conductores:', error);
+
+      this.error = 'No fue posible generar el archivo Excel.';
+
+    } finally {
+
+      this.exportando = false;
+
+    }
 
   }
 
