@@ -179,7 +179,9 @@ export class UsuarioList implements OnInit {
 
     try {
 
-      const ExcelJS = await import('exceljs');
+      const ExcelJSModule = await import('exceljs');
+
+      const ExcelJS = ExcelJSModule.default ?? ExcelJSModule;
 
       const workbook = new ExcelJS.Workbook();
 
