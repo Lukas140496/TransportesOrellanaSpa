@@ -32,5 +32,4 @@ public class EnvioNotificacion
     public const string EnProceso = "EnProceso";
     public const string Enviado = "Enviado";
     public const string Fallido = "Fallido";
-    public const string Cancelado = "Cancelado";
 }
