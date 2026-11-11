@@ -86,6 +86,7 @@ export class GastoList implements OnInit {
 
   cargando = true;
   error = '';
+  exportando = false;
 
   busqueda = '';
   filtroTipo = 'todos';
@@ -192,6 +193,118 @@ export class GastoList implements OnInit {
         this.cdr.markForCheck();
       }
     });
+  }
+
+  async exportarExcel(): Promise<void> {
+    if (this.exportando || this.gastosFiltrados.length === 0) {
+      return;
+    }
+
+    this.exportando = true;
+
+    try {
+      const ExcelJS = await import('exceljs');
+
+      const workbook = new ExcelJS.Workbook();
+      const worksheet = workbook.addWorksheet('Gastos de Camiones');
+
+      workbook.creator = 'Flota360';
+
+      worksheet.columns = [
+        { header: 'Fecha', key: 'fecha', width: 15 },
+        { header: 'Patente', key: 'patente', width: 15 },
+        { header: 'Tipo de gasto', key: 'tipoGasto', width: 20 },
+        { header: 'Descripción', key: 'descripcion', width: 35 },
+        { header: 'N° Guía de despacho', key: 'numeroGuia', width: 22 },
+        { header: 'Monto', key: 'monto', width: 18 }
+      ];
+
+      // Encabezado
+      const encabezado = worksheet.getRow(1);
+
+      encabezado.font = {
+        bold: true,
+        color: { argb: 'FFFFFFFF' }
+      };
+
+      encabezado.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: 'FF1E3A5F' }
+      };
+
+      encabezado.alignment = {
+        vertical: 'middle',
+        horizontal: 'center'
+      };
+
+      encabezado.height = 25;
+
+      // Agregamos todos los gastos filtrados, no solamente los de la página actual.
+      this.gastosFiltrados.forEach(gasto => {
+        const [anio, mes, dia] = gasto.fecha.substring(0, 10).split('-');
+
+        worksheet.addRow({
+          fecha: new Date(Number(anio), Number(mes) - 1, Number(dia)),
+          patente: gasto.patenteCamion,
+          tipoGasto: gasto.tipoGasto,
+          descripcion: gasto.descripcion,
+          numeroGuia: gasto.numeroGuiaDespacho ?? '',
+          monto: gasto.monto
+        });
+      });
+
+      // Formato de fechas y montos.
+      worksheet.getColumn('fecha').numFmt = 'dd/mm/yyyy';
+      worksheet.getColumn('monto').numFmt = '#,##0';
+
+      // Filas alternadas.
+      for (let i = 2; i <= worksheet.rowCount; i++) {
+        if (i % 2 === 0) {
+          worksheet.getRow(i).fill = {
+            type: 'pattern',
+            pattern: 'solid',
+            fgColor: { argb: 'FFF1F5F9' }
+          };
+        }
+      }
+
+      // Filtro y encabezado congelado.
+      worksheet.autoFilter = 'A1:F1';
+      worksheet.views = [
+        { state: 'frozen', ySplit: 1 }
+      ];
+
+      // Generamos y descargamos el archivo.
+      const buffer = await workbook.xlsx.writeBuffer();
+
+      const blob = new Blob(
+        [buffer as BlobPart],
+        {
+          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        }
+      );
+
+      const url = window.URL.createObjectURL(blob);
+      const enlace = document.createElement('a');
+
+      const fechaActual = new Date()
+        .toISOString()
+        .substring(0, 10);
+
+      enlace.href = url;
+      enlace.download = `Gastos_Camiones_Flota360_${fechaActual}.xlsx`;
+
+      enlace.click();
+
+      window.URL.revokeObjectURL(url);
+
+    } catch (error) {
+      console.error('Error al exportar los gastos a Excel:', error);
+    } finally {
+      this.exportando = false;
+      this.cdr.markForCheck();
+    }
   }
 
   get gastosFiltrados(): Gasto[] {

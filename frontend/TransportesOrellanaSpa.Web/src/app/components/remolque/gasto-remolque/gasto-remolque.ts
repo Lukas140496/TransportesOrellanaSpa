@@ -58,6 +58,8 @@ export class GastoRemolqueComponent implements OnInit {
 
   error = '';
 
+  exportando = false;
+
   busqueda = '';
 
   filtroPatente = 'todos';
@@ -205,6 +207,147 @@ export class GastoRemolqueComponent implements OnInit {
           this.cdr.markForCheck();
         }
       });
+  }
+
+
+  // =====================================================
+  // EXPORTAR GASTOS A EXCEL
+  // =====================================================
+
+  async exportarExcel(): Promise<void> {
+    if (
+      this.cargando ||
+      this.exportando ||
+      this.gastosFiltrados.length === 0
+    ) {
+      return;
+    }
+
+    this.exportando = true;
+    this.cdr.markForCheck();
+
+    try {
+      const ExcelJS = await import('exceljs');
+
+      const workbook = new ExcelJS.Workbook();
+
+      workbook.creator = 'Flota360';
+      workbook.created = new Date();
+
+      const worksheet = workbook.addWorksheet('Gastos Remolques');
+
+      worksheet.columns = [
+        { header: 'Fecha', key: 'fecha', width: 15 },
+        { header: 'Patente', key: 'patente', width: 18 },
+        { header: 'Tipo de gasto', key: 'tipo', width: 20 },
+        { header: 'Descripción', key: 'descripcion', width: 40 },
+        { header: 'Observaciones', key: 'observaciones', width: 40 },
+        { header: 'Monto (CLP)', key: 'monto', width: 20 }
+      ];
+
+      // Exporta todos los resultados filtrados, no solo la página actual.
+      this.gastosFiltrados.forEach(gasto => {
+        const partesFecha = gasto.fecha.substring(0, 10).split('-');
+
+        const fecha = partesFecha.length === 3
+          ? new Date(
+              Number(partesFecha[0]),
+              Number(partesFecha[1]) - 1,
+              Number(partesFecha[2])
+            )
+          : null;
+
+        worksheet.addRow({
+          fecha,
+          patente: gasto.patenteRemolque,
+          tipo: gasto.tipoGasto,
+          descripcion: gasto.descripcion,
+          observaciones: gasto.observaciones || '',
+          monto: gasto.monto
+        });
+      });
+
+      // Estilo de encabezados.
+      const encabezado = worksheet.getRow(1);
+
+      encabezado.height = 24;
+
+      encabezado.eachCell(cell => {
+        cell.font = {
+          bold: true,
+          color: { argb: 'FFFFFFFF' },
+          size: 11
+        };
+
+        cell.fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: { argb: 'FF1E3A5F' }
+        };
+
+        cell.alignment = {
+          vertical: 'middle',
+          horizontal: 'center'
+        };
+      });
+
+      // Formato de filas y datos.
+      worksheet.eachRow((row, numeroFila) => {
+        if (numeroFila > 1) {
+          row.eachCell(cell => {
+            cell.alignment = {
+              vertical: 'middle'
+            };
+
+            if (numeroFila % 2 === 0) {
+              cell.fill = {
+                type: 'pattern',
+                pattern: 'solid',
+                fgColor: { argb: 'FFF1F5F9' }
+              };
+            }
+          });
+
+          row.getCell(1).numFmt = 'dd/mm/yyyy';
+          row.getCell(6).numFmt = '#,##0';
+        }
+      });
+
+      // Filtros y encabezado fijo.
+      worksheet.autoFilter = 'A1:F1';
+
+      worksheet.views = [
+        { state: 'frozen', ySplit: 1 }
+      ];
+
+      // Generar y descargar archivo.
+      const buffer = await workbook.xlsx.writeBuffer();
+
+      const blob = new Blob(
+        [buffer],
+        {
+          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        }
+      );
+
+      const url = window.URL.createObjectURL(blob);
+      const enlace = document.createElement('a');
+
+      enlace.href = url;
+      enlace.download = `Gastos_Remolques_Flota360_${this.formatearFecha(new Date())}.xlsx`;
+
+      enlace.click();
+
+      window.URL.revokeObjectURL(url);
+
+    } catch (error) {
+      console.error('Error al exportar gastos de remolques:', error);
+
+      this.error = 'No fue posible exportar los gastos a Excel.';
+    } finally {
+      this.exportando = false;
+      this.cdr.markForCheck();
+    }
   }
 
   // =====================================================

@@ -52,6 +52,62 @@
 }
 
 // =====================================================
+// HEADER - ACCIONES
+// =====================================================
+
+.header-acciones {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+// =====================================================
+// BOTÓN EXPORTAR EXCEL
+// =====================================================
+
+.btn-exportar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 42px;
+  padding: 0 16px;
+  border: 1px solid #15803d;
+  border-radius: 8px;
+  background: #15803d;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.15s ease;
+
+  &:hover:not(:disabled) {
+    background: #185c37;
+    border-color: #185c37;
+    box-shadow: 0 4px 10px rgba(33, 115, 70, 0.2);
+    transform: translateY(-1px);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+  }
+}
+
+// =====================================================
 // BOTÓN NUEVO
 // =====================================================
 
@@ -488,7 +544,7 @@ tbody tr:hover {
   display: flex;
   align-items: center;
   gap: 11px;
-  min-width: 140px;
+  min-width: 60px;
 }
 
 .camion-info strong {
@@ -1356,6 +1412,22 @@ tbody tr:hover {
 
   .paginacion-controles {
     justify-content: center;
+  }
+
+  .header-acciones {
+    order: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    gap: 10px;
+  }
+
+  .header-acciones .btn-nuevo,
+  .header-acciones .btn-exportar {
+    width: 100%;
+    justify-content: center;
+    margin: 0 !important;
   }
 }
 

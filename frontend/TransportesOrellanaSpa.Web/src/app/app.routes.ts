@@ -54,6 +54,7 @@ import { GastoConductorComponent } from './components/conductor/gasto-conductor/
 import { DashboardProduccion } from './components/dashboard/dashboard-produccion/dashboard-produccion';
 import { DashboardGastos } from './components/dashboard/dashboard-gastos/dashboard-gastos';
 import { DashboardOperacion } from './components/dashboard/dashboard-operacion/dashboard-operacion';
+import { DashboardRendimiento } from './components/dashboard/dashboard-rendimiento/dashboard-rendimiento';
 
 export const routes: Routes = [
 
@@ -135,12 +136,12 @@ export const routes: Routes = [
             },
 
             // =========================
-            // DASHBOARD - PERSONAL
+            // DASHBOARD - RENDIMIENTO
             // =========================
 
             {
-                path: 'dashboard/personal',
-                component: Dashboard
+                path: 'dashboard/rendimiento',
+                component: DashboardRendimiento
             },
 
             // =========================
