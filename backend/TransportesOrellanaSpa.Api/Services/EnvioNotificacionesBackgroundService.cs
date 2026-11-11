@@ -212,20 +212,27 @@ public sealed class EnvioNotificacionesBackgroundService : BackgroundService
 
         try
         {
-            var identificadorEntidad =
-                await ObtenerIdentificacionEntidadAsync(
+            var resultadoValidacion =
+                await ValidarEntidadYDocumentoAsync(
                     context,
-                    envio.TipoEntidad,
-                    envio.EntidadId,
+                    envio,
                     cancellationToken);
 
-            await correoService.EnviarAlertaVencimientoAsync(
-                envio.Destinatario,
-                envio.TipoEntidad,
-                identificadorEntidad,
-                envio.TipoDocumento,
-                envio.FechaVencimiento,
-                envio.DiasAnticipacion);
+            if (resultadoValidacion.Identificacion == null)
+            {
+                envio.Estado = EnvioNotificacion.Cancelado;
+                envio.FechaProximoIntentoUtc = null;
+                envio.UltimoError = resultadoValidacion.MotivoCancelacion;
+
+                await context.SaveChangesAsync(cancellationToken);
+
+                _logger.LogInformation(
+                    "Notificación {EnvioId} cancelada. Motivo: {Motivo}.",
+                    envio.Id,
+                    resultadoValidacion.MotivoCancelacion);
+
+                return;
+            }
 
             envio.Estado = EnvioNotificacion.Enviado;
             envio.FechaEnvioUtc = DateTime.UtcNow;
@@ -254,26 +261,52 @@ public sealed class EnvioNotificacionesBackgroundService : BackgroundService
         }
     }
 
-    private async Task<string> ObtenerIdentificacionEntidadAsync(
-    AppDbContext context,
-    string tipoEntidad,
-    int entidadId,
-    CancellationToken cancellationToken)
+
+    private async Task<(string? Identificacion, string? MotivoCancelacion)>
+        ValidarEntidadYDocumentoAsync(
+            AppDbContext context,
+            EnvioNotificacion envio,
+            CancellationToken cancellationToken)
     {
-        switch (tipoEntidad)
+        switch (envio.TipoEntidad)
         {
             case "Camión":
                 {
                     var camion = await context.Camiones
                         .AsNoTracking()
                         .FirstOrDefaultAsync(
-                            c => c.Id == entidadId,
+                            c => c.Id == envio.EntidadId,
                             cancellationToken);
 
                     if (camion == null)
-                        return $"Camión #{entidadId} (no encontrado)";
+                        return (null, "El camión ya no existe.");
 
-                    return $"{camion.Marca} {camion.Modelo} · Patente {camion.Patente}";
+                    if (!camion.Activo)
+                        return (null, "El camión está desactivado.");
+
+                    DateTime? fechaDocumento = envio.TipoDocumento switch
+                    {
+                        "Revisión Técnica" =>
+                            camion.FechaRevisionTecnica,
+
+                        "Certificado de Gases" =>
+                            camion.FechaRevisionTecnica,
+
+                        "Permiso de Circulación" =>
+                            camion.FechaPermisoCirculacion,
+
+                        "Seguro Obligatorio (SOAP)" =>
+                            camion.FechaSeguroObligatorio,
+
+                        _ => null
+                    };
+
+                    if (!FechaCoincide(fechaDocumento, envio.FechaVencimiento))
+                        return (null, "La fecha del documento cambió o ya no está registrada.");
+
+                    return (
+                        $"{camion.Marca} {camion.Modelo} · Patente {camion.Patente}",
+                        null);
                 }
 
             case "Remolque":
@@ -281,13 +314,35 @@ public sealed class EnvioNotificacionesBackgroundService : BackgroundService
                     var remolque = await context.Remolques
                         .AsNoTracking()
                         .FirstOrDefaultAsync(
-                            r => r.Id == entidadId,
+                            r => r.Id == envio.EntidadId,
                             cancellationToken);
 
                     if (remolque == null)
-                        return $"Remolque #{entidadId} (no encontrado)";
+                        return (null, "El remolque ya no existe.");
 
-                    return $"{remolque.Marca} {remolque.Modelo} · Patente {remolque.Patente}";
+                    if (!remolque.Activa)
+                        return (null, "El remolque está desactivado.");
+
+                    DateTime? fechaDocumento = envio.TipoDocumento switch
+                    {
+                        "Permiso de Circulación" =>
+                            remolque.FechaPermisoCirculacion,
+
+                        "Seguro" =>
+                            remolque.FechaSeguro,
+
+                        "Revisión Técnica" =>
+                            remolque.FechaRevisionTecnica,
+
+                        _ => null
+                    };
+
+                    if (!FechaCoincide(fechaDocumento, envio.FechaVencimiento))
+                        return (null, "La fecha del documento cambió o ya no está registrada.");
+
+                    return (
+                        $"{remolque.Marca} {remolque.Modelo} · Patente {remolque.Patente}",
+                        null);
                 }
 
             case "Conductor":
@@ -295,21 +350,43 @@ public sealed class EnvioNotificacionesBackgroundService : BackgroundService
                     var conductor = await context.Conductores
                         .AsNoTracking()
                         .FirstOrDefaultAsync(
-                            c => c.Id == entidadId,
+                            c => c.Id == envio.EntidadId,
                             cancellationToken);
 
                     if (conductor == null)
-                        return $"Conductor #{entidadId} (no encontrado)";
+                        return (null, "El conductor ya no existe.");
+
+                    if (!conductor.Activo)
+                        return (null, "El conductor está desactivado.");
+
+                    if (envio.TipoDocumento != "Licencia de conducir")
+                        return (null, "Tipo de documento no reconocido.");
+
+                    if (conductor.FechaControlLicencia == default ||
+                        conductor.FechaControlLicencia.Date != envio.FechaVencimiento.Date)
+                    {
+                        return (null, "La fecha de vencimiento de la licencia cambió.");
+                    }
 
                     var nombreCompleto =
                         $"{conductor.Nombres} {conductor.ApellidoPaterno} {conductor.ApellidoMaterno}".Trim();
 
-                    return $"{nombreCompleto} · RUT {conductor.Rut}";
+                    return (
+                        $"{nombreCompleto} · RUT {conductor.Rut}",
+                        null);
                 }
 
             default:
-                return $"{tipoEntidad} #{entidadId}";
+                return (null, $"Tipo de entidad no reconocido: {envio.TipoEntidad}.");
         }
+    }
+
+    private static bool FechaCoincide(
+        DateTime? fechaDocumento,
+        DateTime fechaNotificacion)
+    {
+        return fechaDocumento.HasValue &&
+               fechaDocumento.Value.Date == fechaNotificacion.Date;
     }
 
     private async Task RegistrarErrorEnvioAsync(
