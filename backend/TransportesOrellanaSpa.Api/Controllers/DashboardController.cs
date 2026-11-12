@@ -135,7 +135,7 @@ public class DashboardController : ControllerBase
                 .CountAsync();
 
             var remolquesActivos = _context.Remolques
-                .Where(r => r.Activa);
+                .Where(r => r.Activa && r.Patente != "NA");
 
             var remolques = await remolquesActivos
                 .CountAsync();
