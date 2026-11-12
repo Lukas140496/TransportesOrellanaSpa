@@ -57,6 +57,8 @@ public class Viaje
     public decimal LitrosCombustible { get; set; }
 
     public decimal CostoCombustible { get; set; }
+    
+    public decimal? PrecioDieselReferencia { get; set; }
 
     public decimal Tarifa { get; set; }
 

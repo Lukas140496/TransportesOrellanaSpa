@@ -6,6 +6,7 @@ using TransportesOrellanaSpa.Api.Data;
 using TransportesOrellanaSpa.Api.DTOs;
 using TransportesOrellanaSpa.Api.Models;
 using TransportesOrellanaSpa.Api.Enums;
+using TransportesOrellanaSpa.Api.Services;
 
 namespace TransportesOrellanaSpa.Api.Controllers;
 
@@ -15,10 +16,14 @@ namespace TransportesOrellanaSpa.Api.Controllers;
 public class ViajeController : ControllerBase
 {
     private readonly AppDbContext _context;
+    private readonly PrecioDieselHistoricoService _precioDieselHistoricoService;
 
-    public ViajeController(AppDbContext context)
+    public ViajeController(
+        AppDbContext context,
+        PrecioDieselHistoricoService precioDieselHistoricoService)
     {
         _context = context;
+        _precioDieselHistoricoService = precioDieselHistoricoService;
     }
 
     private static DateTime ConvertirFechaChileAUtc(DateTime fecha)
@@ -121,6 +126,10 @@ public class ViajeController : ControllerBase
                 "El remolque indicado no existe.");
         }
 
+        var precioDieselReferencia = _precioDieselHistoricoService
+            .ObtenerPorFecha(dto.Fecha)
+            .Precio;
+
         // =========================
         // CREAR VIAJE
         // =========================
@@ -169,6 +178,9 @@ public class ViajeController : ControllerBase
 
             CostoCombustible =
                 dto.CostoCombustible,
+
+            PrecioDieselReferencia =
+                precioDieselReferencia,
 
             Tarifa =
                 dto.Tarifa,
@@ -307,6 +319,9 @@ public class ViajeController : ControllerBase
 
                 CostoCombustible =
                     v.CostoCombustible,
+
+                PrecioDieselReferencia =
+                    v.PrecioDieselReferencia,
 
                 Tarifa =
                     v.Tarifa,
@@ -513,6 +528,9 @@ public class ViajeController : ControllerBase
                 CostoCombustible =
                     v.CostoCombustible,
 
+                PrecioDieselReferencia =
+                    v.PrecioDieselReferencia,
+
                 Tarifa =
                     v.Tarifa,
 
@@ -637,6 +655,9 @@ public class ViajeController : ControllerBase
 
                 CostoCombustible =
                     v.CostoCombustible,
+
+                PrecioDieselReferencia =
+                    v.PrecioDieselReferencia,
 
                 Tarifa =
                     v.Tarifa,
@@ -918,7 +939,7 @@ public class ViajeController : ControllerBase
                     Rut = v.Cliente.Rut,
 
                     Direccion = v.Cliente.Direccion,
-                    
+
                     Comuna = v.Cliente.Comuna
                 },
 
@@ -993,6 +1014,9 @@ public class ViajeController : ControllerBase
 
                 CostoCombustible =
                     v.CostoCombustible,
+
+                PrecioDieselReferencia =
+                    v.PrecioDieselReferencia,
 
                 Tarifa =
                     v.Tarifa,
@@ -1161,6 +1185,9 @@ public class ViajeController : ControllerBase
                 CostoCombustible =
                     v.CostoCombustible,
 
+                PrecioDieselReferencia =
+                    v.PrecioDieselReferencia,
+
                 Tarifa =
                     v.Tarifa,
 
@@ -1260,6 +1287,7 @@ public class ViajeController : ControllerBase
                 Kilometros = v.Kilometros,
                 LitrosCombustible = v.LitrosCombustible,
                 CostoCombustible = v.CostoCombustible,
+                PrecioDieselReferencia = v.PrecioDieselReferencia,
                 Tarifa = v.Tarifa,
                 Observaciones = v.Observaciones,
                 Estado = v.Estado,
@@ -1463,6 +1491,7 @@ public class ViajeController : ControllerBase
                 Kilometros = v.Kilometros,
                 LitrosCombustible = v.LitrosCombustible,
                 CostoCombustible = v.CostoCombustible,
+                PrecioDieselReferencia = v.PrecioDieselReferencia,
                 Tarifa = v.Tarifa,
                 Observaciones = v.Observaciones,
                 Estado = v.Estado,

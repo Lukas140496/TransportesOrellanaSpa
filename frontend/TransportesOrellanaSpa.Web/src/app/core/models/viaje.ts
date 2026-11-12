@@ -44,6 +44,8 @@ export interface Viaje {
 
   costoCombustible: number;
 
+  precioDieselReferencia: number | null;
+
   tarifa: number;
 
   observaciones: string;

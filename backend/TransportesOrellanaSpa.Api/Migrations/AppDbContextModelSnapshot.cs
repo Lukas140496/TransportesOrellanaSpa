@@ -963,6 +963,10 @@ namespace TransportesOrellanaSpa.Api.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<decimal?>("PrecioDieselReferencia")
+                        .HasPrecision(10, 2)
+                        .HasColumnType("numeric(10,2)");
+
                     b.Property<int>("RemolqueId")
                         .HasColumnType("integer");
 

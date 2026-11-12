@@ -6,7 +6,6 @@ import * as L from 'leaflet';
 import { ApiService } from '../../../core/services/api.service';
 import { Viaje } from '../../../core/models/viaje';
 import { PermissionService } from '../../../core/services/permission.service';
-import { PrecioDieselHistorico } from '../../../core//models/precio-diesel-historico';
 
 import * as clientesData from '../../../core/assets/json/clientes-frecuentes.json';
 
@@ -28,9 +27,6 @@ export class ViajeDetail implements OnInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   readonly permissionService = inject(PermissionService);
-
-  cargandoPrecioDiesel = false;
-  precioDieselHistorico: PrecioDieselHistorico | null = null;
 
   // =========================
   // MODALES
@@ -133,11 +129,10 @@ export class ViajeDetail implements OnInit, OnDestroy {
       next: viaje => {
         this.viaje = viaje;
         this.cargarDocumentosViaje();
-        this.cargarPrecioDieselHistorico(viaje.fecha);
         this.cargando = false;
-
+      
         this.configurarIconosLeaflet();
-
+      
         setTimeout(() => {
           void this.inicializarMapaRecorrido(viaje);
         }, 100);
@@ -739,40 +734,6 @@ export class ViajeDetail implements OnInit, OnDestroy {
       }
 
     });
-  }
-
-  private cargarPrecioDieselHistorico(fechaViaje: string | Date): void {
-    this.cargandoPrecioDiesel = true;
-
-    const fecha = typeof fechaViaje === 'string'
-      ? fechaViaje.substring(0, 10)
-      : `${fechaViaje.getFullYear()}-${String(
-        fechaViaje.getMonth() + 1
-      ).padStart(2, '0')}-${String(
-        fechaViaje.getDate()
-      ).padStart(2, '0')}`;
-
-    this.api.getPrecioDieselHistorico(fecha).subscribe({
-      next: (resultado) => {
-        this.precioDieselHistorico = resultado;
-        this.cargandoPrecioDiesel = false;
-      },
-      error: (error) => {
-        console.error('Error al consultar el precio histórico del diésel:', error);
-        this.precioDieselHistorico = null;
-        this.cargandoPrecioDiesel = false;
-      }
-    });
-  }
-
-  nombreMesPrecioDiesel(mes: number): string {
-    const meses = [
-      'enero', 'febrero', 'marzo', 'abril',
-      'mayo', 'junio', 'julio', 'agosto',
-      'septiembre', 'octubre', 'noviembre', 'diciembre'
-    ];
-
-    return meses[mes - 1] ?? '';
   }
 
   // =========================

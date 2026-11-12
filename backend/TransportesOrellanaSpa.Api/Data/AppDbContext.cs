@@ -624,6 +624,10 @@ public class AppDbContext : DbContext
             .Property(v => v.CostoCombustible)
             .HasPrecision(12, 2);
 
+        modelBuilder.Entity<Viaje>()
+            .Property(v => v.PrecioDieselReferencia)
+            .HasPrecision(10, 2);
+
         // =========================
         // VIAJE - ESTADOS
         // =========================
