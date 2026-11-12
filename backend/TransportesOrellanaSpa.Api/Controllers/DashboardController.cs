@@ -128,13 +128,22 @@ public class DashboardController : ControllerBase
                      c.FechaSeguroObligatorio.Value < hoy)
                 );
 
-            var conductores = await _context.Conductores
+            var conductoresActivos = _context.Conductores
+                .Where(c => c.Activo);
+
+            var conductores = await conductoresActivos
                 .CountAsync();
 
-            var remolques = await _context.Remolques
+            var remolquesActivos = _context.Remolques
+                .Where(r => r.Activa);
+
+            var remolques = await remolquesActivos
                 .CountAsync();
 
-            var clientes = await _context.Clientes
+            var clientesActivos = _context.Clientes
+                .Where(c => c.Activo);
+
+            var clientes = await clientesActivos
                 .CountAsync();
 
             // ===================================
