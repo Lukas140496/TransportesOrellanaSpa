@@ -1,3 +1,4 @@
+
 import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { DatePipe, DecimalPipe, NgClass } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -5,6 +6,7 @@ import * as L from 'leaflet';
 
 import { ApiService } from '../../../core/services/api.service';
 import { Viaje } from '../../../core/models/viaje';
+import { PrecioDieselHistorico } from '../../../core/models/precio-diesel-historico';
 import { PermissionService } from '../../../core/services/permission.service';
 
 import * as clientesData from '../../../core/assets/json/clientes-frecuentes.json';
@@ -54,6 +56,13 @@ export class ViajeDetail implements OnInit, OnDestroy {
 
   cargando = true;
   error = '';
+
+  // =========================
+  // PRECIO DIÉSEL HISTÓRICO
+  // =========================
+
+  cargandoPrecioDiesel = false;
+  precioDieselHistorico: PrecioDieselHistorico | null = null;
 
   // =========================
   // DOCUMENTACIÓN DEL VIAJE
@@ -128,11 +137,25 @@ export class ViajeDetail implements OnInit, OnDestroy {
 
       next: viaje => {
         this.viaje = viaje;
+
+        // Si el viaje ya tiene un precio guardado,
+        // utilizamos ese valor y no consultamos el histórico.
+        if (
+          viaje.precioDieselReferencia === null ||
+          viaje.precioDieselReferencia === undefined
+        ) {
+          // Para viajes antiguos sin precio guardado,
+          // recuperamos el precio histórico según su fecha.
+          this.cargarPrecioDieselHistorico(viaje.fecha);
+        } else {
+          this.precioDieselHistorico = null;
+        }
+
         this.cargarDocumentosViaje();
         this.cargando = false;
-      
+
         this.configurarIconosLeaflet();
-      
+
         setTimeout(() => {
           void this.inicializarMapaRecorrido(viaje);
         }, 100);
@@ -147,6 +170,62 @@ export class ViajeDetail implements OnInit, OnDestroy {
 
     });
 
+  }
+
+  // =========================
+  // PRECIO DIÉSEL HISTÓRICO
+  // =========================
+
+  cargarPrecioDieselHistorico(fechaViaje: string | Date): void {
+
+    this.cargandoPrecioDiesel = true;
+
+    const fecha = typeof fechaViaje === 'string'
+      ? fechaViaje.substring(0, 10)
+      : [
+          fechaViaje.getFullYear(),
+          String(fechaViaje.getMonth() + 1).padStart(2, '0'),
+          String(fechaViaje.getDate()).padStart(2, '0')
+        ].join('-');
+
+    this.api.getPrecioDieselHistorico(fecha).subscribe({
+
+      next: resultado => {
+        this.precioDieselHistorico = resultado;
+        this.cargandoPrecioDiesel = false;
+      },
+
+      error: error => {
+        console.error(
+          'Error al cargar precio histórico del diésel:',
+          error
+        );
+
+        this.precioDieselHistorico = null;
+        this.cargandoPrecioDiesel = false;
+      }
+
+    });
+  }
+
+  nombreMesPrecioDiesel(mes: number): string {
+
+    const meses = [
+      'enero',
+      'febrero',
+      'marzo',
+      'abril',
+      'mayo',
+      'junio',
+      'julio',
+      'agosto',
+      'septiembre',
+      'octubre',
+      'noviembre',
+      'diciembre'
+    ];
+
+    return meses[mes - 1] ?? '';
   }
 
   // =========================
@@ -213,7 +292,6 @@ export class ViajeDetail implements OnInit, OnDestroy {
 
   // =========================
   // DIRECTORIO DE CLIENTES / PLANTAS FRECUENTES
-  // (Carga dinámica desde clientes-frecuentes.json)
   // =========================
 
   private obtenerDireccionConocida(nombreEmpresa: string): string | null {
@@ -227,7 +305,6 @@ export class ViajeDetail implements OnInit, OnDestroy {
       .toUpperCase()
       .trim();
 
-    // Compatibilidad para módulos de importación JSON en TypeScript/Angular
     const mapaClientes: Record<string, string> =
       (clientesData as any).default || clientesData;
 
@@ -461,11 +538,6 @@ export class ViajeDetail implements OnInit, OnDestroy {
   // Y DIRECCIÓN
   // =========================
 
-  // =========================
-  // GEOCODIFICAR EMPRESA
-  // Y DIRECCIÓN
-  // =========================
-
   private async geocodificarDireccion(
     nombreEmpresa: string,
     comuna?: string,
@@ -482,12 +554,11 @@ export class ViajeDetail implements OnInit, OnDestroy {
     const nombreComuna = comuna?.trim();
     const direccionLimpia = direccionObservacion?.trim();
 
-    // 1. REGLA PRINCIPAL: Si la empresa está en el JSON, usamos EXCLUSIVAMENTE esa dirección
     const direccionConocida = this.obtenerDireccionConocida(empresa);
+
     if (direccionConocida) {
       consultas.push(direccionConocida);
     } else {
-      // 2. Si NO está en el JSON, recién intentamos con las observaciones o búsquedas generales
       if (direccionLimpia && nombreComuna) {
         consultas.push(
           `${direccionLimpia}, ${nombreComuna}, Chile`
@@ -771,7 +842,6 @@ export class ViajeDetail implements OnInit, OnDestroy {
 
     return lineas.map(linea => {
 
-      // Buscar si la línea comienza con alguno de los títulos conocidos
       const tituloEncontrado = titulos.find(titulo => {
 
         const regex = new RegExp(
@@ -799,7 +869,6 @@ export class ViajeDetail implements OnInit, OnDestroy {
         };
       }
 
-      // Compatibilidad con cualquier otro texto que venga como "Título: contenido"
       const coincidencia = linea.match(
         /^([^:]+):\s*(.*)$/
       );
@@ -813,7 +882,6 @@ export class ViajeDetail implements OnInit, OnDestroy {
 
       }
 
-      // Línea sin título
       return {
         titulo: null,
         contenido: linea
@@ -1033,12 +1101,12 @@ export class ViajeDetail implements OnInit, OnDestroy {
 
   obtenerFormatoArchivoViaje(nombreArchivo: string | undefined): string {
     if (!nombreArchivo) return 'DOC';
-    
+
     const ext = nombreArchivo.split('.').pop()?.toUpperCase() || '';
     if (['PDF'].includes(ext)) return 'PDF';
     if (['JPG', 'JPEG'].includes(ext)) return 'JPG';
     if (['PNG'].includes(ext)) return 'PNG';
-    
+
     return ext.substring(0, 4) || 'DOC';
   }
 

@@ -764,15 +764,36 @@
             <line x1="12" y1="16" x2="12.01" y2="16"></line>
           </svg>
         </div>
+
         <div>
-          <span class="label">Precio diésel referencia</span>
+          <span class="label">Valor diésel vigente</span>
+
           @if (viaje.precioDieselReferencia !== null && viaje.precioDieselReferencia !== undefined)
           {
+
+          <!-- VIAJES NUEVOS: PRECIO CONGELADO -->
           <strong class="value">
             ${{ viaje.precioDieselReferencia | number : '1.1-1' }} / L
           </strong>
+
+          } @else if (cargandoPrecioDiesel) {
+
+          <!-- VIAJES ANTIGUOS: CARGANDO HISTÓRICO -->
+          <strong class="value text-muted"> Consultando precio histórico... </strong>
+
+          } @else if ( precioDieselHistorico && precioDieselHistorico.precio !== null &&
+          precioDieselHistorico.precio !== undefined ) {
+
+          <!-- VIAJES ANTIGUOS: PRECIO HISTÓRICO -->
+          <strong class="value">
+            ${{ precioDieselHistorico.precio | number : '1.1-1' }} / L
+          </strong>
+
           } @else {
-          <strong class="value text-muted">Sin información histórica</strong>
+
+          <!-- NO EXISTE INFORMACIÓN HISTÓRICA -->
+          <strong class="value text-muted"> Sin información histórica </strong>
+
           }
         </div>
       </div>
