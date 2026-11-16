@@ -47,6 +47,7 @@ import { DashboardGastosRemolque } from '../models/dashboard-gastos-remolque';
 import { DashboardGastosTipo } from '../models/dashboard-gastos-tipo';
 
 import { PrecioDieselHistorico } from '../models/precio-diesel-historico';
+import { PrecioDieselActual } from '../models/precio-diesel-actual';
 
 import { DocumentoCamion, TipoDocumentoCamion } from '../models/documento-camion';
 import { DocumentoConductor, TipoDocumentoConductor } from '../models/documento-conductor';
@@ -1200,6 +1201,12 @@ export class ApiService {
     return this.http.get<PrecioDieselHistorico>(
       `${this.apiUrl}/PrecioDiesel/precio-historico`,
       { params: { fecha } }
+    );
+  }
+
+  getPrecioDieselActual(): Observable<PrecioDieselActual> {
+    return this.http.get<PrecioDieselActual>(
+      `${this.apiUrl}/PrecioDiesel/precio-actual`
     );
   }
 

@@ -36,4 +36,14 @@ public class PrecioDieselController : ControllerBase
 
         return Ok(resultado);
     }
+
+    [HttpGet("precio-actual")]
+    [RequirePermission("VIAJES_VER")]
+    public ActionResult<PrecioDieselActualDto> ObtenerPrecioActual()
+    {
+        var resultado = _servicio.ObtenerPrecioActual();
+
+        return Ok(resultado);
+    }
+
 }

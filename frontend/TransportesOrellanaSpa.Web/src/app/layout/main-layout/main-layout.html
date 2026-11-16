@@ -586,17 +586,50 @@
 
     <header class="topbar">
       <div class="topbar-left">
-        <button type="button" class="menu-toggle" (click)="toggleMenu()" aria-label="Abrir menú">
+        <button
+          type="button"
+          class="menu-toggle"
+          (click)="toggleMenu()"
+          aria-label="Abrir menú"
+        >
           ☰
         </button>
-
+    
         <div class="topbar-title">
           <span>Administración</span>
         </div>
       </div>
+    
+      <!-- PRECIO ACTUAL DEL DIÉSEL -->
+    
+      <div class="diesel-indicator">
+        <div class="diesel-info">
+          <span class="diesel-label">Valor Diésel RM</span>
+        
+          @if (precioDieselActual; as diesel) {
+            @if (diesel.precio != null && diesel.precio > 0) {
+              <strong>
+                {{ diesel.precio | currency:'CLP':'symbol-narrow':'1.0-0':'es-CL' }} / L
+              </strong>
+        
+              @if (diesel.actualizadoEn) {
+                <small>
+                  Actualizado {{ diesel.actualizadoEn | date:'HH:mm' }}
+                </small>
+              }
+            } @else {
+              <strong class="diesel-loading">Consultando...</strong>
+            }
+          } @else {
+            <strong class="diesel-loading">Consultando...</strong>
+          }
+        </div>
+      </div>
 
+      <div class="topbar-separator"></div>
+    
       <!-- USUARIO -->
-
+    
       <div
         class="user"
         role="button"
@@ -607,10 +640,9 @@
       >
         <div class="user-info">
           <strong>{{ nombreUsuario }}</strong>
-
           <span>{{ rolUsuario }}</span>
         </div>
-
+    
         <div class="avatar">
           {{ inicialesUsuario }}
         </div>

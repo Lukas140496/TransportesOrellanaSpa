@@ -521,10 +521,96 @@
 
 .topbar-title {
   font-size: 14px;
-
+  margin-left: clamp(4px, 4.0vw, 30px);
   color: #7b8798;
 }
 
+/* ========================= */
+/* INDICADOR PRECIO DIÉSEL */
+/* ========================= */
+
+.diesel-indicator {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  margin-left: auto;
+  margin-right: 10px;
+
+  padding: 7px 14px;
+
+  border: 1px solid #e7ebf2;
+  border-radius: 10px;
+
+  background: #f8fafc;
+
+  flex-shrink: 0;
+}
+
+.diesel-icon {
+  width: 34px;
+  height: 34px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 9px;
+
+  background: #eaf2fc;
+
+  font-size: 17px;
+}
+
+.diesel-info {
+  display: flex;
+  flex-direction: column;
+
+  gap: 2px;
+}
+
+.diesel-label {
+  color: #7b8798;
+
+  font-size: 10px;
+  font-weight: 600;
+
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.diesel-info strong {
+  color: #172b4d;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.diesel-info small {
+  color: #929cac;
+
+  font-size: 10px;
+  line-height: 1.2;
+}
+
+.diesel-info .diesel-loading {
+  color: #929cac;
+
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.topbar-separator {
+  width: 1px;
+  height: 30px;
+  background-color: #e2e8f0;
+  margin: 0 20px;
+  flex-shrink: 0;
+}
 
 /* ========================= */
 /* BOTÓN HAMBURGUESA */
@@ -1163,6 +1249,32 @@
     padding: 20px;
   }
 
+  .diesel-indicator {
+    margin-right: 14px;
+  
+    padding: 6px 10px;
+  
+    border-color: rgba(255, 255, 255, 0.12);
+  
+    background: rgba(255, 255, 255, 0.08);
+  }
+  
+  .diesel-icon {
+    width: 30px;
+    height: 30px;
+  
+    background: rgba(255, 255, 255, 0.12);
+  }
+  
+  .diesel-label,
+  .diesel-info small {
+    color: rgba(255, 255, 255, 0.65);
+  }
+  
+  .diesel-info strong {
+    color: white;
+  }
+
 }
 
 /* ========================= */
@@ -1430,7 +1542,7 @@
 /* MÓVIL */
 /* ========================= */
 
-@media (max-width: 600px) {
+@media (max-width: 768px) {
 
   /* ========================= */
   /* LAYOUT */
@@ -1634,6 +1746,7 @@
 
   .topbar-title {
     color: rgba(255, 255, 255, 0.85);
+    margin-left: 0;
   }
 
   .menu-toggle {
@@ -1683,6 +1796,43 @@
     background: rgba(0, 0, 0, 0.45);
 
     z-index: 90;
+  }
+
+  .diesel-indicator {
+    gap: 7px;
+  
+    margin-right: 10px;
+  
+    padding: 5px 8px;
+  
+    border-color: rgba(255, 255, 255, 0.12);
+  
+    background: rgba(255, 255, 255, 0.08);
+  }
+  
+  .diesel-icon {
+    width: 28px;
+    height: 28px;
+  
+    background: rgba(255, 255, 255, 0.12);
+  
+    font-size: 15px;
+  }
+  
+  .diesel-label {
+    color: rgba(255, 255, 255, 0.65);
+  
+    font-size: 9px;
+  }
+  
+  .diesel-info strong {
+    color: white;
+  
+    font-size: 12px;
+  }
+  
+  .diesel-info small {
+    display: none;
   }
 
 }

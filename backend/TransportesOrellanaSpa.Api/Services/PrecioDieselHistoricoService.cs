@@ -138,4 +138,18 @@ public class PrecioDieselHistoricoService
             zonaChile
         ).DateTime;
     }
+
+
+    public PrecioDieselActualDto ObtenerPrecioActual()
+    {
+        var actual = _cache.Obtener();
+
+        return new PrecioDieselActualDto
+        {
+            Precio = actual.Precio,
+            ActualizadoEn = actual.ActualizadoEn,
+            Region = "Región Metropolitana"
+        };
+    }
+
 }

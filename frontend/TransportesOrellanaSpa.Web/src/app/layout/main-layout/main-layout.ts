@@ -1,4 +1,10 @@
-import { Component, inject } from '@angular/core';
+import { Component, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { catchError, EMPTY, switchMap, timer } from 'rxjs';
+import { CurrencyPipe, DatePipe } from '@angular/common';
+
+import { ApiService } from '../../core/services/api.service';
+import { PrecioDieselActual } from '../../core/models/precio-diesel-actual';
 
 import {
     Router,
@@ -16,7 +22,9 @@ import { PermissionService } from '../../core/services/permission.service';
     imports: [
         RouterLink,
         RouterLinkActive,
-        RouterOutlet
+        RouterOutlet,
+        CurrencyPipe,
+        DatePipe
     ],
     templateUrl: './main-layout.html',
     styleUrl: './main-layout.scss'
@@ -27,6 +35,11 @@ export class MainLayout {
     readonly permissionService = inject(PermissionService);
     private readonly router = inject(Router);
 
+    private readonly apiService = inject(ApiService);
+    private readonly destroyRef = inject(DestroyRef);
+
+    precioDieselActual: PrecioDieselActual | null = null;
+
     modalCerrarSesionVisible = false;
     menuAbierto = false;
     submenuAbierto: string | null = null;
@@ -34,9 +47,44 @@ export class MainLayout {
 
 
     ngOnInit(): void {
-        this.authService.sesionExpirada$.subscribe(expirada => {
-            this.sesionExpiradaVisible = expirada;
-        });
+
+        // =========================
+        // SESIÓN EXPIRADA
+        // =========================
+    
+        this.authService.sesionExpirada$
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe(expirada => {
+                this.sesionExpiradaVisible = expirada;
+            });
+    
+        // =========================
+        // PRECIO ACTUAL DEL DIÉSEL
+        // =========================
+    
+        timer(0, 30 * 60 * 1000)
+            .pipe(
+                switchMap(() =>
+                    this.apiService.getPrecioDieselActual().pipe(
+                        catchError(error => {
+                            console.error(
+                                'Error al obtener el precio del diésel:',
+                                error
+                            );
+    
+                            return EMPTY;
+                        })
+                    )
+                ),
+                takeUntilDestroyed(this.destroyRef)
+            )
+            .subscribe(precio => {
+    
+                if (precio.precio !== null && precio.precio > 0) {
+                    this.precioDieselActual = precio;
+                }
+    
+            });
     }
 
 

@@ -17,6 +17,12 @@ import { routes } from './app.routes';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
 import { AuthService } from './core/services/auth.service';
 
+import { LOCALE_ID } from '@angular/core';
+import { registerLocaleData } from '@angular/common';
+import localeEs from '@angular/common/locales/es-CL';
+
+registerLocaleData(localeEs);
+
 export const appConfig: ApplicationConfig = {
 
   providers: [
@@ -39,7 +45,9 @@ export const appConfig: ApplicationConfig = {
       withInterceptors([
         authInterceptor
       ])
-    )
+    ),
+
+    { provide: LOCALE_ID, useValue: 'es-CL' }
 
   ]
 
