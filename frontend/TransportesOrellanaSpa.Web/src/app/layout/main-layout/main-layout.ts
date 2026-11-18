@@ -24,7 +24,7 @@ import { PermissionService } from '../../core/services/permission.service';
         RouterLinkActive,
         RouterOutlet,
         CurrencyPipe,
-        DatePipe
+        // DatePipe
     ],
     templateUrl: './main-layout.html',
     styleUrl: './main-layout.scss'

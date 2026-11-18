@@ -612,11 +612,11 @@
                 {{ diesel.precio | currency:'CLP':'symbol-narrow':'1.0-0':'es-CL' }} / L
               </strong>
         
-              @if (diesel.actualizadoEn) {
+              <!-- @if (diesel.actualizadoEn) {
                 <small>
-                  Actualizado {{ diesel.actualizadoEn | date:'HH:mm' }}
+                  Actualizado {{ diesel.actualizadoEn | date:'HH:mm' }} hrs
                 </small>
-              }
+              } -->
             } @else {
               <strong class="diesel-loading">Consultando...</strong>
             }
