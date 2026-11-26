@@ -476,48 +476,6 @@
       <article class="panel ranking-panel">
         <div class="panel-heading compact-heading">
           <div>
-            <span class="section-kicker">DISTRIBUCIÓN COMERCIAL</span>
-            <h2>Producción por cliente</h2>
-            <p>Clientes ordenados por producción generada.</p>
-          </div>
-          <span class="ranking-symbol client-symbol">CL</span>
-        </div>
-
-        @if (clientesOrdenados.length === 0) {
-        <div class="empty-state">No hay datos disponibles.</div>
-        } @else {
-        <div class="ranking-list">
-          @for (cliente of clientesOrdenados; track cliente.clienteId; let i = $index) {
-          <div class="ranking-item">
-            <div class="ranking-info">
-              <span class="ranking-position">{{ i + 1 }}</span>
-              <div class="ranking-name">
-                <strong>{{ cliente.nombre }}</strong>
-              </div>
-            </div>
-
-            <div class="ranking-amount">
-              <strong>{{ formatoMoneda(cliente.produccion) }}</strong>
-              <span>
-                {{ formatoDecimal(obtenerPorcentajeProduccionCliente(cliente.produccion)) }}%
-              </span>
-            </div>
-
-            <div class="progress-track">
-              <div
-                class="progress-fill client-fill"
-                [style.width.%]="obtenerPorcentajeCliente(cliente.produccion)"
-              ></div>
-            </div>
-          </div>
-          }
-        </div>
-        }
-      </article>
-
-      <article class="panel ranking-panel">
-        <div class="panel-heading compact-heading">
-          <div>
             <span class="section-kicker">PRODUCTIVIDAD</span>
             <h2>Producción por Camión</h2>
             <p>Camiones ordenados por producción generada.</p>
@@ -556,7 +514,7 @@
         </div>
         }
       </article>
-
+      
       <article class="panel ranking-panel">
         <div class="panel-heading compact-heading">
           <div>
@@ -592,6 +550,48 @@
               <div
                 class="progress-fill driver-fill"
                 [style.width.%]="obtenerPorcentajeConductor(conductor.produccion)"
+              ></div>
+            </div>
+          </div>
+          }
+        </div>
+        }
+      </article>
+
+      <article class="panel ranking-panel">
+        <div class="panel-heading compact-heading">
+          <div>
+            <span class="section-kicker">DISTRIBUCIÓN COMERCIAL</span>
+            <h2>Producción por cliente</h2>
+            <p>Clientes ordenados por producción generada.</p>
+          </div>
+          <span class="ranking-symbol client-symbol">CL</span>
+        </div>
+
+        @if (clientesOrdenados.length === 0) {
+        <div class="empty-state">No hay datos disponibles.</div>
+        } @else {
+        <div class="ranking-list">
+          @for (cliente of clientesOrdenados; track cliente.clienteId; let i = $index) {
+          <div class="ranking-item">
+            <div class="ranking-info">
+              <span class="ranking-position">{{ i + 1 }}</span>
+              <div class="ranking-name">
+                <strong>{{ cliente.nombre }}</strong>
+              </div>
+            </div>
+
+            <div class="ranking-amount">
+              <strong>{{ formatoMoneda(cliente.produccion) }}</strong>
+              <span>
+                {{ formatoDecimal(obtenerPorcentajeProduccionCliente(cliente.produccion)) }}%
+              </span>
+            </div>
+
+            <div class="progress-track">
+              <div
+                class="progress-fill client-fill"
+                [style.width.%]="obtenerPorcentajeCliente(cliente.produccion)"
               ></div>
             </div>
           </div>
